@@ -28,15 +28,18 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mainwp",
+      "x": "https://x.com/mymainwp",
       "github": "https://github.com/mainwp",
       "linkedin": "https://linkedin.com/company/mainwp",
-      "youtube": "https://youtube.com/mainwp",
-      "facebook": "https://facebook.com/mainwp"
+      "youtube": "https://www.youtube.com/mymainwp",
+      "facebook": "https://www.facebook.com/mainwp"
     }
   },
   "seo": {
     "indexing": "navigable"
+  },
+  "modeToggle": {
+    "default": "dark"
   },
   "redirects": [
     {
