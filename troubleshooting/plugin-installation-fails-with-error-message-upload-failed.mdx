@@ -1,0 +1,158 @@
+---
+title: Plugin and theme installation fails with "Upload failed"
+sidebarTitle: "Upload Failed Error"
+description: >-
+  Plugin upload failures can be caused by PHP tmpfile() being disabled, security
+  rules blocking connections, or localhost setups not accepting external traffic.
+  Check server settings and security configurations.
+---
+
+The "Upload failed" error appears when MainWP cannot transfer plugin or theme files from your Dashboard to child sites. This is typically caused by server configuration, security settings, or localhost limitations.
+
+## What You'll Learn
+
+- Identify the cause of upload failures
+- Check server configuration requirements
+- Resolve security rule conflicts
+- Understand localhost limitations
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Admin access to your Dashboard site
+- Access to server configuration (or hosting support)
+
+---
+
+## Check Server Configuration
+
+### PHP tmpfile() Function
+
+The `tmpfile()` PHP function is required for processing file uploads. If disabled, uploads fail.
+
+<Steps>
+<Step title="Check Server Information">
+Go to **MainWP > Info > Server** and look for disabled PHP functions.
+</Step>
+<Step title="Contact hosting if needed">
+If `tmpfile()` is disabled, contact your hosting provider to enable it.
+</Step>
+</Steps>
+
+### File Size Limits
+
+Your server must allow uploads large enough for plugin and theme .zip files.
+
+| Setting | Recommended Value | Where to Check |
+|---------|-------------------|----------------|
+| upload_max_filesize | 64M or higher | MainWP > Info > Server |
+| post_max_size | 64M or higher | MainWP > Info > Server |
+| max_execution_time | 300 seconds | MainWP > Info > Server |
+
+If these values are too low, contact your hosting provider or modify php.ini.
+
+---
+
+## Check Security Rules
+
+Security configurations can block the upload process. Try these steps in order.
+
+### .htaccess Rules
+
+<Steps>
+<Step title="Review .htaccess">
+Check the .htaccess file in your Dashboard's WordPress directory for security rules that might block uploads.
+</Step>
+<Step title="Temporarily rename">
+Rename .htaccess to .htaccess.backup to test if it's causing the issue.
+</Step>
+<Step title="Test upload">
+Attempt the plugin/theme upload again.
+</Step>
+<Step title="Restore or modify">
+If uploads work, restore .htaccess and adjust the specific rule causing the block.
+</Step>
+</Steps>
+
+### Security Plugins
+
+Security plugins on your Dashboard can interfere with upload processes.
+
+<Steps>
+<Step title="Temporarily disable">
+Deactivate security plugins on your Dashboard site (not child sites).
+</Step>
+<Step title="Test upload">
+Attempt the upload again.
+</Step>
+<Step title="Identify conflict">
+If successful, re-enable plugins one by one to find the conflicting one.
+</Step>
+<Step title="Configure exception">
+In the conflicting plugin, add an exception for MainWP operations.
+</Step>
+</Steps>
+
+### Server Firewall
+
+Your hosting provider's firewall may block the connection.
+
+- Contact hosting support to check firewall logs
+- Request whitelisting for your Dashboard's internal processes
+- Verify that ModSecurity or similar WAF isn't blocking uploads
+
+### HTTP Basic Authentication
+
+If your Dashboard is protected by HTTP Basic Auth (.htpasswd), uploads may fail.
+
+<Steps>
+<Step title="Temporarily disable">
+Remove HTTP Basic Auth protection from your Dashboard URL.
+</Step>
+<Step title="Test upload">
+Attempt the upload.
+</Step>
+<Step title="Re-enable if needed">
+After confirming uploads work, consider alternative security measures that don't interfere with MainWP.
+</Step>
+</Steps>
+
+---
+
+## Localhost Limitations
+
+If your MainWP Dashboard runs on a local development environment (localhost), child sites on remote servers cannot connect back to receive files.
+
+### Why This Happens
+
+- Localhost is not accessible from the internet
+- Child sites cannot reach your local Dashboard to download files
+- The upload process requires two-way communication
+
+### Solutions for Localhost
+
+| Option | Description |
+|--------|-------------|
+| Use a tunnel | Tools like ngrok expose localhost to the internet temporarily |
+| Upload directly | Install plugins/themes directly on child sites for testing |
+| Use staging | Test with a publicly accessible staging Dashboard |
+
+---
+
+## Self-Check Checklist
+
+- [ ] PHP tmpfile() function is enabled
+- [ ] upload_max_filesize is adequate
+- [ ] .htaccess doesn't block uploads
+- [ ] Security plugins temporarily disabled for testing
+- [ ] HTTP Basic Auth disabled (if applicable)
+- [ ] Dashboard is publicly accessible (not localhost)
+- [ ] Uploads complete successfully
+
+---
+
+## Related Resources
+
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues) - Server configuration issues
+- [Enable tmpfile on Cloudways](/advanced/miscellaneous/enable-tmpfile-php-function-on-cloudways) - Cloudways-specific fix
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection issues

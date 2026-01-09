@@ -1,0 +1,247 @@
+---
+title: Custom Post Types
+sidebarTitle: "Custom Post Types"
+description: >-
+  Custom Post Types is an Extension for the MainWP that allows you to manage
+  almost any custom post type on your Child Sites, including Publishing,
+  Editing, and Deleting custom post type content.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Understanding matching CPTs between Dashboard and child sites
+- Registering custom post types on your Dashboard
+- Creating and managing CPT posts remotely
+- Bulk editing custom post type content
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Custom Post Types"
+  data-purchase-url="https://mainwp.com/extension/custom-post-types/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-custom-post-types-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<Warning>
+**Required Plugin** - The [Classic Editor](https://wordpress.org/plugins/classic-editor/) plugin must be installed on both your MainWP Dashboard and all child sites for this extension to work correctly.
+</Warning>
+
+Custom post types are nothing more than a basic posts but have different parameters defined inside your code. Probably, you have been able to see Products, Testimonials, Features, Projects, or similar items in your WordPress Sites and thought that it would be cool if you could manage these from your MainWP Dashboard. [MainWP Custom Post Types](https://mainwp.com/extension/custom-post-types/) extension allows you to manage custom post types on your child sites. To manage custom post types on your child sites, you need to have the matching Custom Post Type (CPT) on your MainWP Dashboard too. Once you register the same CPT on your MainWP Dashboard site, this extension will add the [Select Sites Metabox](/getting-started/mainwp-user-interface) to the Add New Item interface, and it will allow you to control where you want to publish this CPT content. Also, support for the CPT will be added to the Manage Posts section, so you can search and manage CPT posts.
+
+## What is Matching CPT?
+
+There are three required arguments for each CPT:
+
+1.  CPT Slug
+2.  CPT Plural Label
+3.  CPT Singular Label
+
+If all three are in the match, you can say that you have the matching CPTs.
+
+Let’s review the example of the **Movies** CPT.
+
+On your child site(s), you have a **Movies** CPT (Slug: _movies_, Plural Label: _Movies_, Singular Label: _Movie_).
+To be able to manage this CPT from your MainWP Dashboard, you need to create the same CPT your MainWP Dashboard site.
+
+### WooCommerce Products
+
+If you want to use this extension to publish WooCommerce Products to your child site(s), it is enough to install the WooCommerce plugin on your dashboard site. The extension will automatically create support for Products.
+
+#### Important Notes
+
+MainWP Custom Post Types extension DOES NOT register CPTs on your child sites. It only allows you to manage existing CPTs. To properly use it, you need to have the same CPT on your Dashboard and Child Site(s)! It doesn’t matter if a CPT on your child sites has been created by a plugin, registered with a snippet in the functions.php, or added by your WordPress Theme; this extension will be able to manage it as long as you can create the **Matching CPT** on your dashboard site.
+
+## Register Custom Post Types on Your MainWP Dashboard Site
+
+To do this, you have two options:
+
+<Steps>
+<Step title="Create a code snippet and add it to the functions.php">
+</Step>
+<Step title="Use one of the 3rd party plugins to register CPTs on your dashboard siteCustom Post Type UI">
+Use one of the 3rd party plugins to register CPTs on your dashboard site
+    -   [Custom Post Type UI](https://wordpress.org/plugins/custom-post-type-ui/)
+    -   [Pods](https://wordpress.org/plugins/pods/)
+</Step>
+</Steps>
+
+
+[Read more about registering CPTs here!](https://www.elegantthemes.com/blog/tips-tricks/creating-custom-post-types-in-wordpress) After registering a CPT on your MainWP Dashboard, the MainWP Icon will be appended next to the link in the WP Admin menu, and it means that the CPT is ready to be managed through the MainWP Dashboard.
+
+## Create a New CPT Post
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Custom Post Types page">
+</Step>
+<Step title="In the Custom Post Types box, you will be able to see all registered CPTs on your MainWP Dashboard">
+In the Custom Post Types box, you will be able to see all registered CPTs on your MainWP Dashboard
+</Step>
+<Step title="Locate the one you want to publish to your Child Site(s)">
+</Step>
+<Step title="Click the Add New button">
+</Step>
+<Step title="You will be prompted to the Add New screen">
+</Step>
+<Step title="Enter the CPT post Title, Body, and metadata">
+</Step>
+<Step title="Select your Child Sites where you want to publish">
+[Select your Child Sites](/getting-started/mainwp-user-interface) where you want to publish
+</Step>
+<Step title="Click the Publish button">
+</Step>
+</Steps>
+
+## Manage Custom Post Types
+
+The Custom Post Types extension allows you to manage WordPress posts on your Websites. It will allow you to create new CPT posts on your managed sites remotely, edit, change the status for existing CPT posts, or completely delete them. On the **MainWP > Posts > Manage page**, you can easily find all existing CPT posts and manage them without of hustle of logging into each child site separately.
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Posts > Manage Posts page">
+</Step>
+<Step title="In the Search Options, set your search preference">
+![In the Search Options, set your search preference](/images/add-ons/custom-post-types-overview.jpg)
+
+**Status** filters will allow you to narrow down the search to selected CPT post statuses only.
+    -   **The keyword** field will allow you to find CPT posts where an entered word has been used.
+    -   **Date Range** will narrow down the search to posts that have been published in the selected date range.
+    -   **Post Type** menu will allow you to target a specific post type
+</Step>
+<Step title="Select wanted Child Sites">
+[Select wanted Child Sites](/getting-started/mainwp-user-interface)
+</Step>
+<Step title="Click the Show Posts button">
+</Step>
+</Steps>
+
+
+Once the search is complete, a list of found posts will appear at the bottom of the page.
+
+## Edit a CPT Post
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Posts > Manage Posts page">
+</Step>
+<Step title="In the Search Options, set your search preferences">
+![In the Search Options, set your search preferences](/images/add-ons/custom-post-types-overview.jpg)
+
+</Step>
+<Step title="Select wanted Child Sites">
+[Select wanted Child Sites](/getting-started/mainwp-user-interface)
+</Step>
+<Step title="Click the Show Posts button">
+</Step>
+<Step title="Once the list of found posts appears, locate the CPT Post you want to edit">
+</Step>
+<Step title="Click the Edit action in the actions menu.">
+</Step>
+</Steps>
+
+
+
+## View a CPT Post
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Posts > Manage Posts page">
+</Step>
+<Step title="In the Search Options, set your search preferences">
+![In the Search Options, set your search preferences](/images/add-ons/custom-post-types-overview.jpg)
+
+</Step>
+<Step title="Select wanted Child Sites">
+[Select wanted Child Sites](/getting-started/mainwp-user-interface)
+</Step>
+<Step title="Click the Show Posts button">
+</Step>
+<Step title="Once the list of found posts appears, locate the CPT Post you want to edit">
+</Step>
+<Step title="Click the View action in the actions menu.">
+</Step>
+</Steps>
+
+## Delete a CPT Post
+
+### Move CPT Post(s) to Trash
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Posts > Manage Posts page">
+</Step>
+<Step title="In the Search Options, set your search preferences">
+![In the Search Options, set your search preferences](/images/add-ons/custom-post-types-overview.jpg)
+
+</Step>
+<Step title="Select wanted Child Sites">
+[Select wanted Child Sites](/getting-started/mainwp-user-interface)
+</Step>
+<Step title="Click the Show Posts button">
+</Step>
+<Step title="Once the list of found posts appears, locate the CPT Post you want to edit">
+</Step>
+<Step title="Click the Trash action in the actions menu.">
+</Step>
+</Steps>
+
+
+If you need to delete multiple posts at once, before clicking the Trash action, select all posts you want to move to Trash and use the Bulk Actions menu to delete them.
+
+### Delete Permanently
+
+Since WordPress allows you to permanently delete only posts that are currently in Trash, before you can permanently delete them, you need to send them to Trash. Once they are in Trash, the **Delete Permanently** action will be available.
+
+## Bulk Edit CPT posts
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/pZ2KUuD47Cc"
+  title="Custom Post Types - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+<Steps>
+<Step title="Login in to your WordPress Dashboard">
+</Step>
+<Step title="Go to the desired Custom Post type list of posts">
+</Step>
+<Step title="Locate the post and click Edit">
+</Step>
+<Step title="Make the appropriate changes and select wanted Child Sites">
+Make the appropriate changes and [select wanted Child Sites](/getting-started/mainwp-user-interface) ![Select Sites metabox for bulk editing custom post types](/images/add-ons/0f084304ce2a.png)
+</Step>
+<Step title="Click the Update button">
+</Step>
+</Steps>
+
+
+Please note that you will not be able to Bulk Edit if the CPT post was not published through MainWP Dashboard.
+
+---
+
+## Related Resources
+
+- [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
+- [Manage Posts](/sites/content/manage-posts) - Post management guide
+- [WooCommerce Status Extension](/add-ons/administrative/woocommerce-status-extension) - WooCommerce integration

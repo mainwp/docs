@@ -1,0 +1,110 @@
+---
+title: How to add a "Go to site" icon to Manage Sites table
+sidebarTitle: "Go to Site Icon"
+description: >-
+  Add a Go to site icon to the Manage Sites table. This compact icon lets you
+  quickly open child sites in a new tab and works well on mobile without taking
+  up column space like a full URL.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/z8ddAuPaS0M"
+  title="How to add a Go to site icon to Manage Sites table - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Add a "Go to site" icon column to the Manage Sites table for quick access to child site front pages. This icon takes less space than displaying the full URL and works well on mobile devices.
+
+## What You'll Learn
+
+- How to add a site link icon to the Manage Sites table
+- How to position the column for mobile visibility
+
+## Prerequisites
+
+- [Custom Dashboard extension](/add-ons/development/mainwp-custom-dashboard-extension) (free)
+
+---
+
+## Add the Go to Site Icon
+
+<Steps>
+<Step title="Install Custom Dashboard">
+[Install](/dashboard/overview/manage-extensions#install-extensions) the [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension.
+</Step>
+<Step title="Open the extension">
+Navigate to **MainWP > Extensions > Custom Dashboard**.
+</Step>
+<Step title="Add the PHP code">
+Go to the **PHP** tab and add this code:
+
+```php
+add_filter( 'mainwp_sitestable_getcolumns', 'mycustom_mainwp_sitestable_getcolumns', 10, 1 );
+function mycustom_mainwp_sitestable_getcolumns( $columns ) {
+    $columns['front_page_link'] = '';
+    return $columns;
+}
+
+add_filter( 'mainwp_sitestable_item', 'mycustom_mainwp_sitestable_item', 10, 1 );
+function mycustom_mainwp_sitestable_item( $item ) {
+    $item['front_page_link'] = '';
+    return $item;
+}
+```
+</Step>
+<Step title="Save changes">
+Click **Save Changes**.
+</Step>
+</Steps>
+
+---
+
+## Position the Column
+
+<Steps>
+<Step title="Go to Manage Sites">
+Navigate to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Verify the column appears">
+The new icon column should appear in the table.
+
+![Manage Sites table showing the new Go to site icon column](/images/developers/new-column-code.png)
+</Step>
+<Step title="Drag to reposition">
+Drag and drop the column header to your preferred position. Place it near the beginning to keep it visible on mobile devices.
+
+![Mobile view of Manage Sites table with Go to site icon visible](/images/developers/new-column-step2.png)
+</Step>
+</Steps>
+
+---
+
+## Why Use This
+
+| Benefit | Description |
+|---------|-------------|
+| Saves space | Icon takes less width than displaying the full URL |
+| Mobile-friendly | Visible without expanding the row on mobile |
+| Quick access | One click opens the site in a new tab |
+| Clean interface | Reduces table clutter |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Custom Dashboard extension installed
+- [ ] PHP code added and saved
+- [ ] New column visible in Manage Sites table
+- [ ] Column positioned as desired
+- [ ] Icon opens site in new tab when clicked
+
+---
+
+## Related Resources
+
+- [Create a New Column in Manage Sites](/customization/how-to-create-a-new-column-in-the-manage-sites-table) - Add custom columns
+- [MainWP User Interface](/getting-started/mainwp-user-interface) - Table customization overview
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Extension documentation

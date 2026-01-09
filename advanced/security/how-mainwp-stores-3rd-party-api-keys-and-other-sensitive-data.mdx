@@ -1,0 +1,97 @@
+---
+title: How MainWP stores 3rd-party API Keys and other sensitive data
+sidebarTitle: "API Key Storage"
+description: >-
+  MainWP uses AES GCM encryption via PHPSecLib to securely store third-party
+  API keys and login credentials in the Dashboard database.
+---
+
+MainWP version 4.5 introduced an enhanced encryption system for storing third-party API keys and login details. This encryption follows industry security standards to protect sensitive data stored in your MainWP Dashboard.
+
+## What You'll Learn
+
+- How MainWP encrypts API keys and credentials
+- What the encryption process involves
+- What data is and isn't covered by this encryption
+
+---
+
+## Scope of Encryption
+
+MainWP encrypts sensitive data stored in the Dashboard:
+
+| Protected | Examples |
+|-----------|----------|
+| Extension API keys | Backup service credentials, monitoring API keys |
+| Login credentials | Third-party service logins stored in extensions |
+| Dashboard secrets | Internal authentication tokens |
+
+<Note>
+This encryption applies to data stored in the MainWP Dashboard. It does not cover data created by third-party plugins on child sites. For example, MainWP encrypts the API key used by a backup extension, but does not encrypt the backup files created on child sites.
+</Note>
+
+---
+
+## Encryption Components
+
+The encryption process uses these security measures:
+
+| Component | Description |
+|-----------|-------------|
+| IV (Initialization Vector) | 16-character random string ensuring unique encryption |
+| Authentication data | Validates data integrity |
+| AES GCM encryption | Galois Counter Mode via PHPSecLib |
+| PHPSecLib Random class | Cryptographically secure random string generation |
+| Key File | Encryption key stored separately from encrypted data |
+
+---
+
+## What is AES GCM
+
+AES GCM (Galois Counter Mode) is a stream cipher mode for AES encryption. Key characteristics:
+
+- **Low latency**: Fast encryption and decryption
+- **No padding required**: Stream cipher design
+- **Authenticated encryption (AEAD)**: Verifies data hasn't been tampered with
+- **Authentication tag**: Each encryption produces a MAC (Message Authentication Code)
+
+With AES-GCM, MainWP uses an encryption key and message to generate cipher text, a random nonce, and an authentication tag.
+
+---
+
+## Encryption Workflow
+
+The encryption process follows these steps:
+
+| Step | Action |
+|------|--------|
+| 1 | Generate 32-character encryption key using PHPSecLib Random class |
+| 2 | Generate 16-character IV (Initialization Vector) using PHPSecLib Random class |
+| 3 | Initialize AES GCM encryption with the key, IV as nonce, and authentication data |
+| 4 | Encrypt the value (API key or credential) |
+| 5 | Generate AES authentication tag |
+| 6 | Merge IV + encrypted data + authentication tag |
+| 7 | Base64 encode the merged value and save to database |
+| 8 | Save encryption key to separate Key File |
+| 9 | Store Key File reference in database |
+
+![MainWP API Key encryption diagram](/images/faq/api-keys-storage.jpg)
+
+---
+
+## Security Benefits
+
+This design provides multiple layers of protection:
+
+- **Separation**: Encryption key stored separately from encrypted data
+- **Integrity**: Authentication tag detects tampering
+- **Uniqueness**: Random IV ensures identical values produce different ciphertexts
+- **Industry standard**: AES-256 GCM is widely trusted for secure data storage
+
+---
+
+## Related Resources
+
+- [OpenSSL Key Encryption](/advanced/openssl-keys-encryption) - Private key encryption for site connections
+- [MainWP Security](/getting-started/how-secure-is-the-mainwp-plugin) - Overall security architecture
+- [Connection Security](/advanced/miscellaneous/mainwp-connection-security) - Dashboard-to-Child communication

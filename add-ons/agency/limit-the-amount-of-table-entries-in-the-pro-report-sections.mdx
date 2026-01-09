@@ -1,0 +1,57 @@
+---
+title: Limit the amount of table entries in the Pro Report sections
+sidebarTitle: "Limit Table Entries"
+description: >-
+  If you have a lot of Plugin updates or Backups performed during a particular
+  time period, it may be desirable to limit the number of entries shown in the
+  report sections. Learn how to configure table entry limits in Pro Reports.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Adding CSS IDs to report table sections
+- Writing CSS to limit displayed rows
+- Customizing the number of entries shown
+- Uploading modified templates
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+If you have a lot of Plugin updates or Backups performed during a particular time period, it may be desirable to limit the number of entries shown in the report. This can be accomplished by making small changes in the PHP file of the Pro Report template.
+
+<Note>
+If you are using the built-in template, you will have to create a custom one, otherwise an update to Pro Reports extension will overwrite your changes. To learn more about editing and customizing the PHP file of the Pro Report templates, please visit [this help document](/add-ons/reporting/pro-reports-extension-overview#elementor-toc__heading-anchor-4).
+</Note>
+
+## Example for Backup data section
+
+In this example, we will cover how to limit the entries in the Backups section to 5, but the same logic applies to other data sections. In the Backups Data section, attach a CSS ID to the body of the table, as so:
+
+![PHP template with CSS ID attached to backup table body](/images/add-ons/pro-reports-table-css-id.png)
+
+And then, in the `</code>` section, at the top of the PHP file, add the following:
+
+```css
+#backuptable tr { display:none; }
+#backuptable > tr:nth-child(-n+5){ display: table-row; }
+```
+
+Change the `5` in these brackets `(-n+5)` to a desired number of entries to be shown.
+
+![CSS code limiting table rows to display only 5 entries](/images/add-ons/pro-reports-css-limit-rows.png)
+
+Save the changes to the PHP file and upload it to **/wp-content/uploads/mainwp/report-templates/**.
+
+![Report template upload directory path](/images/add-ons/pro-reports-template-directory.png)
+
+---
+
+## Related Resources
+
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference

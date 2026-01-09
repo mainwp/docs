@@ -1,0 +1,87 @@
+---
+title: Force reconnection with child sites
+description: >-
+  Use the Force Reconnect tool in MainWP to regenerate OpenSSL keys and
+  reestablish secure connections with all child sites when experiencing
+  connection issues.
+---
+
+The Force Reconnect tool regenerates the OpenSSL encryption keys used for Dashboard-to-child communication and forces all child sites to re-authenticate. Use this when you experience persistent connection issues that other troubleshooting steps haven't resolved.
+
+## What You'll Learn
+
+- When to use Force Reconnect
+- How to trigger the reconnection process
+- What happens during reconnection
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Child sites previously connected to your Dashboard
+- Admin access to your Dashboard
+
+---
+
+## When to Use Force Reconnect
+
+Use this tool when:
+
+- Multiple child sites suddenly show connection errors
+- You've migrated your Dashboard to a new server or domain
+- SSL/TLS configuration has changed on your Dashboard
+- Connection issues persist after resolving firewall or server problems
+- OpenSSL keys may have become corrupted or out of sync
+
+<Warning>
+Force Reconnect affects all child sites. The Dashboard will temporarily lose connection with sites while regenerating keys. Sites will reconnect automatically during the next sync.
+</Warning>
+
+---
+
+## Force Reconnection
+
+<Steps>
+<Step title="Navigate to MainWP Tools">
+Go to **MainWP > Settings > MainWP Tools**.
+</Step>
+<Step title="Find Force Reconnect">
+Locate the **Force your MainWP Dashboard to establish a new connection** option.
+</Step>
+<Step title="Click the button">
+Click the **Force Reconnect** button.
+</Step>
+<Step title="Wait for completion">
+The Dashboard regenerates OpenSSL keys and marks all child sites for reconnection. This process runs automatically.
+</Step>
+<Step title="Verify connections">
+Go to **MainWP > Sites > Manage Sites** and verify that sites are reconnecting. You can manually sync individual sites to speed up the process.
+</Step>
+</Steps>
+
+---
+
+## What Happens During Reconnection
+
+1. **Key regeneration** - The Dashboard creates new OpenSSL public/private key pairs
+2. **Site marking** - All child sites are flagged for reconnection
+3. **Automatic sync** - During the next sync cycle, each child site receives the new public key
+4. **Re-authentication** - Child sites verify the new keys and reestablish secure communication
+
+The process is automatic once triggered. Sites reconnect during their normal sync schedule or when you manually sync them.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Force Reconnect button clicked
+- [ ] Dashboard shows sites are reconnecting
+- [ ] Previously problematic sites now connect successfully
+- [ ] Sync operations complete without errors
+
+---
+
+## Related Resources
+
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Diagnose connection issues
+- [Connection Test Status Codes](/troubleshooting/connection-test-results-status-codes) - Interpret error codes
+- [OpenSSL Keys Encryption](/advanced/openssl-keys-encryption) - How MainWP encryption works

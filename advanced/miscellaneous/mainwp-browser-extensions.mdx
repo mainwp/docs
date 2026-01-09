@@ -1,0 +1,180 @@
+---
+title: MainWP Browser Extensions
+sidebarTitle: "Browser Extensions"
+description: >-
+  Browser extensions for Chrome and Firefox to track updates and manage
+  WordPress sites directly from your browser toolbar.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/jSGG1FJA7h4"
+  title="MainWP Browser Extensions - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+MainWP browser extensions for Chrome and Firefox help you track available updates and manage your WordPress sites directly from your browser toolbar.
+
+## What You'll Learn
+
+- How to install the browser extension
+- How to connect it to your Dashboard
+- Troubleshooting common issues
+
+## Prerequisites
+
+- MainWP Dashboard on a web host (local installations not supported)
+- Permalinks set to anything except "Plain"
+- REST API access enabled
+
+<Note>
+The browser extension requires your MainWP Dashboard to be hosted on a web server. Locally hosted Dashboards are not compatible because REST API requests cannot reach local installations.
+</Note>
+
+---
+
+## Features
+
+- Track WordPress core, plugin, theme, and translation updates
+- Automatically fetch update counts for all child sites
+- Configure update check intervals
+- Manually fetch update counts
+- Track changes made outside your MainWP Dashboard
+- Quick links to Dashboard pages for taking action
+
+---
+
+## Installation
+
+### Chrome
+
+1. Visit the [Chrome Web Store extension page](https://chrome.google.com/webstore/detail/mainwp-browser-extension/kjlehednpnfgplekjminjpocdechbnge)
+2. Click **Add to Chrome**
+3. Click **Add Extension** to confirm
+
+<Note>
+If Enhanced Safe Browsing is enabled, you may see a prompt that the extension isn't yet trusted. Click **Continue to install** to proceed.
+
+![Chrome Enhanced Safe Browsing prompt for extension installation](/images/miscellaneous/advanced-miscellaneous-c02efc.png)
+</Note>
+
+### Firefox
+
+1. Visit the [Firefox Add-ons extension page](https://addons.mozilla.org/en-US/firefox/addon/mainwp-browser-extension/)
+2. Click **Add to Firefox**
+3. Click **Add** to confirm
+
+---
+
+## Connect the Extension to Your Dashboard
+
+<Steps>
+<Step title="Configure permalinks">
+Go to **WP Admin > Settings > Permalinks** on your Dashboard site. Choose any setting except **Plain** (WordPress REST API requirement).
+
+![WordPress Permalink Settings page showing available URL structure options](/images/miscellaneous/permalinks.jpg)
+</Step>
+<Step title="Create REST API key">
+Navigate to **MainWP Dashboard > REST API** and click **Add API Keys**.
+</Step>
+<Step title="Configure API key">
+Enter a description (e.g., "Browser Extension") and select **Read** permission.
+</Step>
+<Step title="Enable Legacy API">
+Click **Show Legacy API Credentials**, then enable **MainWP REST API v1 Compatibility**.
+
+![REST API settings showing Legacy API Credentials section](/images/miscellaneous/advanced-miscellaneous-655222.png)
+</Step>
+<Step title="Open extension popup">
+Click the extension icon in your browser toolbar.
+
+![Browser extension configuration popup in toolbar](/images/miscellaneous/advanced-miscellaneous-cc12a2.png)
+</Step>
+<Step title="Enter Dashboard URL">
+Enter your MainWP Dashboard URL in the extension.
+</Step>
+<Step title="Enter API credentials">
+Copy **Consumer Key** and **Consumer Secret** from the Legacy API Credentials section and paste them into the extension.
+</Step>
+<Step title="Save Dashboard API key">
+In MainWP Dashboard REST API screen, click **Save Settings** to activate the API key.
+</Step>
+<Step title="Complete extension setup">
+In the extension popup:
+- Check **I have saved the API Key in my Dashboard**
+- Select sync frequency
+- Choose which data to sync
+</Step>
+<Step title="Save extension settings">
+Click **Save Settings** in the extension.
+</Step>
+</Steps>
+
+---
+
+## Push Notifications
+
+The extension sends browser notifications when it syncs. If you're not receiving notifications, check your operating system settings to ensure browser notifications are enabled.
+
+![Animation showing browser push notification for updates](/images/miscellaneous/advanced-miscellaneous-c33c0c.gif)
+
+---
+
+## Troubleshooting
+
+### Connection Issues
+
+| Problem | Solution |
+|---------|----------|
+| Dashboard not accessible | Ensure Dashboard is on a web host (not localhost) |
+| API errors | Set permalinks to something other than "Plain" |
+| API key not working | Verify you clicked Save Settings after creating the key |
+| Credentials rejected | Copy credentials to a text file first, then paste into extension |
+
+### HTTP Basic Auth Conflict
+
+The browser extension is not compatible with HTTP Basic Auth. Use the [Dashboard Lock extension](https://mainwp.com/extension/dashboard-lock/) instead, which provides equivalent protection without interfering with MainWP functionality.
+
+### REST API Blocked
+
+Security or performance plugins may block the REST API. Test by logging out and visiting:
+
+```
+https://your-dashboard-url.com/wp-json/
+```
+
+If you see an access denied message, find and adjust the blocking plugin's settings.
+
+**Required REST API endpoints:**
+- `/mainwp/v1/sites/all-sites`
+- `/mainwp/v1/sites/sites-available-updates-count`
+- `/mainwp/v1/site/non-mainwp-changes-count`
+
+---
+
+## Permissions and Privacy
+
+The extension requests permissions for alarms, storage, and notifications to store update counts and notify you when you start your browser. The extension does not collect any user data—it only uses your generated REST API keys to connect to your Dashboard.
+
+By installing, you agree to the [Terms of Service](https://mainwp.com/terms-of-service/) and [Privacy Policy](https://mainwp.com/privacy-policy/).
+
+---
+
+## Self-Check Checklist
+
+- [ ] Browser extension installed
+- [ ] Permalinks set to non-Plain option
+- [ ] REST API key created with Read permission
+- [ ] Legacy API v1 compatibility enabled
+- [ ] API key saved in Dashboard
+- [ ] Extension configured with credentials
+- [ ] Updates appearing in extension
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API documentation
+- [Dashboard Lock Extension](/add-ons/security/dashboard-lock-extension) - Alternative to HTTP Basic Auth

@@ -1,0 +1,446 @@
+---
+title: Solid Backups
+sidebarTitle: "Solid Backups"
+description: >-
+  Control Solid Backups (formerly BackupBuddy) plugin settings, create backups, and set backup schedules
+  for all Child Sites directly from your MainWP Dashboard. Requires an active
+  Solid Backups subscription from StellarWP.
+addonType: integration
+thirdPartyPlugin: Solid Backups (BackupBuddy)
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Solid Backups"
+  data-purchase-url="https://mainwp.com/extension/mainwpbuddy/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-mainwpbuddy-extension/"
+  data-integrates-with="Solid Backups"
+  data-owned-by="Liquid Web, LLC"
+  data-privacy-url="https://www.liquidweb.com/about-us/policies/privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Installing the extension and BackupBuddy plugin
+- Managing backup settings globally and per-site
+- Creating backups and backup schedules
+- Managing remote storage destinations
+- Downloading and restoring backup files
+
+---
+
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Solid Backups (formerly BackupBuddy). Requires Solid Backups to be installed on your child sites.
+</Info>
+
+With the MainWP Solid Backups Extension (formerly Buddy Extension), you can control the [Solid Backups plugin](https://solidwp.com/solid-backups/) (formerly BackupBuddy) on all your child sites directly from your MainWP Dashboard.
+
+<Note>
+This extension was previously known as "MainWP Buddy Extension" when it integrated with BackupBuddy. After iThemes was acquired by StellarWP, BackupBuddy was rebranded to Solid Backups. The functionality remains the same.
+</Note>
+
+This includes giving you the ability to create your child site backups and even set Backup schedules directly from your MainWP Dashboard. **Important Notes:** The MainWP Buddy Extension requires an active BackupBuddy subscription which can be purchased from StellarWP MainWP Buddy Extension does not support the auto restore feature for the BackupBuddy backups. Backups created by the BackupBuddy plugin can be restored only manually. If you need to restore your site from a BackupBuddy backup, please check the Solid Backups documentation. Backups created by the BackupBuddy plugin are not suitable for the MainWP Cloning and MainWP Auto Restore feature. MainWP Buddy Extension requires the BackupBuddy plugin installed and activated on your child sites.
+
+## Install and Set the MainWP Buddy Extension
+
+Installation of the MainWP Buddy Extension requires two important steps:
+
+-   Installing the Extension itself on your MainWP Dashboard site
+-   Installing the BackupBuddy plugin on Child Sites
+
+### Installing the Extension
+
+The MainWP Buddy Extension needs to be installed only on your MainWP Dashboard site. You can [install it as any other MainWP Extension.](/dashboard/overview/manage-extensions#install-extensions)
+
+### Installing the Plugin
+
+For the proper use of the MainWP Buddy Extension, you need to install the BackupBuddy Plugin on your child sites.
+
+### Install from MainWP Dashboard
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Plugins > Install > Upload page">
+</Step>
+<Step title="Click the Upload Now button">
+</Step>
+<Step title="Upload the BackupBuddy plugin">
+</Step>
+<Step title="Select your child sites">
+[Select your child](/getting-started/mainwp-user-interface) sites
+</Step>
+<Step title="In the Installation Options box, make sure that the Activate after installation option is selected">
+In the **Installation Options** box, make sure that the **Activate after installation option** is selected
+</Step>
+<Step title="Click the button to complete the installation">
+</Step>
+<Step title="Once the installation is complete, Sync your MainWP Dashboard">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins from the MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
+
+### Install directly on the Child Site
+
+<Steps>
+<Step title="Login into your child site">
+</Step>
+<Step title="Go to the WP > Plugins > Add New page">
+</Step>
+<Step title="Click the Upload Plugin button">
+</Step>
+<Step title="Upload the BackupBuddy plugin">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Click the Activate button">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins, please review this [help document.](https://wordpress.org/documentation/article/manage-plugins/) After installing the BackupBuddy plugin, it is required to Synchronize your sites, so your MainWP Dashboard becomes aware that the plugin has been installed and activated.
+
+## BackupBuddy Dashboard
+
+From the **MainWP > Extensions > MainWP Buddy > Overview page****,** you can monitor all of your child sites where you have the BackupBuddy plugin installed. In the sites list, you will be notified if the plugin has an update available or if the plugin is deactivated.
+
+-   In case the plugin is not activated, the **Activate** action will appear in the corresponding site row
+-   In case there is a new version of the plugin, the **Update** action will appear in the corresponding site row
+
+### Available Actions
+
+From the **MainWP > Extensions > BackupBuddy > Overview page****,** you can **hide/unhide** the BackupBuddy plugin on your child sites, and quickly **access** the plugin settings on a child site or the WP Admin section. Actions are provided in the actions menu. If you know that you have the plugin installed on a child site, but the child site doesn't appear in the list, try to re-sync your sites.
+
+## Manage BackupBuddy Settings
+
+The MainWP Buddy Extension allows you to manage BackupBuddy plugin settings. It provides you the ability to manage the following settings:
+
+-   General
+    -   ImportBuddy
+    -   Email Notifications
+    -   Local Archive Storage Limits
+    -   Database Defaults
+    -   File and Directory Defaults
+-   Advanced & Troubleshooting
+    -   Basic Operation
+    -   Logging
+    -   Technical & Server Compatibility
+    -   Database
+    -   Zip
+-   Housekeeping Tools
+-   Licensing
+
+### Update BackupBuddy Settings on All Your Sites
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > MainWP Buddy > Settings page">
+</Step>
+<Step title="Set your preferences">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+### Update BackupBuddy Settings on a Single Site
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site where you want to update the settings">
+</Step>
+<Step title="Under the Actions menu, click the Edit action">
+</Step>
+<Step title="Go to the MainWP Buddy Page">
+</Step>
+<Step title="Click the Settings tab">
+</Step>
+<Step title="Set the Overwrite General Settings option to YES and click the Save Changes button">
+Set the **Overwrite General Settings** option to **YES** and click the **Save Changes** button
+</Step>
+<Step title="Set your preferences">
+</Step>
+<Step title="Click the Save Changes button at the bottom of the page">
+</Step>
+</Steps>
+
+
+## Manage BackupBuddy Backups
+
+The MainWP Buddy Extension allows you to manage the BackupBuddy plugin backups directly from your MainWP Dashboard. It will allow you to:
+
+-   Backup Schedules
+-   Create Backups
+-   Manage Backup Files
+
+### Remote Storage
+
+The extension allows you to manage Remote Storage options, including:
+
+-   BackupBuddy Stash
+-   BackupBuddy Deployment
+-   Amazon S3
+-   Dropbox
+-   Email
+-   FTP
+-   Google Drive
+-   Local Directory
+-   Rackspace
+-   sFTP
+
+**Note**: Due to security reasons imposed by the providers of remote storage options, some of them may need to be authenticated on the child site itself. After that initial authentication, the rest of the setup can be performed via the MainWP Dashboard.
+
+## Backup Your Child Sites With BackupBuddy
+
+### Backup Multiple Child Sites with BackupBuddy
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Buddy page">
+</Step>
+<Step title="Click the Backup button">
+![Click the Backup button](/images/add-ons/solid-backups-backup-button.jpg)
+</Step>
+<Step title="Select the Child Sites that you want to backup">
+[Select the Child Sites](/getting-started/mainwp-user-interface) that you want to backup
+</Step>
+<Step title="Choose a backup type (or any custom-made backup profile) and click the appropriate button">
+Choose a backup type (or any custom-made backup profile) and click the appropriate button
+</Step>
+</Steps>
+
+
+### Backup a Single Site with BackupBuddy
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site that you want to backup">
+</Step>
+<Step title="In the actions menu, click the Edit action">
+</Step>
+<Step title="Go to the Buddy Page">
+</Step>
+<Step title="Click the Backup button">
+</Step>
+<Step title="Set the Overwrite General Settings option to YES and click the Save Changes button">
+Set the **Overwrite General Settings** option to **YES** and click the **Save Changes** button
+</Step>
+<Step title="Choose if you want a Database or a Complete Backup (or any custom-made backup profile) and click the appropriate button">
+Choose if you want a **Database** or a **Complete Backup** (or any custom-made backup profile) and click the appropriate button
+</Step>
+</Steps>
+
+
+## Create Backup Schedule
+
+### Create a Backup Schedule on Multiple Sites
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Buddy page">
+</Step>
+<Step title="Click the Schedules button">
+![Click the Schedules button](/images/add-ons/solid-backups-schedules-button.jpg)
+</Step>
+<Step title="Locate the Add New Schedule section">
+Locate the **Add New Schedule** section
+    1.  Add a **Schedule name** _(for your use only)_
+    2.  Select **a Backup profile** _(database, complete backup, or any custom-made profile)_
+    3.  Select **Backup interval** _(time period between backups)_
+    4.  Set the **Date and Time** of the next (first) run
+    5.  Optionally, set a Remote destination **Note**: Due to security reasons imposed by the providers of remote storage options, some of them may need to be authenticated or configured initially on the child site itself.
+    6.  Select if you want to delete a local backup after successful upload to a remote destination
+    7.  Enable the Schedule
+</Step>
+<Step title="Select the Child Sites that you want to backup">
+[Select the Child Sites](/getting-started/mainwp-user-interface) that you want to backup
+</Step>
+<Step title="Click the Add New Schedule button">
+</Step>
+</Steps>
+
+
+### Create a Backup Schedule on a single Site
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site that you want to backup">
+</Step>
+<Step title="In the actions menu, click the Edit action">
+</Step>
+<Step title="Go to the MainWP Buddy Page">
+</Step>
+<Step title="Click the Schedules button">
+</Step>
+<Step title="Set the Overwrite General Settings option to YES and click the Save Changes button">
+Set the **Overwrite General Settings** option to **YES** and click the **Save Changes** button
+</Step>
+<Step title="Locate the Add New Schedule options box">
+Locate the **Add New Schedule** options box
+    1.  Add a **Schedule name** _(for your use only)_
+    2.  Select **a Backup profile** _(database, complete backup, or any custom-made profile)_
+    3.  Select **Backup interval** _(time period between backups)_
+    4.  Set the **Date and Time** of the next (first) run
+    5.  Optionally, set a Remote destination **Note**: Due to security reasons imposed by the providers of remote storage options, some of them may need to be authenticated or configured initially on the child site itself.
+    6.  Select if you want to delete a local backup after successful upload to a remote destination
+    7.  Enable the Schedule
+    8.  Click the **Add New Schedule** button
+</Step>
+</Steps>
+
+
+**Note**: Due to security reasons imposed by the providers of remote storage options, some of them may need to be authenticated on the child site itself. After that initial authentication, the rest of the setup can be performed via the MainWP Dashboard.
+
+## Edit BackupBuddy Schedules
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Buddy page">
+</Step>
+<Step title="Click the Schedules button">
+</Step>
+<Step title="Locate the schedule that you want to edit">
+</Step>
+<Step title="Click the Edit Schedule action">
+</Step>
+<Step title="Edit Schedule Options box will be loaded with your settings">
+</Step>
+<Step title="Update your settings">
+</Step>
+<Step title="Update your Child Sites selection">
+</Step>
+<Step title="Click the Save Schedule button">
+</Step>
+</Steps>
+
+
+When editing a schedule created for a Single Site, Site selection is not available, since it's an individual site schedule. When editing a global schedule, you can Update sites selection. This means the following:
+
+-   If you unselect a child site, the schedule will be deleted from it
+-   If you select a new site, the schedule will be added to the site
+
+## Run BackupBuddy Schedules
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Buddy page">
+</Step>
+<Step title="Click the Schedules button">
+</Step>
+<Step title="Locate the schedule that you want to edit">
+</Step>
+<Step title="Click the Edit Schedule action">
+</Step>
+</Steps>
+
+
+## Manage BackupBuddy Backup Files
+
+MainWP Buddy extension allows you to manage your backup files directly from your MainWP Dashboard. It gives you the ability to:
+
+-   Download your backup files
+-   Send Backup files to remote locations
+-   Browse & Restore files
+
+### Download Backup Files
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site that you want to backup">
+</Step>
+<Step title="In the actions menu, click the Edit action">
+</Step>
+<Step title="Go to the MainWP Buddy Page">
+</Step>
+<Step title="Click the Backup button">
+</Step>
+<Step title="Locate the backup that you want to download">
+</Step>
+<Step title="Click the Download action">
+![Click the Download action](/images/add-ons/solid-backups-download-action.jpg)
+</Step>
+</Steps>
+
+
+### Send files
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site that you want to backup">
+</Step>
+<Step title="In the actions menu, click the Edit action">
+</Step>
+<Step title="Go to the Buddy Page">
+</Step>
+<Step title="Click the Backup button">
+</Step>
+<Step title="Locate the backup that you want to send">
+</Step>
+<Step title="Click the Send action">
+</Step>
+<Step title="Remote locations options will appear, set the wanted location and upload will start">
+Remote locations options will appear, set the wanted location and upload will start
+</Step>
+</Steps>
+
+
+### Browse & Restore Files
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage page">
+</Step>
+<Step title="Locate the site that you want to backup">
+</Step>
+<Step title="In the actions menu, click the Edit action">
+</Step>
+<Step title="Go to the Buddy Page">
+</Step>
+<Step title="Click the Backup button">
+</Step>
+<Step title="Locate the backup that you want to browse or restore">
+</Step>
+<Step title="Click the Browse & Restore files action">
+</Step>
+<Step title="A list of files will appear">
+</Step>
+<Step title="Select files that you want to restore and push the Restore button.">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
+- [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
+- [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp) - Installing plugins on child sites

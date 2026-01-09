@@ -1,0 +1,155 @@
+---
+title: How to customize MainWP Dashboard logo
+sidebarTitle: "Customize Dashboard Logo"
+description: >-
+  Customize the MainWP Dashboard logo using PHP code snippets in the free Custom
+  Dashboard extension. Change the logo image, URL, and alt text for your branding.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/TFkPWUsgf9w"
+  title="How to customize MainWP Dashboard logo - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Customize your MainWP Dashboard logo using PHP code snippets in the free Custom Dashboard extension. You can change the logo image, the URL it links to, and its alt text.
+
+## What You'll Learn
+
+- Replace the default MainWP logo with your own
+- Change where the logo links to
+- Update the logo alt text for accessibility
+
+## Prerequisites
+
+- MainWP Dashboard installed
+- [Custom Dashboard extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) installed (free)
+- A logo image (recommended size: 168x35 pixels)
+
+---
+
+## Available Hooks
+
+These hooks let you customize different aspects of the logo:
+
+| Hook | Purpose |
+|------|---------|
+| [mainwp_menu_logo_src](https://mainwp.dev/hooks/mainwp_menu_logo_src/) | Change the logo image |
+| [mainwp_menu_logo_href](https://mainwp.dev/hooks/mainwp_menu_logo_href/) | Change where the logo links to |
+| [mainwp_menu_logo_alt](https://mainwp.dev/hooks/mainwp_menu_logo_alt/) | Change the alt text |
+
+---
+
+## Change the Logo Image
+
+<Steps>
+<Step title="Install the Custom Dashboard extension">
+[Install](/dashboard/overview/manage-extensions#install-extensions) the [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension.
+</Step>
+<Step title="Upload your logo">
+Upload a 168x35px image to your WordPress Media Library or via FTP to your Dashboard site.
+</Step>
+<Step title="Add the code snippet">
+Navigate to the Custom Dashboard extension and add this snippet to the **PHP** tab:
+
+```php
+add_filter( 'mainwp_menu_logo_src', 'mainwp_custom_logo' );
+function mainwp_custom_logo() {
+    return '/wp-content/uploads/logo.png';
+}
+```
+
+![Custom Dashboard extension PHP tab with logo source code](/images/developers/custom-logo-step1.png)
+</Step>
+<Step title="Update the image path">
+Change `/wp-content/uploads/logo.png` to your actual image location.
+
+<Note>
+To verify the path works, temporarily use a full URL like `https://your-dashboard.com/wp-content/uploads/logo.png`. Once confirmed, switch back to the relative path.
+</Note>
+</Step>
+<Step title="Save changes">
+Click **Save Changes**. The new logo appears immediately.
+</Step>
+</Steps>
+
+---
+
+## Change the Logo Link URL
+
+By default, the logo links to the MainWP Overview page. You can change this destination.
+
+<Steps>
+<Step title="Open Custom Dashboard">
+Navigate to the Custom Dashboard extension's **PHP** tab.
+</Step>
+<Step title="Add the code snippet">
+Add this snippet:
+
+```php
+add_filter( 'mainwp_menu_logo_href', 'change_logo_url' );
+function change_logo_url() {
+    return 'admin.php?page=managesites';
+}
+```
+
+![Custom Dashboard extension PHP tab with logo URL code](/images/developers/custom-logo-result.png)
+</Step>
+<Step title="Update the URL">
+Change `admin.php?page=managesites` to your desired destination page.
+</Step>
+<Step title="Save changes">
+Click **Save Changes**.
+</Step>
+</Steps>
+
+---
+
+## Change the Logo Alt Text
+
+Update the alt text for accessibility and SEO.
+
+<Steps>
+<Step title="Open Custom Dashboard">
+Navigate to the Custom Dashboard extension's **PHP** tab.
+</Step>
+<Step title="Add the code snippet">
+Add this snippet:
+
+```php
+add_filter( 'mainwp_menu_logo_alt', 'change_logo_alt_text' );
+function change_logo_alt_text() {
+    return 'Your Company Name Dashboard';
+}
+```
+
+![Custom Dashboard extension PHP tab with logo alt text code](/images/developers/custom-logo-step2.png)
+</Step>
+<Step title="Update the alt text">
+Change `Your Company Name Dashboard` to your desired alt text.
+</Step>
+<Step title="Save changes">
+Click **Save Changes**.
+</Step>
+</Steps>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Custom Dashboard extension installed and active
+- [ ] Logo image uploaded to Dashboard site
+- [ ] Code snippet added with correct path
+- [ ] Changes saved
+- [ ] New logo displaying correctly
+
+---
+
+## Related Resources
+
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Full extension documentation
+- [Change Dashboard Theme](/customization/how-to-change-the-theme-for-mainwp) - Switch visual themes
+- [White Label Extension](/add-ons/agency/white-label-extension) - Complete branding solution

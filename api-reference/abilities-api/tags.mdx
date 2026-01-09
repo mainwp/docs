@@ -1,0 +1,307 @@
+---
+title: Tags Abilities
+sidebarTitle: "Tags"
+description: >-
+  7 abilities for managing MainWP tags (groups) used to organize child sites.
+---
+
+MainWP registers 7 tag management abilities into the WordPress Abilities API framework. Tags (also called groups) help organize sites for filtering and batch operations.
+
+## What You'll Learn
+
+- Listing, filtering, and retrieving tag information
+- Creating, updating, and deleting tags
+- Retrieving sites and clients associated with tags
+
+---
+
+## mainwp/list-tags-v1
+
+List MainWP tags with pagination and filtering.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-tags-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 20 | Items per page (max 100) |
+| `search` | string | No | "" | Search term |
+| `include` | array | No | [] | Tag IDs to include |
+| `exclude` | array | No | [] | Tag IDs to exclude |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Production",
+      "color": "#3498db",
+      "sites_count": 25
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 10
+}
+```
+
+---
+
+## mainwp/get-tag-v1
+
+Get detailed information about a single tag.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tag_id` | integer | Yes | — | Tag ID |
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "name": "Production",
+  "color": "#3498db",
+  "sites_count": 25,
+  "created_at": "2023-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}
+```
+
+---
+
+## mainwp/add-tag-v1
+
+Create a new tag.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"name":"Staging","color":"#e74c3c"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/add-tag-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | string | Yes | — | Tag name |
+| `color` | string | No | — | Hex color code (e.g., `#3498db`) |
+
+**Response:**
+
+```json
+{
+  "id": 5,
+  "name": "Staging",
+  "color": "#e74c3c",
+  "sites_count": 0,
+  "created_at": "2024-01-15T10:00:00Z"
+}
+```
+
+---
+
+## mainwp/update-tag-v1
+
+Update an existing tag.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1,"name":"Production Sites","color":"#27ae60"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-tag-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tag_id` | integer | Yes | — | Tag ID |
+| `name` | string | No | — | Tag name |
+| `color` | string | No | — | Hex color code |
+
+**Response:**
+
+Returns the updated tag object.
+
+---
+
+## mainwp/delete-tag-v1
+
+Delete a tag. This is a destructive operation that requires confirmation.
+
+**Method:** POST
+
+```bash
+# Dry run to preview
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1,"dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-tag-v1/run'
+
+# Actual deletion
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-tag-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tag_id` | integer | Yes | — | Tag ID |
+| `confirm` | boolean | Conditional | — | Required and must be `true` unless `dry_run` is `true` |
+| `dry_run` | boolean | No | false | Preview without deleting |
+
+**Response:**
+
+```json
+{
+  "deleted": true,
+  "tag_id": 1,
+  "tag_name": "Production"
+}
+```
+
+**Dry run response:**
+
+```json
+{
+  "dry_run": true,
+  "tag_id": 1,
+  "tag_name": "Production",
+  "sites_affected": 25
+}
+```
+
+---
+
+## mainwp/get-tag-sites-v1
+
+Get sites associated with a tag.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tag_id` | integer | Yes | — | Tag ID |
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 20 | Items per page |
+
+**Response:**
+
+```json
+{
+  "tag_id": 1,
+  "tag_name": "Production",
+  "sites": [
+    {
+      "id": 1,
+      "url": "https://site1.example.com",
+      "name": "Site 1",
+      "status": "connected"
+    },
+    {
+      "id": 2,
+      "url": "https://site2.example.com",
+      "name": "Site 2",
+      "status": "connected"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 25
+}
+```
+
+---
+
+## mainwp/get-tag-clients-v1
+
+Get clients associated with a tag (clients whose sites have this tag).
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"tag_id":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-clients-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `tag_id` | integer | Yes | — | Tag ID |
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 20 | Items per page |
+
+**Response:**
+
+```json
+{
+  "tag_id": 1,
+  "tag_name": "Production",
+  "clients": [
+    {
+      "id": 1,
+      "name": "Acme Corp",
+      "email": "contact@acme.com",
+      "sites_with_tag": 3
+    },
+    {
+      "id": 2,
+      "name": "Beta Inc",
+      "email": "info@beta.com",
+      "sites_with_tag": 2
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 5
+}
+```
+
+---
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - API basics and authentication
+- [Sites Abilities](/api-reference/abilities-api/sites) - Site management abilities
+- [REST API Tags](/api-reference/rest-api/tags) - REST API alternative for tags

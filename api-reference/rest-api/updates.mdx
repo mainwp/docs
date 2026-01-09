@@ -1,0 +1,453 @@
+---
+title: Updates Endpoints
+sidebarTitle: "Updates"
+description: >-
+  13 REST API endpoints for checking and applying updates across MainWP child sites.
+---
+
+Manage WordPress core, plugin, theme, and translation updates across your sites.
+
+## What You'll Learn
+
+- Checking available updates across sites
+- Applying WordPress, plugin, theme, and translation updates
+- Managing ignored updates
+
+---
+
+## GET /updates/
+
+Returns available updates across all child sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/?type=plugins"
+```
+
+### Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `search` | string | No | — | Search in update names |
+| `include` | string | No | — | Only include these site IDs |
+| `exclude` | string | No | — | Exclude these site IDs |
+| `type` | string | No | all | Filter: wp, plugins, themes, translations |
+
+### Response
+
+```json
+{
+  "total_updates": 15,
+  "sites": [
+    {
+      "id": 1,
+      "url": "https://example.com",
+      "wp_update": true,
+      "plugin_updates": 3,
+      "theme_updates": 1,
+      "translation_updates": 2
+    }
+  ]
+}
+```
+
+---
+
+## GET /updates/{site}
+
+Returns available updates for a specific child site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `search` | string | No | Search in update names |
+| `type` | string | No | Filter: wp, plugins, themes, translations |
+
+### Response
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://example.com",
+  "updates": {
+    "wp": {
+      "current": "6.4.2",
+      "new": "6.4.3"
+    },
+    "plugins": [
+      {
+        "slug": "akismet/akismet.php",
+        "name": "Akismet",
+        "current_version": "5.3",
+        "new_version": "5.3.1"
+      }
+    ],
+    "themes": [],
+    "translations": []
+  }
+}
+```
+
+---
+
+## POST /updates/update/
+
+Triggers updates for all sites. Responds immediately; updates run in the background.
+
+**Method:** POST
+
+<Warning>
+This action applies updates across all sites. Ensure you have recent backups before proceeding.
+</Warning>
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/update/?type=plugins"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | No | Limit to: wp, plugins, themes, translations |
+
+### Response
+
+```json
+{
+  "success": 1,
+  "message": "Batch updates all started successfully.",
+  "last_time_start_batch_updates": "2024-01-15T10:30:00"
+}
+```
+
+---
+
+## POST /updates/{site}/update/wp
+
+Updates WordPress core on a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/update/wp"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "old_version": "6.4.2",
+  "new_version": "6.4.3",
+  "message": "WordPress updated successfully"
+}
+```
+
+---
+
+## POST /updates/{site}/update/plugins
+
+Updates plugins on a single site.
+
+**Method:** POST
+
+```bash
+# Update all plugins
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/update/plugins"
+
+# Update specific plugin
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/update/plugins?slug=akismet/akismet.php"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `slug` | string | No | Specific plugin slug to update; omit for all |
+
+### Response
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "updated": ["akismet/akismet.php", "jetpack/jetpack.php"],
+  "failed": [],
+  "message": "Plugins updated successfully"
+}
+```
+
+---
+
+## POST /updates/{site}/update/themes
+
+Updates themes on a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/update/themes"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `slug` | string | No | Specific theme slug to update; omit for all |
+
+### Response
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "updated": ["twentytwentyfour"],
+  "failed": [],
+  "message": "Themes updated successfully"
+}
+```
+
+---
+
+## POST /updates/{site}/update/translations
+
+Updates translations on a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/update/translations"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "updated_count": 3,
+  "message": "Translations updated successfully"
+}
+```
+
+---
+
+## GET /updates/ignored/plugins
+
+Returns globally ignored plugin updates.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/ignored/plugins"
+```
+
+### Response
+
+```json
+{
+  "ignored_plugins": [
+    {
+      "slug": "custom-plugin/custom-plugin.php",
+      "name": "Custom Plugin",
+      "ignored_at": "2024-01-01T00:00:00"
+    }
+  ]
+}
+```
+
+---
+
+## GET /updates/ignored/themes
+
+Returns globally ignored theme updates.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/ignored/themes"
+```
+
+### Response
+
+```json
+{
+  "ignored_themes": [
+    {
+      "slug": "custom-theme",
+      "name": "Custom Theme",
+      "ignored_at": "2024-01-01T00:00:00"
+    }
+  ]
+}
+```
+
+---
+
+## POST /updates/ignore
+
+Ignores updates for specified plugins or themes.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"type": "plugin", "slug": "custom-plugin/custom-plugin.php"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/ignore"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | Yes | plugin or theme |
+| `slug` | string | Yes | Plugin or theme slug |
+| `site_id` | integer | No | Ignore only for specific site |
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Updates ignored for custom-plugin/custom-plugin.php"
+}
+```
+
+---
+
+## POST /updates/unignore
+
+Removes updates from the ignore list.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"type": "plugin", "slug": "custom-plugin/custom-plugin.php"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/unignore"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | Yes | plugin or theme |
+| `slug` | string | Yes | Plugin or theme slug |
+| `site_id` | integer | No | Unignore only for specific site |
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Updates unignored for custom-plugin/custom-plugin.php"
+}
+```
+
+---
+
+## GET /updates/{site}/ignored/plugins
+
+Returns ignored plugin updates for a specific site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/ignored/plugins"
+```
+
+### Response
+
+```json
+{
+  "site_id": 1,
+  "ignored_plugins": [
+    {
+      "slug": "custom-plugin/custom-plugin.php",
+      "name": "Custom Plugin",
+      "ignored_at": "2024-01-01T00:00:00"
+    }
+  ]
+}
+```
+
+---
+
+## GET /updates/{site}/ignored/themes
+
+Returns ignored theme updates for a specific site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/updates/1/ignored/themes"
+```
+
+### Response
+
+```json
+{
+  "site_id": 1,
+  "ignored_themes": [
+    {
+      "slug": "custom-theme",
+      "name": "Custom Theme",
+      "ignored_at": "2024-01-01T00:00:00"
+    }
+  ]
+}
+```
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management
+- [Manage Updates](/sites/updates/manage-updates) - Update management in Dashboard

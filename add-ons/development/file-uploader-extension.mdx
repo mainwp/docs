@@ -1,0 +1,141 @@
+---
+title: File Uploader
+sidebarTitle: "File Uploader"
+description: >-
+  The MainWP File Uploader Extension makes it super easy to upload multiple
+  files to all your Child Sites from one place without the hassle of logging
+  into each site's cPanel or FTP individually.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Uploading files to multiple child sites simultaneously
+- Setting upload paths and destinations
+- Supported file types list
+- Adding support for custom file types
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="File Uploader"
+  data-purchase-url="https://mainwp.com/extension/file-uploader/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-file-uploader-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/--yNfRNTGl4"
+  title="File Uploader add-on - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> The [MainWP File Uploader Add-on](https://mainwp.com/extension/file-uploader/) is a simple way to upload files to your child sites from one centralized location. It gives you the ability to upload multiple files to all of your child sites simultaneously.
+
+## Upload Files to Child Sites
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-on > File Uploader page">
+</Step>
+<Step title="Click the Choose File button and upload the wanted file (alternatively, drag&drop files to the marked area)">
+Click the **Choose File** button and upload the wanted file _(alternatively, drag&drop files to the marked area) ![File Uploader page with Choose File button and drag-drop area](/images/add-ons/file-uploader-choose-file.png)_
+</Step>
+<Step title="Set the upload path">
+Set the path where you want to upload your file(s).
+
+**NOTE:** If a directory does not exist on the child site, it will be created.
+
+![Animation showing how to set the upload path for files](/images/add-ons/file-uploader-set-path.gif)
+</Step>
+<Step title="Select Child Sites where you want to upload file(s)">
+[Select Child Sites](/getting-started/mainwp-user-interface) where you want to upload file(s)
+</Step>
+<Step title="Click the Upload File button">
+</Step>
+</Steps>
+
+
+The file that already exists with the same name in the same directory **will be overwritten.** If you use space in the folder or file names, the add-on will insert the "-" symbol to have a functional file path! For example: **../folder name/…** or .**./file name.png** will be tweaked to **../folder-name/…** or **../file-name.png**
+
+## Supported File Types
+
+-   .php
+-   .css
+-   .xml
+-   .js
+-   .txt
+-   .zip
+-   .rar
+-   .ico
+-   .html
+-   .po
+-   .mo
+-   .jpg
+-   .jpeg
+-   .png
+-   .bmp
+-   .gif
+-   .pdf
+-   .doc, .docx
+-   .ppt, .pptx, .pps, .ppsx
+-   .odt
+-   .xls, .xlsx
+-   .mp3
+-   .m4a
+-   .ogg
+-   .wav
+-   .mp4, .m4v
+-   .mov
+-   .wmv
+-   .avi
+-   .mpg
+-   .ogv
+-   .3gp
+-   .3g2
+
+## Add Support for a Custom File Type in File Uploader
+
+By default, the MainWP File Uploader Add-on doesn't support all file types. By using the `mainwp_file_uploader_allowed_file_types` filter, it is possible to add support for any file type. In this example, we will show how to add support for the JSON file type:
+
+<Steps>
+<Step title="Install and activate the MainWP Custom Dashboard Add-on">
+Install and activate the [MainWP Custom Dashboard Add-on](https://mainwp.com/extension/mainwp-custom-dashboard-extension/)
+</Step>
+<Step title="Go to the PHP section (MainWP > Add-on > Custom Dashboard > PHP)">
+</Step>
+<Step title="Paste the following code snippet and Save Chagnes:">
+</Step>
+</Steps>
+
+
+```php
+add_filter('mainwp_file_uploader_allowed_file_types', 'mycustom_mainwp_file_uploader_allowed_file_types');
+function mycustom_mainwp_file_uploader_allowed_file_types( $types ) {
+   $types[] = 'json';
+   return $types;
+}
+
+```
+MainWP is not responsible for the files that you upload to your sites. The File Uploader Add-on doesn't allow uploading the .**htaccess** file. This Add-on upload files directly to your server, so treat it with the same care you would when uploading a file via FTP. Not all web hosts permit all file types to be uploaded. Also, they may not allow large file uploads. If you are having issues, please check with your host first. If you are having issues with uploading files, be sure to check that you are trying to upload a supported file type and that the file size is not over the limit declared by **PHP Max Upload Filesize** and **PHP Post Max Size** on your MainWP Dashboard server.
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Add custom snippets
+- [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - PHP configuration settings

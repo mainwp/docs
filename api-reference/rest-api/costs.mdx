@@ -1,0 +1,199 @@
+---
+title: Costs Endpoints
+sidebarTitle: "Costs"
+description: >-
+  4 REST API endpoints for managing cost tracking entries in MainWP.
+---
+
+Track costs associated with your managed sites.
+
+<Note>
+Requires the [Cost Tracker Extension](https://mainwp.com/extension/cost-tracker/) to be installed and active.
+</Note>
+
+## What You'll Learn
+
+- Listing and filtering cost entries
+- Creating and updating cost records
+- Associating costs with sites
+
+---
+
+## GET /costs
+
+Returns all cost entries with pagination support.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/costs"
+```
+
+### Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 10 | Items per page |
+| `search` | string | No | — | Search in cost name |
+| `include` | string | No | — | Comma-separated cost IDs to include |
+| `exclude` | string | No | — | Comma-separated cost IDs to exclude |
+| `status` | string | No | — | Filter by status |
+| `category` | string | No | — | Filter by category |
+| `type` | string | No | — | Filter by type |
+
+### Response
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Hosting - Example Site",
+    "type": "subscription",
+    "category": "hosting",
+    "amount": 29.99,
+    "currency": "USD",
+    "renewal_type": "monthly",
+    "next_renewal": "2024-02-01",
+    "sites": [1, 2],
+    "created_at": "2024-01-01T00:00:00"
+  }
+]
+```
+
+---
+
+## GET /costs/{cost}
+
+Returns details about a specific cost entry.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/costs/1"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `cost` | integer | Yes | Cost ID |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "name": "Hosting - Example Site",
+  "type": "subscription",
+  "category": "hosting",
+  "amount": 29.99,
+  "currency": "USD",
+  "renewal_type": "monthly",
+  "next_renewal": "2024-02-01",
+  "notes": "Annual hosting package",
+  "sites": [
+    {"id": 1, "url": "https://example.com", "name": "Example Site"}
+  ],
+  "payment_history": [
+    {
+      "date": "2024-01-01",
+      "amount": 29.99,
+      "status": "paid"
+    }
+  ],
+  "created_at": "2024-01-01T00:00:00"
+}
+```
+
+---
+
+## PUT /costs/add
+
+Creates a new cost entry.
+
+**Method:** PUT
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Hosting Fee", "amount": 29.99, "type": "subscription"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/costs/add"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | string | Yes | Cost name/description |
+| `amount` | number | No | Cost amount |
+| `currency` | string | No | Currency code (default: USD) |
+| `type` | string | No | one-time, subscription |
+| `category` | string | No | hosting, plugin, theme, service, other |
+| `renewal_type` | string | No | monthly, yearly, quarterly |
+| `next_renewal` | string | No | Next renewal date (Y-m-d) |
+| `sites` | string | No | Comma-separated site IDs to associate |
+| `notes` | string | No | Internal notes |
+
+### Response
+
+```json
+{
+  "id": 5,
+  "name": "Hosting Fee",
+  "amount": 29.99,
+  "message": "Cost created successfully"
+}
+```
+
+---
+
+## PUT /costs/{cost}/edit
+
+Updates an existing cost entry.
+
+**Method:** PUT
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/costs/1/edit?name=Updated%20Cost&amount=39.99"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `cost` | integer | Yes | Cost ID |
+| `name` | string | No | Updated name |
+| `amount` | number | No | Updated amount |
+| `currency` | string | No | Updated currency |
+| `type` | string | No | Updated type |
+| `category` | string | No | Updated category |
+| `renewal_type` | string | No | Updated renewal type |
+| `next_renewal` | string | No | Updated next renewal date |
+| `sites` | string | No | Updated comma-separated site IDs |
+| `notes` | string | No | Updated notes |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "name": "Updated Cost",
+  "amount": 39.99,
+  "message": "Cost updated successfully"
+}
+```
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [Cost Tracker Extension](/add-ons/client/cost-tracker-extension) - Extension documentation
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management
+

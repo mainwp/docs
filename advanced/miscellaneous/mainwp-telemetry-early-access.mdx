@@ -1,0 +1,165 @@
+---
+title: MainWP Telemetry (Early Access)
+sidebarTitle: "Telemetry"
+description: >-
+  MainWP v6 Early Access releases include a limited telemetry system to help
+  improve stability and catch issues before stable release.
+---
+
+MainWP v6 Early Access releases include a limited telemetry system to help understand how MainWP is used in real environments and where things may be breaking or causing friction.
+
+This page explains what telemetry is used for, when it is active, what data is collected, and what data is explicitly not collected.
+
+## What You'll Learn
+
+- When telemetry is active (Early Access only)
+- What data is collected and how it's used
+- What data is never collected
+- How to disable telemetry
+
+---
+
+## When Telemetry Is Active
+
+Telemetry is only active in the following cases:
+
+- MainWP v6 prerelease builds
+- The Early Access extension
+
+<Note>
+Telemetry is not used in stable releases. If you are not running an Early Access build, no telemetry data is sent.
+</Note>
+
+---
+
+## Why We Collect Telemetry
+
+The goal of telemetry in Early Access is to help us:
+
+- Understand which environments MainWP is running in
+- See how features are being used at a high level
+- Identify common errors, failures, and edge cases
+- Improve defaults and stability before features reach stable release
+
+This data helps catch issues earlier and prioritize fixes based on real usage.
+
+---
+
+## Telemetry Platform
+
+We use PostHog to collect and store telemetry data.
+
+All telemetry is sent server-side from your MainWP Dashboard. If PostHog is unavailable for any reason, telemetry silently fails and does not affect MainWP functionality.
+
+---
+
+## Disabling Telemetry
+
+Telemetry is designed to be easy to disable.
+
+When telemetry is disabled:
+
+- No events are sent
+- No background requests are made
+- MainWP behavior is unchanged
+
+MainWP can also disable telemetry globally on our side if needed.
+
+---
+
+## Anonymous Tracking
+
+All telemetry is tied to a single anonymous identifier per MainWP installation.
+
+This identifier:
+
+- Is generated locally
+- Does not include domain names or URLs
+- Does not include user or site information
+- Is not shared across installations
+
+It allows us to understand trends over time without identifying you or your sites.
+
+---
+
+## What Data Is Collected
+
+Telemetry focuses on aggregated statistics, configuration snapshots, and sanitized error information. It does not include content or identifying data.
+
+| Category | Examples |
+|----------|----------|
+| Version information | MainWP version, WordPress version, PHP version, database version, locale, multisite status |
+| Counts and usage totals | Number of connected sites, disconnected sites, installed add-ons, active add-ons |
+| Feature configuration | High-level settings, whether features are enabled or disabled |
+| Action outcomes | Attempts to add a child site, sync a site, or run updates, along with success or failure status |
+| Error categories | Timeouts, authentication failures, SSL issues, HTTP errors |
+| PHP error summaries | Daily summaries of notices, warnings, and fatal errors caused by MainWP (without full logs) |
+
+All collected values are counts, booleans, enums, or short sanitized strings.
+
+---
+
+## What Is Not Collected
+
+We want to be very clear about what we do not collect.
+
+Telemetry never includes:
+
+- Domain names or site URLs
+- IP addresses
+- Email addresses
+- Usernames
+- Site titles
+- Client names or client details
+- Plugin or theme names being updated
+- Content from posts, pages, or databases
+- Full PHP logs or server paths
+- Any personal or customer-identifying data
+
+We do not collect PII or P2 data.
+
+---
+
+## Error Data Handling
+
+Some telemetry events include error-related information to help debug problems.
+
+When error data is sent:
+
+- Messages are sanitized before sending
+- URLs, emails, usernames, and other sensitive values are removed or masked
+- File paths are reduced to paths relative to the plugin, not full server paths
+- Only short summaries are included, not full stack traces or log files
+
+This allows us to see patterns without exposing sensitive data.
+
+---
+
+## Event Frequency and Impact
+
+Telemetry events are sent at low frequency and avoid unnecessary load.
+
+| Event Type | Frequency |
+|------------|-----------|
+| Environment snapshots | On update or periodically as a safety check |
+| Daily snapshots | Once per day for counts and aggregated data |
+| Per-action events | Only when specific actions are performed |
+
+Telemetry requests are lightweight and non-blocking.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Understand telemetry is Early Access only
+- [ ] Know what data is and is not collected
+- [ ] Telemetry disabled if desired
+
+---
+
+## Related Resources
+
+- [Early Access Extension](/advanced/miscellaneous/early-access-updater) - Pre-release version setup
+- [What Does MainWP Insights Track](/advanced/miscellaneous/what-does-mainwp-insights-track) - Stable release analytics
+- [Privacy and Data](/getting-started/are-you-guys-watching-what-i-am-doing) - Privacy overview
+

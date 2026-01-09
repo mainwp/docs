@@ -1,0 +1,254 @@
+---
+title: Manage Posts
+description: >-
+  Manage WordPress posts across your Child Sites from the MainWP Dashboard.
+  Create, edit, schedule, change status, and delete posts remotely without
+  logging into each child site separately.
+---
+
+The Manage Posts feature lets you create, edit, schedule, and delete WordPress posts across all your child sites from a central location. Search for posts across your network, change their status in bulk, and manage content without logging into each site individually.
+
+## What You'll Accomplish
+
+- Search and view posts across all child sites
+- Create new posts on one or multiple sites
+- Schedule posts for future publication
+- Edit existing posts
+- Change post status (publish, unpublish, trash)
+- Delete posts individually or in bulk
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Administrator access to your Dashboard site
+
+<Note>
+MainWP supports default WordPress post types. For custom post types, use the [MainWP Custom Post Types Extension](https://mainwp.com/extension/custom-post-types/).
+</Note>
+
+---
+
+## Video Tutorial
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/Z81gzO16K8o"
+  title="Manage Posts - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## View Existing Posts
+
+<Steps>
+<Step title="Navigate to Manage Posts">
+Go to **MainWP > Posts > Manage**.
+
+![Go to the MainWP > Posts > Manage page](/images/dashboard/sites-content-6e39b7.png)
+</Step>
+<Step title="Set search filters">
+In the **Search Posts** section:
+
+| Filter | Description |
+|--------|-------------|
+| Status | Filter by Published, Draft, Pending, Scheduled, Trash |
+| Keyword | Search for specific text in post titles or content |
+| Date Range | Filter posts published within a date range |
+</Step>
+<Step title="Select sites">
+[Select the child sites](/getting-started/mainwp-user-interface) you want to search.
+</Step>
+<Step title="Search">
+Click **Show Posts**.
+
+A list of matching posts appears at the bottom of the page.
+</Step>
+</Steps>
+
+<Note>
+By default, MainWP returns a maximum of 50 posts per child site to prevent performance issues when loading large amounts of data.
+</Note>
+
+---
+
+## Create a New Post
+
+<Steps>
+<Step title="Navigate to Add New">
+Go to **MainWP > Posts > Add New**.
+
+![Go to the MainWP > Posts > Add New page](/images/dashboard/sites-content-5eb0de.png)
+</Step>
+<Step title="Enter post content">
+Complete the post fields:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Title | Yes | Post title |
+| Content | Yes | Post body content |
+| Excerpt | No | Short summary |
+| Custom Fields | No | Additional metadata |
+| Discussion Settings | No | Comment and pingback options |
+| Featured Image | No | Post thumbnail |
+| Tags | No | Post tags |
+| Categories | No | Select existing or create new |
+</Step>
+<Step title="Select sites">
+[Select the child sites](/getting-started/mainwp-user-interface) where you want to publish this post.
+</Step>
+<Step title="Publish">
+Click **Publish**.
+
+The post is created on all selected sites.
+</Step>
+</Steps>
+
+---
+
+## Schedule a Post
+
+<Steps>
+<Step title="Create post">
+Follow the steps above to create a new post (steps 1-3).
+</Step>
+<Step title="Set schedule">
+In the **Publish Options** section:
+1. Click **Publish Immediately** dropdown
+2. Select **Schedule**
+3. Set the date and time
+4. Click **OK**
+</Step>
+<Step title="Schedule">
+Click **Publish**.
+
+The post is scheduled on all selected sites.
+</Step>
+</Steps>
+
+<Note>
+Post preview is not available in the MainWP Dashboard because posts may display differently on each child site due to different themes and settings.
+</Note>
+
+---
+
+## Edit an Existing Post
+
+<Steps>
+<Step title="Search for post">
+Go to **MainWP > Posts > Manage** and search for the post.
+</Step>
+<Step title="Edit">
+Find the post in the results and click **Edit**.
+
+![Edit action button in posts table row](/images/dashboard/sites-content-d8b284.png)
+</Step>
+<Step title="Update">
+Make your changes and save.
+</Step>
+</Steps>
+
+---
+
+## View a Post on Its Site
+
+<Steps>
+<Step title="Search for post">
+Go to **MainWP > Posts > Manage** and search for the post.
+</Step>
+<Step title="View">
+Find the post in the results and click **View**.
+
+![View action button in posts table row](/images/dashboard/sites-content-a3c31c.png)
+
+The post opens on its child site in a new tab.
+</Step>
+</Steps>
+
+---
+
+## Change Post Status
+
+### Single Post
+
+<Steps>
+<Step title="Search for post">
+Go to **MainWP > Posts > Manage** and search for the post.
+</Step>
+<Step title="Change status">
+Find the post and click the status action (**Unpublish**, **Publish**, etc.).
+
+![Posts table showing list of found posts](/images/dashboard/sites-content-37e54a.png)
+</Step>
+</Steps>
+
+### Bulk Status Change
+
+<Steps>
+<Step title="Search for posts">
+Go to **MainWP > Posts > Manage** and search for the posts.
+</Step>
+<Step title="Select posts">
+Check the boxes next to the posts you want to update.
+</Step>
+<Step title="Apply action">
+Select the action from **Bulk Actions** dropdown and click **Apply**.
+</Step>
+</Steps>
+
+<Note>
+Available actions depend on the current post status. Published posts can be unpublished, scheduled posts can be published, etc.
+</Note>
+
+---
+
+## Delete Posts
+
+### Move to Trash
+
+<Steps>
+<Step title="Search for post">
+Go to **MainWP > Posts > Manage** and search for the post.
+</Step>
+<Step title="Trash">
+Find the post and click **Trash**.
+
+![Posts table with Trash action option](/images/dashboard/sites-content-85089f.png)
+</Step>
+</Steps>
+
+For multiple posts, select them using checkboxes and use **Bulk Actions > Trash**.
+
+### Delete Permanently
+
+WordPress only allows permanent deletion of posts already in Trash.
+
+<Steps>
+<Step title="Search for trashed posts">
+Go to **MainWP > Posts > Manage** and set **Status** to **Trash**.
+</Step>
+<Step title="Delete">
+Find the post and click **Delete Permanently**.
+</Step>
+</Steps>
+
+---
+
+## Self-Check Checklist
+
+- [ ] You can search and view posts across child sites
+- [ ] New posts publish successfully to selected sites
+- [ ] Scheduled posts show correct scheduling
+- [ ] Post status changes apply correctly
+- [ ] Deleted posts move to trash or delete permanently
+
+---
+
+## Related Resources
+
+- [Manage Pages](/sites/content/manage-pages) - Page management documentation
+- [Custom Post Types Extension](https://mainwp.com/extension/custom-post-types/) - Manage custom post types
+- [Boilerplate Extension](/add-ons/posts-pages/boilerplate-extension) - Create content templates

@@ -1,0 +1,300 @@
+---
+title: Getting started with MainWP
+description: "Learn how to install and configure MainWP Dashboard and Child plugins to manage multiple WordPress sites."
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/2Mj3yV_POBE"
+  title="Getting started with MainWP - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[← Part 1: MainWP Introduction](/getting-started/mainwp-introduction)
+
+[Part 3: MainWP User Interface →](/getting-started/mainwp-user-interface)
+
+MainWP requires two components:
+- **MainWP Dashboard** - Install on a dedicated WordPress site that controls all other sites
+- **MainWP Child** - Install on each WordPress site you want to manage
+
+<Warning>
+Install MainWP Dashboard on a clean WordPress installation rather than an operating site. This eliminates plugin conflicts.
+</Warning>
+
+MainWP has no site limit. Check the [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) to verify your server can handle your planned number of child sites.
+
+## Prerequisites
+
+Before starting, confirm you have:
+
+- A dedicated WordPress site for the MainWP Dashboard (not an existing production site)
+- Administrator access to the Dashboard site
+- Administrator access to each child site you want to manage
+- MainWP Child plugin ready to install on child sites
+
+## Install MainWP Dashboard
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/4xSncGrbuEM"
+  title="Getting started with MainWP - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+<Steps>
+<Step title="Open the Plugins page">
+Go to **WP > Plugins** on your WordPress site dedicated to hosting MainWP Dashboard.
+</Step>
+<Step title="Add new plugin">
+Click **Add New**.
+</Step>
+<Step title="Search for MainWP">
+Enter "MainWP" in the search field and press Enter.
+</Step>
+<Step title="Install the plugin">
+Find **MainWP Dashboard** in the results and click **Install Now**.
+</Step>
+<Step title="Activate">
+Click **Activate** once installation completes.
+</Step>
+</Steps>
+
+![Install MainWP Dashboard plugin](/images/getting-started/setup-install-dashboard.png)
+
+## Manual Installation
+
+<Steps>
+<Step title="Download">
+Download the [MainWP Dashboard](https://wordpress.org/plugins/mainwp) plugin.
+</Step>
+<Step title="Extract">
+If downloaded as a zip, extract the plugin folder.
+</Step>
+<Step title="Upload via FTP">
+Upload the plugin folder to `wp-content/plugins/` on your Dashboard site.
+</Step>
+<Step title="Activate">
+Go to **WP > Plugins** and activate MainWP Dashboard.
+</Step>
+</Steps>
+
+## Quick Setup Wizard
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/m7Bne2LpflE"
+  title="Getting started with MainWP - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The Quick Setup Wizard launches after installing MainWP Dashboard. It walks you through initial configuration for the best experience. Skip it by clicking **Not right now** and return later from **MainWP > Settings > Tools**.
+
+### Introduction
+
+![Quick Setup Wizard introduction screen](/images/getting-started/setup-wizard-intro.jpg)
+
+The first step welcomes you with options to continue or skip the wizard.
+
+### System
+
+![System requirements check screen](/images/getting-started/setup-system-requirements.jpg)
+
+MainWP checks critical server configuration settings. If any checks fail, [resolve the issues](/troubleshooting/resolve-system-requirement-issues) before connecting child sites.
+
+### Connect
+
+Connect a single site or multiple sites.
+
+![Connect site options - Single or Multiple Sites](/images/getting-started/setup-connect-site-options.jpg)
+
+<Tabs>
+<Tab title="Single Site">
+1. Verify MainWP Child is installed on the site you want to connect
+2. Enter the site URL and administrator username
+3. Configure authentication:
+   - **Administrator Password** (enabled by default) - Requires the admin password during connection
+   - **Unique Security ID** (disabled by default) - Optional extra security layer
+4. Enter credentials and Site Title
+5. Click **Connect**
+6. Repeat for additional sites, then click **Continue**
+
+<Note>
+Authentication options can be found in MainWP Child settings: `your-child-site.com/wp-admin/options-general.php?page=mainwp_child_tab`
+</Note>
+</Tab>
+<Tab title="Multiple Sites">
+Enter site information in the table, or upload a CSV file to import sites.
+
+For details, see:
+- [Connect Multiple Sites](/sites/management/manage-child-sites#connect-multiple-sites)
+- [Import Sites (CSV)](/sites/management/manage-child-sites#import-sites-csv-import)
+</Tab>
+</Tabs>
+
+### Add Client
+
+Create client profiles to associate with your sites.
+
+![Add Client form with contact fields](/images/getting-started/setup-add-client-form.png)
+
+**Single client:** Enter Client Name (required), plus optional email, photo, and phone. Add additional contacts by clicking **Add Additional Contact**.
+
+**Multiple clients:** Switch to the Multiple Clients tab and enter Client Name and Email for each imported site. Sites with matching client name and email are merged into a single client profile.
+
+### Monitoring
+
+Enable Uptime and Health monitoring and set check frequency.
+
+![Monitoring settings configuration screen](/images/getting-started/setup-monitoring-settings.jpg)
+
+### Finish
+
+Your MainWP Dashboard is ready.
+
+<Note>
+- Restart the wizard anytime from **MainWP > Settings > Tools**
+- Use **Skip this Step** if unsure about any options
+- Use **Back** to adjust previous settings
+</Note>
+
+## Install MainWP Child
+
+<Steps>
+<Step title="Open Plugins">
+Go to **WP > Plugins** on the child site you want to add.
+</Step>
+<Step title="Add new plugin">
+Click **Add New**.
+</Step>
+<Step title="Search">
+Enter "MainWP" and press Enter.
+</Step>
+<Step title="Install">
+Find **MainWP Child** and click **Install Now**.
+</Step>
+<Step title="Activate">
+Click **Activate**.
+![MainWP Child plugin in WordPress plugins list](/images/getting-started/child-plugin-installed.png)
+</Step>
+</Steps>
+
+### Manual Installation
+
+<Steps>
+<Step title="Download">
+Download the [MainWP Child](https://wordpress.org/plugins/mainwp-child/) plugin.
+</Step>
+<Step title="Extract">
+If downloaded as a zip, extract the plugin folder.
+</Step>
+<Step title="Upload via FTP">
+Upload to `wp-content/plugins/` on the child site.
+</Step>
+<Step title="Activate">
+Go to **WP > Plugins** and activate MainWP Child.
+</Step>
+</Steps>
+
+After activation, you'll be redirected to MainWP Child settings.
+
+## MainWP Child Plugin Settings
+
+![MainWP Child plugin settings page](/images/getting-started/child-plugin-settings.png)
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Administrator Password | Enabled | Requires admin password when connecting from Dashboard |
+| Unique Security ID | Disabled | Optional security ID that must match when connecting |
+| Connection Timeout | — | Minutes the plugin stays active waiting for connection |
+
+For more details, see [Connection Security](/advanced/miscellaneous/mainwp-connection-security).
+
+## Add a Site to Your Dashboard
+
+After installing MainWP Child, add the site to your Dashboard.
+
+<Steps>
+<Step title="Navigate to Add New">
+Log into your Dashboard and go to **Sites > Sites > Add New**.
+</Step>
+<Step title="Enter site URL">
+Enter your child site URL.
+</Step>
+<Step title="Verify Child plugin">
+Toggle **Verify that the MainWP Child plugin is installed and activated** to reveal additional fields.
+</Step>
+<Step title="Enter credentials">
+Enter the administrator username and choose authentication method(s):
+- **Administrator Password** (optional, enabled by default)
+- **Unique Security ID** (optional, disabled by default)
+</Step>
+<Step title="Add optional settings">
+| Option | Description |
+|--------|-------------|
+| Site icon | Upload custom icon or select built-in icon (favicon used if empty) |
+| Tags | Organize site with existing or new tags |
+| Client | Associate site with a client |
+| Verify SSL certificate | Disable for self-signed or outdated certificates |
+| HTTP username/password | For sites using HTTP Basic Authentication |
+</Step>
+<Step title="Connect">
+Click **Add New Site**.
+</Step>
+</Steps>
+
+### Extensions Settings Synchronization
+
+When using [MainWP Add-ons](https://mainwp.com/mainwp-add-ons/) that require third-party plugins, additional options appear in the Add New Site form:
+
+- **Extensions requiring plugins:** Install the plugin and synchronize default settings automatically
+- **Standalone extensions:** Synchronize extension default settings only
+
+<Note>
+If you experience connection issues:
+1. Use **Test Connection** to verify Dashboard can communicate with the site
+2. Check [Potential Issues](/troubleshooting/potential-issues) for solutions
+3. [Submit a support ticket](https://mainwp.com/mainwp-support/) if needed
+</Note>
+
+## Test Connection
+
+Test Connection verifies what your MainWP Dashboard can reach, which may differ from what your browser sees.
+
+<Steps>
+<Step title="Open Add New">
+Go to **MainWP > Sites > Add New**.
+</Step>
+<Step title="Enter URL">
+Enter your child site URL.
+</Step>
+<Step title="Test">
+Click **Test Connection**.
+</Step>
+</Steps>
+
+![Test Connection button](/images/getting-started/setup-test-connection.png)
+
+A successful test shows:
+
+```
+Connection test successful! (URL: yoururl.com (IP: xxx.xxx.xxx.xxx) - Received HTTP-code: 200 (OK))
+```
+
+For other results, see the [full list of HTTP Status Codes](/troubleshooting/connection-test-results-status-codes).
+
+## Completion Checklist
+
+Verify your setup is complete:
+
+- [ ] MainWP Dashboard installed and activated on dedicated site
+- [ ] Quick Setup Wizard completed (or skipped intentionally)
+- [ ] MainWP Child installed on at least one child site
+- [ ] Child site connected successfully (shows in **MainWP > Sites > Manage Sites**)
+- [ ] Test Connection returns HTTP 200 status

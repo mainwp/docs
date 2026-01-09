@@ -1,0 +1,79 @@
+---
+title: How can I change the number of Simultaneous Sync Requests?
+sidebarTitle: "Simultaneous Sync Requests"
+description: >-
+  Adjust the number of child sites MainWP syncs at once to balance speed and
+  server resource usage.
+---
+
+MainWP syncs multiple child sites in parallel to speed up the process. The Maximum Simultaneous Sync Requests setting controls how many sites sync at once. Adjusting this value helps balance sync speed against server resources.
+
+## What You'll Learn
+
+- How to change the simultaneous sync limit
+- When to increase or decrease this setting
+- How to optimize for your server
+
+---
+
+## When to Adjust This Setting
+
+| Situation | Recommendation |
+|-----------|----------------|
+| Sync operations are slow | Increase the value |
+| Dashboard server is underpowered | Decrease the value |
+| Hosting limits concurrent connections | Decrease the value |
+| Child sites timeout during sync | Decrease the value |
+| Fast server with many sites | Increase the value |
+
+The default value works well for most installations. Adjust only if you experience performance issues.
+
+---
+
+## Change the Sync Request Limit
+
+<Steps>
+<Step title="Open Advanced Settings">
+Go to **MainWP > Settings > Advanced Settings**.
+</Step>
+<Step title="Find the sync setting">
+Locate **Maximum Simultaneous Sync Requests**.
+</Step>
+<Step title="Adjust the value">
+Enter your preferred number. Lower values use fewer server resources; higher values sync faster.
+</Step>
+<Step title="Save settings">
+Scroll to the bottom and click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
+## Recommended Values
+
+| Network Size | Server Type | Suggested Value |
+|--------------|-------------|-----------------|
+| Small (1-30 sites) | Shared hosting | 2-4 |
+| Medium (31-100 sites) | VPS | 4-8 |
+| Large (100+ sites) | Dedicated/VPS | 8-12 |
+
+<Note>
+Start with a lower value and increase gradually while monitoring server performance. Watch for timeout errors or slow Dashboard response during syncs.
+</Note>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Identified sync performance issues (if any)
+- [ ] Adjusted Maximum Simultaneous Sync Requests
+- [ ] Tested sync operation with new setting
+- [ ] Monitored for timeout errors
+
+---
+
+## Related Resources
+
+- [Change Simultaneous Update Requests](/sites/updates/how-to-change-the-number-of-simultaneous-update-requests) - Update request settings
+- [Optimize for Shared Hosting](/dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting) - Performance tuning
+- [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Server requirements

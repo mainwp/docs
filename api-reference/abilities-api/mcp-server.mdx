@@ -1,0 +1,437 @@
+---
+title: MainWP MCP Server
+sidebarTitle: "MCP Server"
+description: >-
+  Connect AI assistants like Claude and VS Code Copilot to your MainWP Dashboard through the Model Context Protocol.
+---
+
+<Note>
+The MainWP MCP Server is in alpha. APIs and configuration options may change between versions.
+</Note>
+
+<Card title="Download from GitHub" icon="github" href="https://github.com/mainwp/mainwp-mcp">
+  Get the MainWP MCP Server source code, installation instructions, and latest releases.
+</Card>
+
+The Model Context Protocol (MCP) is an open standard that lets AI assistants connect to external data sources and tools. Rather than copying information into prompts or writing custom integrations, MCP provides a universal interface that AI tools can use to discover and execute capabilities dynamically.
+
+The MainWP MCP Server implements this protocol for MainWP Dashboard. It exposes over 60 site management abilities as MCP tools, enabling AI assistants like Claude, VS Code Copilot, and Cursor to manage your WordPress network through natural language. When you ask "What sites need updates?" or "Sync all my sites," the AI assistant calls the appropriate MainWP abilities through the MCP Server, which communicates with your Dashboard via the [Abilities API](/api-reference/abilities-api/overview).
+
+## What You'll Learn
+
+- How to install and configure the MainWP MCP Server
+- How to connect Claude, VS Code Copilot, Cursor, and other AI tools
+- Available safety controls and configuration options
+- Troubleshooting connection issues
+
+## Prerequisites
+
+- Node.js 18, 20, or 22
+- WordPress 6.9 or later with MainWP Dashboard 6.0+
+- WordPress user with `manage_options` capability
+- An Application Password for API authentication
+
+## Quick Start
+
+Clone and build the MCP server:
+
+```bash
+git clone https://github.com/mainwp/mainwp-mcp.git
+cd mainwp-mcp
+npm ci
+npm run build
+```
+
+Create an Application Password following the steps in [Authentication](#authentication), then configure your AI tool using one of the methods in [Connecting AI Tools](#connecting-ai-tools). Once configured, restart your AI tool and ask "List all my sites" to verify the connection.
+
+## Authentication
+
+The MCP Server authenticates with your MainWP Dashboard using WordPress Application Passwords. These are separate from your login password and can be revoked individually.
+
+To create an Application Password:
+
+1. Log into your MainWP Dashboard as an administrator
+2. Go to Users → Profile
+3. Scroll to the Application Passwords section
+4. Enter a name (e.g., "Claude Desktop") and click Add New Application Password
+5. Copy the generated password immediately—it won't be shown again
+
+For production use, create a dedicated WordPress user for API access rather than using your main admin account. This lets you revoke access without affecting other systems and provides clearer audit trails.
+
+## Configuration
+
+You can configure credentials in two ways: directly in each AI tool's configuration, or in a centralized settings file.
+
+### Per-Tool Configuration
+
+Include credentials in the environment variables of your AI tool's MCP configuration. This approach matches how most MCP servers are configured and lets you use different Application Passwords for each tool.
+
+```json
+{
+  "mcpServers": {
+    "mainwp": {
+      "command": "node",
+      "args": ["/path/to/mainwp-mcp/dist/index.js"],
+      "env": {
+        "MAINWP_URL": "https://your-dashboard.com",
+        "MAINWP_USER": "admin",
+        "MAINWP_APP_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}
+```
+
+### Centralized Settings File
+
+Store credentials once in `~/.config/mainwp-mcp/settings.json`:
+
+```json
+{
+  "dashboardUrl": "https://your-dashboard.com",
+  "username": "admin",
+  "appPassword": "xxxx xxxx xxxx xxxx xxxx xxxx"
+}
+```
+
+Set appropriate file permissions to protect your credentials:
+
+```bash
+chmod 600 ~/.config/mainwp-mcp/settings.json
+```
+
+This approach works well when you use multiple AI tools with the same Dashboard or need to rotate credentials in one place. Environment variables in per-tool configuration override settings file values.
+
+## Connecting AI Tools
+
+### Claude Code
+
+Add the MCP server using the CLI:
+
+```bash
+claude mcp add --transport stdio mainwp \
+  --env MAINWP_URL=https://your-dashboard.com \
+  --env MAINWP_USER=admin \
+  --env MAINWP_APP_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx" \
+  -- node /path/to/mainwp-mcp/dist/index.js
+```
+
+Or edit `~/.claude.json` directly:
+
+```json
+{
+  "mcpServers": {
+    "mainwp": {
+      "command": "node",
+      "args": ["/path/to/mainwp-mcp/dist/index.js"],
+      "env": {
+        "MAINWP_URL": "https://your-dashboard.com",
+        "MAINWP_USER": "admin",
+        "MAINWP_APP_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}
+```
+
+See the [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) for additional configuration options.
+
+### Claude Desktop
+
+Edit the configuration file at:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "mainwp": {
+      "command": "node",
+      "args": ["/path/to/mainwp-mcp/dist/index.js"],
+      "env": {
+        "MAINWP_URL": "https://your-dashboard.com",
+        "MAINWP_USER": "admin",
+        "MAINWP_APP_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}
+```
+
+See the [Claude Desktop MCP guide](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop) for additional configuration options.
+
+### VS Code (Copilot Agent Mode)
+
+Add to `.vscode/mcp.json` in your project:
+
+```json
+{
+  "servers": {
+    "mainwp": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/mainwp-mcp/dist/index.js"],
+      "env": {
+        "MAINWP_URL": "https://your-dashboard.com",
+        "MAINWP_USER": "admin",
+        "MAINWP_APP_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}
+```
+
+See the [VS Code MCP servers documentation](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) for additional configuration options.
+
+### Cursor
+
+Add to `.cursor/mcp.json` in your project or `~/.cursor/mcp.json` globally:
+
+```json
+{
+  "mcpServers": {
+    "mainwp": {
+      "command": "node",
+      "args": ["/path/to/mainwp-mcp/dist/index.js"],
+      "env": {
+        "MAINWP_URL": "https://your-dashboard.com",
+        "MAINWP_USER": "admin",
+        "MAINWP_APP_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}
+```
+
+See the [Cursor MCP documentation](https://cursor.com/docs/context/mcp/install-links) for additional configuration options.
+
+### OpenAI Codex
+
+Add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.mainwp]
+command = "node"
+args = ["/path/to/mainwp-mcp/dist/index.js"]
+
+[mcp_servers.mainwp.env]
+MAINWP_URL = "https://your-dashboard.com"
+MAINWP_USER = "admin"
+MAINWP_APP_PASSWORD = "xxxx xxxx xxxx xxxx xxxx xxxx"
+```
+
+See the [OpenAI Codex MCP documentation](https://developers.openai.com/codex/mcp/) for additional configuration options.
+
+### Other MCP Clients
+
+Any tool that supports the Model Context Protocol can connect to the MainWP MCP Server. The configuration requires three pieces of information:
+
+- **Command**: `node`
+- **Arguments**: The path to `dist/index.js` in your cloned mainwp-mcp directory
+- **Environment variables**: `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD`
+
+The exact configuration format varies by tool. Most use JSON with either `mcpServers` (Claude Desktop, Cursor) or `servers` (VS Code) as the top-level key. OpenAI Codex uses TOML format instead. Consult your tool's MCP documentation for the correct structure.
+
+For detailed protocol information, see the [Model Context Protocol specification](https://modelcontextprotocol.io/).
+
+## Available Tools
+
+The MCP Server exposes MainWP abilities as tools that AI assistants can call. Abilities use names like `mainwp/list-sites-v1` in the Abilities API, which become `list_sites_v1` as MCP tool names.
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| Sites | 30 | List, add, sync, and manage child sites including plugins and themes |
+| Updates | 13 | Check for and apply WordPress, plugin, theme, and translation updates |
+| Clients | 11 | Create and manage client records |
+| Tags | 7 | Organize sites and clients with tags |
+
+For detailed input parameters and response schemas, see the ability reference pages:
+
+<CardGroup cols={2}>
+  <Card title="Sites" icon="server" href="/api-reference/abilities-api/sites">
+    30 abilities for site management
+  </Card>
+  <Card title="Updates" icon="rotate" href="/api-reference/abilities-api/updates">
+    13 abilities for update management
+  </Card>
+  <Card title="Clients" icon="users" href="/api-reference/abilities-api/clients">
+    11 abilities for client management
+  </Card>
+  <Card title="Tags" icon="tags" href="/api-reference/abilities-api/tags">
+    7 abilities for tag management
+  </Card>
+</CardGroup>
+
+## Safety Features
+
+### Two-Step Confirmation
+
+Destructive operations like deleting sites, clients, or plugins require explicit confirmation. When you ask an AI to delete something, the MCP Server first returns a preview of what will be affected. After you confirm, the AI makes a second call to execute the deletion. Previews expire after 5 minutes.
+
+This flow applies to: `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`.
+
+### Safe Mode
+
+Enable safe mode to block all destructive operations entirely:
+
+```json
+{
+  "env": {
+    "MAINWP_SAFE_MODE": "true"
+  }
+}
+```
+
+### Tool Restrictions
+
+Limit which tools the AI can access using allowlists or blocklists.
+
+**Read-only access:**
+
+```json
+{
+  "env": {
+    "MAINWP_ALLOWED_TOOLS": "list_sites_v1,get_site_v1,list_updates_v1,list_clients_v1,list_tags_v1"
+  }
+}
+```
+
+**Block destructive operations:**
+
+```json
+{
+  "env": {
+    "MAINWP_BLOCKED_TOOLS": "delete_site_v1,delete_client_v1,delete_tag_v1,delete_site_plugins_v1,delete_site_themes_v1"
+  }
+}
+```
+
+## Configuration Reference
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `MAINWP_URL` | Yes | — | MainWP Dashboard base URL |
+| `MAINWP_USER` | Yes | — | WordPress username |
+| `MAINWP_APP_PASSWORD` | Yes | — | Application Password (spaces optional) |
+| `MAINWP_SKIP_SSL_VERIFY` | No | `false` | Skip SSL certificate verification (development only) |
+| `MAINWP_ALLOW_HTTP` | No | `false` | Allow insecure HTTP connections |
+| `MAINWP_SAFE_MODE` | No | `false` | Block all destructive operations |
+| `MAINWP_REQUIRE_USER_CONFIRMATION` | No | `true` | Require two-step confirmation for deletions |
+| `MAINWP_ALLOWED_TOOLS` | No | — | Comma-separated list of allowed tools |
+| `MAINWP_BLOCKED_TOOLS` | No | — | Comma-separated list of blocked tools |
+| `MAINWP_RATE_LIMIT` | No | `60` | Maximum requests per minute (0 to disable) |
+| `MAINWP_REQUEST_TIMEOUT` | No | `30000` | Request timeout in milliseconds |
+| `MAINWP_MAX_RESPONSE_SIZE` | No | `10485760` | Maximum response size in bytes (10MB) |
+| `MAINWP_RETRY_ENABLED` | No | `true` | Enable automatic retries for transient errors |
+| `MAINWP_MAX_RETRIES` | No | `2` | Maximum retry attempts |
+| `MAINWP_SCHEMA_VERBOSITY` | No | `standard` | Use `compact` for ~30% token reduction |
+
+<Note>
+Only enable `MAINWP_SKIP_SSL_VERIFY` or `MAINWP_ALLOW_HTTP` for local development. These options expose credentials to interception in production environments.
+</Note>
+
+## MCP Resources
+
+The server exposes resources for debugging and inspection:
+
+| URI | Description |
+|-----|-------------|
+| `mainwp://abilities` | Full list of available abilities with schemas |
+| `mainwp://categories` | List of ability categories |
+| `mainwp://status` | Current connection status |
+| `mainwp://help` | Tool documentation and safety conventions |
+
+## Example Prompts
+
+**Getting started:**
+- "List all my sites"
+- "How many sites do I have?"
+- "Which sites are disconnected?"
+
+**Updates:**
+- "What sites need updates?"
+- "Show me all pending plugin updates"
+- "Update all plugins on example.com"
+- "Apply the WordPress core update to all sites"
+
+**Bulk operations:**
+- "Sync all my sites"
+- "Sync all sites tagged 'client-a'"
+- "Reconnect all disconnected sites"
+
+**Reporting:**
+- "Give me a summary of my MainWP network"
+- "Which clients have the most sites?"
+
+## Troubleshooting
+
+### Verify Connection
+
+Test that your Dashboard's REST API is accessible:
+
+```bash
+curl -I https://your-dashboard.com/wp-json/
+```
+
+Test authentication:
+
+```bash
+curl -u "username:app-password" \
+  https://your-dashboard.com/wp-json/wp/v2/users/me
+```
+
+Test Abilities API access:
+
+```bash
+curl -u "username:app-password" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?per_page=1"
+```
+
+### Common Errors
+
+**401 Unauthorized**
+- **Cause:** Invalid credentials
+- **Fix:** Verify the username matches exactly (case-sensitive). Generate a new Application Password in WordPress and update your configuration file.
+
+**403 Forbidden**
+- **Cause:** User lacks required permissions
+- **Fix:** Ensure the WordPress user has the `manage_options` capability. This typically requires the Administrator role.
+
+**SSL Certificate Errors**
+- **Cause:** Self-signed or expired certificate
+- **Fix:** Install a valid SSL certificate for production use. For local development only, set `MAINWP_SKIP_SSL_VERIFY` to `true`.
+
+**ECONNREFUSED**
+- **Cause:** Dashboard server unreachable
+- **Fix:** Verify the URL is correct and the server is running. Check network connectivity and any firewall rules that might block the connection.
+
+### Debug Mode
+
+Use the MCP Inspector for interactive testing:
+
+```bash
+cd /path/to/mainwp-mcp
+npm run inspect
+```
+
+This opens a browser-based interface where you can test individual tools and see request/response details.
+
+## Self-Check Checklist
+
+Verify your MCP Server installation is complete:
+
+- [ ] MCP server cloned and built without errors (`npm run build` completes successfully)
+- [ ] Application Password created in WordPress and saved securely
+- [ ] Configuration file created in the correct location for your AI tool
+- [ ] Dashboard URL, username, and Application Password added to configuration
+- [ ] AI tool restarted or reloaded to pick up the new configuration
+- [ ] Test command "List all my sites" returns your sites
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - How abilities work
+- [Sites Abilities](/api-reference/abilities-api/sites) - 30 abilities for site management
+- [Updates Abilities](/api-reference/abilities-api/updates) - 13 abilities for update management
+- [Clients Abilities](/api-reference/abilities-api/clients) - 11 abilities for client management
+- [Tags Abilities](/api-reference/abilities-api/tags) - 7 abilities for tag management
+- [GitHub Repository](https://github.com/mainwp/mainwp-mcp) - Source code and issues

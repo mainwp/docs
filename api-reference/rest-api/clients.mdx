@@ -1,0 +1,191 @@
+---
+title: Clients Endpoints
+sidebarTitle: "Clients"
+description: >-
+  4 REST API endpoints for managing MainWP clients and their associated sites.
+---
+
+Manage client records in your MainWP Dashboard.
+
+## What You'll Learn
+
+- Listing and filtering clients
+- Creating and updating client records
+- Associating sites with clients
+
+---
+
+## GET /clients
+
+Returns all clients with pagination support.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/clients"
+```
+
+### Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 10 | Items per page |
+| `search` | string | No | — | Search in client name |
+| `include` | string | No | — | Comma-separated client IDs to include |
+| `exclude` | string | No | — | Comma-separated client IDs to exclude |
+| `status` | string | No | — | Filter by status |
+
+### Response
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Acme Corp",
+    "email": "contact@acme.com",
+    "phone": "+1-555-0100",
+    "address": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "sites_count": 5,
+    "created_at": "2024-01-01T00:00:00"
+  }
+]
+```
+
+---
+
+## GET /clients/{client}
+
+Returns detailed information about a specific client.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/clients/1"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `client` | integer/string | Yes | Client ID or email address |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "name": "Acme Corp",
+  "email": "contact@acme.com",
+  "phone": "+1-555-0100",
+  "address": "123 Main St",
+  "city": "New York",
+  "state": "NY",
+  "zip": "10001",
+  "country": "USA",
+  "notes": "Enterprise client",
+  "sites": [
+    {"id": 1, "url": "https://acme.com", "name": "Main Site"},
+    {"id": 2, "url": "https://blog.acme.com", "name": "Blog"}
+  ],
+  "sites_count": 2,
+  "created_at": "2024-01-01T00:00:00"
+}
+```
+
+---
+
+## POST /clients/add
+
+Creates a new client record.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "New Client", "email": "client@example.com"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/clients/add"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | string | Yes | Client name |
+| `email` | string | Yes | Client email address |
+| `phone` | string | No | Phone number |
+| `address` | string | No | Street address |
+| `city` | string | No | City |
+| `state` | string | No | State/Province |
+| `zip` | string | No | ZIP/Postal code |
+| `country` | string | No | Country |
+| `notes` | string | No | Internal notes |
+| `selected_sites` | string | No | Comma-separated site IDs to associate |
+
+### Response
+
+```json
+{
+  "id": 5,
+  "name": "New Client",
+  "email": "client@example.com",
+  "message": "Client created successfully"
+}
+```
+
+---
+
+## PUT /clients/{client}/edit
+
+Updates an existing client's information.
+
+**Method:** PUT
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/clients/1/edit?name=Updated%20Name"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `client` | integer/string | Yes | Client ID or email |
+| `name` | string | No | Updated name |
+| `email` | string | No | Updated email |
+| `phone` | string | No | Updated phone |
+| `address` | string | No | Updated address |
+| `city` | string | No | Updated city |
+| `state` | string | No | Updated state |
+| `zip` | string | No | Updated ZIP |
+| `country` | string | No | Updated country |
+| `notes` | string | No | Updated notes |
+| `selected_sites` | string | No | Comma-separated site IDs to associate |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "name": "Updated Name",
+  "email": "contact@acme.com",
+  "message": "Client updated successfully"
+}
+```
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management
+- [Manage Clients](/clients/manage-clients) - Client management in Dashboard
+

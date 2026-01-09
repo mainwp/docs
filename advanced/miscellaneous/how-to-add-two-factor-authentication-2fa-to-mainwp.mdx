@@ -1,0 +1,133 @@
+---
+title: How to add Two-Factor Authentication (2FA) to MainWP
+sidebarTitle: "Dashboard 2FA"
+description: >-
+  Add two-factor authentication to your MainWP Dashboard using a WordPress 2FA
+  plugin for an additional layer of login security.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/R8barom9fyc"
+  title="How to add Two-Factor Authentication (2FA) to MainWP - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Two-factor authentication adds a second verification step when logging into your WordPress Dashboard. Enabling 2FA on your MainWP Dashboard does not affect MainWP functionality—it only secures the WordPress login process.
+
+## What You'll Learn
+
+- How to install and configure a 2FA plugin on your Dashboard
+- How to set up your authenticator app
+- How to enforce 2FA for Dashboard users
+
+## Prerequisites
+
+- Admin access to your MainWP Dashboard WordPress site
+- An authenticator app (Google Authenticator, Authy, 1Password, etc.)
+
+---
+
+## Install the 2FA Plugin
+
+This example uses WP 2FA, but you can use any WordPress 2FA plugin.
+
+<Steps>
+<Step title="Go to Add Plugins">
+From your MainWP Dashboard, navigate to **WP Admin > Plugins > Add New**.
+</Step>
+<Step title="Search and install">
+Search for **WP 2FA** and install it.
+</Step>
+<Step title="Activate the plugin">
+Activate the plugin. The setup wizard starts automatically.
+</Step>
+</Steps>
+
+---
+
+## Configure 2FA Settings
+
+<Steps>
+<Step title="Choose authentication method">
+Select your preferred 2FA method:
+- **One-time code via 2FA app** (TOTP)
+- **One-time code via email**
+
+![2FA Settings - method selection](/images/miscellaneous/f9a6fdb0cc68.png)
+</Step>
+<Step title="Select users to enforce 2FA">
+Choose which users must use 2FA.
+
+![2FA Settings - user selection](/images/miscellaneous/7122620c4316.png)
+</Step>
+<Step title="Exclude users (optional)">
+Optionally exclude specific users or roles from the 2FA requirement.
+
+![2FA Settings - role selection](/images/miscellaneous/6b7b13138b60.png)
+</Step>
+<Step title="Set grace period">
+Give users time to set up 2FA before it becomes mandatory.
+
+![2FA Settings - grace period selection](/images/miscellaneous/cc8f42556733.png)
+</Step>
+</Steps>
+
+---
+
+## Set Up Your Authenticator App
+
+<Steps>
+<Step title="Scan the QR code">
+Scan the QR code or enter the code manually in your authenticator app.
+
+![Authy plugin installation](/images/miscellaneous/advanced-miscellaneous-428b02.png)
+</Step>
+<Step title="Save the entry">
+Give the account a name and save. The app now generates 6-digit codes.
+
+![Authy plugin code scan](/images/miscellaneous/67e918c8924b.png)
+</Step>
+<Step title="Verify the code">
+Click **I'M READY**, enter the current code from your app, and click **Validate and Save**.
+
+![Authy plugin settings confirmation](/images/miscellaneous/0e148d22c4c3.png)
+</Step>
+<Step title="Generate backup codes">
+Optionally generate backup codes in case you lose access to your authenticator app.
+
+![Authy plugin backup codes](/images/miscellaneous/7f1247cfbd94.png)
+</Step>
+</Steps>
+
+---
+
+## Logging In with 2FA
+
+After setup, the login process requires two steps:
+
+1. Enter your username and password as usual
+2. Enter the current 6-digit code from your authenticator app
+
+![2FA login code](/images/miscellaneous/31d5e1619b74.png)
+
+---
+
+## Self-Check Checklist
+
+- [ ] 2FA plugin installed and activated on Dashboard
+- [ ] Authentication method configured
+- [ ] Authenticator app scanning completed
+- [ ] Verification code validated
+- [ ] Backup codes generated and stored securely
+- [ ] Login tested with 2FA verification
+
+---
+
+## Related Resources
+
+- [MainWP.com Account Security](/advanced/miscellaneous/mainwp-com-login-security) - 2FA for your MainWP.com account
+- [MainWP Security](/getting-started/how-secure-is-the-mainwp-plugin) - Overall security architecture
+- [Connection Security](/advanced/miscellaneous/mainwp-connection-security) - Dashboard-to-Child communication

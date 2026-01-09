@@ -1,0 +1,323 @@
+---
+title: MainWP WP CLI Commands
+sidebarTitle: "WP-CLI Commands"
+description: >-
+  Complete reference for MainWP WP-CLI commands. Manage sites, sync data,
+  handle updates, and automate WordPress management tasks from the command line.
+---
+
+MainWP includes WP-CLI integration for managing your Dashboard and child sites from the command line. This enables automation, scripting, and advanced management workflows.
+
+## What You'll Learn
+
+- Available WP-CLI commands for site management
+- How to sync, update, and manage sites via command line
+- Example automation scripts
+
+## Prerequisites
+
+- MainWP Dashboard v4.1.3 or later
+- WP-CLI installed on your Dashboard server
+- Child sites connected to your MainWP Dashboard
+
+For more information about WP-CLI, visit the [official WP-CLI documentation](https://wp-cli.org/).
+
+---
+
+<Tabs>
+  <Tab title="Sites">
+    ## Sites Management
+
+    Commands for managing multiple child sites simultaneously.
+
+    ### List All Sites
+
+    ```bash
+    wp mainwp sites --all-sites
+    ```
+
+    Displays every child site in your MainWP installation.
+
+    ### Count All Sites
+
+    ```bash
+    wp mainwp sites --all-sites-count
+    ```
+
+    Returns the total number of child sites.
+
+    ### Connected Sites
+
+    ```bash
+    wp mainwp sites --connected-sites
+    ```
+
+    Lists only child sites with active connections.
+
+    ### Connected Sites Count
+
+    ```bash
+    wp mainwp sites --connected-sites-count
+    ```
+
+    Returns count of actively connected child sites.
+
+    ### Disconnected Sites
+
+    ```bash
+    wp mainwp sites --disconnected-sites
+    ```
+
+    Lists child sites that are currently disconnected.
+
+    ### Disconnected Sites Count
+
+    ```bash
+    wp mainwp sites --disconnected-sites-count
+    ```
+
+    Returns count of disconnected child sites.
+
+    ### Sync All Sites
+
+    ```bash
+    wp mainwp sites --sync-sites
+    ```
+
+    Synchronizes data across all child sites.
+
+    ### Check All Sites
+
+    ```bash
+    wp mainwp sites --check-sites
+    ```
+
+    Verifies the status of all child sites.
+  </Tab>
+
+  <Tab title="Site">
+    ## Single Site Operations
+
+    Commands for managing individual child sites. Replace `<id>` with the site ID.
+
+    ### Site Information
+
+    ```bash
+    wp mainwp site --site <id>
+    ```
+
+    Retrieves comprehensive data for a specific child site.
+
+    ```bash
+    wp mainwp site --site-info <id>
+    ```
+
+    Returns: site name, URL, WordPress version, PHP version, MainWP Child plugin version, PHP memory limit, MySQL version, active theme, and server IP address.
+
+    ### Plugins
+
+    ```bash
+    wp mainwp site --site-installed-plugins <id>
+    wp mainwp site --site-installed-plugins-count <id>
+    wp mainwp site --site-active-plugins <id>
+    wp mainwp site --site-active-plugins-count <id>
+    wp mainwp site --site-inactive-plugins <id>
+    wp mainwp site --site-inactive-plugins-count <id>
+    wp mainwp site --site-abandoned-plugins <id>
+    wp mainwp site --site-abandoned-plugins-count <id>
+    ```
+
+    ### Themes
+
+    ```bash
+    wp mainwp site --site-installed-themes <id>
+    wp mainwp site --site-installed-themes-count <id>
+    wp mainwp site --site-active-themes <id>
+    wp mainwp site --site-inactive-themes <id>
+    wp mainwp site --site-inactive-themes-count <id>
+    wp mainwp site --site-abandoned-themes <id>
+    wp mainwp site --site-abandoned-themes-count <id>
+    ```
+
+    ### Updates & Status
+
+    ```bash
+    wp mainwp site --site-available-updates <id>
+    wp mainwp site --site-available-updates-count <id>
+    wp mainwp site --site-http-status <id>
+    wp mainwp site --site-health-score <id>
+    wp mainwp site --site-security-issues <id>
+    ```
+
+    ### Site Management
+
+    **Add a new site:**
+
+    ```bash
+    wp mainwp site --add-site --site-url=http://site.com --name=sitename --admin=adminuser --uniqueid=xxxxx
+    ```
+
+    **Sync, reconnect, disconnect, or remove:**
+
+    ```bash
+    wp mainwp site --sync-site <id>
+    wp mainwp site --reconnect-site <id>
+    wp mainwp site --disconnect-site <id>
+    wp mainwp site --remove-site <id>
+    ```
+
+    ### Apply Updates
+
+    ```bash
+    wp mainwp site --site-update-wordpress <id>
+    wp mainwp site --site-update-plugins <id>
+    wp mainwp site --site-update-themes <id>
+    wp mainwp site --site-update-translations <id>
+    ```
+
+    **Update a specific item:**
+
+    ```bash
+    wp mainwp site --site-update-item <id> --type=<plugin|theme> --slug=<slug>
+    ```
+
+    ### Plugin & Theme Control
+
+    **Manage plugins:**
+
+    ```bash
+    wp mainwp site --site-manage-plugin <id> --action=<activate|deactivate|delete> --plugin=<plugin-slug>
+    ```
+
+    **Manage themes:**
+
+    ```bash
+    wp mainwp site --site-manage-theme <id> --action=<activate|deactivate|delete> --theme=<theme-slug>
+    ```
+
+    ### Check HTTP Status
+
+    ```bash
+    wp mainwp site --check-site-http-status <id>
+    ```
+
+    Verifies HTTP status of a child site.
+  </Tab>
+
+  <Tab title="Updates">
+    ## Updates Management
+
+    Commands for controlling plugin and theme updates across sites.
+
+    ### View Available Updates
+
+    ```bash
+    wp mainwp updates --available-updates
+    ```
+
+    Shows all pending updates across all child sites.
+
+    ### Ignored Updates (Global)
+
+    ```bash
+    wp mainwp updates --ignored-plugins-updates
+    wp mainwp updates --ignored-themes-updates
+    ```
+
+    Lists globally ignored plugin or theme updates.
+
+    ### Ignored Updates (Per Site)
+
+    ```bash
+    wp mainwp updates --site-ignored-plugins-updates <id>
+    wp mainwp updates --site-ignored-themes-updates <id>
+    ```
+
+    Lists ignored updates for a specific child site.
+
+    ### Ignore Updates Globally
+
+    ```bash
+    wp mainwp updates --ignore-updates --type=<plugin|theme> --slug=<slug> --name=<name>
+    ```
+
+    Globally ignores an update across all sites.
+
+    ### Ignore Updates on Specific Site
+
+    ```bash
+    wp mainwp updates --ignore-update <id> --type=<plugin|theme> --slug=<slug> --name=<name>
+    ```
+
+    Ignores a specific update on one child site.
+
+    ### Unignore Updates Globally
+
+    ```bash
+    wp mainwp updates --unignore-updates --type=<plugin|theme> --slug=<slug> --name=<name>
+    ```
+
+    Reverses a global update ignore.
+
+    ### Unignore Updates on Specific Site
+
+    ```bash
+    wp mainwp updates --unignore-update <id> --type=<plugin|theme> --slug=<slug> --name=<name>
+    ```
+
+    Reverses a site-specific update ignore.
+  </Tab>
+</Tabs>
+
+---
+
+## Example Workflows
+
+### Daily Sync Script
+
+Create a script to sync all sites and check for updates:
+
+```bash
+#!/bin/bash
+# daily-mainwp-sync.sh
+
+# Sync all sites
+wp mainwp sites --sync-sites
+
+# Check for updates
+wp mainwp updates --available-updates
+
+# Check site status
+wp mainwp sites --check-sites
+```
+
+### Get Site Overview
+
+```bash
+# Get all connected sites
+wp mainwp sites --connected-sites
+
+# For each site, get available updates
+wp mainwp site --site-available-updates 1
+wp mainwp site --site-available-updates 2
+```
+
+<Note>
+Replace site IDs with your actual child site IDs. You can find site IDs by running `wp mainwp sites --all-sites`.
+</Note>
+
+---
+
+## Self-Check Checklist
+
+- [ ] WP-CLI installed on Dashboard server
+- [ ] MainWP Dashboard v4.1.3 or later
+- [ ] Test basic command: `wp mainwp sites --all-sites`
+- [ ] Site IDs identified for site-specific commands
+
+---
+
+## Related Resources
+
+- [SureTriggers Automation](/advanced/integrations/automate-your-mainwp-workflow-with-suretriggers) - Visual workflow automation
+- [REST API Overview](/api-reference/rest-api/overview) - API-based automation

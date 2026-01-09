@@ -1,0 +1,54 @@
+---
+title: Why Doesn't MainWP Include Backups in the Dashboard?
+description: >-
+  MainWP focuses on site management features rather than building native
+  backups. We offer backup extensions that connect with top-tier providers and
+  free API-based backups for popular hosting platforms.
+---
+
+MainWP focuses on site management rather than building a native backup system. Dedicated backup tools already solve this problem well, and creating our own would divert resources from features that make MainWP more valuable for managing your sites.
+
+## Why Not Native Backups?
+
+Backups for a self-hosted Dashboard managing multiple child sites come with complex requirements:
+
+- Storage management across multiple sites
+- Different hosting environments and configurations
+- Scheduling and retention policies
+- Restoration procedures that vary by host
+- Ongoing maintenance and troubleshooting
+
+Building and maintaining a native backup solution would slow development of core management features.
+
+## How MainWP Handles Backups Instead
+
+MainWP provides two approaches to backups:
+
+### Backup Extensions
+
+Extensions connect MainWP with established backup providers:
+
+| Extension | Provider |
+|-----------|----------|
+| [BackWPup](https://mainwp.com/add-on/backwpup/) | BackWPup |
+| [BackupBuddy](https://mainwp.com/add-on/mainwpbuddy/) | BackupBuddy |
+| [Time Capsule](https://mainwp.com/add-on/time-capsule/) | Time Capsule |
+| [UpdraftPlus](https://mainwp.com/add-on/updraftplus/) | UpdraftPlus |
+| [WPVivid](https://mainwp.com/add-on/wpvivid-backup-for-mainwp/) | WPVivid |
+
+### API Backups (Free)
+
+[API Backups](/sites/backups/manage-backups#api-backups) trigger backups directly through your hosting provider at no additional cost:
+
+- cPanel and Plesk
+- Kinsta, Cloudways, GridPane
+- Vultr, DigitalOcean, Linode
+
+This approach lets you use backup services built specifically for that task while MainWP focuses on site management.
+
+---
+
+## Related Resources
+
+- [Manage Backups](/sites/backups/manage-backups) - Configure backup extensions and API backups
+- [Backup Extensions](https://mainwp.com/mainwp-extensions/extension-category/backups/) - View all backup options

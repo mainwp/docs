@@ -1,0 +1,44 @@
+/* Custom styles for MainWP Documentation */
+/* ====================================== */
+
+/*
+ * Logo sizing in navigation header
+ * Force larger logo display for better visibility
+ */
+img[alt*="logo"] {
+  height: 44px !important;
+  width: auto !important;
+}
+
+/*
+ * Icon sizing for Card components
+ * Mintlify's Card img property creates header images that are too large for icons.
+ * These styles constrain icon images to a more appropriate size.
+ */
+
+/* Target images in Card components that are from our icons directory */
+img[src*="/images/icons/addons"] {
+  max-width: 64px !important;
+  max-height: 64px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+}
+
+/* Ensure card images maintain proper aspect ratio and centering */
+[class*="card"] img[src*="/images/icons/"],
+a[href*="/add-ons/"] img {
+  max-width: 64px !important;
+  max-height: 64px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0.5rem auto !important;
+}
+
+/* Reduce visual weight of icon header images in cards */
+.prose img[src*="icons"],
+.not-prose img[src*="icons"] {
+  max-width: 64px !important;
+  max-height: 64px !important;
+}

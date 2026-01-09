@@ -1,0 +1,375 @@
+---
+title: Manage Themes
+description: >-
+  Manage WordPress themes across all Child Sites from one place. Install themes
+  from WordPress.org or upload ZIP files, activate, delete, update, ignore
+  updates, and set automatic updates for trusted themes.
+---
+
+The Manage Themes feature provides centralized control over WordPress themes across all your child sites. Install themes on multiple sites at once, activate themes in bulk, run updates, ignore specific updates, and configure automatic updates for themes you trust.
+
+## What You'll Accomplish
+
+- Install themes from WordPress.org or ZIP files on multiple sites
+- Activate themes across selected sites
+- Delete unused themes from child sites
+- Update themes individually or in bulk
+- Ignore theme updates globally or per site
+- Configure automatic updates for trusted themes
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Administrator access to your Dashboard site
+
+---
+
+## Video Tutorial
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/fWYBTWNL9gw"
+  title="Manage Themes - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## Install Themes
+
+MainWP provides three methods for installing themes:
+
+| Method | Best For |
+|--------|----------|
+| WordPress.org | Free themes from the official directory |
+| Upload ZIP | Premium themes or custom themes |
+| Favorites | Quick installation of commonly used themes (requires [Favorites Extension](https://mainwp.com/extension/favorites/)) |
+
+### Install from WordPress.org
+
+<Steps>
+<Step title="Navigate to Install Themes">
+Go to **MainWP > Sites > Themes > Install**.
+</Step>
+<Step title="Search for theme">
+Under the **Install from WordPress.org** tab, use the **Search Themes** field to find the theme.
+
+![Search Themes field in the Install from WordPress.org tab](/images/dashboard/sites-themes-58caea.png)
+</Step>
+<Step title="Select theme">
+Locate the theme in the search results and select **Install this Theme**.
+
+![Theme search results with Install this Theme radio button selected](/images/dashboard/sites-themes-99bb60.png)
+</Step>
+<Step title="Select sites">
+In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites where you want to install the theme.
+</Step>
+<Step title="Set installation options">
+Configure the installation options:
+
+![Overwrite existing checkbox in Installation Options](/images/dashboard/sites-themes-f0888e.png)
+
+| Option | Description |
+|--------|-------------|
+| Overwrite existing if already installed | Replace the theme if already installed on the site |
+</Step>
+<Step title="Install">
+Click **Complete Installation**.
+</Step>
+</Steps>
+
+### Install by Upload
+
+<Steps>
+<Step title="Navigate to Install Themes">
+Go to **MainWP > Sites > Themes > Install**.
+</Step>
+<Step title="Open upload tab">
+Click the **Upload .zip file** tab.
+</Step>
+<Step title="Upload file">
+Click **Upload** and select the theme ZIP file from your computer.
+</Step>
+<Step title="Select sites">
+In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites where you want to install the theme.
+</Step>
+<Step title="Set installation options">
+Configure the installation options:
+
+| Option | Description |
+|--------|-------------|
+| Overwrite existing if already installed | Replace the theme if already installed on the site |
+</Step>
+<Step title="Install">
+Click **Complete Installation**.
+
+![Click the Complete Installation button](/images/dashboard/sites-themes-01f386.png)
+</Step>
+</Steps>
+
+<Note>
+Your server must allow uploads of the theme's file size. Check **Maximum File Size** on your [Server Information](/troubleshooting/resolve-system-requirement-issues) page.
+</Note>
+
+### Install from Favorites
+
+Select and install themes from your saved favorites using the [MainWP Favorites Extension](https://mainwp.com/extension/favorites/). Once you have a list of favorite themes, this provides the quickest way to set up new sites.
+
+---
+
+## Activate Themes
+
+<Steps>
+<Step title="Navigate to Manage Themes">
+Go to **MainWP > Sites > Themes > Manage**.
+</Step>
+<Step title="Select view">
+From the dropdown menu, select **Per Site** or **Per Item** view.
+</Step>
+<Step title="Select sites">
+In the [Select Sites](/getting-started/mainwp-user-interface) section, choose the sites to search.
+</Step>
+<Step title="Filter inactive themes">
+In the **Search Themes** section, set **Status** to **Inactive**. Optionally enter a theme name.
+</Step>
+<Step title="Search">
+Click **Show Themes**.
+</Step>
+<Step title="Select themes to activate">
+Check the boxes next to the themes you want to activate.
+
+![Manage Themes table with checkboxes to select themes and sites for activation](/images/dashboard/sites-themes-d6cbdd.png)
+</Step>
+<Step title="Apply action">
+In the **Bulk Actions** menu, select **Activate** and click **Confirm**.
+</Step>
+</Steps>
+
+---
+
+## Update Themes
+
+Synchronize your child sites before running updates to ensure all available updates are displayed.
+
+### Update All Themes on All Sites
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+</Step>
+<Step title="Update all">
+Click **Update All Sites (Update All Themes)**.
+
+![MainWP Themes Updates page with Update All Sites button highlighted](/images/dashboard/0716a8eee9b2.png)
+</Step>
+<Step title="Confirm">
+Confirm the update when prompted.
+</Step>
+</Steps>
+
+### Update a Single Theme on All Sites
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Item**.
+</Step>
+<Step title="Locate theme">
+Find the theme you want to update.
+
+![Theme Updates table with Update All button for updating a single theme across all sites](/images/dashboard/b8c406c029a1.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the theme row.
+</Step>
+</Steps>
+
+### Update All Themes on a Single Site
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site you want to update.
+
+![Theme Updates table showing Update All button for a single child site](/images/dashboard/cfef40f54bdb.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the site row.
+</Step>
+</Steps>
+
+### Update a Single Theme on a Single Site
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site and expand its row.
+</Step>
+<Step title="Update theme">
+Find the theme and click **Update Now**.
+
+![Click the Update Now button](/images/dashboard/7a93fc4ab6f0.png)
+</Step>
+</Steps>
+
+---
+
+## Delete Themes
+
+Active themes cannot be deleted. The active theme must be changed before deletion.
+
+<Steps>
+<Step title="Navigate to Manage Themes">
+Go to **MainWP > Sites > Themes > Manage**.
+</Step>
+<Step title="Select view">
+From the dropdown menu, select **Per Site** or **Per Item** view.
+</Step>
+<Step title="Select sites">
+In the [Select Sites](/getting-started/mainwp-user-interface) section, choose the sites where you want to delete themes.
+</Step>
+<Step title="Filter inactive themes">
+In the **Search Themes** section, set **Status** to **Inactive**. Optionally enter a theme name.
+</Step>
+<Step title="Search">
+Click **Show Themes**.
+</Step>
+<Step title="Select themes to delete">
+Check the boxes next to the themes you want to delete.
+
+![Manage Themes table with checkboxes to select themes and sites for deletion](/images/dashboard/sites-themes-779f3b.png)
+</Step>
+<Step title="Apply action">
+In the **Bulk Actions** menu, select **Delete** and click **Confirm**.
+</Step>
+</Steps>
+
+---
+
+## Ignore Theme Updates
+
+Ignoring a theme update removes it from the available updates list and the Update Overview widget. This is useful for themes you intentionally keep at a specific version.
+
+### Ignore Methods
+
+| Method | Scope |
+|--------|-------|
+| Globally | Theme ignored on all child sites |
+| Per Site | Theme ignored on specific sites only |
+
+### Ignore a Theme on All Sites
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+
+![Themes Updates page with View updates per Plugin/Theme dropdown and Ignore Globally button](/images/dashboard/sites-themes-99c5c8.png)
+</Step>
+<Step title="Select view">
+Set **View updates per** to **Plugin/Theme**.
+</Step>
+<Step title="Ignore">
+Locate the theme and click **Ignore Globally** in its row.
+</Step>
+</Steps>
+
+### Un-ignore a Globally Ignored Theme
+
+<Steps>
+<Step title="Navigate to Ignored Updates">
+Go to **MainWP > Sites > Themes > Ignored Updates**.
+</Step>
+<Step title="Allow updates">
+In the **Globally Ignored Themes** table, locate the theme and click **Allow**.
+</Step>
+</Steps>
+
+### Ignore a Theme on a Single Site
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Sites > Updates > Themes Updates**.
+
+![Themes Updates page showing per-site view with Ignore button for individual themes](/images/dashboard/sites-themes-7ec980.png)
+</Step>
+<Step title="Select view">
+Set **View updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site and expand its row.
+</Step>
+<Step title="Ignore">
+Find the theme and click **Ignore**.
+</Step>
+</Steps>
+
+### Un-ignore a Per-Site Ignored Theme
+
+<Steps>
+<Step title="Navigate to Ignored Updates">
+Go to **MainWP > Sites > Themes > Ignored Updates**.
+</Step>
+<Step title="Allow updates">
+In the **Per Site Ignored Themes** table, locate the theme and click **Allow**.
+</Step>
+</Steps>
+
+---
+
+## Abandoned Themes
+
+MainWP identifies themes that may be abandoned based on how long since their last update.
+
+### Set Abandoned Tolerance
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find Update Settings">
+Locate the **Update Settings** section.
+</Step>
+<Step title="Set tolerance">
+Find **Abandoned plugins/themes tolerance** and enter the number of days.
+
+![Update Settings page showing Abandoned plugins/themes tolerance field](/images/dashboard/sites-themes-8176c3.jpg)
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+Themes without updates for the specified period appear in the Abandoned Themes section.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Themes install successfully on selected sites
+- [ ] Theme activation works across sites
+- [ ] Theme updates complete without errors
+- [ ] Ignored themes no longer appear in update lists
+- [ ] Deleted themes are removed from child sites
+
+---
+
+## Related Resources
+
+- [Parent Theme Lock](/sites/themes/parent-theme-lock) - Prevent accidental parent theme activation
+- [Negative Search](/sites/themes/negative-search) - Find sites missing specific themes
+- [Favorites Extension](https://mainwp.com/extension/favorites/) - Quick theme installation from saved lists

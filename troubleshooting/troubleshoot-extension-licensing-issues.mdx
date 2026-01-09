@@ -1,0 +1,143 @@
+---
+title: Troubleshoot extension licensing issues
+description: >-
+  Troubleshoot MainWP extension licensing issues including failed activation,
+  updates not detected, and update failures. Deactivate and reactivate extensions
+  on the Plugins page, then re-enter API keys.
+---
+
+Extension licensing issues typically occur when the connection between your Dashboard and MainWP's licensing server is interrupted. The solution usually involves deactivating and reactivating the extension, then re-entering your API key.
+
+## What You'll Learn
+
+- Fix extension license activation failures
+- Resolve missing extension updates
+- Troubleshoot extension update failures
+
+## Prerequisites
+
+- MainWP Dashboard with extensions installed
+- Valid MainWP API key(s) for your extensions
+- Admin access to your Dashboard site
+
+---
+
+## Extension License Activation Fails
+
+If your API key doesn't activate an extension:
+
+<Steps>
+<Step title="Go to Plugins page">
+Navigate to **WP Admin > Plugins**.
+</Step>
+<Step title="Find the extension">
+Locate the extension that won't activate.
+</Step>
+<Step title="Deactivate the extension">
+Click **Deactivate** under the extension.
+</Step>
+<Step title="Reactivate the extension">
+Click **Activate** to reactivate it.
+</Step>
+<Step title="Go to Extensions page">
+Navigate to **MainWP > Extensions**.
+</Step>
+<Step title="Enter API key">
+Try to activate your API key again.
+</Step>
+</Steps>
+
+### If Activation Still Fails
+
+| Issue | Solution |
+|-------|----------|
+| API key invalid | Verify the key in your [MainWP account](https://mainwp.com/my-account/) |
+| Key already in use | Deactivate from the other site first |
+| Connection timeout | Check firewall isn't blocking mainwp.com |
+| Subscription expired | Renew your subscription |
+
+---
+
+## Extension Updates Not Detected
+
+Extensions must be activated with your API key to receive automatic updates.
+
+<Steps>
+<Step title="Verify license activation">
+Go to **MainWP > Extensions** and confirm your extensions show as activated.
+</Step>
+<Step title="If not activated, enter API key">
+Enter your API key to activate the extension.
+</Step>
+<Step title="If already activated, deactivate the extension">
+Go to **WP Admin > Plugins**, find the extension, and click **Deactivate**.
+</Step>
+<Step title="Reactivate the extension">
+Click **Activate** to reactivate it.
+</Step>
+<Step title="Re-enter API key">
+Go to **MainWP > Extensions** and enter your API key again.
+</Step>
+<Step title="Check for updates">
+Go back to **WP Admin > Plugins**, find the extension, and click the **Check for Updates Now** link in the extension description.
+</Step>
+</Steps>
+
+---
+
+## Extension Update Fails
+
+If an extension shows an available update but won't install:
+
+<Steps>
+<Step title="Go to Plugins page">
+Navigate to **WP Admin > Plugins**.
+</Step>
+<Step title="Find the extension">
+Locate the extension that won't update.
+</Step>
+<Step title="Refresh update check">
+Click the **Check for Updates Now** link in the extension description.
+</Step>
+<Step title="Try updating again">
+Attempt the update again.
+</Step>
+</Steps>
+
+### If Update Still Fails
+
+| Issue | Solution |
+|-------|----------|
+| License expired | Renew your subscription to receive updates |
+| Server timeout | Increase PHP max_execution_time |
+| Write permissions | Check wp-content/plugins folder permissions |
+| Download failed | Verify mainwp.com is accessible from your server |
+
+---
+
+## Check Your License Status
+
+You can verify your extension licenses and subscription status:
+
+1. Log in to [MainWP.com](https://mainwp.com/my-account/)
+2. Go to **My Account > API Keys**
+3. Check which API keys are active and where they're being used
+4. Verify your subscription is active
+
+---
+
+## Self-Check Checklist
+
+- [ ] Extension is installed and activated as a plugin
+- [ ] API key entered on MainWP > Extensions page
+- [ ] Extension shows "Activated" status
+- [ ] Updates detected after clicking "Check for Updates Now"
+- [ ] Updates install successfully
+
+---
+
+## Related Resources
+
+- [Manage Extensions](/dashboard/overview/manage-extensions) - Extension installation and management
+- [Why Is My Extensions Page Empty](/troubleshooting/why-is-my-extensions-page-empty) - Missing extensions
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues) - Server configuration issues

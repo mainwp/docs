@@ -1,0 +1,357 @@
+---
+title: BackWPup
+sidebarTitle: "BackWPup"
+description: >-
+  Create, schedule backups, and control BackWPup plugin settings for all Child
+  Sites from your MainWP Dashboard. Free add-on that integrates with the
+  BackWPup WordPress backup plugin.
+addonType: integration
+thirdPartyPlugin: BackWPup
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="BackWPup"
+  data-purchase-url="https://mainwp.com/extension/backwpup/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-backwpup-extension/"
+  data-integrates-with="BackWPup"
+  data-owned-by="Inpsyde GmbH"
+  data-privacy-url="https://backwpup.com/privacy/"
+/>
+
+## What You'll Learn
+
+- Installing the add-on and BackWPup plugin
+- Creating global and per-site backup jobs
+- Scheduling and triggering backups
+- Managing backup files and settings
+
+---
+
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with BackWPup. Requires BackWPup to be installed on your child sites.
+</Info>
+
+![Screenshot of BackWPup add-on dashboard showing child sites with backup status](/images/add-ons/backwpup-dashboard-overview.png)
+
+With the MainWP BackWPup Add-on, you can control the [BackWPup Plugin](https://wordpress.org/plugins/backwpup/) settings for all your child sites directly from your MainWP Dashboard. This includes giving you the ability to create your child site backups and even set Backup schedules directly from your MainWP Dashboard.
+
+## Installing the BackWPUp add-on
+
+The MainWP BackWPup add-on needs to be installed **only on your MainWP Dashboard** site. You can [install it as any other MainWP add-on](https://mainwp.com/kb/manage-extensions/#install-add-ons).
+
+## Installing the BackWPUp Plugin
+
+For the proper use of the MainWP BackWPup Add-on, you need to install the BackWPup Plugin on your child sites. The plugin does not need to be installed on the MainWP Dashboard site.
+
+### Install from MainWP Dashboard
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Plugins > Install Plugins page">
+</Step>
+<Step title="In the Search field, enter BackWPup and press enter on your keyboard">
+</Step>
+<Step title="After the search results appear, locate the Plugin, select the Install this Plugin option">
+After the search results appear, locate the Plugin, select the **Install this Plugin** option
+</Step>
+<Step title="Select your child sites in the sidebar on the right">
+</Step>
+<Step title="In the Installation Options box, make sure that the Activate after installation option is selected">
+In the **Installation Options** box, make sure that the **Activate after installation option** is selected
+</Step>
+<Step title="Click the Complete Installation button to complete the installation">
+</Step>
+</Steps>
+
+
+### Install directly on Child Site
+
+<Steps>
+<Step title="Login into your child site">
+</Step>
+<Step title="Go to the WP > Plugins > Add New page">
+</Step>
+<Step title="In the Search field, enter BackWPup">
+</Step>
+<Step title="After the search results appear, locate the BackWPUp Plugin">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Click the Activate button">
+</Step>
+</Steps>
+
+
+**Important Notes:**  
+After installing the BackWPup Plugin, it is required to Synchronize your sites, so your MainWP Dashboard becomes aware that the Plugin has been installed and activated.
+
+## BackWPUp Dashboard
+
+From the **MainWP > Add-ons > BackWPup > BacWPUp Dashboard page,** you can monitor all of your child sites where you have the BackWPup plugin installed. In the sites list, you will be notified if the plugin has an update available (the row will be highlighted in yellow) or if the plugin is deactivated (highlighted in red).
+
+### Available Actions
+
+![Screenshot of BackWPup ellipsis menu showing available actions](/images/add-ons/backwpup-actions-menu.png)
+
+From ellipsis menu, you can access relevant actions such as Child Site's Overview and Edit pages, as well the ability to:
+
+-   **Hide/Unhide** the BackWPUp plugin on the child site
+-   **Open BackWPUp** plugin page on the Child Site
+-   Run a backup job
+-   **Update** the BackWPUp plugin on the Child site
+-   **Activate** it if it is deactivated
+
+### **Important Notes:**
+
+If you know that you have the BackWPUp plugin installed on a child site, but the child site doesn't appear in the list, try to re-sync your sites.
+
+## Manage BackWPup Backups
+
+The BackWPup Add-on allows you to manage the BackWPup plugin backups directly from your MainWP Dashboard. This includes:
+
+-   Creating new backup jobs
+-   Edit created backup jobs
+-   Triggering backup jobs
+-   Deleting backup jobs
+-   Downloading existing backups
+-   Deleting existing backups
+
+## Create a BackWPup Job
+
+### Create a Global Job
+
+![Screenshot of Add New Job page with Job Name and Job Tasks options](/images/add-ons/backwpup-add-new-job.png)
+
+1.  Go to the **MainWP > Add-ons > BackWPup > Add New Job** page
+2.  In the **Job Name** option box, Enter a **Name** for the Backup Job
+3.  In the **Job Tasks** option box, set tasks that you want to include in this Job: **Database** and/or **Files**
+4.  Select the Desired **Job Destinations**
+5.  Next, select the Schedule in the sidebar on the left to configure the **Scheduled execution time**  
+    ![Screenshot of backup schedule configuration options](/images/add-ons/backwpup-schedule-config.png)  
+    
+6.  Next, select the enabled Remote Storage options on the left to configure them  
+    ![Screenshot of remote storage destination configuration](/images/add-ons/backwpup-remote-storage.png)
+7.  Finally, click **Save Changes**  
+    
+
+After pressing the Save Changes button, the add-on will create this backup job on all your child sites that don't have the **Individual Settings** in use.
+
+### Create a Backup Job on a Single Site
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site where you want to create a Backup Job, and click on it's name">
+</Step>
+<Step title="Click BackWPUp in the sidebar on the left">
+Click **BackWPUp** in the sidebar on the left  
+    ![Screenshot highlighting BackWPUp option in site sidebar](/images/add-ons/backwpup-sidebar-option.png)  
+    
+</Step>
+<Step title="Click the Add New Job tab, and follow the same instructions as for creating a Global Backup Job">
+Click the **Add New Job** tab, and follow the same instructions as for creating a Global Backup Job
+</Step>
+</Steps>
+
+
+### Job Additional Settings
+
+![Screenshot of job additional settings for database tables and file exclusions](/images/add-ons/backwpup-job-settings.png)
+
+Once the job is successfully created, a new set of options will appear for you, depending on your previous settings.
+
+The add-on will allow you to manage Database tables to be backed up (in a Global Job, this cannot be modified), and additional settings for which files to back up or exclude.
+
+## Edit a BackWPup Job
+
+![Screenshot of Backup Jobs list with Edit action highlighted](/images/add-ons/backwpup-edit-action.png)
+
+### Edit Global Job
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Backup Jobs page">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Edit action">
+</Step>
+<Step title="Edit job settings">
+</Step>
+<Step title="Click the Save Changes button">
+</Step>
+</Steps>
+
+
+### Edit Job on a Single Site
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site where you want to create a Backup Job, and click on it's name">
+</Step>
+<Step title="Click BackWPUp in the sidebar on the left">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Edit action">
+</Step>
+<Step title="Edit job settings">
+</Step>
+<Step title="Click the Save Changes button">
+</Step>
+</Steps>
+
+
+## Trigger BackWPup Job
+
+![Screenshot showing Backup now action in job list](/images/add-ons/backwpup-backup-now-action.png)
+
+### Trigger Global Schedule
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Backup Jobs page">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Backup now action">
+</Step>
+</Steps>
+
+
+### Trigger Schedule on a Single Site
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site where you want to create a Backup Job, and click on it's name">
+</Step>
+<Step title="Click BackWPUp in the sidebar on the left">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Backup now action">
+</Step>
+</Steps>
+
+
+## Delete BackWPup Job
+
+![Screenshot showing Delete action in job list](/images/add-ons/backwpup-delete-action.png)
+
+### Delete Global Job
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Backup Jobs page">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Delete action">
+</Step>
+</Steps>
+
+
+### Delete Job on a Single Site
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site where you want to create a Backup Job, and click on it's name">
+</Step>
+<Step title="Click BackWPUp in the sidebar on the left">
+</Step>
+<Step title="In the list of existing jobs, locate the one you want to edit">
+</Step>
+<Step title="Click the Delete action">
+</Step>
+</Steps>
+
+
+## Manage BackWPup Backup Files
+
+### Download Backup Files
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Existing Backups page">
+</Step>
+<Step title="In the top right of the page, select the desired child site from the dropdown, and click Apply">
+In the top right of the page, select the desired child site from the dropdown, and click **Apply**
+</Step>
+<Step title="Below, in the list of existing backups, locate the one you want to download">
+</Step>
+<Step title="Click the Download action">
+</Step>
+</Steps>
+
+
+### Delete Backup Files
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Existing Backups page">
+</Step>
+<Step title="In the top right of the page, select the desired child site from the dropdown, and click Apply">
+In the top right of the page, select the desired child site from the dropdown, and click **Apply**
+</Step>
+<Step title="Below, in the list of existing backups, locate the one you want to download">
+</Step>
+<Step title="Click the Delete action">
+</Step>
+</Steps>
+
+
+## Manage BackWPup Settings
+
+The MainWP BackWPup add-on allows you to manage the BackWPup plugin settings from your dashboard. If you are using the Paid version of the BackWPup plugin on your child sites, on the **MainWP > **Add-ons** > BackWPup > Settings** page, set the **Use premium version** to **YES** and **Save** it. This will display additional settings for you that are available only in the premium version.
+
+### Manage BackWPup Global Settings
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-ons > BackWPup > Settings page">
+</Step>
+<Step title="Set your preferences">
+</Step>
+<Step title="Click the Save Changes button">
+</Step>
+</Steps>
+
+
+### Manage BackWPup Settings on a Single Site
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site where you want to create a Backup Job, and click on it's name">
+</Step>
+<Step title="Click BackWPUp in the sidebar on the left">
+</Step>
+<Step title="Click the Settings tab">
+</Step>
+<Step title="Set the Overwrite General Settings option to YES and click the Save Changes button">
+Set the **Overwrite General Settings** option to **YES** and click the **Save Changes** button
+</Step>
+<Step title="Set your preferences">
+</Step>
+<Step title="Click the Save Changes button at the bottom of the page">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
+- [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
+- [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp) - Installing plugins on child sites

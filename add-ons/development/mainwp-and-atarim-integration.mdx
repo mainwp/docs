@@ -1,0 +1,140 @@
+---
+title: Atarim
+sidebarTitle: "Atarim"
+description: >-
+  The Atarim Extension for MainWP expands your ability to collaborate with your
+  clients through your MainWP Dashboard. Get a complete overview of tasks that
+  have been created inside your websites using Atarim to keep track of all your
+  client requests!
+addonType: integration
+thirdPartyPlugin: Atarim
+---
+
+## What You'll Learn
+
+- Connecting Atarim to your MainWP Dashboard
+- Connecting MainWP to your Atarim Dashboard
+- Viewing Atarim tasks in the Manage Sites table
+- Including Atarim data in Pro Reports
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Atarim"
+  data-purchase-url="https://mainwp.com/extension/atarim/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-atarim-extension/"
+  data-integrates-with="Atarim"
+  data-owned-by="WP FeedBack LTD"
+  data-privacy-url="https://atarim.io/privacy-policy/"
+/>
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Atarim. Requires Atarim to be installed on your child sites.
+</Info>
+
+Atarim is a service for collaborating with your clients. Two-way integration offers an insight into website status on Atarim Dashboard and an insight into Atarim tasks on the MainWP Dashboard. Please note that this integration requires a [paid Atarim plan](https://atarim.io/pricing/) (Starter, Expert, or Agency).
+
+## Connect Atarim to MainWP Dashboard
+
+<Steps>
+<Step title="Install Atarim Extension">
+[Install](/dashboard/overview/manage-extensions#install-extensions) Atarim [Extension](https://mainwp.com/extension/atarim/)
+</Step>
+<Step title="Go to Atarim Dashboard > Settings > Integrations Settings page">
+</Step>
+<Step title="Enable MainWP Integration and copy the API Key">
+Enable MainWP Integration and copy the API Key ![Atarim & MainWP integration API Key](/images/add-ons/67bcddbb05b0.png)
+</Step>
+<Step title="Go to MainWP Dashboard > Extensions > Atarim > Settings page">
+</Step>
+<Step title="Paste the API Key">
+</Step>
+<Step title="Click the Save Settings button">
+Click the Save Settings button ![Connect MainWP to Atarim settings](/images/add-ons/42178f40ecfd.png)
+</Step>
+</Steps>
+
+
+After connecting with Atarim, MainWP will gain the following features:
+
+-   **Manage Sites table**
+    -   A new column will be visible showing the number of Atarim tasks for child sites. Clicking the icon will reveal additional information about those tasks. ![Atarim Tasks modal element](/images/add-ons/782c77e43684.gif)
+-   **Overview widgets**
+    -   On the Overview and Individual Child site overview, a new widget will display information about Atarim tasks ![Atarim tasks widget](/images/add-ons/atarim-tasks-widget.png)
+-   **Pro Reports data Note**: Pre Reports extension version 4.0.11 is required for Atarim data
+    -   Atarim Data can be included in the Report from the **Report Data** section ![Atarim pro reports settings](/images/add-ons/3e3c796fdd7f.png)
+    -   Atarim data can also be included by using two new tokens \[atarim.all.tasks\] - Displays all tasks for a site within the selected date range \[atarim.billable.tasks\] - Displays all billable tasks for a site within the selected date range
+
+## Connect MainWP to Atarim Dashboard
+
+<Steps>
+<Step title="Go to WP Admin > Settings > Permalinks Page">
+</Step>
+<Step title="Choose any settings except for Plain (this is a WordPress REST API limitation)">
+Choose any settings except for **Plain** (this is a WordPress REST API limitation) ![How Can I Enable MainWP REST API? 1](/images/add-ons/atarim-permalink-settings.jpg)
+</Step>
+<Step title="Go to MainWP Dashboard > Settings > REST API page">
+</Step>
+<Step title="Enable REST API and click Generate New API Credentials button">
+</Step>
+<Step title="Copy Consumer Key and Consumer Secret">
+Copy Consumer Key and Consumer Secret ![Enable REST API in MainWP](/images/add-ons/23ee66b7b918.png)
+</Step>
+<Step title="Go to Atarim Dashboard > Settings > Integrations Settings page">
+</Step>
+<Step title="Find the MainWP Integration section">
+</Step>
+<Step title="Paste the Consumer Key and Consumer Secret, and the URL of your MainWP Dashboard">
+Paste the Consumer Key and Consumer Secret, and the URL of your MainWP Dashboard ![Enable MainWP & Atarim integration in your Atarim account](/images/add-ons/atarim-mainwp-integration.png)
+</Step>
+</Steps>
+
+
+After connecting with MainWP, Atarim will display the **number of available updates, a number of security issues,** and the **uptime status** of the sites. ![Site info](/images/add-ons/atarim-site-status.png) **_Learn more about the [Atarim extension](https://mainwp.com/extension/atarim/)!_**
+
+## How to disable Atarim on the Manage Sites table
+
+### How to hide the Atarim column
+
+<Steps>
+<Step title="Go to MainWP Dashboard > Sites > Manage Sites page">
+</Step>
+<Step title="Click the Cog icon (Page Settings) in the top right">
+</Step>
+<Step title="De-select Atarim in the Show Columns section">
+De-select Atarim in the **Show Columns** section ![Remove Atarim column from the Manage Sites table.](/images/add-ons/atarim-hide-column.gif)
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+### How to unset the Atarim column
+
+Insert the following snippet using our [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension, or by inserting it in the `functions.php` file of the active theme of your MainWP Dashboard:
+
+```php
+add_filter( 'mainwp_sitestable_getcolumns', 'myhook2_mainwp_sitestable_getcolumns', 20, 2 );
+function myhook2_mainwp_sitestable_getcolumns( $columns ) {
+	if(is_array($columns) && isset($columns\['atarim_tasks'\])){
+		unset( $columns\['atarim_tasks'\] );
+	}
+	return $columns;
+}
+
+```
+![Custom Dashboard, PHP code snippet](/images/add-ons/atarim-custom-dashboard-snippet.png)
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include Atarim data in reports
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Add custom code snippets

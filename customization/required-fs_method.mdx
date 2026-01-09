@@ -1,0 +1,120 @@
+---
+title: How to Set FS_METHOD Properly
+sidebarTitle: "FS_METHOD Setting"
+description: >-
+  MainWP requires the Filesystem Method to be set to direct on Child Sites for
+  updates to work properly. Add the FS_METHOD constant to wp-config.php.
+---
+
+WordPress supports multiple filesystem access methods for installing and updating plugins and themes. MainWP requires the "direct" method to function properly on child sites.
+
+## What You'll Learn
+
+- Why FS_METHOD matters for MainWP
+- How to configure the setting
+- How to troubleshoot file permission issues
+
+---
+
+## Why This Setting Matters
+
+WordPress can access the filesystem through several methods:
+
+| Method | Description |
+|--------|-------------|
+| **direct** | PHP directly reads and writes files |
+| **ssh2** | Uses SSH connection for file operations |
+| **ftpext** | Uses PHP's FTP extension |
+| **ftpsockets** | Uses FTP via sockets |
+
+MainWP needs direct filesystem access to perform updates, install plugins/themes, and manage files efficiently. When WordPress uses FTP or SSH methods, MainWP operations may timeout or fail.
+
+---
+
+## When You Need This Setting
+
+Apply this setting if you experience:
+
+- MainWP Dashboard warnings about filesystem method
+- Plugin or theme updates failing with permission errors
+- Upload operations timing out
+- "Could not create directory" errors during installations
+
+---
+
+## How to Apply the Setting
+
+<Steps>
+<Step title="Connect to your Child Site">
+Use FTP, SFTP, or your hosting file manager to access the site files.
+</Step>
+<Step title="Open wp-config.php">
+Locate and open the `wp-config.php` file in the site root directory.
+</Step>
+<Step title="Add the FS_METHOD constant">
+Add this line before the comment `/* That's all, stop editing! */`:
+
+```php
+define( 'FS_METHOD', 'direct' );
+```
+</Step>
+<Step title="Save and test">
+Save the file and test by running an update from your MainWP Dashboard.
+</Step>
+</Steps>
+
+---
+
+## File Permissions
+
+For direct filesystem access to work, WordPress needs proper file permissions:
+
+| Item | Recommended Permission |
+|------|----------------------|
+| Directories | 755 |
+| Files | 644 |
+| wp-config.php | 640 or 600 |
+
+If you've set FS_METHOD to direct but still encounter issues, check that your hosting account owns the files and directories.
+
+---
+
+## Alternative: FTP Configuration
+
+Some managed hosts don't allow direct filesystem access. In those cases, configure FTP credentials instead:
+
+```php
+define( 'FTP_USER', 'your-ftp-username' );
+define( 'FTP_PASS', 'your-ftp-password' );
+define( 'FTP_HOST', 'ftp.yoursite.com' );
+```
+
+See the [WordPress documentation on filesystem constants](https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#wordpress-upgrade-constants) for complete options.
+
+---
+
+## Troubleshooting
+
+If setting FS_METHOD doesn't resolve issues:
+
+1. Verify file ownership matches your PHP process user
+2. Check if your host restricts certain PHP functions
+3. Review the [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) list
+4. Contact your hosting support for assistance with file permissions
+
+---
+
+## Self-Check Checklist
+
+- [ ] FS_METHOD constant added to wp-config.php
+- [ ] File saved successfully
+- [ ] Test update runs without errors
+- [ ] File permissions set correctly (755/644)
+
+---
+
+## Related Resources
+
+- [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) - PHP requirements
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues) - Server configuration
+- [Plugin Installation Fails](/troubleshooting/plugin-installation-fails-with-error-message-upload-failed) - Upload troubleshooting

@@ -1,0 +1,102 @@
+---
+title: Why is my Extensions page empty?
+description: >-
+  Browser extensions may auto-fill the Search Installed Extensions field,
+  filtering out all extensions and making the page appear empty. Delete any
+  auto-filled text in the search field to reveal your extensions.
+---
+
+When the Extensions page appears empty even though you have extensions installed, it's usually caused by browser password managers auto-filling the search field.
+
+## What You'll Learn
+
+- Why extensions appear to be missing
+- How to reveal hidden extensions
+- Prevent this issue from recurring
+
+## Prerequisites
+
+- MainWP Dashboard with extensions installed
+
+---
+
+## Why This Happens
+
+Browser password managers sometimes misidentify the Search and API Key fields as username/password fields. When they auto-fill these fields with saved credentials, the search filter applies to your extension list.
+
+Since your auto-filled username likely doesn't match any extension name, all extensions are filtered out and the page appears empty.
+
+![Extensions page appearing empty due to auto-filled search field](/images/faq/extensions-page-empty.png)
+
+This is more common when your API key hasn't been saved yet.
+
+---
+
+## Reveal Your Extensions
+
+<Steps>
+<Step title="Go to the Extensions page">
+Navigate to **MainWP > Extensions**.
+</Step>
+<Step title="Check the search field">
+Look at the **Search Installed Extensions** field at the top of the page.
+</Step>
+<Step title="Clear auto-filled text">
+If there's text in the search field, delete it completely.
+</Step>
+<Step title="View extensions">
+Your installed extensions should now appear.
+</Step>
+</Steps>
+
+---
+
+## Prevent Auto-Fill Issues
+
+### Option 1: Exclude MainWP from Password Manager
+
+Configure your browser's password manager to not save or fill credentials for your MainWP Dashboard URL.
+
+### Option 2: Use a Different Browser
+
+If you consistently experience this issue, try accessing your Dashboard with a different browser or in incognito/private mode.
+
+### Option 3: Disable Browser Auto-Fill
+
+Temporarily disable your browser's auto-fill feature when working in MainWP:
+
+| Browser | How to Disable |
+|---------|----------------|
+| Chrome | Settings > Autofill > Passwords > Toggle off |
+| Firefox | Settings > Privacy & Security > Logins and Passwords |
+| Safari | Preferences > Auto-fill |
+| Edge | Settings > Profiles > Passwords |
+
+---
+
+## Extensions Still Missing?
+
+If clearing the search field doesn't reveal your extensions:
+
+| Issue | Solution |
+|-------|----------|
+| Extensions not installed | Install from **WP Admin > Plugins > Add New** |
+| Extensions deactivated | Activate on **WP Admin > Plugins** page |
+| Wrong Dashboard site | Verify you're logged into the correct Dashboard |
+| Browser cache | Clear browser cache and refresh |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Search Installed Extensions field is empty
+- [ ] Extensions now visible on the page
+- [ ] Password manager excluded MainWP (optional)
+- [ ] Extensions properly installed and activated
+
+---
+
+## Related Resources
+
+- [Manage Extensions](/dashboard/overview/manage-extensions) - Install and manage extensions
+- [Troubleshoot Extension Licensing](/troubleshooting/troubleshoot-extension-licensing-issues) - License activation issues

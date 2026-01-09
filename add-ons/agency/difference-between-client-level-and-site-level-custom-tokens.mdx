@@ -1,0 +1,55 @@
+---
+title: Difference between Client-level and Site-level Custom Tokens
+sidebarTitle: "Client vs Site Tokens"
+description: >-
+  This article clarifies how custom tokens function in MainWP at both the site
+  level and the client level. Site-level tokens take precedence over client-level
+  tokens and are ideal for specific information relevant to an individual site.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Understanding site-level vs client-level token priority
+- When to use each token type
+- Managing tokens that share the same name
+- Storing custom meta-data without Pro Reports
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+This article clarifies how custom tokens function in MainWP at both the site level and the client level.
+
+## Site-Level Tokens:
+
+-   **Priority Over Client-Level:** Tokens defined per site (on the Edit page of a Child Dashboard) take precedence over client-level tokens.
+-   **Direct Control:** If a token is edited at the site level, it overrides any same-named token set at the client level.
+-   **Usage:** Site-level tokens are ideal for specific, unique information relevant to an individual site.
+
+## Client-Level Tokens:
+
+-   **Fallback Mechanism:** If a token is not set or left empty at the site level, the client-level token is used instead.
+-   **General Information:** Client-level tokens are suitable for information that applies uniformly across multiple sites owned by a client.
+-   **Distinct from Site Tokens:** Despite sometimes sharing names, client-level tokens are different and separate from site-level tokens.
+
+## Managing Redundant Tokens
+
+-   **No Need for Deletion:** It is not necessary to delete tokens even if they share names between client and site levels.
+-   **Selective Input:** Enter values where most appropriate (client or site level) and leave the other level empty if not needed.
+-   **Pro Reports Prioritization:** In the context of Pro Reports, if both levels have a token with the same name, the site-level token is prioritized.
+
+## Meta-Data Storage Without Reports
+
+-   **Custom Fields for Meta-Data:** Users can create custom fields on the Child Site Edit screen to store personal information or meta-data unrelated to Pro Reports.
+-   **Independence from Plugins:** This method allows for the addition of meta-data that is not dependent on plugins, ensuring data retention even without Pro Reports.
+
+---
+
+## Related Resources
+
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates

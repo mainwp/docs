@@ -1,0 +1,139 @@
+---
+title: Check for Abandoned Plugins and Themes
+description: >-
+  MainWP checks for abandoned plugins and themes daily by default. Manually
+  trigger checks from the Manage Sites page using Bulk Actions or from the
+  Updates page Abandoned Plugins and Abandoned Themes sections.
+---
+
+MainWP identifies plugins and themes that may be abandoned based on how long since their last update. Abandoned items can pose security risks and compatibility issues since they no longer receive patches or improvements.
+
+## What You'll Accomplish
+
+- Understand what "abandoned" means in MainWP
+- Manually check for abandoned plugins across your sites
+- Manually check for abandoned themes across your sites
+- Review abandoned items and decide on replacements
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Sites synced recently to have current plugin/theme data
+
+---
+
+## What Does "Abandoned" Mean?
+
+MainWP marks a plugin or theme as "possibly abandoned" when its author has not released an update for the period set in your Dashboard settings. The default threshold is 365 days.
+
+<Note>
+MainWP fetches last-updated information from wordpress.org. Plugins or themes that are delisted from wordpress.org cannot be detected as abandoned.
+</Note>
+
+### Why Abandoned Items Matter
+
+| Risk | Description |
+|------|-------------|
+| Security vulnerabilities | No patches for discovered security issues |
+| Compatibility issues | May break with newer WordPress or PHP versions |
+| Missing features | No improvements or bug fixes |
+| Support unavailable | Developer may no longer provide assistance |
+
+---
+
+## Automatic Checks
+
+MainWP automatically checks for abandoned plugins and themes once per day during the scheduled sync process.
+
+---
+
+## Manual Check from Manage Sites
+
+![Manage Sites page with Bulk Actions menu for checking abandoned items](/images/dashboard/sites-plugins-f40504.png)
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Select sites">
+Check the boxes next to the sites you want to check.
+</Step>
+<Step title="Choose action">
+In the **Bulk Actions** menu, select **Check Abandoned Plugins** or **Check Abandoned Themes**.
+</Step>
+<Step title="Apply">
+Click **Apply**.
+
+MainWP scans the selected sites for abandoned items.
+</Step>
+</Steps>
+
+---
+
+## Manual Check from Updates Page
+
+### Check Abandoned Plugins
+
+<Steps>
+<Step title="Navigate to Abandoned Plugins">
+Go to **MainWP > Updates > Abandoned Plugins**.
+</Step>
+<Step title="Run check">
+Click **Check for Abandoned Plugins**.
+
+![Abandoned Plugins tab with Check for Abandoned Plugins button](/images/dashboard/sites-plugins-ccb2d0.png)
+</Step>
+</Steps>
+
+### Check Abandoned Themes
+
+<Steps>
+<Step title="Navigate to Abandoned Themes">
+Go to **MainWP > Updates > Abandoned Themes**.
+</Step>
+<Step title="Run check">
+Click **Check for Abandoned Themes**.
+
+![Abandoned Themes tab with Check for Abandoned Themes button](/images/dashboard/sites-plugins-56027e.png)
+</Step>
+</Steps>
+
+---
+
+## Adjust Abandoned Tolerance
+
+Change the number of days before an item is marked as abandoned:
+
+1. Go to **MainWP > Settings**
+2. Find **Updates Settings**
+3. Adjust **Abandoned plugins/themes tolerance** (default: 365 days)
+4. Click **Save Settings**
+
+---
+
+## What to Do with Abandoned Items
+
+When you identify abandoned plugins or themes:
+
+1. **Search for alternatives** - Look for actively maintained plugins with similar functionality
+2. **Check last commit date** - Some plugins on wordpress.org may have active GitHub development
+3. **Test replacements** - Install alternatives on a staging site first
+4. **Plan migration** - Replace abandoned items before they cause issues
+
+---
+
+## Self-Check Checklist
+
+- [ ] Abandoned plugins check completes successfully
+- [ ] Abandoned themes check completes successfully
+- [ ] Results display in the Updates page
+- [ ] Tolerance setting matches your requirements
+
+---
+
+## Related Resources
+
+- [Manage Plugins](/sites/plugins/managing-plugins-with-mainwp) - Full plugin management documentation
+- [Manage Themes](/sites/themes/managing-themes-with-mainwp) - Full theme management documentation
+- [What Does Possibly Abandoned Mean](/sites/updates/what-does-possibly-abandoned-mean) - Detailed explanation

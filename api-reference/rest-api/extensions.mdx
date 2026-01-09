@@ -1,0 +1,513 @@
+---
+title: Extensions Endpoints
+sidebarTitle: "Extensions"
+description: >-
+  33 REST API endpoints for MainWP extensions including SSL Monitor and Pro Reports.
+---
+
+Extension endpoints provide access to functionality from MainWP add-on extensions. These endpoints require the corresponding extension to be installed and active on your Dashboard.
+
+## What You'll Learn
+
+- SSL Monitor endpoints for certificate tracking
+- Pro Reports endpoints for activity reporting
+- Security scan and analytics data retrieval
+
+---
+
+## SSL Monitor
+
+The SSL Monitor extension tracks SSL certificate status across your child sites.
+
+<Note>
+Requires the [SSL Monitor Extension](https://mainwp.com/extension/ssl-monitor/) to be installed and active.
+</Note>
+
+---
+
+### GET /ssl-monitor/info/
+
+Retrieves SSL certificate information for all monitored sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/ssl-monitor/info/"
+```
+
+#### Response
+
+```json
+{
+  "sites": [
+    {
+      "id": 1,
+      "url": "https://example.com",
+      "ssl_issuer": "Let's Encrypt",
+      "ssl_valid_from": "2024-01-01",
+      "ssl_valid_to": "2024-04-01",
+      "ssl_days_remaining": 45,
+      "ssl_status": "valid"
+    }
+  ]
+}
+```
+
+---
+
+### POST /ssl-monitor/check/
+
+Triggers an SSL certificate check for all sites or a specific site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/ssl-monitor/check/"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site_id` | integer | No | Check specific site only |
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "SSL check initiated for all sites"
+}
+```
+
+---
+
+### GET /ssl-monitor/{site}/
+
+Retrieves SSL certificate information for a specific site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/ssl-monitor/1/"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+#### Response
+
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "ssl_issuer": "Let's Encrypt",
+  "ssl_valid_from": "2024-01-01",
+  "ssl_valid_to": "2024-04-01",
+  "ssl_days_remaining": 45,
+  "ssl_status": "valid",
+  "ssl_fingerprint": "AB:CD:EF:12:34:56:78:90"
+}
+```
+
+---
+
+## Pro Reports
+
+The Pro Reports extension generates detailed activity reports for your child sites. All Pro Reports endpoints retrieve historical activity data within a specified date range.
+
+<Note>
+Requires the [Pro Reports Extension](https://mainwp.com/extension/pro-reports/) to be installed and active.
+</Note>
+
+### Common Parameters
+
+All Pro Reports endpoints share these query parameters:
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `start_date` | string | Yes | Start date in Y-m-d format |
+| `end_date` | string | Yes | End date in Y-m-d format |
+| `action` | string | No | Filter by specific action type |
+| `format` | string | No | Response format (default: normal) |
+
+### Base Pattern
+
+```
+GET /wp-json/mainwp/v2/pro-reports/{site_id_or_domain}/{type}
+```
+
+---
+
+### GET /pro-reports/{site}/plugins
+
+Retrieves plugin activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/plugins?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `start_date` | string | Yes | Start date (Y-m-d) |
+| `end_date` | string | Yes | End date (Y-m-d) |
+| `action` | string | No | installed, activated, deactivated, updated, edited, deleted |
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "name": "Yoast SEO",
+      "action": "updated",
+      "date": "2024-01-15",
+      "old_version": "21.0",
+      "new_version": "21.1"
+    }
+  ]
+}
+```
+
+---
+
+### GET /pro-reports/{site}/themes
+
+Retrieves theme activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/themes?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | installed, activated, updated, edited, deleted |
+
+---
+
+### GET /pro-reports/{site}/posts
+
+Retrieves post activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/posts?start_date=2024-01-01&end_date=2024-01-31&action=created"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | created, updated, trashed, deleted, restored |
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "title": "New Blog Post",
+      "action": "created",
+      "date": "2024-01-15",
+      "author": "admin"
+    }
+  ]
+}
+```
+
+---
+
+### GET /pro-reports/{site}/pages
+
+Retrieves page activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/pages?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | created, updated, trashed, deleted, restored |
+
+---
+
+### GET /pro-reports/{site}/users
+
+Retrieves user activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/users?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | created, updated, deleted |
+
+---
+
+### GET /pro-reports/{site}/comments
+
+Retrieves comment activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/comments?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | created, approved, unapproved, trashed, spammed, deleted |
+
+---
+
+### GET /pro-reports/{site}/menus
+
+Retrieves menu activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/menus?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | created, updated, deleted |
+
+---
+
+### GET /pro-reports/{site}/media
+
+Retrieves media activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/media?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `action` | string | No | uploaded, edited, deleted |
+
+---
+
+### GET /pro-reports/{site}/wordpress
+
+Retrieves WordPress core update activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/wordpress?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "action": "updated",
+      "date": "2024-01-15",
+      "old_version": "6.4.1",
+      "new_version": "6.4.2"
+    }
+  ]
+}
+```
+
+---
+
+### GET /pro-reports/{site}/backups
+
+Retrieves backup activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/backups?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+### GET /pro-reports/{site}/maintenance
+
+Retrieves maintenance activity for a site within the date range.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/maintenance?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+### Security Scan Results
+
+Pro Reports can retrieve scan results from various security plugins.
+
+#### GET /pro-reports/{site}/sucuri
+
+Retrieves Sucuri scan results.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/sucuri?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+#### GET /pro-reports/{site}/wordfence
+
+Retrieves Wordfence scan results.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/wordfence?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+#### GET /pro-reports/{site}/ithemes
+
+Retrieves iThemes/Solid Security scan results.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/ithemes?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+### GET /pro-reports/{site}/lighthouse
+
+Retrieves Lighthouse performance audit results.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/lighthouse?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "date": "2024-01-15",
+      "performance": 85,
+      "accessibility": 92,
+      "best_practices": 100,
+      "seo": 95
+    }
+  ]
+}
+```
+
+---
+
+### Analytics Endpoints
+
+Pro Reports can retrieve analytics data from integrated platforms.
+
+#### GET /pro-reports/{site}/ga4
+
+Retrieves Google Analytics 4 data.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/ga4?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+#### GET /pro-reports/{site}/matomo
+
+Retrieves Matomo analytics data.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/matomo?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+---
+
+### GET /pro-reports/{site}/uptime
+
+Retrieves uptime monitoring data.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/pro-reports/1/uptime?start_date=2024-01-01&end_date=2024-01-31"
+```
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "date": "2024-01-15",
+      "uptime_percentage": 99.95,
+      "downtime_minutes": 2,
+      "incidents": 1
+    }
+  ]
+}
+```
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [SSL Monitor Extension](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Extension documentation
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Extension documentation

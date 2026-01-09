@@ -1,0 +1,522 @@
+---
+title: Manage Updates
+description: >-
+  Remotely update WordPress Core, plugins, themes, and translations on all
+  Child Sites. Enable auto-updates for trusted items, ignore specific updates,
+  and use the built-in rollback feature for failed updates.
+---
+
+The Manage Updates feature lets you run WordPress core, plugin, theme, and translation updates across all your child sites from your Dashboard. Configure automatic updates for trusted items, ignore updates you want to skip, and take advantage of the built-in rollback feature to recover from failed updates.
+
+## What You'll Accomplish
+
+- Update WordPress core, plugins, and themes individually or in bulk
+- Configure automatic updates for trusted plugins and themes
+- Ignore specific updates globally or per site
+- Use the rollback feature to recover from failed updates
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Sites synced recently to have current update data
+
+<Note>
+Before running updates, synchronize your child sites to ensure all available updates are displayed.
+</Note>
+
+---
+
+## Video Tutorials
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/LBP0A6_cbnU"
+  title="Manage Updates - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/igOn8wOBcAQ"
+  title="Manage Updates - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## WordPress Core Updates
+
+### Update All WordPress Installations
+
+<Steps>
+<Step title="Navigate to WordPress Updates">
+Go to **MainWP > Updates > WordPress Updates**.
+</Step>
+<Step title="Update all sites">
+Click **Update All Sites** in the table header.
+
+![WordPress Updates page showing Update All Sites button in the table header](/images/dashboard/sites-updates-3cf677.jpg)
+</Step>
+<Step title="Confirm">
+Confirm when prompted.
+</Step>
+</Steps>
+
+### Update a Single WordPress Installation
+
+<Steps>
+<Step title="Navigate to WordPress Updates">
+Go to **MainWP > Updates > WordPress Updates**.
+</Step>
+<Step title="Locate site">
+Find the WordPress installation in the table.
+</Step>
+<Step title="Update">
+Click **Update Now** in its row.
+</Step>
+</Steps>
+
+### Auto Update WordPress Core
+
+Enable automatic WordPress core updates in two steps: enable the feature, then enable it for individual sites.
+
+#### Enable Auto Updates Feature
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find Update Settings">
+Locate the **Update Settings** section.
+</Step>
+<Step title="Enable">
+Set **WP Core auto-updates** to **Install updates**.
+
+![Update Settings section showing WP Core auto-updates dropdown with Install updates option](/images/dashboard/sites-updates-61e181.jpg)
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+#### Enable Auto Update for a Site
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Edit site">
+Find the site and click **Edit** from the actions menu.
+</Step>
+<Step title="Enable auto update">
+Set **Auto Update Core** to **YES**.
+
+![Child Site Edit page showing Auto Update Core option set to Yes](/images/dashboard/sites-updates-25a36d.jpg)
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+<Note>
+MainWP Auto Update is independent from WordPress native auto-updates. It uses WP Cron and may take up to 24 hours after detecting an update. Use Uptime Robot to ping your Dashboard for reliable cron execution.
+</Note>
+
+### Ignore WordPress Core Updates
+
+#### Ignore Core Update for a Site
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Edit site">
+Find the site and click **Edit** from the actions menu.
+</Step>
+<Step title="Enable ignore">
+Set **Ignore Core Update** to **YES**.
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+#### Un-ignore Core Update
+
+Follow the same steps and set **Ignore Core Updates** to **NO**.
+
+---
+
+## Plugin Updates
+
+### Update All Plugins on All Sites
+
+<Steps>
+<Step title="Navigate to Plugin Updates">
+Go to **MainWP > Updates > Plugins**.
+</Step>
+<Step title="Update all">
+Click **Update All Plugins (Update All Sites)**.
+
+![Update All Plugins button in the Plugins Updates page header](/images/dashboard/7aa4706544cd.png)
+</Step>
+<Step title="Confirm">
+Confirm when prompted.
+</Step>
+</Steps>
+
+### Update a Single Plugin on All Sites
+
+<Steps>
+<Step title="Navigate to Plugin Updates">
+Go to **MainWP > Updates > Plugins Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Item**.
+</Step>
+<Step title="Locate plugin">
+Find the plugin you want to update.
+
+![Plugins Updates table showing available plugin updates per item view](/images/dashboard/40e442e0f3ce.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the plugin row.
+</Step>
+</Steps>
+
+### Update All Plugins on a Single Site
+
+<Steps>
+<Step title="Navigate to Plugin Updates">
+Go to **MainWP > Updates > Plugins Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site.
+
+![Plugins Updates table in per-site view showing child sites with available updates](/images/dashboard/f00099fe5665.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the site row.
+</Step>
+</Steps>
+
+### Update a Single Plugin on a Single Site
+
+<Steps>
+<Step title="Navigate to Plugin Updates">
+Go to **MainWP > Updates > Plugins Updates**.
+</Step>
+<Step title="Select view">
+Set **View updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site and expand its row.
+</Step>
+<Step title="Update plugin">
+Find the plugin and click **Update Now**.
+
+![Expanded site row showing individual plugins available for update with Update Now buttons](/images/dashboard/e5d671530774.png)
+</Step>
+</Steps>
+
+### Plugin Auto Updates
+
+#### Enable Auto Updates
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find Update Settings">
+Locate the **Updates Settings** section.
+</Step>
+<Step title="Enable">
+Set **Plugin automatic updates** to **Install Updates**.
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+#### Mark Plugins as Trusted
+
+<Steps>
+<Step title="Navigate to Auto Updates">
+Go to **MainWP > Plugins > Auto Updates**.
+</Step>
+<Step title="Filter plugins">
+Use **Status**, **Trust Status**, and **Keyword** filters to find plugins.
+</Step>
+<Step title="Search">
+Click **Show Plugins**.
+</Step>
+<Step title="Select and trust">
+Check the plugins to trust, select **Trust** from **Bulk Actions**, and click **Apply**.
+
+![Plugins Auto Updates page showing plugin list with checkboxes and Bulk Actions dropdown](/images/dashboard/c85c94240a94.png)
+</Step>
+</Steps>
+
+### Ignore Plugin Updates
+
+| Ignore Type | Scope |
+|-------------|-------|
+| Ignore Globally | All versions, all sites |
+| Ignore this version | This version, this site only |
+| Ignore this version globally | This version, all sites |
+| Ignore all versions | All versions, this site only |
+
+<Steps>
+<Step title="Navigate to Plugin Updates">
+Go to **MainWP > Updates > Plugins Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Item**.
+</Step>
+<Step title="Ignore">
+Find the plugin and select your ignore option.
+
+![Plugin ignore options dropdown showing Ignore Globally, Ignore this version, and other options](/images/dashboard/sites-updates-8161c2.png)
+</Step>
+</Steps>
+
+#### Un-ignore a Plugin
+
+<Steps>
+<Step title="Navigate to Ignored Updates">
+Go to **MainWP > Plugins > Ignored Updates**.
+</Step>
+<Step title="Un-ignore">
+Find the plugin and click **Unignore**.
+
+![Plugins Ignored Updates table showing Unignore button in a plugin row](/images/dashboard/sites-updates-af6bd4.png)
+</Step>
+</Steps>
+
+---
+
+## Theme Updates
+
+### Update All Themes on All Sites
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Updates > Themes Updates**.
+</Step>
+<Step title="Update all">
+Click **Update All Sites (Update All Themes)**.
+
+![MainWP Themes Updates page with Update All Sites button highlighted](/images/dashboard/sites-updates-0716a8.png)
+</Step>
+<Step title="Confirm">
+Confirm when prompted.
+</Step>
+</Steps>
+
+### Update a Single Theme on All Sites
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Plugin/Theme**.
+</Step>
+<Step title="Locate theme">
+Find the theme you want to update.
+
+![Theme Updates table with Update All button for updating a single theme across all sites](/images/dashboard/sites-updates-b8c406.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the theme row.
+</Step>
+</Steps>
+
+### Update All Themes on a Single Site
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site.
+
+![Theme Updates table showing Update All button for a single child site](/images/dashboard/sites-updates-cfef40.png)
+</Step>
+<Step title="Update">
+Click **Update All** in the site row.
+</Step>
+</Steps>
+
+### Update a Single Theme on a Single Site
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Site**.
+</Step>
+<Step title="Locate site">
+Find the child site and expand its row.
+</Step>
+<Step title="Update theme">
+Find the theme and click **Update Now**.
+
+![Themes Updates per-site view showing expanded row with individual theme Update Now button](/images/dashboard/sites-updates-7a93fc.png)
+</Step>
+</Steps>
+
+### Theme Auto Updates
+
+#### Enable Auto Updates
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find Update Settings">
+Locate the **Update Settings** section.
+</Step>
+<Step title="Enable">
+Enable **Theme Automatic Updates**.
+
+![Update Settings section showing Theme Automatic Updates toggle enabled](/images/dashboard/sites-updates-422515.jpg)
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+#### Mark Themes as Trusted
+
+<Steps>
+<Step title="Navigate to Auto Updates">
+Go to **MainWP > Themes > Auto Updates**.
+</Step>
+<Step title="Filter themes">
+Use **Status**, **Trust Status**, and **Keyword** filters to find themes.
+</Step>
+<Step title="Search">
+Click **Show Themes**.
+</Step>
+<Step title="Select and trust">
+Check the themes to trust, select **Trust** from **Bulk Actions**, and click **Confirm**.
+
+![Themes Auto Updates page showing theme list with checkboxes and Bulk Actions dropdown](/images/dashboard/sites-updates-df2cc6.png)
+</Step>
+</Steps>
+
+### Ignore Theme Updates
+
+| Ignore Type | Scope |
+|-------------|-------|
+| Ignore Globally | All versions, all sites |
+| Ignore this version | This version, this site only |
+| Ignore this version globally | This version, all sites |
+| Ignore all versions | All versions, this site only |
+
+<Steps>
+<Step title="Navigate to Theme Updates">
+Go to **MainWP > Updates > Themes Updates**.
+</Step>
+<Step title="Select view">
+Set **Show updates per** to **Item**.
+</Step>
+<Step title="Ignore">
+Find the theme and select your ignore option.
+
+![Theme ignore options dropdown showing Ignore Globally, Ignore this version, and other options](/images/dashboard/sites-updates-e4ecf4.png)
+</Step>
+</Steps>
+
+#### Un-ignore a Theme
+
+<Steps>
+<Step title="Navigate to Ignored Updates">
+Go to **MainWP > Themes > Ignored Updates**.
+</Step>
+<Step title="Un-ignore">
+Find the theme and click **Unignore**.
+
+![Themes Ignored Updates table showing Unignore button in a theme row](/images/dashboard/sites-updates-750c6c.png)
+</Step>
+</Steps>
+
+---
+
+## Safe Updates / Rollback
+
+MainWP 5.1 introduced a rollback feature that integrates with the WordPress core rollback feature from WordPress 6.3.
+
+<Warning>
+Child sites must run WordPress 6.3 or above for the rollback feature to work.
+</Warning>
+
+### How Rollback Works
+
+The rollback feature is active on all MainWP Dashboard pages where updates can be triggered, including the Updates page, Manage Plugins, Manage Themes, and extension pages. It works for both individual and bulk updates.
+
+![Shows the rollback feature in action after a failed plugin update.](/images/dashboard/sites-updates-7155cb.png)
+
+### Rollback Notices
+
+When a rollback occurs, an orange icon with a tooltip appears. This notice persists on relevant Dashboard pages until the plugin or theme is successfully updated.
+
+![Rollback icon signifying a rollback persisting throughout the Dashboard.](/images/dashboard/sites-updates-7814c6.png)
+
+### Manual Rollback
+
+During updates, WordPress stores the current version temporarily. If the update fails, that version is restored. There is no permanent storage for manual rollback to previous versions.
+
+To install a previous version of a WordPress.org plugin:
+
+<Steps>
+<Step title="Visit plugin page">
+Navigate to the plugin page on wordpress.org (e.g., https://wordpress.org/plugins/mainwp/).
+</Step>
+<Step title="Open Advanced">
+Click **Advanced** in the sidebar.
+</Step>
+<Step title="Download version">
+Select the desired version from the dropdown and click **Download**.
+
+![Downloading older versions of plugins from wordpress.org](/images/dashboard/sites-updates-9fbf05.png)
+</Step>
+<Step title="Install">
+Upload and install the plugin via [Install by Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload).
+</Step>
+</Steps>
+
+For premium plugins and themes not on wordpress.org, use the [Favorites Extension](https://mainwp.com/extension/favorites/) to store versions for rollback.
+
+---
+
+## Self-Check Checklist
+
+- [ ] WordPress core updates complete successfully
+- [ ] Plugin updates work for individual and bulk operations
+- [ ] Theme updates work for individual and bulk operations
+- [ ] Auto updates are configured for trusted items
+- [ ] Ignored updates no longer appear in update lists
+- [ ] Rollback feature functions on WordPress 6.3+ sites
+
+---
+
+## Related Resources
+
+- [Does MainWP Have Safe Updates](/sites/updates/does-mainwp-have-safe-updates) - Learn about update safety features
+- [Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Adjust sync and update timing
+- [Manage Plugins](/sites/plugins/managing-plugins-with-mainwp) - Full plugin management
+- [Manage Themes](/sites/themes/managing-themes-with-mainwp) - Full theme management

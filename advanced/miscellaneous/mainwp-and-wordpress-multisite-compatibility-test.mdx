@@ -1,0 +1,126 @@
+---
+title: MainWP and WordPress Multisite compatibility test
+sidebarTitle: "Multisite Compatibility"
+description: >-
+  Compatibility findings between MainWP and WordPress Multisite setups,
+  including which features work and known limitations.
+---
+
+MainWP is not specifically designed for managing WordPress Multisite networks. However, many features work properly when connecting individual subsites to a MainWP Dashboard. This page documents our compatibility testing.
+
+## What You'll Learn
+
+- How to set up MainWP with Multisite subsites
+- Which MainWP features work with Multisite
+- Known limitations and behaviors
+
+---
+
+## Setup
+
+Install the MainWP Child plugin in the standard `wp-content/plugins/` directory. You can activate it:
+
+- **Network-wide**: From Network Settings panel for all subsites
+- **Per-subsite**: Individually for specific subsites
+
+As long as MainWP Child is active on a subsite, you can connect it to your MainWP Dashboard.
+
+<Warning>
+When adding subdomain URLs, do NOT include a leading `/` in the URL. Including it can result in a 403 Forbidden error. If this happens, use SFTP to delete the plugin, remove the subdomain sites from MainWP, and clear the server cache.
+</Warning>
+
+---
+
+## Compatibility Summary
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Adding sites | Works | Avoid leading `/` in subdomain URLs |
+| Synchronization | Works | No issues |
+| Security checks | Works | No issues |
+| Reconnecting sites | Works | No issues |
+| Plugin updates | Works* | One update shows for all subsites |
+| Theme updates | Works* | One update shows for all subsites |
+| Translation updates | Works | Same behavior as plugins/themes |
+| Posts management | Works | Full functionality |
+| Pages management | Works | Full functionality |
+| Plugin install/delete | Works* | Changes affect entire network |
+| Theme install/delete | Works* | Changes affect entire network |
+| User creation | Partial | May fail if user exists on another subsite |
+| User deletion | Works | No issues |
+
+---
+
+## Feature Details
+
+### Sites Management
+
+![MainWP Sites Management interface with multisite subsites](/images/miscellaneous/advanced-miscellaneous-604f36.jpg)
+
+- Synchronization works without issues
+- Security issue detection and fixing works
+- Site reconnection works normally
+
+### Updates Management
+
+![MainWP Updates Management showing multisite plugin updates](/images/miscellaneous/advanced-miscellaneous-627b3e.jpg)
+
+Updates are detected normally, with one important behavior to understand:
+
+| Behavior | Description |
+|----------|-------------|
+| Detection | One update displays as available on all subsites |
+| Updating | Updating on any site applies to the entire network |
+| Abandoned detection | Works normally, same behavior as updates |
+
+### Content Management
+
+Posts and pages work fully:
+
+- Publishing content (including meta) works as expected
+- Changing post/page status works
+- Deleting posts/pages works
+
+### Plugin & Theme Management
+
+Installing and managing plugins/themes works, but changes affect the entire network:
+
+| Action | Behavior |
+|--------|----------|
+| Install | Available on all network sites immediately |
+| Activate/Deactivate | Works per-subsite |
+| Delete | Removes from all network sites |
+
+### User Management
+
+| Action | Status | Notes |
+|--------|--------|-------|
+| Create users | Partial | Fails if user already exists on another subsite |
+| Delete users | Works | No issues |
+
+---
+
+## Key Considerations
+
+Before using MainWP with Multisite:
+
+1. **Network-wide changes**: Plugin and theme installations/deletions affect all subsites
+2. **Duplicate updates**: The same update may appear multiple times (once per subsite)
+3. **User limitations**: Creating users across subsites may fail if the username already exists
+4. **Not officially supported**: While many features work, Multisite is not MainWP's primary use case
+
+---
+
+## Self-Check Checklist
+
+- [ ] MainWP Child activated on target subsites
+- [ ] Subdomain URLs entered without leading `/`
+- [ ] Sites successfully syncing
+- [ ] Understood that plugin/theme changes affect entire network
+
+---
+
+## Related Resources
+
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - General hosting information
+- [Add New Site](/sites/management/manage-child-sites) - Adding sites to MainWP

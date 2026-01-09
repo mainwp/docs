@@ -1,0 +1,113 @@
+---
+title: Why can't I edit email templates in my MainWP Dashboard?
+sidebarTitle: "Email Template Editing"
+description: >-
+  Email template changes not saving may be caused by DISALLOW_FILE_EDIT in
+  wp-config.php. Remove or set this constant to false to enable template editing
+  through the MainWP Dashboard interface.
+---
+
+When editing email templates in MainWP (such as Uptime Monitoring notifications), changes may not save and content resets after refreshing the page. This is typically caused by a WordPress security setting.
+
+## What You'll Learn
+
+- Why email template changes don't save
+- How to check if file editing is disabled
+- How to enable template editing
+
+## Prerequisites
+
+- Admin access to your Dashboard site
+- FTP or file manager access to edit wp-config.php
+
+---
+
+## Why This Happens
+
+WordPress includes a security constant that prevents editing theme and plugin files through the admin interface. When enabled, this setting also blocks MainWP from saving email template changes.
+
+The constant in wp-config.php:
+
+```php
+define('DISALLOW_FILE_EDIT', true);
+```
+
+This setting is often added by:
+- Security plugins
+- Managed WordPress hosts
+- Security-conscious server administrators
+
+---
+
+## Check if File Editing is Disabled
+
+You can determine if this setting is enabled by looking for these options in your Dashboard site's WP Admin:
+
+| Menu Location | If Visible | If Missing |
+|---------------|------------|------------|
+| Plugins > Plugin File Editor | File editing enabled | File editing disabled |
+| Appearance > Theme File Editor | File editing enabled | File editing disabled |
+
+If both menu items are missing, `DISALLOW_FILE_EDIT` is set to `true`.
+
+---
+
+## Enable Email Template Editing
+
+<Steps>
+<Step title="Access wp-config.php">
+Connect to your Dashboard site via FTP or your hosting file manager and open `wp-config.php`.
+</Step>
+<Step title="Find the constant">
+Search for this line:
+
+```php
+define('DISALLOW_FILE_EDIT', true);
+```
+</Step>
+<Step title="Modify or remove">
+Either remove the line completely, or change `true` to `false`:
+
+```php
+define('DISALLOW_FILE_EDIT', false);
+```
+</Step>
+<Step title="Save the file">
+Save wp-config.php and upload it back to your server.
+</Step>
+<Step title="Test template editing">
+Return to your MainWP Dashboard and try editing an email template. Changes should now save successfully.
+</Step>
+</Steps>
+
+---
+
+## Security Considerations
+
+The `DISALLOW_FILE_EDIT` constant exists for security reasons—it prevents attackers who gain admin access from modifying code through the WordPress interface.
+
+### Alternative Approaches
+
+If you prefer to keep file editing disabled for security:
+
+| Option | Description |
+|--------|-------------|
+| Edit via FTP | Modify template files directly on the server |
+| Temporarily enable | Enable only when editing templates, then disable again |
+| Use child theme | Override templates via a child theme |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Checked for Plugin/Theme File Editor in WP Admin menus
+- [ ] Located DISALLOW_FILE_EDIT in wp-config.php
+- [ ] Modified or removed the constant
+- [ ] Email template changes now save successfully
+
+---
+
+## Related Resources
+
+- [MainWP Dashboard Not Sending Emails](/troubleshooting/my-mainwp-dashboard-not-sending-emails) - Email delivery issues
+- [Change From Address](/customization/how-to-change-the-from-address-for-mainwp-emails) - Customize sender email

@@ -1,0 +1,130 @@
+---
+title: Limited Access to WordPress.org Resources and its Impact on MainWP Users
+sidebarTitle: "WordPress.org Access Issues"
+description: >-
+  Workarounds for child sites with restricted access to WordPress.org resources,
+  affecting plugin installation and update detection.
+---
+
+Some hosting environments have restricted access to WordPress.org resources. This affects the ability to install plugins and themes or retrieve update information through standard WordPress APIs. While MainWP itself continues to function normally, child sites in affected environments may experience limitations when managing updates through your Dashboard.
+
+## What You'll Learn
+
+- How to identify if your sites are affected
+- Alternative methods for installing plugins and themes
+- How to check for updates manually
+
+---
+
+## Who Is Affected
+
+This issue primarily impacts:
+
+- Sites hosted with certain providers that have implemented access restrictions
+- Hosting environments with aggressive security policies that block external API calls
+- Networks with firewalls that filter WordPress.org traffic
+
+If your child sites can install plugins and check for updates directly through their wp-admin, they are not affected. The restriction operates at the hosting or network level.
+
+---
+
+## How This Affects MainWP
+
+### Plugin and Theme Installation
+
+When you try to install plugins or themes from WordPress.org through MainWP on affected sites, the operation fails with timeout errors. The hosting environment blocks the connection before the download can complete.
+
+### Update Detection
+
+Affected child sites cannot retrieve update information from WordPress.org. MainWP relies on each child site to report available updates. If a site cannot check WordPress.org, MainWP won't show pending updates for that site's WordPress.org plugins and themes.
+
+### Common Error Messages
+
+| Symptom | Indicates |
+|---------|-----------|
+| Connection timeout during installation | Blocked WordPress.org access |
+| "Could not retrieve plugin information" | API request blocked |
+| Updates not appearing | Cannot check WordPress.org for versions |
+| Empty search results | Repository access blocked |
+
+---
+
+## Alternative Methods
+
+### Upload via ZIP File
+
+Download plugins and themes directly from WordPress.org on your local computer, then upload through MainWP:
+
+<Steps>
+<Step title="Download from WordPress.org">
+Visit WordPress.org and download the plugin or theme ZIP file to your computer.
+</Step>
+<Step title="Open Install Plugins in MainWP">
+Go to **MainWP > Plugins > Install Plugins**.
+</Step>
+<Step title="Select Upload tab">
+Choose the **Upload** tab.
+</Step>
+<Step title="Upload and install">
+Choose your ZIP file, select target sites, and click **Install**.
+</Step>
+</Steps>
+
+See [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp#install-by-upload) for detailed instructions.
+
+### Use MainWP Favorites
+
+The Favorites extension lets you store plugins and themes for deployment:
+
+1. Download the plugin or theme ZIP from WordPress.org
+2. Add it to your Favorites library in MainWP
+3. Deploy to any child site without needing WordPress.org access
+
+This approach works well when you deploy the same plugins across multiple sites.
+
+### Manual Installation
+
+For individual sites:
+
+1. Access the child site's wp-admin (use Jump to WP Admin or log in directly)
+2. Navigate to **Plugins > Add New > Upload Plugin**
+3. Upload the ZIP file and activate
+
+After installation, sync the site in MainWP to update your Dashboard's plugin inventory.
+
+---
+
+## Check for Updates Manually
+
+If update detection is affected:
+
+1. Visit WordPress.org plugin pages directly to check current versions
+2. Compare against the versions shown in MainWP for your sites
+3. Download and upload updates using the ZIP method
+
+---
+
+## Recommendations
+
+- Bookmark WordPress.org pages for plugins you use frequently
+- Keep local copies of essential plugin ZIP files
+- Use the Favorites extension to maintain a deployment library
+
+MainWP's self-hosted architecture means your Dashboard and child sites communicate directly without routing through MainWP servers. The restriction affects only the connection between your sites and WordPress.org.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Identified which child sites are affected
+- [ ] Downloaded essential plugins as ZIP files
+- [ ] Set up Favorites library for common plugins
+- [ ] Tested ZIP upload installation method
+
+---
+
+## Related Resources
+
+- [Managing Plugins](/sites/plugins/managing-plugins-with-mainwp) - Plugin management overview
+- [Favorites Extension](/add-ons/development/favorites-extension) - Plugin library management
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Hosting information

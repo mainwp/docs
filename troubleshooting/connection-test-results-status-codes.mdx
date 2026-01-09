@@ -1,0 +1,158 @@
+---
+title: Connection test results (HTTP Status Codes)
+description: >-
+  Reference guide for HTTP status codes returned by MainWP connection tests.
+  Covers 2xx success codes, 3xx redirections, 4xx client errors like 403 and
+  404, and 5xx server errors to help diagnose connection issues.
+---
+
+When you run a connection test in MainWP, the result includes an HTTP status code that indicates whether the request succeeded or failed. This reference helps you interpret those codes and understand what action to take.
+
+## What You'll Learn
+
+- Interpret HTTP status codes from connection tests
+- Identify which codes indicate success vs. failure
+- Understand common causes for specific error codes
+- Determine next steps based on the status code
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- A child site you're testing connection to
+
+---
+
+## How to Run a Connection Test
+
+Go to **MainWP > Sites > Manage Sites**, find the site, and click **Test Connection** from the site's action menu. The result displays the HTTP status code returned by the child site server.
+
+---
+
+## 2xx – Success Codes
+
+These codes indicate the request was received and processed successfully.
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 200 | OK | Standard response for successful HTTP requests |
+| 201 | Created | Request has been fulfilled; new resource created |
+| 202 | Accepted | Request accepted, processing pending. **Note:** On SiteGround, this may indicate a captcha challenge blocking MainWP |
+| 203 | Non-Authoritative Information | Request processed, information may be from another source |
+| 204 | No Content | Request processed, no content returned |
+| 205 | Reset Content | Request processed, no content returned, reset the document view |
+| 206 | Partial Content | Partial resource return due to the request header |
+| 207 | Multi-Status | XML can contain multiple separate responses |
+| 208 | Already Reported | Results previously returned |
+| 226 | IM Used | Request fulfilled, the response is instance-manipulations |
+
+**200 OK** is the expected result for a successful connection test.
+
+---
+
+## 3xx – Redirection Codes
+
+These codes indicate the request was redirected to another location.
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 300 | Multiple Choices | Multiple options for the resource delivered |
+| 301 | Moved Permanently | This and all future requests directed to the given URI |
+| 302 | Found | Temporary response to request found via alternative URI |
+| 303 | See Other | Permanent response to request found via alternative URI |
+| 304 | Not Modified | Resource has not been modified since last requested |
+| 305 | Use Proxy | Content located elsewhere, retrieve from there |
+| 306 | Reserved | Subsequent requests should use the specified proxy |
+| 307 | Temporary Redirect | Connect again to different URI as provided |
+| 308 | Permanent Redirect | Resumable HTTP requests |
+
+**Common cause:** The child site URL has changed (HTTP to HTTPS, www to non-www, or domain change). Update the site URL in MainWP to match the current address.
+
+---
+
+## 4xx – Client Error Codes
+
+These codes indicate the request failed due to a client-side issue.
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 400 | Bad Request | Request cannot be fulfilled due to bad syntax |
+| 401 | Unauthorized | Authentication is possible but has failed |
+| 402 | Payment Required | Payment required, reserved for future use |
+| 403 | Forbidden | Server refuses to respond to the request |
+| 404 | Not Found | Requested resource could not be found |
+| 405 | Method Not Allowed | Request method not supported by that resource |
+| 406 | Not Acceptable | Content not acceptable according to the Accept headers |
+| 407 | Proxy Authentication Required | Client must first authenticate itself with the proxy |
+| 408 | Request Timeout | Server timed out waiting for the request |
+| 409 | Conflict | Request could not be processed because of conflict |
+| 410 | Gone | Resource is no longer available and will not be available again |
+| 411 | Length Required | Request did not specify the length of its content |
+| 412 | Precondition Failed | Server does not meet request preconditions |
+| 413 | Request Entity Too Large | Request is larger than the server is willing or able to process |
+| 414 | Request-URI Too Long | URI provided was too long for the server to process |
+| 415 | Unsupported Media Type | Server does not support the media type |
+| 416 | Requested Range Not Satisfiable | The client has asked for unprovable portion of the file |
+| 417 | Expectation Failed | Server cannot meet requirements of Expect request-header field |
+| 422 | Unprocessable Entity | Request unable to be followed due to semantic errors |
+| 423 | Locked | Resource that is being accessed is locked |
+| 424 | Failed Dependency | Resource that is being accessed is locked |
+| 426 | Upgrade Required | Client should switch to a different protocol |
+| 428 | Precondition Required | Origin server requires the request to be conditional |
+| 429 | Too Many Requests | User has sent too many requests in a given amount of time |
+| 431 | Request Header Fields Too Large | Server is unwilling to process the request |
+
+### Common 4xx Codes in MainWP
+
+| Code | Likely Cause | Action |
+|------|--------------|--------|
+| 403 | Firewall blocking the request | Whitelist your Dashboard IP in the child site's firewall |
+| 404 | MainWP Child plugin not installed or deactivated | Install and activate MainWP Child on the child site |
+| 415 | ModSecurity or Imunify360 blocking the request | Add exclusion rule for your Dashboard IP |
+| 429 | Rate limiting by host or security plugin | Wait and retry, or whitelist your Dashboard IP |
+
+---
+
+## 5xx – Server Error Codes
+
+These codes indicate the request failed due to a server-side issue on the child site.
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 500 | Internal Server Error | Generic error message |
+| 501 | Not Implemented | Server does not recognize the method or lacks the ability to fulfill |
+| 502 | Bad Gateway | Server received an invalid response from the upstream server |
+| 503 | Service Unavailable | Server is currently unavailable |
+| 504 | Gateway Timeout | Gateway did not receive a response from the upstream server |
+| 505 | HTTP Version Not Supported | Server does not support the HTTP protocol version |
+| 506 | Variant Also Negotiates | Content negotiation for the request results in a circular reference |
+| 507 | Insufficient Storage | Server is unable to store the representation |
+| 508 | Loop Detected | Server detected an infinite loop while processing the request |
+| 509 | Bandwidth Limit Exceeded | Hosting bandwidth limit reached |
+| 510 | Not Extended | Further extensions to the request are required |
+| 511 | Network Authentication Required | Client needs to authenticate to gain network access |
+
+### Common 5xx Codes in MainWP
+
+| Code | Likely Cause | Action |
+|------|--------------|--------|
+| 500 | PHP error on child site | Enable error logging and check the debug.log file |
+| 502 | Proxy or load balancer issue | Contact hosting support |
+| 503 | Server overloaded or in maintenance | Wait and retry, or contact hosting support |
+| 504 | Request took too long | Increase PHP timeout limits or contact hosting support |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Ran connection test and noted the status code
+- [ ] Identified whether the code indicates success (2xx) or error (4xx/5xx)
+- [ ] Reviewed common causes for the specific code
+- [ ] Took appropriate action based on the code meaning
+
+---
+
+## Related Resources
+
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Resolve common connection issues
+- [How to Enable Error Logging](/troubleshooting/how-to-enable-error-logging) - Debug 500 errors
+- [Force Reconnection](/troubleshooting/how-can-i-force-my-mainwp-dashboard-to-reestablish-connection-with-child-sites) - Re-establish connections

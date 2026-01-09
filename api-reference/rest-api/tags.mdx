@@ -1,0 +1,99 @@
+---
+title: Tags Endpoints
+sidebarTitle: "Tags"
+description: >-
+  REST API endpoint for retrieving site tags (groups) in MainWP.
+---
+
+Retrieve tag information used to organize your child sites.
+
+## What You'll Learn
+
+- Listing and filtering tags
+- Assigning tags to sites via other endpoints
+
+---
+
+## GET /tags
+
+Returns all tags with pagination support.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/tags"
+```
+
+### Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 10 | Items per page |
+| `search` | string | No | — | Search in tag name |
+| `include` | string | No | — | Comma-separated tag IDs to include |
+| `exclude` | string | No | — | Comma-separated tag IDs to exclude |
+
+### Response
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Production",
+    "color": "#3498db",
+    "sites_count": 25,
+    "created_at": "2024-01-01T00:00:00"
+  },
+  {
+    "id": 2,
+    "name": "Staging",
+    "color": "#e74c3c",
+    "sites_count": 10,
+    "created_at": "2024-01-01T00:00:00"
+  },
+  {
+    "id": 3,
+    "name": "Development",
+    "color": "#2ecc71",
+    "sites_count": 5,
+    "created_at": "2024-01-01T00:00:00"
+  }
+]
+```
+
+---
+
+<Note>
+The REST API v2 provides read-only access to tags. For tag creation, modification, and deletion, use the [Abilities API](/api-reference/abilities-api/tags) or the Dashboard interface.
+</Note>
+
+---
+
+## Assigning Tags to Sites
+
+Tags can be assigned to sites when creating or editing sites via the REST API:
+
+```bash
+# Assign tags when adding a site
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/add?url=https://example.com&name=My%20Site&admin=admin&groupids=1,2"
+
+# Update tags on an existing site
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/edit?groupids=1,3"
+```
+
+The `groupids` parameter accepts a comma-separated list of tag IDs.
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management
+- [Abilities API Tags](/api-reference/abilities-api/tags) - Full tag management
+

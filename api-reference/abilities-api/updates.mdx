@@ -1,0 +1,594 @@
+---
+title: Updates Abilities
+sidebarTitle: "Updates"
+description: >-
+  13 abilities for checking and applying WordPress updates across MainWP child sites.
+---
+
+MainWP registers 13 update management abilities into the WordPress Abilities API framework. These enable programmatic control over WordPress core, plugin, theme, and translation updates across your network.
+
+## What You'll Learn
+
+- Listing available updates across all sites
+- Applying WordPress core, plugin, theme, and translation updates
+- Managing ignored updates
+- Batch update operations
+
+---
+
+## mainwp/list-updates-v1
+
+List available updates across all sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-updates-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Filter to specific sites |
+| `types` | array | No | [] | Filter: `core`, `plugins`, `themes`, `translations` |
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 50 | Items per page (max 200) |
+
+**Response:**
+
+```json
+{
+  "updates": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "plugin",
+      "slug": "akismet/akismet.php",
+      "name": "Akismet Anti-spam",
+      "current_version": "5.3",
+      "new_version": "5.3.1"
+    }
+  ],
+  "summary": {
+    "core": 2,
+    "plugins": 15,
+    "themes": 3,
+    "translations": 5,
+    "total": 25
+  },
+  "page": 1,
+  "per_page": 50,
+  "total": 25
+}
+```
+
+---
+
+## mainwp/run-updates-v1
+
+Execute updates on sites. Operations affecting more than 200 sites are queued for background processing.
+
+**Method:** POST
+
+```bash
+# Update specific plugin on all sites
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"types":["plugins"],"specific_items":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-updates-v1/run'
+
+# Update all plugins on specific sites
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1,2,3],"types":["plugins"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-updates-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Sites to update. Empty = all with updates |
+| `types` | array | No | [] | Update types: `core`, `plugins`, `themes`, `translations` |
+| `specific_items` | array | No | [] | Specific slugs to update |
+
+**Response:**
+
+```json
+{
+  "updated": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "plugin",
+      "slug": "akismet/akismet.php",
+      "name": "Akismet",
+      "old_version": "5.3",
+      "new_version": "5.3.1"
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "total_updated": 5,
+    "total_errors": 0,
+    "sites_updated": 3
+  }
+}
+```
+
+---
+
+## mainwp/get-site-updates-v1
+
+Get available updates for a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-updates-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `types` | array | No | [] | Filter: `core`, `plugins`, `themes`, `translations` |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "site_name": "Site 1",
+  "updates": [
+    {
+      "type": "plugin",
+      "slug": "akismet/akismet.php",
+      "name": "Akismet",
+      "current_version": "5.3",
+      "new_version": "5.3.1"
+    }
+  ],
+  "summary": {
+    "core": 0,
+    "plugins": 3,
+    "themes": 1,
+    "translations": 2,
+    "total": 6
+  }
+}
+```
+
+---
+
+## mainwp/update-site-core-v1
+
+Update WordPress core on a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-core-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "updated": true,
+  "old_version": "6.4.1",
+  "new_version": "6.4.2"
+}
+```
+
+---
+
+## mainwp/update-site-plugins-v1
+
+Update plugins on a single site.
+
+**Method:** POST
+
+```bash
+# Update specific plugins
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-plugins-v1/run'
+
+# Update all plugins
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | No | [] | Specific plugins to update. Empty = all |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "updated": [
+    {
+      "slug": "akismet/akismet.php",
+      "name": "Akismet",
+      "old_version": "5.3",
+      "new_version": "5.3.1"
+    }
+  ],
+  "errors": [],
+  "total_updated": 1
+}
+```
+
+---
+
+## mainwp/update-site-themes-v1
+
+Update themes on a single site.
+
+**Method:** POST
+
+```bash
+# Update specific themes
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["twentytwentyfour"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-themes-v1/run'
+
+# Update all themes
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-themes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | No | [] | Specific themes to update. Empty = all |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "updated": [
+    {
+      "slug": "twentytwentyfour",
+      "name": "Twenty Twenty-Four",
+      "old_version": "1.0",
+      "new_version": "1.1"
+    }
+  ],
+  "errors": [],
+  "total_updated": 1
+}
+```
+
+---
+
+## mainwp/update-site-translations-v1
+
+Update translations on a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-translations-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "updated": true,
+  "translations_updated": 5
+}
+```
+
+---
+
+## mainwp/list-ignored-updates-v1
+
+List updates marked as ignored.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-ignored-updates-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 50 | Items per page |
+
+**Response:**
+
+```json
+{
+  "ignored": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "plugin",
+      "slug": "woocommerce/woocommerce.php",
+      "name": "WooCommerce",
+      "ignored_version": "8.5.0"
+    }
+  ],
+  "total": 5
+}
+```
+
+---
+
+## mainwp/set-ignored-updates-v1
+
+Add or remove items from ignored updates list.
+
+**Method:** POST
+
+```bash
+# Ignore a plugin update
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"action":"ignore","site_id_or_domain":1,"type":"plugin","slug":"woocommerce/woocommerce.php"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-ignored-updates-v1/run'
+
+# Unignore
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"action":"unignore","site_id_or_domain":1,"type":"plugin","slug":"woocommerce/woocommerce.php"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-ignored-updates-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `action` | string | Yes | — | `ignore` or `unignore` |
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `type` | string | Yes | — | `core`, `plugin`, or `theme` |
+| `slug` | string | Yes | — | Item slug (use `wordpress` for core) |
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "action": "ignore",
+  "site_id": 1,
+  "type": "plugin",
+  "slug": "woocommerce/woocommerce.php"
+}
+```
+
+---
+
+## mainwp/ignore-site-core-v1
+
+Manage core update ignore status for a site.
+
+**Method:** POST
+
+```bash
+# Ignore core updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"add"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-core-v1/run'
+
+# Unignore core updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"remove"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-core-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "action": "add",
+  "core_ignored": true
+}
+```
+
+---
+
+## mainwp/ignore-site-plugins-v1
+
+Manage plugin ignore status for a site.
+
+**Method:** POST
+
+```bash
+# Ignore plugin updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"add","slugs":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-plugins-v1/run'
+
+# Unignore plugin updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"remove","slugs":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
+| `slugs` | array | Yes | — | Plugin slugs to ignore/unignore |
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "action": "add",
+  "plugins_ignored": ["akismet/akismet.php"]
+}
+```
+
+---
+
+## mainwp/ignore-site-themes-v1
+
+Manage theme ignore status for a site.
+
+**Method:** POST
+
+```bash
+# Ignore theme updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"add","slugs":["twentytwenty"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-themes-v1/run'
+
+# Unignore theme updates
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"action":"remove","slugs":["twentytwenty"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-themes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
+| `slugs` | array | Yes | — | Theme slugs to ignore/unignore |
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "site_id": 1,
+  "action": "add",
+  "themes_ignored": ["twentytwenty"]
+}
+```
+
+---
+
+## mainwp/update-all-v1
+
+Execute all available updates across sites. Use with caution on production environments.
+
+**Method:** POST
+
+```bash
+# Update everything on all sites
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-all-v1/run'
+
+# Update everything on specific sites
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-all-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Sites to update. Empty = all sites |
+
+**Response:**
+
+```json
+{
+  "updated": {
+    "core": 2,
+    "plugins": 15,
+    "themes": 3,
+    "translations": 5
+  },
+  "errors": [],
+  "summary": {
+    "total_updated": 25,
+    "total_errors": 0,
+    "sites_updated": 10
+  }
+}
+```
+
+<Warning>
+This ability applies all available updates including WordPress core. Test on staging sites before running against production environments.
+</Warning>
+
+---
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - API basics and authentication
+- [Sites Abilities](/api-reference/abilities-api/sites) - Site management abilities
+- [REST API Updates](/api-reference/rest-api/updates) - REST API alternative for updates
+- [Manage Updates](/sites/updates/manage-updates) - Update management in Dashboard

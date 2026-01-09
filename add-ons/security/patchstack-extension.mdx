@@ -1,0 +1,152 @@
+---
+title: Patchstack
+sidebarTitle: "Patchstack"
+description: >-
+  The Patchstack add-on connects your MainWP Dashboard with your Patchstack
+  account so you can see vulnerability and protection data for all connected
+  child sites without leaving MainWP.
+addonType: integration
+thirdPartyPlugin: Patchstack
+---
+
+## What You'll Learn
+
+- Connecting your Patchstack account to MainWP
+- Registering and protecting child sites
+- Viewing vulnerability and attack data
+- Configuring automatic scans and notifications
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Patchstack"
+  data-purchase-url="https://mainwp.com/extension/patchstack/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-patchstack-extension/"
+  data-integrates-with="Patchstack"
+  data-owned-by="Patchstack OÜ"
+  data-privacy-url="https://patchstack.com/privacy-policy/"
+/>
+
+The Patchstack add-on connects your MainWP Dashboard with your Patchstack account. View vulnerability and protection data for all connected child sites without leaving MainWP.
+
+**Key features:**
+- View protection status, vulnerabilities, recent attacks, and available updates
+- Track trends with global and per-site widgets (attacks blocked, active threats, firewall logs)
+- Include Patchstack stats in MainWP Overview and Client Reports
+
+![Patchstack Threats Monitor](/images/miscellaneous/add-ons-security-99f53b.png)
+
+## Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| MainWP Dashboard | Installed and connected to child sites (MainWP Child plugin active) |
+| Patchstack account | Developer or Enterprise plan with API access |
+| Network access | Outbound HTTPS from Dashboard server to `https://api.patchstack.com` |
+
+<Note>
+The Patchstack firewall runs on child sites via the Patchstack Security plugin. This add-on manages setup and gathers data in MainWP.
+</Note>
+
+## Connect Your Patchstack Account
+
+<Steps>
+<Step title="Open settings">
+Go to **MainWP > Add-ons > Patchstack Integration > Settings**.
+</Step>
+<Step title="Enter API key">
+Paste your API key from **Patchstack > Settings > Integrations** into the **Patchstack API key** field.
+</Step>
+<Step title="Configure scan frequency">
+Choose **Daily**, **Weekly**, **Monthly**, or **Disabled** for automatic scans.
+</Step>
+<Step title="Enable notifications (optional)">
+Toggle **Email notifications** to receive alerts when Patchstack finds new vulnerabilities.
+</Step>
+<Step title="Save settings">
+Click **Save Settings**. Saving a new key clears previous site bindings, so plan to resync immediately.
+</Step>
+</Steps>
+
+**Per-site overrides:** Open a child site's **Manage Sites > Patchstack > Settings**, enable **Override general settings**, and provide site-specific values.
+
+## Register and Protect Child Sites
+
+![Patchstack Integration Add Sites modal showing site protection options](/images/miscellaneous/add-ons-security-5df1af.png)
+
+<Steps>
+<Step title="Open the add sites modal">
+Go to **MainWP > Add-ons > Patchstack Integration** (Overview tab) and click **Add Sites to Patchstack**.
+</Step>
+<Step title="Select sites">
+Choose the child sites you want to protect and click **Protect With Patchstack**.
+</Step>
+<Step title="Complete setup">
+The wizard registers each site with Patchstack, installs and activates the Patchstack plugin, exchanges OAuth tokens, syncs data, and refreshes the dashboard.
+</Step>
+<Step title="Verify completion">
+Close the modal once all rows show a green check. Rerun this flow when you add new child sites.
+</Step>
+</Steps>
+
+**Manual sync options:**
+- **Sync Patchstack Data** (top-right): Syncs all linked sites
+- **Sync Data** (row ellipsis menu): Syncs individual sites
+
+## Where to View Data
+
+![Patchstack Integration overview tab showing protected sites table](/images/miscellaneous/add-ons-security-793424.png)
+
+### Add-on Overview Tab
+
+The DataTable lists each protected site with firewall status, 7-day attack sparkline, total vulnerabilities, outdated components, and time since last sync.
+
+**Row actions:** Open site overview/WP Admin, hide or unhide the Patchstack plugin, apply plugin updates, force a data sync, or remove the site.
+
+**Bulk actions:** Update Patchstack plugin, sync data, or remove multiple sites.
+
+### Add-on Threats Tab
+
+| Widget | Contents |
+|--------|----------|
+| Security Status | Tabs for Vulnerabilities (vPatch/fix info), Protection stats (daily chart), Protected sites (status badges) |
+| Threats | Each vulnerability with CVSS, patch priority, exploit status, and quick links |
+| Threats Blocked | Attack volume chart over time |
+
+Use the cog icon (screen options) to show/hide widgets or reset layout.
+
+### Child Site Overview Widget
+
+Open **MainWP > Sites > Manage Sites > {Site} > Patchstack** for per-site Overview/Threats data, including override controls and focused stats.
+
+### Main Overview Widget
+
+Enable the **Patchstack Security Status** widget on the MainWP Overview or individual site dashboards for a compact summary with tabs and quick links.
+
+## Add-on Settings
+
+![Patchstack Integration settings page with API key and notification options](/images/miscellaneous/add-ons-security-9efac0.png)
+
+Navigate to **MainWP > Add-ons > Patchstack Integration > Settings**.
+
+| Setting | Description |
+|---------|-------------|
+| Automatic scans | Daily, weekly, monthly, or disabled cadence (relies on WP Cron or alternate scheduler) |
+| Email notifications | Toggle alerts and customize recipients/templates through **MainWP > Settings > Email Settings** |
+| Per-site overrides | Let specific clients use different API keys, schedules, or notification preferences |
+| Hide/Unhide plugin | Conceal Patchstack plugin on child sites via row or bulk actions |
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include Patchstack stats in reports

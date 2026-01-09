@@ -1,0 +1,109 @@
+---
+title: Enable tmpfile() PHP function on Cloudways
+sidebarTitle: "Enable tmpfile on Cloudways"
+description: >-
+  Enable the tmpfile() PHP function on Cloudways to allow plugin and theme
+  uploads through MainWP Dashboard.
+---
+
+Cloudways disables certain PHP functions by default for security. The `tmpfile()` function is one of these, and MainWP requires it for uploading plugins and themes via ZIP file.
+
+## What You'll Learn
+
+- How to identify if tmpfile() is disabled
+- How to enable tmpfile() in Cloudways
+- How to verify the change worked
+
+## Prerequisites
+
+- Cloudways account with access to Application Settings
+- MainWP Dashboard installed on a Cloudways application
+
+---
+
+## When You Need This
+
+Enable `tmpfile()` if you encounter:
+
+- Plugin or theme uploads failing from your MainWP Dashboard
+- "tmpfile() has been disabled" error messages
+- ZIP file installations timing out or producing errors
+- The Favorites extension unable to deploy plugins
+
+![Error message showing tmpfile function is disabled](/images/miscellaneous/d36645a78ccf.png)
+
+---
+
+## Enable tmpfile() on Cloudways
+
+<Steps>
+<Step title="Log in to Cloudways">
+Access the Cloudways Platform at platform.cloudways.com and navigate to your servers list.
+</Step>
+<Step title="Select your application">
+Click on the server, then select the application where your MainWP Dashboard is installed.
+</Step>
+<Step title="Open Application Settings">
+From the left sidebar, click **Application Settings**.
+
+![Open Application Settings from the left sidebar](/images/miscellaneous/advanced-miscellaneous-512bd0.png)
+</Step>
+<Step title="Navigate to PHP FPM Settings">
+Select the **PHP FPM SETTINGS** tab at the top of the settings panel.
+</Step>
+<Step title="Remove tmpfile from disabled functions">
+Locate the **DISABLED FUNCTIONS** field. Find `tmpfile` in the list and delete it.
+
+![Animation showing how to remove tmpfile from disabled PHP functions list](/images/miscellaneous/advanced-miscellaneous-05eef0.gif)
+</Step>
+<Step title="Save changes">
+Click **SAVE CHANGES**. Cloudways applies the new PHP configuration.
+</Step>
+</Steps>
+
+---
+
+## Verify the Change
+
+After saving changes, confirm `tmpfile()` is enabled:
+
+<Steps>
+<Step title="Check Server Information">
+In your MainWP Dashboard, go to **MainWP > Info > Server**.
+</Step>
+<Step title="Review disabled functions">
+Look for `tmpfile` in the PHP functions list. It should no longer appear under disabled functions.
+</Step>
+<Step title="Test an upload">
+Optionally, test by uploading a small plugin ZIP file through **MainWP > Plugins > Install Plugins > Upload**.
+</Step>
+</Steps>
+
+---
+
+## If Changes Don't Take Effect
+
+If `tmpfile()` still appears disabled after saving:
+
+1. Clear any server-side caching in Cloudways
+2. Wait a few minutes for the PHP-FPM process to restart
+3. Clear your browser cache and check Server Information again
+4. Contact Cloudways support if the function remains disabled
+
+---
+
+## Self-Check Checklist
+
+- [ ] Logged into Cloudways Platform
+- [ ] Located correct application (MainWP Dashboard)
+- [ ] Removed tmpfile from DISABLED FUNCTIONS list
+- [ ] Saved changes
+- [ ] Verified tmpfile no longer appears as disabled in MainWP
+- [ ] Tested plugin/theme upload
+
+---
+
+## Related Resources
+
+- [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) - Complete list of required functions
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - General hosting requirements

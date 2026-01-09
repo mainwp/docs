@@ -1,0 +1,257 @@
+---
+title: Disable WP Cron
+sidebarTitle: "Disable WP-Cron"
+description: >-
+  Configure custom cron jobs for MainWP Dashboard and extensions including
+  Domain Monitor, Lighthouse, Maintenance, Pro Reports, Sucuri, SSL Monitor,
+  and Vulnerability Checker.
+---
+
+WordPress WP-Cron relies on site visits to trigger scheduled tasks, which can be unreliable for low-traffic sites. You can disable WP-Cron and use your server's cron system for more consistent task execution.
+
+## What You'll Learn
+
+- How to disable WP-Cron for MainWP
+- How to set up server cron jobs
+- Cron commands for each extension
+
+## Prerequisites
+
+- Access to your server's cron system (cPanel, Plesk, or SSH)
+- Knowledge of your WordPress installation path
+- PHP binary location on your server
+
+---
+
+## Disable WP-Cron
+
+Once you disable WP-Cron via **MainWP > Settings > Advanced Settings**, MainWP removes its schedules and you'll need to set up manual cron jobs through your hosting provider.
+
+<Note>
+Need help setting up cron jobs? Check your hosting provider's documentation for [cPanel](https://docs.cpanel.net/cpanel/advanced/cron-jobs/) or [Plesk](https://docs.plesk.com/en-US/obsidian/customer-guide/websites-and-domains/scheduling-tasks-cron-jobs.html).
+</Note>
+
+---
+
+## Commands to Use in Crontab
+
+**Two command options are available:**
+
+**Preferred method** (direct PHP call - eliminates HTTP timeout issues):
+
+```bash
+/usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/FILE > /dev/null 2>&1
+```
+
+**Alternative method** (HTTP call):
+
+```bash
+wget -O /dev/null http://example.com/wp-content/plugins/mainwp/cron/FILE > /dev/null 2>&1
+```
+
+Replace `FILE` with the specific cron file for each job listed below.
+
+---
+
+## Cron Jobs by Extension
+
+<Tabs>
+  <Tab title="Core">
+    ### MainWP Dashboard Core
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Check for available updates | Every minute | `updatescheck.php` |
+    | Ping child sites | Daily | `pingchilds.php` |
+    | Check sites status | Every minute | `checkstatuschilds.php` |
+    | Check sites health | Hourly | `sitehealthmonitoring.php` |
+    | Reconnect sites | Hourly | `stats.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Check for updates every minute
+    * * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp/cron/updatescheck.php > /dev/null 2>&1
+
+    # Ping child sites daily at midnight
+    0 0 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp/cron/pingchilds.php > /dev/null 2>&1
+
+    # Check sites status every minute
+    * * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp/cron/checkstatuschilds.php > /dev/null 2>&1
+
+    # Check sites health hourly
+    0 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp/cron/sitehealthmonitoring.php > /dev/null 2>&1
+
+    # Reconnect sites hourly
+    0 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp/cron/stats.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Domain Monitor">
+    ### Domain Monitor Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Check domains | Daily/Weekly/Bi-monthly/Monthly | `domain_monitor_cron_start.php` |
+    | Send notifications | Daily | `domain_monitor_cron_alert.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Check domains daily at 2 AM
+    0 2 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-domain-monitor-extension/cron/domain_monitor_cron_start.php > /dev/null 2>&1
+
+    # Send notifications daily at 8 AM
+    0 8 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-domain-monitor-extension/cron/domain_monitor_cron_alert.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Lighthouse">
+    ### Lighthouse Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Audit sites | Daily/Weekly/Bi-monthly/Monthly | `lighthouse_cron_start.php` |
+    | Continue audits | Every 5 minutes | `lighthouse_cron_sync.php` |
+    | Send notifications | Configurable | `lighthouse_cron.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Start audits daily at 3 AM
+    0 3 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-lighthouse-extension/cron/lighthouse_cron_start.php > /dev/null 2>&1
+
+    # Continue audits every 5 minutes
+    */5 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-lighthouse-extension/cron/lighthouse_cron_sync.php > /dev/null 2>&1
+
+    # Send notifications daily at 9 AM
+    0 9 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-lighthouse-extension/cron/lighthouse_cron.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Maintenance">
+    ### Maintenance Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Start maintenance | Hourly | `cron_job_start.php` |
+    | Continue maintenance | Every minute | `cron_job_continue.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Start maintenance hourly
+    0 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-maintenance-extension/cron/cron_job_start.php > /dev/null 2>&1
+
+    # Continue maintenance every minute
+    * * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-maintenance-extension/cron/cron_job_continue.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Post Dripper">
+    ### Post Dripper Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Drip articles | Hourly | `post_dripper.php` |
+
+    **Example crontab entry:**
+
+    ```bash
+    # Drip articles hourly
+    0 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-post-dripper-extension/cron/post_dripper.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Pro Reports">
+    ### Pro Reports Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Send notifications | Hourly | `notice_reports.php` |
+    | Send reports | Every 5 minutes | `send_reports.php` |
+    | Continue reports | Every minute | `continue_reports.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Send notifications hourly
+    0 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-pro-reports-extension/cron/notice_reports.php > /dev/null 2>&1
+
+    # Send reports every 5 minutes
+    */5 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-pro-reports-extension/cron/send_reports.php > /dev/null 2>&1
+
+    # Continue reports every minute
+    * * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-pro-reports-extension/cron/continue_reports.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Sucuri">
+    ### Sucuri Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Send notifications | Daily | `securityscan_notification.php` |
+
+    **Example crontab entry:**
+
+    ```bash
+    # Send security scan notifications daily at 7 AM
+    0 7 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-sucuri-extension/cron/securityscan_notification.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="SSL Monitor">
+    ### SSL Monitor Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Start monitor | Daily | `ssl_monitor_cron_start.php` |
+    | Continue monitor | Every 5 minutes | `ssl_monitor_cron_continue_run.php` |
+
+    **Example crontab entries:**
+
+    ```bash
+    # Start SSL monitoring daily at 4 AM
+    0 4 * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-ssl-monitor-extension/cron/ssl_monitor_cron_start.php > /dev/null 2>&1
+
+    # Continue monitoring every 5 minutes
+    */5 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-ssl-monitor-extension/cron/ssl_monitor_cron_continue_run.php > /dev/null 2>&1
+    ```
+  </Tab>
+
+  <Tab title="Vulnerability Checker">
+    ### Vulnerability Checker Extension
+
+    | Task | Frequency | File |
+    |------|-----------|------|
+    | Check vulnerabilities | Every 10 minutes | `vulnercheck.php` |
+
+    **Example crontab entry:**
+
+    ```bash
+    # Check vulnerabilities every 10 minutes
+    */10 * * * * /usr/bin/php /path/to/wp-content/plugins/mainwp-vulnerability-checker-extension/cron/vulnercheck.php > /dev/null 2>&1
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+Replace `/path/to/` with your actual WordPress installation path. The PHP binary location (`/usr/bin/php`) may also vary depending on your server configuration.
+</Warning>
+
+---
+
+## Self-Check Checklist
+
+- [ ] WP-Cron disabled in Dashboard Advanced Settings
+- [ ] Server cron jobs created for required tasks
+- [ ] Paths updated to match your installation
+- [ ] Cron jobs tested and running
+
+---
+
+## Related Resources
+
+- [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Server requirements
+- [How to Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Update scheduling

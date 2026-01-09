@@ -1,0 +1,149 @@
+---
+title: Premium theme updates not detected
+description: >-
+  Troubleshoot and fix premium theme update detection issues in MainWP
+  Dashboard using custom filters for improved compatibility with third-party
+  update APIs.
+---
+
+MainWP supports premium themes that use the standard WordPress Update API. When premium theme updates aren't detected, it's typically because the theme uses a custom update mechanism that requires additional configuration.
+
+## What You'll Learn
+
+- Troubleshoot missing premium theme updates
+- Determine if the issue is with WordPress or MainWP
+- Add custom filters to improve detection
+- Handle multiple problematic themes
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Premium theme installed on child sites
+- Admin access to Dashboard and child sites
+
+---
+
+## Troubleshooting Steps
+
+<Steps>
+<Step title="Check WordPress detection">
+Log in to the child site and go to **Dashboard > Updates**. Check if WordPress detects the available theme update.
+</Step>
+<Step title="Evaluate the result">
+Based on what you see:
+
+| WordPress Shows Update | Action |
+|------------------------|--------|
+| Yes | Resync your sites in MainWP. If still not showing, see Enhance Compatibility below. |
+| No | Try refreshing the Updates page on the child site. If updates still don't appear, contact the theme author. |
+</Step>
+<Step title="Resync sites">
+In MainWP, go to **MainWP > Sites > Manage Sites** and sync the child site. Check if the theme update now appears in MainWP.
+</Step>
+</Steps>
+
+If updates show in WordPress but not in MainWP after syncing, use the compatibility filters below.
+
+---
+
+## Enhance Compatibility
+
+MainWP provides two custom filters for themes that use non-standard update APIs:
+
+| Filter | Purpose |
+|--------|---------|
+| `mainwp_detect_premium_themes_update` | Improves detection of available updates |
+| `mainwp_request_update_premium_themes` | Improves the update process |
+
+### Add the Compatibility Filters
+
+<Steps>
+<Step title="Install Custom Dashboard Extension">
+If not already installed, go to **MainWP > Extensions** and install the [Custom Dashboard Extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/).
+</Step>
+<Step title="Add the code snippet">
+Go to the Custom Dashboard extension settings and add this code to the **PHP Section**:
+
+```php
+// Improves detection of available updates for premium themes
+add_filter( 'mainwp_detect_premium_themes_update', 'hook_mainwp_detect_premium_themes_update' );
+function hook_mainwp_detect_premium_themes_update( $premiums = array() ){
+    $premiums[] = 'theme-slug';
+    return $premiums;
+}
+
+// Improves the update process of premium themes
+add_filter( 'mainwp_request_update_premium_themes', 'hook_mainwp_request_update_premium_themes' );
+function hook_mainwp_request_update_premium_themes( $premiums = array() ){
+    $premiums[] = 'theme-slug';
+    return $premiums;
+}
+```
+</Step>
+<Step title="Replace the theme slug">
+Replace `theme-slug` with the actual slug of the problematic theme. To find the slug, check the theme's folder name in `/wp-content/themes/` or contact the theme author.
+</Step>
+<Step title="Save and resync">
+Save the code snippet and resync your sites.
+</Step>
+</Steps>
+
+### Multiple Themes
+
+If you have multiple themes with detection issues, add each slug to the arrays:
+
+```php
+// Improves detection of available updates for premium themes
+add_filter( 'mainwp_detect_premium_themes_update', 'hook_mainwp_detect_premium_themes_update' );
+function hook_mainwp_detect_premium_themes_update( $premiums = array() ){
+    $premiums[] = 'theme-slug-1';
+    $premiums[] = 'theme-slug-2';
+    $premiums[] = 'theme-slug-3';
+    return $premiums;
+}
+
+// Improves the update process of premium themes
+add_filter( 'mainwp_request_update_premium_themes', 'hook_mainwp_request_update_premium_themes' );
+function hook_mainwp_request_update_premium_themes( $premiums = array() ){
+    $premiums[] = 'theme-slug-1';
+    $premiums[] = 'theme-slug-2';
+    $premiums[] = 'theme-slug-3';
+    return $premiums;
+}
+```
+
+### Alternative: functions.php
+
+If you prefer not to use the Custom Dashboard extension, add the code to the `functions.php` file of your Dashboard site's active theme.
+
+<Warning>
+Adding code to your theme's functions.php will be lost if the theme is updated. The Custom Dashboard extension is the recommended approach.
+</Warning>
+
+---
+
+## When Updates Still Don't Work
+
+Some theme authors use completely custom update APIs that aren't compatible with WordPress standards. In these cases:
+
+1. [Open a support ticket](https://mainwp.com/my-account/get-support/) with MainWP
+2. Contact the theme author to request WordPress-standard update support
+3. Consider updating the theme manually on child sites
+
+---
+
+## Self-Check Checklist
+
+- [ ] Verified WordPress detects the update on the child site
+- [ ] Resynced child sites in MainWP
+- [ ] Added compatibility filters (if needed)
+- [ ] Replaced theme-slug with actual theme slug
+- [ ] Theme updates now appear in MainWP
+
+---
+
+## Related Resources
+
+- [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected) - Similar issue for plugins
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Add custom code to MainWP
+- [Manage Updates](/sites/updates/manage-updates) - Update management overview

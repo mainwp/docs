@@ -1,0 +1,94 @@
+---
+title: Understanding the .rnd File Found in the wp-admin Directory
+sidebarTitle: "The .rnd File"
+description: >-
+  The .rnd file is a temporary file created by OpenSSL during cryptographic
+  operations. It can be safely deleted.
+---
+
+If you've noticed a `.rnd` file in your wp-admin directory after updating or configuring MainWP, this page explains what it is and whether you need to take any action.
+
+## What You'll Learn
+
+- What the .rnd file is and why it appears
+- Whether it's safe to delete
+- How to prevent it from appearing
+
+---
+
+## What is the .rnd File?
+
+The `.rnd` file is a temporary file created by OpenSSL, a library used for cryptographic operations. In the context of MainWP Dashboard, this file may appear during key generation for the encryption feature that secures communication between your Dashboard and child sites.
+
+OpenSSL uses `.rnd` to store random seed data, which helps enhance the security of cryptographic processes.
+
+---
+
+## Is the .rnd File Related to MainWP?
+
+Yes. The timing of the `.rnd` file creation often aligns with activating encryption features in MainWP Dashboard. MainWP uses phpseclib for encryption operations, which internally relies on OpenSSL for generating keys.
+
+---
+
+## Can the .rnd File Be Deleted?
+
+Yes. The `.rnd` file can be safely deleted after the encryption process is complete. It is only required temporarily during key generation. If OpenSSL needs it again, a new `.rnd` file will be created automatically.
+
+Deleting this file will not affect MainWP functionality or your existing encrypted connections.
+
+---
+
+## Why Does This Happen on Some Setups?
+
+The location where the `.rnd` file is saved depends on your PHP environment's configuration. OpenSSL looks for the `HOME` environment variable to determine where to write the file.
+
+| Configuration | Result |
+|--------------|--------|
+| HOME variable set | File written to appropriate location |
+| HOME variable not set | File written to current directory (often wp-admin) |
+
+Hosts with properly configured environment variables won't see this file in wp-admin.
+
+---
+
+## Security Plugin Warnings
+
+Security plugins like Wordfence may flag unexpected files in the wp-admin directory. You can safely delete the `.rnd` file to resolve the warning.
+
+If the file reappears, another encryption operation occurred. You can delete it again or configure your environment to prevent it from appearing in wp-admin.
+
+---
+
+## Prevent the File from Appearing
+
+### Option 1: Set the HOME Environment Variable
+
+Add this to your PHP configuration or `.htaccess`:
+
+```apache
+SetEnv HOME /tmp
+```
+
+### Option 2: Configure RANDFILE in OpenSSL
+
+If you have access to your server's OpenSSL configuration, set the `RANDFILE` variable to a path outside of your web root.
+
+### Option 3: Ignore and Delete Periodically
+
+For most users, the simplest approach is to delete the file when it appears. It causes no harm and MainWP doesn't require it after the initial key generation completes.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Identified .rnd file in wp-admin
+- [ ] Understood file is safe to delete
+- [ ] Deleted file (optional)
+- [ ] Configured environment variable (optional)
+
+---
+
+## Related Resources
+
+- [OpenSSL Key Encryption](/advanced/openssl-keys-encryption) - Encryption feature details
+- [MainWP Security](/getting-started/how-secure-is-the-mainwp-plugin) - Security overview

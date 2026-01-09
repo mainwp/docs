@@ -1,0 +1,210 @@
+---
+title: Staging
+sidebarTitle: "Staging"
+description: >-
+  Create and manage staging sites for your Child Sites directly from your MainWP
+  Dashboard using WP Staging. Test updates safely on staging replicas before
+  applying changes to production sites.
+addonType: extension
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Staging"
+  data-purchase-url="https://mainwp.com/extension/staging/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-staging-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Installing the Staging extension and WP Staging plugin
+- Creating staging sites from child sites
+- Updating and deleting staging sites
+- Running updates on staging sites first
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+**Staging Sites** are sites that duplicate your **Production Sites** _(same hardware, same software, same settings)_ so that any change can be tested and evaluated before being placed into production.
+In other words, it's a complete but independent copy of your production site, including the database.
+The MainWP Staging Extension allows you to create and manage staging sites without hassle.
+The MainWP Staging Extension requires the [WP Staging](https://wordpress.org/plugins/wp-staging/) plugin on your Child Sites.
+**Please note** that the Staging extension works only with the free version of the WP Staging plugin.
+
+## How it works
+
+Once you trigger the process of creating a staging site, the WP Staging plugin will duplicate all site files and copy them to a subdirectory.
+All database tables will be duplicated, but the prefix will be changed.
+Once this process is done, the necessary data will be updated in the **wp-config.php** file in the staging site.
+Within a couple of seconds, you will have a replica of your child site where you can test updates.
+
+After creating a staging site, MainWP will automatically install the MainWP Child plugin on the child site and connect it to your MainWP Dashboard.
+MainWP Staging Extension is extensively tested by the MainWP team; however, it's still a work in progress **(Beta release).
+If you find any issues, please contact [MainWP Support.](https://mainwp.com/mainwp-support/)**
+
+## Install and Set the MainWP Staging Extension
+
+Installation of the MainWP Staging Extension requires two important steps:
+
+-   Installing the Extension itself on your MainWP Dashboard site
+-   Installing the [WP Staging](https://wordpress.org/plugins/wp-staging/) plugin on Child Sites
+
+### Installing the Extension
+
+The MainWP Staging Extension needs to be installed only on your MainWP Dashboard site. You can [install it as any other MainWP Extension.](/dashboard/overview/manage-extensions#install-extensions)
+
+### Installing the Plugin
+
+For the proper use of the MainWP Staging Extension, you need to install the Staging Plugin on your child sites. **Please note** that the Staging extension works only with the free version of the WP Staging plugin.
+
+### Install from MainWP Dashboard
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Plugins > Install page">
+</Step>
+<Step title="In the Search field, enter the plugin name (WP Staging)">
+</Step>
+<Step title="Press enter on your keyboard">
+</Step>
+<Step title="After the search results appear, locate the plugin">
+</Step>
+<Step title="Select the Install this Plugin option">
+</Step>
+<Step title="Select your child sites">
+[Select your child](/getting-started/mainwp-user-interface) sites
+</Step>
+<Step title="In the Installation Options box, make sure that the Activate after installation option is selected.">
+In the **Installation Options** box, make sure that the **Activate after installation option** is selected.
+</Step>
+<Step title="Click the Button to complete the installation.">
+</Step>
+<Step title="Once the Installation is complete, Sync your MainWP Dashboard">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins from the MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
+
+### Install directly on Child Site
+
+<Steps>
+<Step title="Login to your child site">
+</Step>
+<Step title="Go to the WP > Plugins > Add New page">
+</Step>
+<Step title="In the Search field, enter the plugin name (WP Staging)">
+</Step>
+<Step title="After the search results appear, locate the plugin">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Click the Activate button">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins, please review this [help document.](https://wordpress.org/documentation/article/manage-plugins/) After installing the WP Staging plugin, it is required to Synchronize your sites so your MainWP Dashboard becomes aware that the plugin has been installed and activated.
+
+## Create Staging Site
+
+To create a staging site for a child site,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Staging page">
+</Step>
+<Step title="In the list of child sites, locate the wanted child site and click the Create Staging Site action">
+In the list of child sites, locate the wanted child site and click the **Create Staging Site** action![Screenshot showing Create Staging Site action in child sites list](/images/add-ons/staging-create-action.png)
+</Step>
+<Step title="On the Create Staging Site page, set your preferences">
+</Step>
+<Step title="Enter the Staging Site Name">
+Enter the **Staging Site Name**
+    1.  Exclude/Include database tables
+    2.  Exclude/Include files
+    3.  Click the **Create Staging Site** button![Screenshot of staging site creation form with database and file exclusion options](/images/add-ons/staging-creation-form.png)
+</Step>
+</Steps>
+
+
+## Update a Staging Site
+
+Updating a staging site will copy the database and files from the live site to the staging site again. To do that,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Staging page">
+</Step>
+<Step title="Locate the wanted child site">
+</Step>
+<Step title="Click the Manage Staging Sites action (you will be redirected to the page where you can see your staging sites for the child site)">
+Click the **Manage Staging Sites** action (you will be redirected to the page where you can see your staging sites for the child site)
+</Step>
+<Step title="Locate the staging site that you want to update">
+</Step>
+<Step title="Click the Update action link">
+</Step>
+</Steps>
+
+
+## Delete a Staging Site
+
+To delete a staging site,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Staging page">
+</Step>
+<Step title="Locate the wanted child site">
+</Step>
+<Step title="Click the Manage Staging Sites action (you will be redirected to the page where you can see your staging sites for the child site)">
+Click the **Manage Staging Sites** action (you will be redirected to the page where you can see your staging sites for the child site)
+</Step>
+<Step title="Locate the staging site that you want to delete">
+</Step>
+<Step title="Click the Delete action link">
+</Step>
+</Steps>
+
+
+## Run Updates on Staging Sites
+
+To run updates on your child sites,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Updates page">
+![Go to the MainWP > Updates page](/images/add-ons/staging-updates-filter.png)
+
+</Step>
+<Step title="Select Staging Sites">
+</Step>
+</Steps>
+
+
+After selecting the staging sites, updates will be performed only on staging sites. After you verify that everything is ok on the staging sites, you can run updates on your live sites.
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Clone Extension](/add-ons/development/clone-extension) - Clone sites between servers
+- [Manage Updates](/sites/updates/manage-updates) - Understanding update management

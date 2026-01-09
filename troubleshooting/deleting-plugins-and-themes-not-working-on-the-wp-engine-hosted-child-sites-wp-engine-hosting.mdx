@@ -1,0 +1,107 @@
+---
+title: Deleting plugins and themes not working on WP Engine child sites
+sidebarTitle: "WP Engine Delete Issues"
+description: >-
+  WP Engine platform configuration can block plugin and theme deletion via
+  MainWP. Contact WP Engine Support to add an Nginx rule that allows the MainWP
+  User-Agent to access your child sites.
+---
+
+WP Engine's security configuration may block MainWP from deleting plugins and themes on child sites. The solution requires WP Engine Support to add a custom Nginx rule for your sites.
+
+## What You'll Learn
+
+- Why plugin/theme deletion fails on WP Engine
+- What information WP Engine Support needs
+- The Nginx rule that enables MainWP operations
+
+## Prerequisites
+
+- MainWP Dashboard with WP Engine-hosted child sites
+- WP Engine account with support access
+- MainWP User-Agent string
+
+---
+
+## Why This Happens
+
+WP Engine uses strict security rules that may block automated requests from external systems. When MainWP attempts to delete plugins or themes, WP Engine's Nginx configuration can block these operations as a security measure.
+
+---
+
+## Contact WP Engine Support
+
+<Steps>
+<Step title="Open a support ticket">
+Contact WP Engine Support through your WP Engine dashboard or their support channels.
+</Step>
+<Step title="Request the Nginx rule">
+Ask your support agent to add an **Nginx rule** that allows the MainWP User-Agent to access your child site.
+</Step>
+<Step title="Provide the User-Agent">
+Give WP Engine this User-Agent string:
+
+```text
+Mozilla/5.0 (compatible; MainWP/4.0; +http://mainwp.com)
+```
+
+The version number (4.0 in this example) changes with each MainWP release.
+</Step>
+<Step title="List all child sites">
+If you have multiple child sites hosted on WP Engine, the Nginx rule must be added for each site. Provide a list of all affected child site domains.
+</Step>
+<Step title="Wait for confirmation">
+WP Engine will implement the rule and confirm when it's active.
+</Step>
+<Step title="Test deletion">
+After WP Engine confirms the change, test plugin and theme deletion from your MainWP Dashboard.
+</Step>
+</Steps>
+
+---
+
+## Nginx Rule Example
+
+For reference, this is the type of Nginx rule WP Engine adds:
+
+```nginx
+Nginx before-in-location
+
+set $mainwp_ua 0;
+if ($http_user_agent ~* MainWP) {
+    set $mainwp_ua 1;
+}
+
+set $mainwp_location 0;
+if ( $uri ~* "^/(wp-cron\.php|wp-admin/admin-ajax\.php)" ) {
+    set $mainwp_location 1;
+}
+
+set $both_mainwp_vars "$mainwp_ua:$mainwp_location";
+if ($both_mainwp_vars = "1:1") {
+    set $is_trusted 1;
+    proxy_pass http://localhost:6788;
+}
+```
+
+<Note>
+You don't need to understand or configure this rule yourself. WP Engine Support will handle the implementation. This is provided for reference only.
+</Note>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Contacted WP Engine Support
+- [ ] Provided MainWP User-Agent string
+- [ ] Listed all affected child site domains
+- [ ] Received confirmation that rule was added
+- [ ] Tested plugin/theme deletion successfully
+
+---
+
+## Related Resources
+
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection issues
+- [What Port and User-Agent Does MainWP Use](/troubleshooting/what-port-and-user-agent-does-mainwp-use) - Technical details
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Host-specific considerations

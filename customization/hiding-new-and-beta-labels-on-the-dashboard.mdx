@@ -1,0 +1,96 @@
+---
+title: How to hide "New" and "Beta" labels on the MainWP Dashboard
+sidebarTitle: "Hide New/Beta Labels"
+description: >-
+  Hide the "New" and "Beta" feature labels from the MainWP Dashboard using a
+  CSS snippet in the Custom Dashboard extension for a cleaner interface.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/d1t64dTF75M"
+  title="How to hide New and Beta labels on the MainWP Dashboard - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Dashboard displays **New** and **Beta** labels next to recently added or experimental features. You can hide these labels if you prefer a cleaner interface.
+
+## What You'll Learn
+
+- What the New and Beta labels indicate
+- How to hide them using CSS
+
+## Prerequisites
+
+- [Custom Dashboard extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) installed (free)
+
+---
+
+## About the Labels
+
+MainWP uses labels to indicate feature status:
+
+| Label | Meaning |
+|-------|---------|
+| **New** | Feature added in the current version |
+| **Beta** | Feature is experimental and may change |
+
+![MainWP Dashboard showing New and Beta feature labels](/images/developers/hide-labels-step2.png)
+
+---
+
+## Hide the Labels
+
+<Steps>
+<Step title="Open Custom Dashboard">
+Navigate to the Custom Dashboard extension settings.
+</Step>
+<Step title="Add CSS snippet">
+Go to the **CSS** tab and add this snippet:
+
+```css
+.mainwp-new-feature-label, .mainwp-beta-feature-label {
+  display: none !important;
+}
+```
+
+![Custom Dashboard extension CSS tab with label hiding snippet](/images/developers/hide-labels-result.png)
+</Step>
+<Step title="Save changes">
+Click **Save Changes**. The page reloads automatically.
+</Step>
+<Step title="Verify labels are hidden">
+The New and Beta labels no longer appear in the Dashboard.
+
+![MainWP Dashboard with New and Beta labels hidden](/images/developers/hide-labels-step1.png)
+</Step>
+</Steps>
+
+---
+
+## Restore the Labels
+
+To show the labels again:
+
+1. Return to the Custom Dashboard extension
+2. Remove the CSS snippet from the **CSS** tab
+3. Click **Save Changes**
+
+---
+
+## Self-Check Checklist
+
+- [ ] Custom Dashboard extension installed
+- [ ] CSS snippet added to CSS tab
+- [ ] Changes saved
+- [ ] Labels no longer visible on Dashboard
+
+---
+
+## Related Resources
+
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Full extension documentation
+- [Disable Tooltips](/customization/how-to-disable-tooltips-in-mainwp-dashboard) - Remove hover tooltips
+- [Turn Off Guided Tours](/customization/how-to-turn-off-guided-tours) - Disable tutorial prompts

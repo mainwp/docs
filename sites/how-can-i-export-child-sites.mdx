@@ -1,0 +1,98 @@
+---
+title: Export Sites
+description: >-
+  Export your connected child sites to a CSV file for backup, migration to another MainWP Dashboard, or record-keeping purposes.
+---
+
+The Export Sites feature creates a CSV file containing all your connected child sites with their connection details. Use this export for migrating sites to another Dashboard, creating a backup record, or analyzing your site inventory.
+
+## What You'll Accomplish
+
+- Export all connected child sites to a CSV file
+- Create a backup of your site connection data
+- Prepare for migration to another MainWP Dashboard
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Administrator access to your Dashboard site
+
+---
+
+## Export Child Sites
+
+<Steps>
+<Step title="Navigate to MainWP Tools">
+Go to **MainWP > Settings > MainWP Tools**.
+</Step>
+<Step title="Locate export option">
+Find the **Export child sites to CSV file** section.
+</Step>
+<Step title="Export">
+Click **Export Child Sites**.
+
+Your browser downloads a CSV file containing all connected sites.
+</Step>
+</Steps>
+
+---
+
+## CSV File Contents
+
+The exported CSV includes the following fields for each site:
+
+| Field | Description |
+|-------|-------------|
+| Site Name | Display name in your Dashboard |
+| Site URL | Full URL of the child site |
+| Administrator Username | Connected admin account |
+| Tags | Assigned tags (if any) |
+| Unique Security ID | Security ID (if configured) |
+| HTTP Authentication | HTTP Basic Auth credentials (if configured) |
+| SSL Settings | SSL verification preferences |
+
+---
+
+## Common Use Cases
+
+### Migrate to Another Dashboard
+
+1. Export sites from your current Dashboard
+2. Install and configure a new MainWP Dashboard
+3. Import the CSV file at **MainWP > Sites > Import Sites**
+
+### Create a Backup Record
+
+Export regularly to maintain an offline record of your site inventory. Store the CSV securely since it contains connection credentials.
+
+### Audit Your Network
+
+Open the CSV in a spreadsheet application to review, sort, and filter your sites by tags, SSL status, or other attributes.
+
+---
+
+## Security Considerations
+
+The exported CSV may contain sensitive information including:
+- Administrator usernames
+- Unique Security IDs
+- HTTP authentication credentials
+
+Store exported files securely and delete them when no longer needed.
+
+---
+
+## Self-Check Checklist
+
+- [ ] CSV file downloads successfully
+- [ ] File opens correctly in a spreadsheet application
+- [ ] All expected sites appear in the export
+- [ ] Exported file is stored securely
+
+---
+
+## Related Resources
+
+- [Import Sites](/sites/management/manage-child-sites#import-sites-csv-import) - Import sites from a CSV file
+- [Manage Sites](/sites/management/manage-child-sites) - Full site management documentation

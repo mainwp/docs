@@ -1,0 +1,98 @@
+---
+title: How can I change the number of Simultaneous Update Requests?
+description: >-
+  Control how many update requests your MainWP Dashboard processes at once.
+  Navigate to MainWP Settings > Advanced Options and adjust the Maximum
+  Simultaneous Update Requests setting to optimize for your server.
+---
+
+The simultaneous update requests setting controls how many child site updates MainWP processes concurrently. Adjusting this value helps balance update speed against server resource usage.
+
+## What You'll Learn
+
+- Adjust the number of simultaneous update requests
+- Understand when to increase or decrease this setting
+- Optimize updates for your server environment
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Access to Dashboard settings
+
+---
+
+## Configure Simultaneous Update Requests
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Open Advanced Options">
+Locate the **Advanced Settings** section.
+</Step>
+<Step title="Find the setting">
+Find **Maximum simultaneous install/update requests**.
+</Step>
+<Step title="Set your preference">
+Enter your desired number of concurrent update operations.
+
+| Value | Best For |
+|-------|----------|
+| 1-2 | Shared hosting, limited resources |
+| 3-4 | Standard hosting (default) |
+| 5-8 | VPS or dedicated servers |
+| 8+ | High-performance servers with many sites |
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
+## When to Adjust This Setting
+
+### Decrease the value if:
+
+- Updates frequently fail or timeout
+- Your Dashboard site becomes unresponsive during updates
+- Your hosting provider limits concurrent connections
+- Child sites appear offline during bulk updates
+
+### Increase the value if:
+
+- You have a powerful server with available resources
+- You manage many sites and need faster bulk updates
+- Updates complete quickly without issues
+- Your hosting environment has no connection limits
+
+---
+
+## Related Settings
+
+Other settings that affect update performance:
+
+| Setting | Description |
+|---------|-------------|
+| Max simultaneous requests | Total concurrent requests to all child sites |
+| Max simultaneous sync requests | Sites synced concurrently |
+| Min delay between requests | Pause between consecutive requests |
+| Max requests per IP | Concurrent requests to sites on same server |
+
+Find these in **MainWP > Settings > Advanced Settings**.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Setting is configured appropriately for your server
+- [ ] Updates complete without timeouts
+- [ ] Dashboard remains responsive during updates
+
+---
+
+## Related Resources
+
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - All advanced settings explained
+- [Manage Updates](/sites/updates/manage-updates) - Full update management documentation
+- [Optimize for Shared Hosting](/dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting) - Performance tuning

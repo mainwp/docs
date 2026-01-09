@@ -1,0 +1,8 @@
+# MCP configuration (local only)
+.mcp.json
+
+# Local development files
+.mwpdev/
+
+# Playwright test artifacts
+.playwright-mcp/

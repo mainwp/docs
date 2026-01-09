@@ -1,0 +1,72 @@
+---
+title: How to add images to custom Pro Report templates
+sidebarTitle: "Adding Images"
+description: >-
+  Learn how to add images to existing custom Pro Report templates. This guide
+  covers adding your logo and other images to customize the visual appearance
+  of your professional reports.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Uploading images to your MainWP Dashboard
+- Locating custom report template files
+- Adding image HTML code to PHP templates
+- Testing and verifying image placement
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/g4tu0GCLWlE"
+  title="How to add images to custom Pro Report templates - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> In this help document, we will cover adding images to existing custom Pro Report templates. For information on creating custom Pro Report templates, please refer to this document: [Pro Reports Extension Overview](/add-ons/reporting/pro-reports-extension-overview)
+
+<Steps>
+<Step title="Upload the images to your MainWP Dashboard via FTP or similar methods, and note their URLs">
+Upload the images to your MainWP Dashboard via FTP or similar methods, and note their URLs
+</Step>
+<Step title="Navigate to the directory where the custom templates are stored: /wp-content/uploads/mainwp/report-templates/">
+Navigate to the directory where the custom templates are stored: **/wp-content/uploads/mainwp/report-templates/**
+</Step>
+<Step title="Download the desired PHP file to your PC and open it in your favorite text editor">
+Download the desired PHP file to your PC and open it in your favorite text editor
+</Step>
+<Step title="In this example, we will add an image above the 'Plugins Updates' headline">
+</Step>
+<Step title="Locate the line and add the following above it">
+Locate the line and add the following above it:
+
+```html
+<p><img src="https://mainwpvideos.com/wp-content/uploads/plugins.png" alt="Plugins section image"></p>
+```
+
+![Report template code showing image insertion](/images/add-ons/pro-reports-image-code.png)
+
+</Step>
+<Step title="Replace the https://mainwpvideos.com/wp-content/uploads/plugins.png with the URL of your image">
+Replace the _https://mainwpvideos.com/wp-content/uploads/plugins.png_ with the URL of your image
+</Step>
+<Step title="Save the PHP file and upload it back to the server to the same directory: /wp-content/uploads/mainwp/report-templates/">
+Save the PHP file and upload it back to the server to the same directory: **/wp-content/uploads/mainwp/report-templates/**
+</Step>
+<Step title="Test the changes and repeat the process for other desired locations">
+Test the changes and repeat the process for other desired locations ![Report template preview](/images/add-ons/pro-reports-template-preview.png)
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference

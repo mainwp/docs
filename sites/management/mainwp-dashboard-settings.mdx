@@ -1,0 +1,382 @@
+---
+title: MainWP Dashboard Settings
+description: >-
+  Configure MainWP Dashboard settings including sync frequency, auto-updates,
+  uptime and site health monitoring, backup options, email notifications,
+  advanced request settings, and SSL verification options.
+---
+
+The MainWP Dashboard Settings page controls how your Dashboard communicates with child sites, when automatic syncs and updates occur, how notifications are sent, and various performance optimizations. Understanding these settings helps you configure MainWP for your specific hosting environment and workflow requirements.
+
+## What You'll Learn
+
+- Configure sync timing and frequency
+- Set up automatic updates for plugins, themes, and WordPress core
+- Enable uptime and site health monitoring
+- Manage email notification settings
+- Optimize request settings for your hosting environment
+- Access maintenance tools
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Administrator access to your Dashboard site
+- At least one child site connected (for testing settings)
+
+---
+
+## Access Dashboard Settings
+
+From any Dashboard page, click the ellipsis menu in the top right corner and select **Settings**.
+
+![Animation showing how to access MainWP Dashboard Settings via the ellipsis menu](/images/dashboard/bd2657637e19.gif)
+
+---
+
+## Settings Reference
+
+<AccordionGroup>
+  <Accordion title="General Settings" icon="gear" defaultOpen>
+    ### Automatic Daily Sync Time
+
+    Set a specific time for automatic synchronization. The time format displays as H:i (for example, 16:15) regardless of the Time Format setting.
+
+    ### Daily Update Frequency
+
+    Set how often MainWP performs automatic synchronization. For example, if Automatic daily sync time is **7:00** and frequency is **3 times per day**, syncs occur at 7:00, 15:00, and 23:00.
+
+    ### Timezone
+
+    Choose a city in your timezone or a Coordinated Universal Time (UTC) offset.
+
+    ### Date Format
+
+    Choose a pre-made format or create a custom format using [WordPress date and time formatting](https://wordpress.org/support/article/formatting-date-and-time/).
+
+    ### Time Format
+
+    Choose a pre-made format or create a custom format using [WordPress date and time formatting](https://wordpress.org/support/article/formatting-date-and-time/).
+
+    ### Sidebar Position
+    **Default: Right**
+
+    Select left or right sidebar position for your MainWP Dashboard.
+
+    ### Hide the Update Everything Button
+
+    Enable to hide the **Update Everything** button in the Updates Overview widget.
+
+    ### Show Widgets
+
+    Select which widgets appear on the **MainWP > Overview** page.
+
+    ### Show Favicons
+
+    When enabled, MainWP downloads child site favicons during connection and displays them in the Sites table.
+  </Accordion>
+
+  <Accordion title="Updates Settings" icon="arrows-rotate">
+    ### Plugin Advanced Automatic Updates
+    **Default: Disabled**
+
+    Enable auto-updates for **Trusted Plugins**.
+
+    ### Theme Advanced Automatic Updates
+    **Default: Disabled**
+
+    Enable auto-updates for **Trusted Themes**.
+
+    ### WP Core Advanced Automatic Updates
+    **Default: Disabled**
+
+    Enable auto-updates for **Trusted Sites**.
+
+    ### Frequency of Automatic Updates
+    **Default: Daily**
+
+    Set update frequency to Daily, Weekly, or Monthly. Each option reveals additional time/day selectors.
+
+    ### Advanced Automatic Updates Delay
+    **Default: 1 day**
+
+    Set number of days to delay automatic updates after release.
+
+    ### Show WordPress Language Updates
+    **Default: Yes**
+
+    When enabled, checks for language pack updates on child sites. Available updates appear in the **Update Overview widget**.
+
+    ### Update Confirmations
+    **Default: Enabled**
+
+    - **Enabled**: Prompts for confirmation before any update
+    - **Disabled**: Updates process immediately when clicked
+    - **Disable for single updates**: Confirmation required only for bulk updates
+
+    ### Check Site HTTP Response After Update
+
+    When enabled, MainWP checks child site header response after completing updates.
+
+    ### Ignored HTTP Response Statuses
+
+    Select response codes MainWP should ignore when checking post-update status.
+
+    ### Require Backup Before Update
+    **Default: No**
+
+    When enabled, MainWP checks if the child site was backed up within the last seven days before allowing updates. Works only with the MainWP Legacy Backups system.
+
+    ### Abandoned Plugins/Themes Tolerance
+    **Default: 365 days**
+
+    Plugins or themes without updates for this number of days are marked as Possibly Abandoned. The list appears in the **Update Overview widget**.
+
+    <Note>
+    MainWP fetches last-updated information from wordpress.org. Delisted plugins/themes cannot be detected as abandoned.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Uptime Monitoring" icon="heart-pulse">
+    For detailed information about uptime monitoring, see [Uptime Monitoring](/sites/management/manage-child-sites#uptime-monitoring).
+
+    ### Enable Uptime Monitoring
+
+    Toggle monitoring for all connected sites.
+
+    ### Monitor Type
+
+    - **HTTP(s)/Website Monitoring**: Sends HTTP(s) requests to verify site response
+    - **Ping Monitoring**: Uses ICMP to ping the server
+    - **Keyword Monitoring**: Checks for specific keywords on the page (reveals keyword field when selected)
+
+    ### HTTP(s)/Website Monitoring Options
+
+    | Setting | Description |
+    |---------|-------------|
+    | HTTP Method | GET, POST, PUT, PATCH, or DELETE |
+    | Monitor Interval | Check frequency from every 5 minutes to once daily |
+    | Request Timeout | Maximum seconds before timeout |
+    | Down Confirmation Check | Verify downtime before sending alerts |
+    | Up HTTP Status Codes | Status codes considered "Up" (default: all 2XX) |
+  </Accordion>
+
+  <Accordion title="Site Health Monitoring" icon="stethoscope">
+    ### Enable Site Health Monitoring
+
+    Enables monitoring using WordPress core Site Health feature. Does not integrate with third-party services.
+
+    ### Site Health Threshold
+
+    Set how often MainWP checks child site health status.
+  </Accordion>
+
+  <Accordion title="Backup Options" icon="cloud-arrow-up">
+    ### Enable Legacy Backups Feature
+
+    MainWP recommends using backup extensions rather than the legacy system. For new installations, this feature is disabled by default.
+
+    ### Select Primary Backup System
+    **Default: N/A**
+
+    When multiple backup extensions are installed, select which one serves as primary. View [available backup extensions](https://mainwp.com/mainwp-extensions/extension-category/backups/).
+
+    ### Hide MainWP Child Plugin from Search Engines
+
+    <Note>
+    Removed in MainWP 4. The Child plugin now includes a custom .htaccess file with rewrite rules by default.
+    </Note>
+
+    The rewrite rule returns a 404 page when anyone tries to access `/wp-content/plugins/mainwp-child/`. This does not work on NGINX servers and does not hide the plugin from the WordPress admin area. To hide the plugin in wp-admin, use the [White Label Extension](/add-ons/agency/white-label-extension).
+  </Accordion>
+
+  <Accordion title="Advanced Settings" icon="sliders">
+    Configure request settings to prevent sync issues, failed updates, and failed installations caused by too many simultaneous requests.
+
+    ### Request Limits
+
+    | Setting | Default | Description |
+    |---------|---------|-------------|
+    | Max simultaneous requests | 4 | Total concurrent requests to all child sites |
+    | Min delay between requests | 200ms | Pause between consecutive requests |
+    | Max simultaneous requests per IP | 1 | Concurrent requests to sites on the same server |
+    | Min delay between requests to same IP | 1000ms | Pause between requests to the same server |
+    | Max simultaneous sync requests | 8 | Sites synced concurrently |
+    | Max simultaneous install/update requests | 3 | Concurrent update or install operations |
+    | Max uptime monitoring requests | 10 | Concurrent uptime check requests |
+
+    <Note>
+    If child sites appear offline during sync operations, reduce the maximum simultaneous requests value.
+    </Note>
+
+    ### Optimize for Shared Hosting or Big Networks
+    **Default: No**
+
+    When enabled, MainWP caches updates for faster loading. Requires manual sync before performing updates. Recommended for Dashboards with 50+ sites or those on shared hosting.
+
+    ### Use WP Cron
+    **Default: Yes**
+
+    Setting to No disables WP-Cron, stopping all scheduled events. Disabling requires [manual cron job configuration](https://documentation.cpanel.net/display/ALD/Cron+Jobs).
+
+    ### Verify SSL Certificate
+    **Default: Yes**
+
+    When enabled, MainWP verifies SSL certificates when connecting to child sites. Disable if experiencing connection issues with self-signed or outdated certificates. This global setting can be overridden per site.
+
+    ### Verify Connection Method
+    **Default: OpenSSL**
+
+    OpenSSL is recommended for most configurations. [PHPSecLib](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl) serves as an alternative when OpenSSL is unavailable or misconfigured, particularly useful for localhost setups.
+
+    ### OpenSSL Signature Algorithm
+    **Default: OPENSSL_ALGO_SHA256**
+
+    SHA256 is the default, providing compatibility with both OpenSSL 1 and OpenSSL 3. Hosts running OpenSSL 3 may have disabled SHA1. See [custom signature algorithm documentation](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl) for details.
+
+    ### Force IPv4
+    **Default: No**
+
+    When enabled, forces IPv4 connections to child sites. Use on servers where IPv6 is not supported.
+  </Accordion>
+
+  <Accordion title="Email Settings" icon="envelope">
+    MainWP 4.1 introduced full control over email notifications with options to enable/disable notifications, manage recipients, and customize templates.
+
+    ![Email Settings page showing list of configurable email notifications](/images/dashboard/sites-management-c2490c.png)
+
+    ### Manage Email Settings
+
+    <Steps>
+    <Step title="Navigate to Email Settings">
+    Go to **MainWP > Settings > Email Settings**.
+    </Step>
+    <Step title="Select notification">
+    Locate the email notification you want to configure.
+    </Step>
+    <Step title="Click Manage">
+    The settings form appears with these options:
+
+    ![Email notification settings form with recipient, subject, and template options](/images/dashboard/sites-management-7de353.png)
+
+    - **Enable/Disable** the notification
+    - **Recipients**: Add multiple addresses separated by commas
+    - **Email Subject**: Customize the subject line
+    - **Email Heading**: Customize the content heading
+    - **Email HTML Template**: View, copy to uploads for editing, or delete custom templates
+    </Step>
+    </Steps>
+
+    ### Per-Site Email Settings
+
+    Configure individual site email settings for client-specific notifications:
+
+    <Steps>
+    <Step title="Navigate to site settings">
+    Go to **MainWP > Sites > Manage Sites**.
+    </Step>
+    <Step title="Edit site">
+    Click **Edit** in the Actions menu for the target site.
+    </Step>
+    <Step title="Configure email">
+    Go to the **Email Settings** tab and set preferences.
+    </Step>
+    </Steps>
+
+    Recipients set globally receive notifications for all sites. Recipients set per-site receive data only for that specific site.
+
+    ### Token Support
+
+    Email notifications support tokens from:
+    - [Boilerplate extension](/add-ons/posts-pages/boilerplate-extension)
+    - [Pro Reports extension](/add-ons/agency/available-pro-reports-tokens)
+
+    <Warning>
+    Report tokens that fetch data from child sites may cause timeouts. To enable, change `$child_site_tokens = false;` to `$child_site_tokens = true;` at the top of your email template.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="MainWP Tools" icon="wrench">
+    ![MainWP Tools section showing theme selection and various utility options](/images/dashboard/sites-management-b0bd99.png)
+
+    ### Select MainWP Theme
+
+    Choose from built-in Dashboard themes.
+
+    ### Enable MainWP Guided Tours
+
+    Enable or disable guided tours. This feature uses Usetiful and is subject to the [Usetiful Privacy Policy](https://www.usetiful.com/privacy-policy).
+
+    ### Force New Connection
+
+    Forces reconnection with all child sites. Logs out currently logged-in users on child sites. Use only when directed by MainWP Support.
+
+    ### Force New OpenSSL Keys
+
+    Generates new OpenSSL key pair for child site communication. Use if experiencing disconnection issues after upgrading from MainWP 4.4.X to 4.5.X.
+
+    ### Start Quick Setup Wizard
+
+    Launch the [MainWP Quick Setup Wizard](/getting-started/get-started-with-mainwp).
+
+    ### Export Child Sites
+
+    Export all sites to a CSV file compatible with the [Import Sites feature](/sites/management/manage-child-sites#import-sites-csv-import).
+
+    ### Import Child Sites
+
+    Redirects to **MainWP > Sites > Import Sites**.
+
+    ### Disconnect All Child Sites
+
+    Breaks connection with all sites while leaving MainWP Child active. Designed for migrating sites to another Dashboard.
+
+    ### Delete Extensions API Activation Data
+
+    Removes API activation data without affecting extension settings.
+
+    ### Restore All Info Messages
+
+    Restores dismissed info messages in Dashboard and extensions.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Common Configurations
+
+### Shared Hosting Optimization
+
+For Dashboards on shared hosting or with 50+ sites:
+
+1. Enable **Optimize for shared hosting or big networks**
+2. Reduce **Max simultaneous requests** to 2-3
+3. Increase **Min delay between requests** to 500ms
+4. Remember to sync manually before running updates
+
+### High-Performance Setup
+
+For dedicated servers or VPS with strong resources:
+
+1. Increase **Max simultaneous sync requests** to 15-20
+2. Increase **Max simultaneous install/update requests** to 5-8
+3. Reduce delays between requests
+
+---
+
+## Self-Check Checklist
+
+After configuring settings, verify:
+
+- [ ] Automatic sync time is set to a low-traffic period
+- [ ] Update confirmations match your workflow preference
+- [ ] Email notifications are configured with correct recipients
+- [ ] Request settings are appropriate for your hosting environment
+- [ ] SSL verification is properly configured for your sites
+
+---
+
+## Related Resources
+
+- [Manage Sites](/sites/management/manage-child-sites) - Connect and manage child sites
+- [Disable WP Cron](/customization/disable-wp-cron) - Set up server-side cron jobs
+- [OpenSSL and PHPSecLib](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl) - Alternative connection methods

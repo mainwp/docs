@@ -1,0 +1,9 @@
+# Internal development files
+.mwpdev/
+.mwpdev/**
+
+# Node modules
+node_modules/
+
+# Git
+.git/

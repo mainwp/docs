@@ -1,0 +1,93 @@
+---
+title: Use child site response to troubleshoot connection problems
+description: >-
+  When security layers block connection requests, MainWP shows the actual server
+  response to help identify the issue. Copy the response to an HTML renderer to
+  see which security rule was triggered and which IP to whitelist.
+---
+
+When a security layer blocks MainWP's connection request, the Dashboard displays a generic "MainWP Child plugin not detected" error because the request never reaches the child site. MainWP captures the actual server response, which often reveals what blocked the connection and how to fix it.
+
+## What You'll Learn
+
+- Access the raw server response from failed connections
+- Render the response as readable HTML
+- Identify which security layer blocked the request
+- Find the information needed to whitelist your Dashboard
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- A child site that fails to connect
+- Access to an HTML rendering tool (like CodePen)
+
+---
+
+## View the Server Response
+
+<Steps>
+<Step title="Trigger the connection error">
+Attempt to connect a child site. When the connection fails, MainWP displays an error message with a link to view the server response.
+
+![MainWP error message with link to view server response](/images/troubleshooting/child-site-response-error.jpg)
+</Step>
+<Step title="Open the response modal">
+Click the link in the error message to open a modal window showing the raw server response.
+
+![Modal window displaying raw server response code](/images/troubleshooting/child-site-response-step2.jpg)
+</Step>
+<Step title="Copy the response">
+Click the **Copy** button to copy the raw HTML response to your clipboard.
+</Step>
+<Step title="Render the HTML">
+Paste the response into an HTML rendering tool like [CodePen](https://codepen.io) to view it as formatted HTML.
+
+![Rendered HTML response showing security rule block message](/images/troubleshooting/child-site-response-step3.jpg)
+</Step>
+<Step title="Identify the block">
+The rendered response typically shows:
+- Which security layer blocked the request (ModSecurity, Cloudflare, Imunify360, etc.)
+- The security rule that was triggered
+- The IP address being blocked
+</Step>
+</Steps>
+
+---
+
+## Common Information in Responses
+
+| Information | What It Tells You |
+|-------------|-------------------|
+| Security rule ID | The specific rule that triggered the block |
+| Blocked IP | Your Dashboard's IP address to whitelist |
+| Error code | The type of security violation detected |
+| Service name | Which firewall or security layer is blocking |
+
+---
+
+## Next Steps
+
+Once you identify the blocking security layer:
+
+1. **ModSecurity** - Add an exclusion rule for your Dashboard IP. See [ModSecurity troubleshooting](/troubleshooting/potential-issues#modsecurity).
+2. **Imunify360** - Whitelist your Dashboard IP in WHM. See [Imunify360 troubleshooting](/troubleshooting/potential-issues#imunify360).
+3. **Cloudflare** - Create a firewall rule to allow your Dashboard IP. See [Cloudflare troubleshooting](/troubleshooting/potential-issues#cloudflare).
+4. **Other firewalls** - Contact your hosting provider with the response details.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Viewed the raw server response from the connection error
+- [ ] Rendered the response as HTML to make it readable
+- [ ] Identified the security layer blocking the connection
+- [ ] Noted the Dashboard IP address or rule ID to whitelist
+- [ ] Applied the appropriate fix for the security layer
+
+---
+
+## Related Resources
+
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Comprehensive connection troubleshooting
+- [Connection Test Status Codes](/troubleshooting/connection-test-results-status-codes) - Interpret HTTP error codes
+- [Enable Error Logging](/troubleshooting/how-to-enable-error-logging) - Debug with WordPress logs

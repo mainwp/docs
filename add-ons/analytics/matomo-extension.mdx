@@ -1,0 +1,116 @@
+---
+title: Matomo
+sidebarTitle: "Matomo"
+description: >-
+  The MainWP Matomo Extension allows you to view your Matomo data for your Child
+  Sites in your MainWP Dashboard. It adds a widget to your main dashboard where
+  you can monitor Matomo data from.
+addonType: integration
+thirdPartyPlugin: Matomo
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Matomo"
+  data-purchase-url="https://mainwp.com/extension/matomo-piwik/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-matomo-piwik-extension/"
+  data-integrates-with="Matomo"
+  data-owned-by="InnoCraft"
+  data-privacy-url="https://matomo.org/privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Connecting Matomo Dashboard to MainWP
+- Configuring API authentication and settings
+- Assigning Matomo sites to child sites
+- Enabling Unique Visitors for custom date ranges
+
+---
+
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Matomo. Requires Matomo to be installed on your child sites.
+</Info>
+
+![Matomo Extension dashboard showing analytics data](/images/add-ons/matomo-dashboard-overview.png) The [MainWP Matomo (formerly Piwik) Extension](/add-ons/analytics/matomo-extension) gives you valuable insights into your visitor's search and traffic patterns, your marketing campaigns, and much more, allowing you to optimize your strategy and the online experience of your users. Matomo is the leading open-source web analytics platform and can help you gather and analyze important information about your visitors. Track Key Performance Indicators such as visits, goal conversion rates, downloads, keywords, and much more. **Important Notes:** The Matomo Extension doesn't allow you to insert the Piwik tracking code on your child sites. To do that, you will need to add the code manually or use a 3rd party plugin. The Matomo Extension is compatible only with Matomo Dashboard, On-Premise or Cloud. **Matomo for WordPress plugin and Piwik Pro are not supported.** That means that the extension cannot ready data directly from the Matomo for WordPress plugin!
+
+## Use this Extension To Track:
+
+-   Visits
+-   Pageviews
+-   Pages/Visit
+-   Bounce Rate
+-   Average Time on Site
+-   New Visits
+
+The extension works with both Matomo Cloud and Matomo on Premise.
+
+Both options require a few easy-to-follow steps. After installing and adding your blogs, it easily integrates with your MainWP Matomo (Piwik) Extension.
+
+## Matomo (formerly Piwik) Analytics Widget
+
+The Matomo Analytics widget allows you to track data in your MainWP Dashboard. The global widget will be added to the Overview page and individual widget on each child site overview page.
+
+## Extension Configuration
+
+Matomo (formerly Piwik) Extension configuration requires two important steps:
+
+1.  Establishing Connection with your Matomo (formerly Piwik) Site
+2.  Assigning sites from your Matomo Site to Child Sites in your MainWP Dashboard
+
+### 1\. Establishing Connection with your Matomo (formerly Piwik) Site
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Matomo > Settings page">
+</Step>
+<Step title="Locate the Connect Matomo (formerly Piwik) Dashboard section">
+Locate the **Connect Matomo (formerly Piwik) Dashboard** section ![Connect Matomo Dashboard section with URL, API token, and settings fields](/images/add-ons/matomo-connect-dashboard.png)
+    1.  Enter your **Piwik Site (Dashboard) URL**
+    2.  Enter your **API Authentication Token** _(The API Authentication Token looks like this: c26364b7sfbb743f1xadea17f73c4132 (this is a sample number DO NOT use it in your installation). You can find your auth token in your Piwik Dashboard on the **Personal > Settings > API Authentication Token** page)_
+    3.  Set the **Connection Timeout Limit** _(We suggest 5-10 seconds)_
+    4.  Set the **Time Interval** _(Controls the visual time span of the Widget graph. You can view your sites for the past week or month)_
+    5.  Set the **Refresh Rate** _(Set how often you want to grab data from your MainWP Dashboard to update your reports)_
+    6.  Click the **Save Settings** button
+</Step>
+</Steps>
+
+
+### 2\. Assigning sites from your Piwik Site to Child Sites in your MainWP Dashboard
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate your first child site and click the Edit action">
+Locate your first child site and click the **Edit** action [![Edit action for child site in Manage Sites table](/images/add-ons/matomo-edit-site-action.png)
+</Step>
+<Step title="Locate the General Options box">
+</Step>
+<Step title="Locate the Site from your Piwik account option and select the corresponding website">
+Locate the **Site from your Piwik account** option and select the corresponding website![Site from your Piwik account dropdown showing available sites](/images/add-ons/matomo-piwik-site-selection.jpg)
+</Step>
+<Step title="Click the Update Site button">
+</Step>
+<Step title="Repeat the process for all your child sites">
+</Step>
+</Steps>
+
+
+## How to enable Unique Visitors in the extension
+
+![Matomo Unique Visitors configuration note](/images/add-ons/matomo-unique-visitors-note.png) MainWP Matomo extension fetches data via API about the last 7 or last 30 days from the Matomo Dashboard. Those date ranges are considered to be "custom date ranges" by Matomo. Out of the box, Matomo calculates Unique Visitors for the Period of Day, Week, and Month. It does not calculate it for the Year or custom ranges such as last 7 or 30 days. To enable this calculation, please follow the instructions in this Matomo help document: [https://matomo.org/faq/how-to/faq_113/](https://matomo.org/faq/how-to/faq_113/)
+
+---
+
+## Related Resources
+
+- [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include analytics data in reports
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Matomo tokens

@@ -1,0 +1,187 @@
+---
+title: Automate your MainWP workflow with SureTriggers
+sidebarTitle: "SureTriggers Automation"
+description: >-
+  Connect MainWP to SureTriggers to automate workflows like adding sites from
+  form submissions, syncing data to spreadsheets, and managing sites automatically.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/aztVpEgSltk"
+  title="Automate your MainWP workflow with SureTriggers - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+SureTriggers is an automation platform that connects plugins and apps together. With over 200 integrations including MainWP, you can automate tasks like adding child sites from form submissions or syncing site data to external services.
+
+## What You'll Learn
+
+- How to connect MainWP Dashboard to SureTriggers
+- How to create automation workflows
+- Available MainWP triggers and actions
+
+## Prerequisites
+
+- MainWP Dashboard with REST API access
+- SureTriggers account
+- WordPress site for form collection (if using form-based automation)
+
+---
+
+## Use Case Example
+
+This guide demonstrates adding a child site automatically when a client submits a form. The form collects site URL, admin username, and site title, then triggers MainWP to add the site.
+
+---
+
+## Connect MainWP to SureTriggers
+
+### Generate MainWP API Key
+
+<Steps>
+<Step title="Open API settings">
+On your MainWP Dashboard, go to **MainWP > Settings > REST API**.
+</Step>
+<Step title="Create API key">
+Generate a new API key with all permissions enabled.
+</Step>
+<Step title="Save credentials">
+Copy and save the Consumer Key and Consumer Secret. You'll need these for SureTriggers.
+</Step>
+</Steps>
+
+### Set Up SureTriggers Connection
+
+<Steps>
+<Step title="Install SureTriggers plugin">
+On your WordPress site (where forms are collected), install and activate the SureTriggers plugin.
+</Step>
+<Step title="Authorize account">
+Click **Get Started Now** and authorize your SureTriggers account.
+</Step>
+<Step title="Add MainWP connection">
+Go to **Apps > Add New Connections**, search for MainWP, and click the icon.
+</Step>
+<Step title="Enter credentials">
+Enter your MainWP Dashboard URL, Consumer Key, and Consumer Secret. Click **Connect MainWP**.
+</Step>
+</Steps>
+
+---
+
+## Create the Contact Form
+
+Use any SureTriggers-compatible form plugin (WS Form, Gravity Forms, WPForms, etc.).
+
+<Steps>
+<Step title="Install form plugin">
+Install and activate your chosen form plugin.
+</Step>
+<Step title="Create form fields">
+Add these required fields:
+- **Site URL** (required)
+- **Admin username** (required)
+- **Site title**
+</Step>
+<Step title="Add submit button">
+Add a Submit button and publish the form.
+</Step>
+<Step title="Place the form">
+Embed the form on a protected page (like WooCommerce My Account) to prevent public access.
+</Step>
+</Steps>
+
+---
+
+## Create the Workflow
+
+<Steps>
+<Step title="Start a new workflow">
+In SureTriggers, go to **Workflows** and click **Create New**. Name the workflow and click **Start Building**.
+</Step>
+<Step title="Add trigger">
+Click **Add Trigger**, select your form plugin, and choose the **Form Submitted** event.
+</Step>
+<Step title="Configure trigger">
+Select the WordPress site connection and the specific form you created.
+</Step>
+<Step title="Test trigger">
+Submit a test form entry. SureTriggers fetches the sample data to understand the form fields. Click **Save**.
+</Step>
+<Step title="Add action">
+Click the plus icon, search for MainWP, and select **Add New Site** as the event.
+</Step>
+<Step title="Map form fields">
+Connect each form field to the corresponding MainWP field:
+- Site URL → Site URL
+- Admin username → Administrator username
+- Site title → Site name
+
+Type `@` to see available data points from the form submission.
+</Step>
+<Step title="Publish workflow">
+Click **Save**, then **Publish** to activate the workflow.
+</Step>
+</Steps>
+
+---
+
+## Test the Integration
+
+<Steps>
+<Step title="Prepare a test site">
+Set up a WordPress site with MainWP Child plugin installed and activated.
+</Step>
+<Step title="Submit the form">
+Fill out and submit the add-site form with the test site's information.
+</Step>
+<Step title="Verify in MainWP">
+Refresh your MainWP Dashboard's Manage Sites page. The child site should appear.
+</Step>
+</Steps>
+
+---
+
+## Available Triggers and Actions
+
+| Type | Event |
+|------|-------|
+| Trigger | New Site Connected |
+| Action | Add New Site |
+| Action | Disconnect Site |
+| Action | Remove Site |
+| Action | Suspend Site |
+| Action | Unsuspend Site |
+
+---
+
+## Automation Ideas
+
+| Workflow | Trigger | Action |
+|----------|---------|--------|
+| Add client sites | Form submission | Add New Site |
+| Track new sites | New Site Connected | Add row to Google Sheet |
+| Suspend for non-payment | Payment failed webhook | Suspend Site |
+| Notify on new site | New Site Connected | Send Slack/email notification |
+
+---
+
+## Self-Check Checklist
+
+- [ ] MainWP REST API key generated with full permissions
+- [ ] SureTriggers plugin installed and authorized
+- [ ] MainWP Dashboard connected to SureTriggers
+- [ ] Contact form created with required fields
+- [ ] Workflow trigger configured and tested
+- [ ] Action mapped to correct form fields
+- [ ] Workflow published and tested end-to-end
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API documentation
+- [WP-CLI Commands](/advanced/miscellaneous/mainwp-wp-cli-commands) - Command-line automation

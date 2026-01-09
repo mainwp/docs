@@ -1,0 +1,436 @@
+---
+title: Clients Abilities
+sidebarTitle: "Clients"
+description: >-
+  11 abilities for managing MainWP client records and their associated sites.
+---
+
+MainWP registers 11 client management abilities into the WordPress Abilities API framework. These enable programmatic management of client records, site associations, and client-level operations.
+
+## What You'll Learn
+
+- Listing, filtering, and retrieving client information
+- Creating, updating, and deleting clients
+- Managing client site associations
+- Suspending and unsuspending clients
+- Retrieving client cost data
+
+---
+
+## mainwp/list-clients-v1
+
+List MainWP clients with pagination and filtering.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-clients-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 20 | Items per page (max 100) |
+| `status` | string | No | "any" | Filter: `any`, `active`, `suspended` |
+| `search` | string | No | "" | Search term |
+| `include` | array | No | [] | Client IDs to include |
+| `exclude` | array | No | [] | Client IDs to exclude |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Acme Corp",
+      "email": "contact@acme.com",
+      "phone": "+1-555-0100",
+      "status": "active",
+      "sites_count": 5,
+      "created_at": "2023-01-15T10:00:00Z"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 25
+}
+```
+
+---
+
+## mainwp/count-clients-v1
+
+Get total count of clients.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/count-clients-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `status` | string | No | "any" | Filter: `any`, `active`, `suspended` |
+
+**Response:**
+
+```json
+{
+  "total": 25
+}
+```
+
+---
+
+## mainwp/get-client-v1
+
+Get detailed information about a single client.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email address |
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "name": "Acme Corp",
+  "email": "contact@acme.com",
+  "phone": "+1-555-0100",
+  "address_1": "123 Main Street",
+  "address_2": "Suite 100",
+  "city": "New York",
+  "state": "NY",
+  "zip": "10001",
+  "country": "United States",
+  "note": "Premium client",
+  "status": "active",
+  "sites_count": 5,
+  "created_at": "2023-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}
+```
+
+---
+
+## mainwp/add-client-v1
+
+Create a new client.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"name":"New Client","client_email":"client@example.com","client_phone":"+1-555-0100"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/add-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `name` | string | Yes | — | Client name |
+| `client_email` | string | No | — | Email address |
+| `client_phone` | string | No | — | Phone number |
+| `address_1` | string | No | — | Address line 1 |
+| `address_2` | string | No | — | Address line 2 |
+| `city` | string | No | — | City |
+| `state` | string | No | — | State/Province |
+| `zip` | string | No | — | ZIP/Postal code |
+| `country` | string | No | — | Country |
+| `note` | string | No | — | Notes |
+| `selected_sites` | array | No | — | Site IDs to associate |
+
+**Response:**
+
+Returns the created client object (same format as `get-client-v1`).
+
+---
+
+## mainwp/update-client-v1
+
+Update an existing client.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1,"name":"Updated Name","note":"New notes"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+| `name` | string | No | — | Client name |
+| `client_email` | string | No | — | Email address |
+| `client_phone` | string | No | — | Phone number |
+| `address_1` | string | No | — | Address line 1 |
+| `address_2` | string | No | — | Address line 2 |
+| `city` | string | No | — | City |
+| `state` | string | No | — | State/Province |
+| `zip` | string | No | — | ZIP/Postal code |
+| `country` | string | No | — | Country |
+| `note` | string | No | — | Notes |
+| `selected_sites` | array | No | — | Site IDs to associate (replaces existing) |
+
+**Response:**
+
+Returns the updated client object.
+
+---
+
+## mainwp/delete-client-v1
+
+Delete a client. This is a destructive operation that requires confirmation.
+
+**Method:** POST
+
+```bash
+# Dry run to preview
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1,"dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-client-v1/run'
+
+# Actual deletion
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+| `confirm` | boolean | Yes | — | Must be `true` to confirm deletion |
+| `dry_run` | boolean | No | false | Preview without deleting |
+
+**Response:**
+
+```json
+{
+  "deleted": true,
+  "client_id": 1,
+  "client_name": "Acme Corp"
+}
+```
+
+---
+
+## mainwp/get-client-sites-v1
+
+Get sites associated with a client.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 20 | Items per page |
+
+**Response:**
+
+```json
+{
+  "client_id": 1,
+  "client_name": "Acme Corp",
+  "sites": [
+    {
+      "id": 1,
+      "url": "https://site1.example.com",
+      "name": "Site 1",
+      "status": "connected"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 5
+}
+```
+
+---
+
+## mainwp/count-client-sites-v1
+
+Count sites associated with a client.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/count-client-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+
+**Response:**
+
+```json
+{
+  "client_id": 1,
+  "client_name": "Acme Corp",
+  "sites_count": 5
+}
+```
+
+---
+
+## mainwp/get-client-costs-v1
+
+Get cost tracker entries for a client. Requires the Cost Tracker module to be active.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-costs-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+
+**Response:**
+
+```json
+{
+  "client_id": 1,
+  "client_name": "Acme Corp",
+  "costs": [
+    {
+      "id": 1,
+      "site_id": 1,
+      "site_name": "Site 1",
+      "name": "Hosting",
+      "amount": 29.99,
+      "frequency": "monthly",
+      "next_due": "2024-02-15"
+    }
+  ],
+  "total_monthly": 149.95,
+  "total_yearly": 1799.40
+}
+```
+
+<Note>
+This ability requires the Cost Tracker module. If inactive, returns `mainwp_module_not_available` error.
+</Note>
+
+---
+
+## mainwp/suspend-client-v1
+
+Suspend a client. This also suspends all associated sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/suspend-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+
+**Response:**
+
+```json
+{
+  "suspended": true,
+  "client_id": 1,
+  "client_name": "Acme Corp",
+  "sites_suspended": 5
+}
+```
+
+---
+
+## mainwp/unsuspend-client-v1
+
+Unsuspend a previously suspended client. This also unsuspends all associated sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"client_id_or_email":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/unsuspend-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `client_id_or_email` | integer\|string | Yes | — | Client ID or email |
+
+**Response:**
+
+```json
+{
+  "unsuspended": true,
+  "client_id": 1,
+  "client_name": "Acme Corp",
+  "sites_unsuspended": 5
+}
+```
+
+---
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - API basics and authentication
+- [Sites Abilities](/api-reference/abilities-api/sites) - Site management abilities
+- [REST API Clients](/api-reference/rest-api/clients) - REST API alternative for clients
+- [Manage Clients](/clients/manage-clients) - Client management in Dashboard

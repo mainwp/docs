@@ -1,0 +1,284 @@
+---
+title: Dashboard Lock
+sidebarTitle: "Dashboard Lock"
+description: >-
+  This Extension allows you to limit access to your wp-admin and even redirect
+  non-wp-admin pages to a different site making your MainWP Dashboard virtually
+  invisible
+addonType: extension
+---
+
+## What You'll Learn
+
+- Redirecting frontend traffic to hide your Dashboard site
+- Restricting wp-admin access by IP address
+- Adding HTTP Basic Authentication to wp-admin and wp-login
+- Manually removing Dashboard locks if locked out
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Dashboard Lock"
+  data-purchase-url="https://mainwp.com/extension/dashboard-lock/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-dashboard-lock-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/uCCDiPbqXUc"
+  title="Dashboard Lock - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> The [MainWP Dashboard Lock Extension](https://mainwp.com/extension/dashboard-lock/) allows you to limit access to your Admin area and even redirect Non-WP-Admin pages to a different site making your MainWP Dashboard virtually invisible. All of these changes can be made without you having to ever edit the .htaccess file yourself.
+
+## Frontend Redirect Rules
+
+Make your dashboard front page inaccessible to everyone but you. Easily set a redirect URL, and all hits on Non-WP-Admin pages will be redirected to it. This will make your MainWP Dashboard site virtually invisible. Redirection is the process of forwarding one URL to a different URL. There are three main kinds of redirects: 301, 302, and meta refresh. It is a way to send both users and search engines to a different URL from the one they originally requested.
+
+### Add Frontend Redirect Rules
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Frontend Redirect Rules option box">
+</Step>
+<Step title="Enter the URL where you want to redirect the traffic">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+### Remove Frontend Redirect Rules
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Frontend Redirect Rules option box">
+</Step>
+<Step title="Delete the URL from the Redirect frontend traffic field">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+### Exclude Custom Pages from Redirection
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Frontend Redirect Rules option box">
+</Step>
+<Step title="Locate the Exclude slugs from the redirection option">
+</Step>
+<Step title="Enter wanted pages (one per line)">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+Do not add a full-page URL in the box. It's enough to add just a page slug. For example, if you want to exclude **http://yourdomain.com/sample-page/**, add **/sample-page/** in the box.
+
+#### Important Notes
+
+WP-Cron: Adding the Frontend Redirect Rules may affect your WP-Cron function. If you notice that scheduled functions are not working, please remove the Frontend Redirect Rules. REST API: To avoid Frontend Redirect from affecting the REST API functionality, please add `/wp-json` to the exclusion list. ![Redirect front traffic options](/images/add-ons/dashboard-lock-redirect-rules.png)
+
+## Dashboard Lock
+
+The Extension allows you to limit access to Admin area pages and to your wp-login.php page to specific IP addresses without having to manually edit your .htaccess file. Additional IPs can be set up to access your WordPress admin by adding one IP address per line if you access your dashboard from multiple locations. You can also add a secondary login and password for your Admin area pages and to your wp-login.php page. This is helpful if you have a dynamic IP but still want to add some extra protection to your site.
+
+### Limit Access to certain IP addresses
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Dashboard Lock option box">
+</Step>
+<Step title="Locate the Allow Login from IP option">
+Locate the **Allow Login from IP** option ![Allow login from options](/images/add-ons/dashboard-lock-allow-ip.png)
+</Step>
+<Step title="In the provided text area, enter one or multiple IP addresses (each in a new line)">
+In the provided text area, enter one or multiple IP addresses _(each in a new line)_
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+After setting this security measure, the /wp-login.php page will be restricted to all visitors except the ones with the whitelisted IP address.
+
+### Lock the /wp-admin/ pages
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Dashboard Lock option box">
+</Step>
+<Step title="Locate the Admin area lock option">
+Locate the **Admin area lock** option ![Admin area lock settings](/images/add-ons/dashboard-lock-admin-area-lock.png)
+</Step>
+<Step title="In the provided fields, enter desired Username and Password">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+After enabling the Admin area lock, before accessing any WP Admin page (../wp-admin/..) HTTP Basic Authentication will be required.
+
+### Lock the /wp-login.php page
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Dashboard Lock option box">
+</Step>
+<Step title="Locate the Login page lock option">
+Locate the **Login page lock** option ![Login page lock settings](/images/add-ons/2c7fa44e22a0.png)
+</Step>
+<Step title="In the provided fields, enter desired Username and Password">
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+
+After enabling the Login page lock, before accessing any Login page (../wp-login.php), HTTP Basic Authentication will be required.
+
+#### Important Notes
+
+If you are having issues with the **Admin area lock** and **Login page lock**, please check [here](/add-ons/administration/clean-and-lock-extension#http-basic-authentication-not-working). Some hosts don't allow HTTP basic authentication, and this can create an infinite redirection loop. This can make accessing your MainWP Dashboard site hard. In case you experience this issue, please [remove Admin area and login page locks](/add-ons/administration/clean-and-lock-extension#remove-dashboard-locks). If this doesn't help, it is highly recommended to contact your host support. In case you have lost your HTTP Basic Auth credentials, [remove Admin area and Login page locks](/add-ons/administration/clean-and-lock-extension#remove-dashboard-locks).
+
+## HTTP Basic Authentication Not Working
+
+HTTP access authentication is a method for an HTTP user agent to provide a username and password when making a request. It is a technique for enforcing access controls to web resources because it doesn't require cookies, session identifiers, and login pages. No handshakes should be performed in prediction. The use of **HTTP Authentication** with cPanel/WHM is disabled; therefore, the option was removed from the **Tweak Settings**. It was disabled in cPanel/WHM 11.42 version. If you are not comfortable with tweaking cPanel settings by yourself, we highly suggest contacting your host support and asking them to do this for you. Even though it has been disabled from cPanel/WHM, you can enable HTTP Authentication by modifying **/var/cpanel/cpanel.config**. Add the line below
+
+skiphttpauth=0
+
+Setting it to **1** means it has been disabled. Setting it to **0** means it has been enabled. After enabling HTTP Authentication & a pop-up will occur. Restart cPanel once you save this file.
+
+## Remove Dashboard Locks
+
+There are two ways to unlock your MainWP Dashboard site. In case there are no issues with your MainWP Dashboard site, and you can access the Dashboard Lock Extension settings, you will be able to use the **Remove Locks** button to remove all locks. In case you can't access your MainWP Dashboard site, locks will need to be removed manually.
+
+### Unlock MainWP Dashboard
+
+<Steps>
+<Step title="Login into your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Dashboard Lock extension page">
+</Step>
+<Step title="Locate the Dashboard Lock option box">
+Locate the **Dashboard Lock** option box ![Remove locks button](/images/add-ons/06493e33370e.png)
+</Step>
+<Step title="Click the Remove Locks button">
+</Step>
+</Steps>
+
+
+It will remove all restrictions from your **.htaccess** files (Allowed IP Addresses, WP Admin, and WP-login.php locks)
+
+### Manually Remove MainWP Dashboard Locks
+
+### Remove IP Address Restriction
+
+<Steps>
+<Step title="Use your favorite FTP Client to access your MainWP Dashboard site server">
+</Step>
+<Step title="Navigate to the root directory of your MainWP Dashboard site">
+</Step>
+<Step title="Locate the .htaccess file">
+</Step>
+<Step title="Download it">
+</Step>
+<Step title="Open the file in any code editor software">
+</Step>
+<Step title="Remove the code inserted by the Dashboard Lock Extension">
+Remove the code inserted by the Dashboard Lock Extension \# BEGIN MainWP Secure and Clean // remove code from here # END MainWP Secure and Clean
+</Step>
+<Step title="Save changes">
+</Step>
+<Step title="Upload the file back to the root directory">
+</Step>
+</Steps>
+
+
+### Remove the Admin area lock
+
+<Steps>
+<Step title="Use your favorite FTP Client to access your MainWP Dashboard site server">
+</Step>
+<Step title="Navigate to the ../wp-admin/ directory of your MainWP Dashboard site">
+</Step>
+<Step title="Locate the .htaccess file">
+</Step>
+<Step title="Download it">
+</Step>
+<Step title="Open the file in any code editor software">
+</Step>
+<Step title="Remove the code inserted by the Dashboard Lock Extension">
+Remove the code inserted by the Dashboard Lock Extension \# BEGIN MainWP Secure and Clean - Apache Password Protect wp-admin // remove code from here # END MainWP Secure and Clean - Apache Password Protect wp-admin
+</Step>
+<Step title="Save changes">
+</Step>
+<Step title="Upload the file back to the ../wp-admin/ directory">
+</Step>
+</Steps>
+
+
+### Remove Login page lock
+
+<Steps>
+<Step title="Use your favorite FTP Client to access your MainWP Dashboard site server">
+</Step>
+<Step title="Navigate to the root directory of your MainWP Dashboard site">
+</Step>
+<Step title="Locate the .htaccess file">
+</Step>
+<Step title="Download it">
+</Step>
+<Step title="Open the file in any code editor software">
+</Step>
+<Step title="Remove the code inserted by the Dashboard Lock Extension">
+Remove the code inserted by the Dashboard Lock Extension \# BEGIN MainWP Secure and Clean - Apache Password Protect wp-login.php // remove code from here # END MainWP Secure and Clean - Apache Password Protect wp-login.php
+</Step>
+<Step title="Save changes">
+</Step>
+<Step title="Upload the file back to the root directory">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [How Secure is MainWP](/getting-started/how-secure-is-the-mainwp-plugin) - Security architecture overview
+- [Two-Factor Authentication](/advanced/miscellaneous/how-to-add-two-factor-authentication-2fa-to-mainwp) - Add 2FA to your Dashboard

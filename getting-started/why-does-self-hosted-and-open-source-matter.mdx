@@ -1,0 +1,56 @@
+---
+title: Self-Hosted & Open Source Benefits
+description: >-
+  MainWP is self-hosted on your WordPress install and fully open source, so you
+  can audit the code on GitHub anytime. We don't track or keep any information
+  about your Child sites because privacy and security are paramount.
+---
+
+MainWP operates entirely on your own infrastructure. Your Dashboard runs on your WordPress installation, your data stays in your database, and all communication happens directly between your servers. This architecture provides privacy and control that cloud-based solutions cannot match.
+
+## Complete Data Ownership
+
+When you manage sites through MainWP, data flows directly between your Dashboard and your Child Sites:
+
+- **Sync operations** pull data from Child Sites into your Dashboard database
+- **Update commands** go from your Dashboard to Child Sites
+- **Reports and analytics** are generated and stored on your Dashboard server
+- **No data passes through MainWP servers** at any point
+
+This means your site inventories, client information, update histories, and management actions remain entirely within your control. You choose where your Dashboard is hosted, who has access, and how long data is retained.
+
+## Open Source Transparency
+
+MainWP is released under the GPLv3 license, with all source code available on [GitHub](https://mainwp.com/github/). You can:
+
+- Review every line of code before installing
+- Verify security implementations match documentation
+- Track changes between versions through commit history
+- Fork the project for custom modifications
+- Contribute improvements back to the community
+
+Building a self-hosted plugin requires more development effort than a cloud service, but we believe your privacy and security are worth that investment.
+
+## Self-Hosted vs. SaaS Comparison
+
+| Aspect | MainWP (Self-Hosted) | Cloud-Based Solutions |
+|--------|---------------------|----------------------|
+| **Data storage** | Your server, your database | Provider's infrastructure |
+| **Data access** | Only you and your team | Provider has access |
+| **Compliance** | You control data residency | Depends on provider location |
+| **Offline capability** | Works without internet to MainWP | Requires constant connection |
+| **Code visibility** | Fully open source | Typically proprietary |
+| **Customization** | Modify anything | Limited to provider options |
+
+## Auditing the Code
+
+If you want to verify our privacy claims or review security implementations:
+
+1. Visit the [MainWP GitHub organization](https://github.com/mainwp)
+2. Clone or browse the repository for [MainWP Dashboard](https://github.com/mainwp/mainwp) or [MainWP Child](https://github.com/mainwp/mainwp-child)
+3. Key areas to review:
+   - `/class/` directory contains core functionality
+   - `/includes/` handles API and database operations
+   - Connection encryption uses OpenSSL (see [security documentation](/getting-started/how-secure-is-the-mainwp-plugin))
+
+Security researchers and developers regularly audit the codebase, and we welcome responsible disclosure of any findings.

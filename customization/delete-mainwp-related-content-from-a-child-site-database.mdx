@@ -1,0 +1,107 @@
+---
+title: How to delete MainWP related content from a Child Site database
+sidebarTitle: "Delete MainWP Data"
+description: >-
+  Remove all MainWP Child plugin data from a child site database using SQL
+  commands in phpMyAdmin. Always backup your database before running these commands.
+---
+
+If you need to completely remove all MainWP Child plugin data from a child site's database, you can do so using SQL commands. This is useful when decommissioning a site or troubleshooting connection issues.
+
+## What You'll Learn
+
+- How to remove MainWP data from the database
+- When to use this procedure
+
+## Prerequisites
+
+- Access to phpMyAdmin or similar database tool
+- Database backup completed
+
+<Warning>
+**Back up your database before proceeding.** These commands permanently delete data and cannot be undone.
+</Warning>
+
+---
+
+## When to Use This
+
+Use this procedure when:
+
+- Completely removing MainWP from a child site
+- Troubleshooting persistent connection issues
+- Resetting a site to reconnect with a new Dashboard
+- Decommissioning a child site
+
+---
+
+## Delete MainWP Data
+
+<Steps>
+<Step title="Back up your database">
+Create a full database backup before making any changes.
+</Step>
+<Step title="Access phpMyAdmin">
+Log in to your child site's cPanel, Plesk, or hosting control panel and open phpMyAdmin (or a similar database management tool).
+</Step>
+<Step title="Select the database">
+Navigate to and select the database for your child site.
+</Step>
+<Step title="Open SQL tab">
+Click on the **SQL** tab to enter custom queries.
+</Step>
+<Step title="Run the delete command">
+Paste and execute this SQL command:
+
+```sql
+DELETE FROM `wp_options` WHERE option_name LIKE '%mainwp_%'
+```
+
+<Note>
+If your WordPress installation uses a custom table prefix (not `wp_`), replace `wp_options` with your actual prefix (e.g., `custom_options`).
+</Note>
+</Step>
+<Step title="Execute the query">
+Click **Go** to run the query. The command removes all MainWP-related entries from the options table.
+</Step>
+</Steps>
+
+---
+
+## What Gets Deleted
+
+This command removes:
+
+| Data | Description |
+|------|-------------|
+| Connection keys | Encryption keys linking to Dashboard |
+| Plugin settings | MainWP Child configuration |
+| Cached data | Stored sync information |
+| Unique Security ID | Site identification data |
+
+---
+
+## After Deletion
+
+After removing the data:
+
+1. **Deactivate and delete** the MainWP Child plugin if you're removing MainWP completely
+2. **Reconnect the site** if you want to add it to a Dashboard again (you'll need to reinstall and configure the Child plugin)
+
+---
+
+## Self-Check Checklist
+
+- [ ] Database backup created
+- [ ] Correct database selected in phpMyAdmin
+- [ ] Table prefix verified (wp_ or custom)
+- [ ] SQL command executed successfully
+- [ ] MainWP Child plugin deactivated/deleted (if removing)
+
+---
+
+## Related Resources
+
+- [Uninstall Child Reports Database](/customization/how-to-uninstall-mainwp-child-reports-database) - Remove reporting data
+- [Reconnecting Child Sites](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) - Reconnection process
+- [Move Child Sites to Another Dashboard](/advanced/move-child-sites-to-another-mainwp-dashboard) - Migration guide

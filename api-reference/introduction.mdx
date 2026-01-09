@@ -1,33 +1,81 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: MainWP API Reference
+sidebarTitle: "Introduction"
+description: >-
+  Programmatic access to your MainWP Dashboard through the REST API and WordPress Abilities API integration.
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+MainWP provides programmatic access through two distinct systems that serve different purposes.
 
-## Welcome
+## What You'll Learn
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+- The difference between the REST API and Abilities API
+- When to use each API
+- How authentication works across both systems
+
+---
+
+## MainWP REST API
+
+The MainWP REST API is MainWP's native HTTP interface for external integrations. It exposes fixed endpoints for managing sites, updates, clients, tags, and costs through standard REST conventions.
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  title="REST API Reference"
+  icon="globe"
+  href="/api-reference/rest-api/overview"
 >
-  View the OpenAPI specification file
+  MainWP's native HTTP endpoints for site management, updates, clients, and tags.
 </Card>
+
+**Base URL:** `https://your-dashboard.com/wp-json/mainwp/v2/`
+
+The REST API works well for scripts, direct HTTP calls, and established automation workflows where you know exactly which endpoints to call.
+
+---
+
+## WordPress Abilities API
+
+The Abilities API is a **WordPress-wide framework** for capability discovery and execution. It's a separate WordPress plugin that provides a standardized registry where any plugin can register discrete actions ("abilities") with defined schemas. MainWP registers 62 abilities into this framework.
+
+<Card
+  title="Abilities API Reference"
+  icon="robot"
+  href="/api-reference/abilities-api/overview"
+>
+  WordPress capability registry with MainWP's 62 registered abilities for AI agents and automation tools.
+</Card>
+
+**Base URL:** `https://your-dashboard.com/wp-json/wp-abilities/v1/`
+
+The key distinction is **discoverability**. AI agents and automation tools can query the Abilities API to learn what actions are available, what parameters they accept, and what they return—all through structured JSON schemas. The REST API requires prior knowledge of endpoint paths and parameters.
+
+---
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Both systems accept the same Bearer tokens generated in your MainWP Dashboard:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/basic"
 ```
+
+Generate API keys at **Dashboard > REST API > Add API Keys**. For detailed setup, see the [REST API Setup Guide](/dashboard/overview/mainwp-rest-api).
+
+---
+
+## Requirements
+
+| System | Requirements |
+|--------|--------------|
+| REST API | MainWP Dashboard accessible via HTTPS, non-Plain permalinks |
+| Abilities API | REST API requirements plus MainWP v6+ and WordPress Abilities API plugin |
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - REST API endpoints
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Abilities API reference
+- [REST API Authentication](/api-reference/rest-api/authentication) - Authentication setup
+

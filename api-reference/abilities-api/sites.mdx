@@ -1,0 +1,1111 @@
+---
+title: Sites Abilities
+sidebarTitle: "Sites"
+description: >-
+  30 abilities for managing MainWP child sites including listing, syncing, adding, updating, and managing plugins and themes.
+---
+
+MainWP registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
+
+## What You'll Learn
+
+- Listing, filtering, and retrieving site information
+- Adding, updating, and deleting sites
+- Managing site connectivity (sync, reconnect, disconnect, suspend)
+- Managing plugins and themes on individual sites
+- Retrieving security, change logs, and cost data
+
+---
+
+## mainwp/list-sites-v1
+
+List MainWP child sites with pagination and filtering.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number (1-based) |
+| `per_page` | integer | No | 20 | Items per page (1-100) |
+| `status` | string | No | "any" | Filter: `any`, `connected`, `disconnected`, `suspended` |
+| `search` | string | No | "" | Search term for name or URL |
+| `client_id` | integer | No | — | Filter by client ID |
+| `tag_id` | integer | No | — | Filter by tag/group ID |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "url": "https://site1.example.com",
+      "name": "Site 1",
+      "status": "connected",
+      "client_id": 5
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 150
+}
+```
+
+---
+
+## mainwp/get-site-v1
+
+Get detailed information about a single site.
+
+**Method:** POST (requires input)
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"include_stats":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain/URL |
+| `include_stats` | boolean | No | false | Include update counts and health score |
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "url": "https://site1.example.com",
+  "name": "Site 1",
+  "status": "connected",
+  "client_id": 5,
+  "wp_version": "6.4.2",
+  "php_version": "8.2.0",
+  "last_sync": "2024-01-15T10:30:00Z",
+  "admin_username": "admin",
+  "child_version": "4.6.1",
+  "notes": "Production site",
+  "stats": {
+    "plugin_updates": 3,
+    "theme_updates": 1,
+    "wp_update_available": false,
+    "health_score": 85
+  }
+}
+```
+
+---
+
+## mainwp/sync-sites-v1
+
+Trigger synchronization for one or more sites. Operations with more than 200 sites are queued for background processing.
+
+**Method:** POST
+
+```bash
+# Sync specific sites
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-sites-v1/run'
+
+# Sync all sites (empty array)
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Site IDs or domains. Empty = all sites |
+
+**Response (Immediate - 200 sites or fewer):**
+
+```json
+{
+  "queued": false,
+  "synced": [
+    {"id": 1, "url": "https://site1.example.com", "name": "Site 1"}
+  ],
+  "errors": [],
+  "total_synced": 1,
+  "total_errors": 0
+}
+```
+
+**Response (Queued - more than 200 sites):**
+
+```json
+{
+  "queued": true,
+  "job_id": "sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "sites_queued": 350
+}
+```
+
+---
+
+## mainwp/add-site-v1
+
+Add a new MainWP child site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"url":"https://newsite.example.com","admin":"admin","name":"New Site"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/add-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `url` | string | Yes | — | Site URL |
+| `admin` | string | Yes | — | Admin username on child site |
+| `name` | string | No | — | Display name for the site |
+| `client_id` | integer | No | — | Associate with a client |
+| `tags` | array | No | — | Array of tag IDs to assign |
+| `http_user` | string | No | — | HTTP Auth username |
+| `http_pass` | string | No | — | HTTP Auth password |
+| `ssl_verify` | boolean | No | true | Verify SSL certificate |
+
+**Response:**
+
+Returns the created site object (same format as `get-site-v1`).
+
+---
+
+## mainwp/update-site-v1
+
+Update an existing site's properties.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"name":"Updated Name","notes":"New notes"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `name` | string | No | — | Site display name |
+| `notes` | string | No | — | Site notes |
+| `client_id` | integer | No | — | Client ID (null to unassign) |
+| `tags` | array | No | — | Tag IDs (replaces existing) |
+
+**Response:**
+
+Returns the updated site object.
+
+---
+
+## mainwp/delete-site-v1
+
+Delete a site from MainWP. This is a destructive operation that requires confirmation.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `confirm` | boolean | Yes | — | Must be `true` to confirm deletion |
+| `dry_run` | boolean | No | false | Preview without deleting |
+
+**Response:**
+
+```json
+{
+  "deleted": true,
+  "site_id": 1,
+  "site_url": "https://site1.example.com"
+}
+```
+
+---
+
+## mainwp/reconnect-site-v1
+
+Reconnect a single disconnected site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/reconnect-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "reconnected": true,
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "status": "connected"
+}
+```
+
+---
+
+## mainwp/disconnect-site-v1
+
+Disconnect a site. The site remains in the database but communication is disabled.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/disconnect-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "disconnected": true,
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "status": "disconnected"
+}
+```
+
+---
+
+## mainwp/suspend-site-v1
+
+Suspend a site. Suspended sites are excluded from sync and update operations.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/suspend-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "suspended": true,
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "status": "suspended"
+}
+```
+
+---
+
+## mainwp/unsuspend-site-v1
+
+Unsuspend a previously suspended site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/unsuspend-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "unsuspended": true,
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "status": "connected"
+}
+```
+
+---
+
+## mainwp/check-site-v1
+
+Check connectivity status of a single site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/check-site-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "reachable": true,
+  "response_time_ms": 245,
+  "http_status": 200
+}
+```
+
+---
+
+## mainwp/get-site-plugins-v1
+
+Get list of plugins installed on a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"status":"active"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `status` | string | No | "all" | Filter: `all`, `active`, `inactive` |
+| `has_update` | boolean | No | — | Filter to plugins with updates |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "plugins": [
+    {
+      "slug": "akismet/akismet.php",
+      "name": "Akismet Anti-spam",
+      "version": "5.3",
+      "active": true,
+      "update_version": "5.3.1"
+    }
+  ],
+  "total": 15
+}
+```
+
+---
+
+## mainwp/activate-site-plugins-v1
+
+Activate plugins on a site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/activate-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | Yes | — | Plugin slugs to activate |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "activated": ["akismet/akismet.php"],
+  "errors": []
+}
+```
+
+---
+
+## mainwp/deactivate-site-plugins-v1
+
+Deactivate plugins on a site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/deactivate-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | Yes | — | Plugin slugs to deactivate |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "deactivated": ["akismet/akismet.php"],
+  "errors": []
+}
+```
+
+---
+
+## mainwp/delete-site-plugins-v1
+
+Delete plugins from a site. This is a destructive operation that requires confirmation.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["hello-dolly/hello.php"],"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-site-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | Yes | — | Plugin slugs to delete |
+| `confirm` | boolean | Yes | — | Must be `true` to confirm deletion |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "deleted": ["hello-dolly/hello.php"],
+  "errors": []
+}
+```
+
+---
+
+## mainwp/get-site-themes-v1
+
+Get list of themes installed on a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-themes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "active_theme": "twentytwentyfour",
+  "themes": [
+    {
+      "slug": "twentytwentyfour",
+      "name": "Twenty Twenty-Four",
+      "version": "1.0",
+      "active": true,
+      "update_version": null
+    }
+  ],
+  "total": 3
+}
+```
+
+---
+
+## mainwp/activate-site-theme-v1
+
+Activate a theme on a site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slug":"twentytwentyfour"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/activate-site-theme-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slug` | string | Yes | — | Theme slug to activate |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "activated": "twentytwentyfour",
+  "previous_theme": "twentytwentythree"
+}
+```
+
+---
+
+## mainwp/delete-site-themes-v1
+
+Delete themes from a site. This is a destructive operation that requires confirmation.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["twentytwenty"],"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-site-themes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | Yes | — | Theme slugs to delete |
+| `confirm` | boolean | Yes | — | Must be `true` to confirm deletion |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "deleted": ["twentytwenty"],
+  "errors": []
+}
+```
+
+---
+
+## mainwp/get-abandoned-plugins-v1
+
+Get list of abandoned plugins across all sites. Abandoned plugins have not received updates in 2+ years.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-abandoned-plugins-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 50 | Items per page |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "slug": "old-plugin/old-plugin.php",
+      "name": "Old Plugin",
+      "version": "1.0.0",
+      "last_updated": "2021-01-15"
+    }
+  ],
+  "total": 5
+}
+```
+
+---
+
+## mainwp/get-abandoned-themes-v1
+
+Get list of abandoned themes across all sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-abandoned-themes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 50 | Items per page |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "slug": "old-theme",
+      "name": "Old Theme",
+      "version": "1.0.0",
+      "last_updated": "2020-06-01"
+    }
+  ],
+  "total": 2
+}
+```
+
+---
+
+## mainwp/get-site-security-v1
+
+Get security information about a site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-security-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "site_url": "https://site1.example.com",
+  "security_issues": [
+    {
+      "type": "file_permissions",
+      "severity": "warning",
+      "message": "wp-config.php is world-readable"
+    }
+  ],
+  "ssl_status": {
+    "valid": true,
+    "expires": "2025-06-15"
+  }
+}
+```
+
+---
+
+## mainwp/get-site-changes-v1
+
+Get change/activity log for a site. Requires the Logs module to be active.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"page":1,"per_page":50}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-changes-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 50 | Items per page |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "changes": [
+    {
+      "id": 123,
+      "type": "plugin_updated",
+      "description": "Plugin 'Akismet' updated from 5.2 to 5.3",
+      "user": "admin",
+      "timestamp": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 150
+}
+```
+
+<Note>
+This ability requires the Logs module. If inactive, returns `mainwp_module_not_available` error.
+</Note>
+
+---
+
+## mainwp/get-site-client-v1
+
+Get the client associated with a site.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-client-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "client": {
+    "id": 5,
+    "name": "Acme Corp",
+    "email": "contact@acme.com",
+    "status": "active"
+  }
+}
+```
+
+---
+
+## mainwp/get-site-costs-v1
+
+Get cost tracking data for a site. Requires the Cost Tracker module to be active.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-costs-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+
+**Response:**
+
+```json
+{
+  "site_id": 1,
+  "costs": [
+    {
+      "id": 1,
+      "name": "Hosting",
+      "amount": 29.99,
+      "frequency": "monthly",
+      "next_due": "2024-02-15"
+    }
+  ],
+  "total_monthly": 29.99,
+  "total_yearly": 359.88
+}
+```
+
+<Note>
+This ability requires the Cost Tracker module. If inactive, returns `mainwp_module_not_available` error.
+</Note>
+
+---
+
+## mainwp/count-sites-v1
+
+Get total count of sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/count-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `status` | string | No | "any" | Filter: `any`, `connected`, `disconnected`, `suspended` |
+
+**Response:**
+
+```json
+{
+  "total": 150
+}
+```
+
+---
+
+## mainwp/get-sites-basic-v1
+
+Get minimal site information (ID, URL, name only) for all sites.
+
+**Method:** GET (readonly)
+
+```bash
+curl -u 'admin:xxxx' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-sites-basic-v1/run'
+```
+
+**Response:**
+
+```json
+{
+  "sites": [
+    {
+      "id": 1,
+      "url": "https://site1.example.com",
+      "name": "Site 1"
+    },
+    {
+      "id": 2,
+      "url": "https://site2.example.com",
+      "name": "Site 2"
+    }
+  ],
+  "total": 150
+}
+```
+
+---
+
+## mainwp/reconnect-sites-v1
+
+Batch reconnect multiple disconnected sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/reconnect-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Site IDs or domains. Empty = all disconnected sites |
+
+**Response:**
+
+```json
+{
+  "reconnected": [
+    {"id": 1, "url": "https://site1.example.com"}
+  ],
+  "errors": [],
+  "total_reconnected": 1,
+  "total_errors": 0
+}
+```
+
+---
+
+## mainwp/disconnect-sites-v1
+
+Batch disconnect multiple sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/disconnect-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | Yes | — | Site IDs or domains |
+
+**Response:**
+
+```json
+{
+  "disconnected": [
+    {"id": 1, "url": "https://site1.example.com"}
+  ],
+  "errors": [],
+  "total_disconnected": 1,
+  "total_errors": 0
+}
+```
+
+---
+
+## mainwp/check-sites-v1
+
+Batch connectivity check for multiple sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/check-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | No | [] | Site IDs or domains. Empty = all sites |
+
+**Response:**
+
+```json
+{
+  "results": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "reachable": true,
+      "response_time_ms": 245
+    }
+  ],
+  "summary": {
+    "total_checked": 3,
+    "reachable": 2,
+    "unreachable": 1
+  }
+}
+```
+
+---
+
+## mainwp/suspend-sites-v1
+
+Batch suspend multiple sites.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/suspend-sites-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `site_ids_or_domains` | array | Yes | — | Site IDs or domains |
+
+**Response:**
+
+```json
+{
+  "suspended": [
+    {"id": 1, "url": "https://site1.example.com"}
+  ],
+  "errors": [],
+  "total_suspended": 1,
+  "total_errors": 0
+}
+```
+
+---
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - API basics and authentication
+- [Updates Abilities](/api-reference/abilities-api/updates) - Update management abilities
+- [Clients Abilities](/api-reference/abilities-api/clients) - Client management abilities
+- [REST API Sites](/api-reference/rest-api/sites) - REST API alternative for site management

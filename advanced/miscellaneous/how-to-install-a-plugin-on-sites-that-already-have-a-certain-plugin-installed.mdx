@@ -1,0 +1,105 @@
+---
+title: How to install a plugin on sites that already have a certain plugin installed
+sidebarTitle: "Install on Sites with Plugin"
+description: >-
+  Install or update a plugin on child sites that already have a specific plugin
+  installed, useful for premium plugins with non-standard update mechanisms.
+---
+
+This workflow helps you install (or re-install) a plugin on child sites that already have a specific plugin installed. This is useful when:
+
+- A premium plugin uses non-standard update mechanisms
+- You need to manually update to a specific plugin version
+- You want to ensure consistent versions across sites with the same plugin
+
+## What You'll Learn
+
+- How to find sites with a specific plugin installed
+- How to install a plugin to those selected sites
+
+## Prerequisites
+
+- Child sites synced with your Dashboard
+- Plugin ZIP file (if uploading manually)
+
+---
+
+## Find Sites with the Plugin Installed
+
+<Steps>
+<Step title="Navigate to Manage Plugins">
+Go to **MainWP > Plugins > Manage Plugins**.
+</Step>
+<Step title="Switch to Per Site view">
+Click **Show Plugins per Site** to switch the view.
+
+![Change the view to Show Plugins per Site](/images/miscellaneous/advanced-miscellaneous-9641f5.png)
+</Step>
+<Step title="Select child sites">
+Select the child sites to search. For this scenario, you'll typically want to select all sites.
+</Step>
+<Step title="Choose plugin status">
+In the **Select Status** dropdown, select:
+- **Active** - Sites with the plugin active
+- **Inactive** - Sites with the plugin installed but not active
+- **Active & Inactive** - All sites with the plugin installed
+</Step>
+<Step title="Search for the plugin">
+In the **Search Options** field, type the plugin name.
+</Step>
+<Step title="Show results">
+Click **Show Plugins**. The table displays all sites with that plugin installed.
+
+![Click the Show Plugins button](/images/miscellaneous/advanced-miscellaneous-3eccf3.gif)
+</Step>
+</Steps>
+
+---
+
+## Install Plugin to Selected Sites
+
+<Steps>
+<Step title="Select sites">
+Select all or some sites from the results table.
+</Step>
+<Step title="Click Install to Selected Sites">
+Click the **Install to Selected Site(s)** button.
+
+![Animation showing site selection and Install to Selected Sites button](/images/miscellaneous/advanced-miscellaneous-4e4546.gif)
+</Step>
+<Step title="Install the plugin">
+You're taken to **Plugins > Install Plugins** with the selected child sites pre-selected. Install the plugin by:
+- Searching WordPress.org and clicking Install
+- Uploading a ZIP file
+</Step>
+</Steps>
+
+---
+
+## Use Cases
+
+| Scenario | How This Helps |
+|----------|----------------|
+| Premium plugin updates | Install new version ZIP on sites with the plugin |
+| Downgrade plugin | Install specific older version |
+| License-based plugins | Re-install after license renewal |
+| Consistent versions | Ensure all sites run the same version |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Switched to "Per Site" view
+- [ ] Selected target child sites
+- [ ] Searched for plugin by name
+- [ ] Selected sites from results
+- [ ] Clicked Install to Selected Sites
+- [ ] Installed plugin via WordPress.org or ZIP upload
+
+---
+
+## Related Resources
+
+- [Find Sites Missing a Plugin](/advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed) - Sites without a plugin
+- [Managing Plugins](/sites/plugins/managing-plugins-with-mainwp) - Plugin management overview
+- [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected) - Update detection issues

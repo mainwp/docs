@@ -1,0 +1,128 @@
+---
+title: MainWP Dashboard not sending emails
+description: >-
+  Email delivery issues are often caused by PHP mail() not being configured or
+  spam filters blocking messages. Use an SMTP plugin like Post SMTP, Easy WP
+  SMTP, or WP Mail SMTP for better deliverability.
+---
+
+When MainWP emails don't arrive, the problem is typically with your server's email configuration rather than MainWP itself. SMTP plugins solve this by using authenticated email services instead of the default PHP mail function.
+
+## What You'll Learn
+
+- Why WordPress emails fail to deliver
+- Test if emails are actually being sent
+- Configure SMTP for reliable email delivery
+- Verify email settings are working
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Admin access to your Dashboard site
+- SMTP credentials from your email provider (for SMTP setup)
+
+---
+
+## Why Emails Fail to Deliver
+
+### PHP mail() Not Configured
+
+Many hosting servers don't have the PHP `mail()` function properly configured. WordPress uses this function by default, so emails simply don't get sent.
+
+### Spam Filtering
+
+Even when emails are sent, they may be blocked:
+- Recipient servers reject emails from unknown senders
+- Spam filters block emails without proper authentication
+- Emails end up in spam folders and go unnoticed
+- IP reputation issues cause delivery failures
+
+### No Authentication
+
+The default PHP mail function doesn't authenticate with email servers. Modern email providers increasingly reject unauthenticated messages.
+
+---
+
+## Test Email Delivery
+
+Before configuring SMTP, verify whether emails are being sent at all.
+
+<Steps>
+<Step title="Install a test plugin">
+Install and activate a plugin like [Check & Log Email](https://wordpress.org/plugins/check-email/) on your Dashboard site.
+</Step>
+<Step title="Send a test email">
+Use the plugin to send a test email to yourself.
+</Step>
+<Step title="Check results">
+If the email doesn't arrive (including spam folder), your server's email configuration needs attention.
+</Step>
+</Steps>
+
+---
+
+## Configure SMTP
+
+SMTP (Simple Mail Transfer Protocol) uses proper authentication to ensure emails are delivered reliably.
+
+### Recommended SMTP Plugins
+
+| Plugin | Features |
+|--------|----------|
+| [Post SMTP Mailer/Email Log](https://wordpress.org/plugins/post-smtp/) | Email logging, multiple providers, detailed diagnostics |
+| [Easy WP SMTP](https://wordpress.org/plugins/easy-wp-smtp/) | Simple setup, works with most SMTP providers |
+| [WP Mail SMTP](https://wordpress.org/plugins/wp-mail-smtp/) | Multiple integrations, email logging, backup connections |
+
+### Set Up SMTP
+
+<Steps>
+<Step title="Install an SMTP plugin">
+Install and activate one of the recommended plugins on your Dashboard site.
+</Step>
+<Step title="Get SMTP credentials">
+Obtain SMTP settings from your email provider:
+- SMTP host (e.g., smtp.gmail.com)
+- SMTP port (typically 587 for TLS or 465 for SSL)
+- Username (usually your email address)
+- Password or app-specific password
+</Step>
+<Step title="Configure the plugin">
+Enter your SMTP credentials in the plugin settings.
+</Step>
+<Step title="Send a test email">
+Use the plugin's test email feature to verify configuration.
+</Step>
+<Step title="Check MainWP emails">
+Trigger a MainWP action that sends email (like a daily digest) and confirm delivery.
+</Step>
+</Steps>
+
+---
+
+## Popular SMTP Providers
+
+| Provider | Notes |
+|----------|-------|
+| Gmail/Google Workspace | Requires app password if 2FA enabled |
+| Outlook/Office 365 | Enterprise-grade reliability |
+| SendGrid | Transactional email service with free tier |
+| Mailgun | Developer-focused with API options |
+| Amazon SES | Cost-effective for high volume |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Tested email delivery with a test plugin
+- [ ] SMTP plugin installed and configured
+- [ ] SMTP credentials entered correctly
+- [ ] Test email sent successfully via SMTP
+- [ ] MainWP notification emails arriving as expected
+
+---
+
+## Related Resources
+
+- [Change the From Address for MainWP Emails](/customization/how-to-change-the-from-address-for-mainwp-emails) - Customize sender address
+- [Why Can't I Edit Email Templates](/troubleshooting/why-cant-i-edit-email-templates-in-my-mainwp-dashboard) - Email template issues
+- [Post SMTP Extension](/add-ons/development/mainwp-post-smtp-extension) - Manage Post SMTP across child sites

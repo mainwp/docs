@@ -1,0 +1,237 @@
+---
+title: Jetpack Scan
+sidebarTitle: "Jetpack Scan"
+description: >-
+  The Jetpack Scan Extension effectively detects vulnerabilities and provides
+  detailed information about them, along with one-click solutions to fix issues
+  in WordPress, plugins, and themes.
+addonType: integration
+thirdPartyPlugin: Jetpack Scan
+---
+
+## What You'll Learn
+
+- Installing and connecting Jetpack Scan extension
+- Requesting malware scans for single or multiple sites
+- Managing and fixing detected threats
+- Claiming discounted Jetpack Scan subscriptions
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Jetpack Scan"
+  data-purchase-url="https://mainwp.com/extension/jetpack-scan/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-jetpack-scan-extension/"
+  data-integrates-with="Jetpack Scan"
+  data-owned-by="Automattic Inc."
+  data-privacy-url="https://automattic.com/privacy/"
+/>
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Jetpack Scan. Requires Jetpack Scan to be installed on your child sites.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/bhmTNlNeVKI"
+  title="Jetpack Scan - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The "Jetpack Scan" Extension allows you to effortlessly scan all your Child Sites for potential vulnerabilities, get detailed information about each vulnerability, and take advantage of the one-click solution for most issues.
+
+<Note>
+The extension requires a [Jetpack Protect plugin](https://wordpress.org/plugins/jetpack-protect/) on your Child Sites and a [Jetpack Scan subscription](https://jetpack.com/upgrade/scan/) that you can get at a discounted price from within the MainWP Dashboard. [Jetpack plugin](https://wordpress.org/plugins/jetpack/) will also work; however, unless you need other Jetpack modules, the Jetpack Protect plugin is preferred.
+</Note>
+
+## Installing the extension
+
+The first step is to install Jetpack Protect plugin and activate the Jetpack Scan feature. Please follow [Jetpack's help article](https://jetpack.com/support/activate-a-jetpack-product-via-license-key/) for details on how to do so. After that, follow these steps to install the MainWP Jetpack Protect extension.
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions page">
+</Step>
+<Step title="Click the Install Extensions button">
+Click the **Install Extensions** button
+
+<Frame>
+  <img src="/images/add-ons/2833252556cc.png" alt="Screenshot highlighting the Install Extensions button on the Extensions page" />
+</Frame>
+</Step>
+<Step title="Locate the Jetpack Scan extension and select it">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Once the installation process is complete, click the Activate Extensions button.">
+Once the installation process is complete, click the **Activate Extensions** button.
+
+<Frame>
+  <img src="/images/add-ons/578da5c7dc89.png" alt="Screenshot showing the Activate Extensions button after Jetpack Scan installation" />
+</Frame>
+</Step>
+</Steps>
+
+
+## Connect extension to Jetpack App
+
+[Access your WordPress.com Developer account](https://developer.wordpress.com/apps/new/) and fill in the form in order to create an application.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-create-wp-app.png" alt="Screenshot of WordPress.com application creation form" />
+</Frame>
+
+The value for the Redirect URL field can be found on the **Dashboard > Extensions > Jetpack Scan > Add App** page.
+
+## Manage multiple apps
+
+<Frame>
+  <img src="/images/add-ons/40ef4c74a913.png" alt="Screenshot of Add App page showing app configuration form" />
+</Frame>
+
+To add multiple apps, simply repeat the process on the **Add App** page. All added apps can be managed on the Manage Apps page.
+
+<Frame>
+  <img src="/images/add-ons/49593723df79.png" alt="Screenshot of Manage Apps page showing connected apps with action buttons" />
+</Frame>
+
+From here, Access to the account can be requested again, or the App can be removed from the extension.
+
+## Overview page
+
+The table on the overview page displays all the sites on which the Jetpack Scan is active. The **WP, Plugins and Themes** columns show the number of vulnerabilities found in the respective categories.
+
+The **ellipsis menu** reveals additional actions, such as the ability to hide the Jetpack plugin on the child site and the ability to update the Jetpack plugin. The **Bulk Actions** menu provides the same actions for multiple child sites at once.
+
+<Frame>
+  <img src="/images/add-ons/113e786cf66d.png" alt="Screenshot of Jetpack Scan Overview page showing child sites table with vulnerability counts" />
+</Frame>
+
+## Request a scan
+
+### For a single-site
+
+Locate the desired child site in the table, and select the **Request Re-scan Now** action from the ellipsis menu.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-request-rescan.gif" alt="Animated screenshot showing Request Re-scan Now action in ellipsis menu" />
+</Frame>
+
+### For multiple sites
+
+Locate the desired child sites in the table and mark their checkboxes, then select **Request Re-scan Now** from the Bulk Actions menu, and click Apply.
+
+<Frame>
+  <img src="/images/add-ons/2788a32807c2.gif" alt="Animated screenshot showing bulk re-scan action for multiple selected sites" />
+</Frame>
+
+### For all sites
+
+Click the **Request Re-scan For All Sites** button.
+
+<Frame>
+  <img src="/images/add-ons/1ca9ef118acc.png" alt="Screenshot highlighting the Request Re-scan For All Sites button" />
+</Frame>
+
+## Remote server credentials
+
+Before Jetpack Scan can attempt to fix threats on a child site, it needs to have SSH, SFTP, or FTP server credentials for that child site. This will be indicated by the red X or green checkmark icon in the **Credentials column** in the table on the **Overview page**.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-credentials-column.png" alt="Screenshot showing Credentials column with red X and green checkmark indicators" />
+</Frame>
+
+To add SSH, SFTP or FTP server credentials for child sites, please follow the steps outlined in this [help article](https://jetpack.com/support/backup/backups-via-the-jetpack-plugin/adding-credentials-to-jetpack/). After doing so, click the **Sync Jetpack Scan Data** button to fetch the latest Jetpack Scan data.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-sync-data-button.png" alt="Screenshot highlighting the Sync Jetpack Scan Data button" />
+</Frame>
+
+## Manage Threats
+
+Threats are managed on the **Threats** page. The page will list all of your sites that have Jetpack Scan active, and the vulnerabilities for WP Core, Plugins and Themes will be shown in the last three columns.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-threats-page.png" alt="Screenshot of Threats page showing child sites with vulnerability counts by category" />
+</Frame>
+
+To manage threats, click on any vulnerability count in the table, expand the specific threat, and then choose to either **Ignore threat** or **Fix threat.**
+
+<Note>
+Fixing a threat relies on the Jetpack API and may take multiple minutes to complete. You can leave this page and come back at a later time. Depending on the Jetpack products active on a child site, a Backup may also be performed before an attempted fix, and the process can take several minutes to complete.
+</Note>
+
+<Frame>
+  <img src="/images/add-ons/83e34cdbc7e2.gif" alt="Animated screenshot showing threat expansion and Ignore or Fix options" />
+</Frame>
+
+## History page
+
+After you've either ignored or fixed a threat, the threat will be visible on the **History page**. The layout of the page is identical to the **Threats page,** so simply click on a vulnerability count of a desired child site to see the history of threat management.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-history-page.gif" alt="Animated screenshot showing threat history page with past fixed and ignored threats" />
+</Frame>
+
+## Get a Jetpack Scan Coupon
+
+Through the extension, you can request a Jetpack Scan Coupon, which will give you 40% off for your first year of a Jetpack Scan subscription. The maximum number of coupons you can request is equal to the number of child sites on your MainWP Dashboard.
+
+<Note>
+Version 4.0.3. of the Jetpack Scan extension is required to request the coupons.
+</Note>
+
+<Steps>
+<Step title="Navigate to Dashboard > Extensions > Jetpack Scan page">
+</Step>
+<Step title="Click the Get Jetpack Scan Coupon button">
+
+<Frame>
+  <img src="/images/add-ons/2ae861392903.png" alt="Click the Get Jetpack Scan Coupon button" />
+</Frame>
+</Step>
+<Step title="Type in the number of required coupons">
+Type in the number of required coupons.
+
+<Note>
+The maximum number is going to be the current number of child sites on your Dashboard.
+</Note>
+</Step>
+<Step title="Enter the email address of your Jetpack account">
+</Step>
+<Step title="Click the CLAIM COUPON button">
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-coupon-form.png" alt="Click the CLAIM COUPON button" />
+</Frame>
+</Step>
+<Step title="You will be presented with the coupons">
+You will be presented with the coupons. This list of coupons can be displayed again by pressing the **Get Jetpack Scan Coupon** button.
+
+<Frame>
+  <img src="/images/add-ons/jetpack-scan-coupon-list.png" alt="Screenshot showing generated Jetpack Scan discount coupons list" />
+</Frame>
+</Step>
+</Steps>
+
+
+## Jetpack Scan REST API
+
+All MainWP REST API calls, including full documentation, and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing Keys.
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Jetpack Protect Extension](/add-ons/security/jetpack-protect-extension) - Free vulnerability scanning
+- [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning

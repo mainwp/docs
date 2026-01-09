@@ -1,0 +1,133 @@
+---
+title: MainWP connection security
+sidebarTitle: "Connection Security"
+description: >-
+  How MainWP secures communication between Dashboard and Child Sites using
+  password authentication, OpenSSL encryption, and request signing.
+---
+
+MainWP uses multiple layers of security to protect communication between your Dashboard and Child Sites. This includes secure initial connections when adding sites and encrypted, signed requests for all subsequent communication.
+
+## What You'll Learn
+
+- How MainWP secures the initial site connection
+- How Dashboard-to-Child communication is encrypted
+- How request authentication prevents unauthorized access
+
+---
+
+## Initial Connection Security
+
+MainWP 5.3 introduced enhanced security features for the site connection process.
+
+### Password Authentication
+
+MainWP uses the WordPress administrator's password for verification during initial setup. This feature, enabled by default, ensures only verified administrators can authorize connections.
+
+| Aspect | Detail |
+|--------|--------|
+| Usage | Verification during initial setup only |
+| Storage | Password is never stored on Dashboard or sent to MainWP.com |
+| After connection | OpenSSL key pair handles all future communication |
+| Per-user setting | Each admin controls their own password authentication setting |
+
+<Tip>
+Consider creating a dedicated "MainWP Admin" account for connecting sites. This account can be monitored or modified independently.
+</Tip>
+
+### Unique Security ID
+
+An optional Unique Security ID adds another layer of authentication during setup. When enabled, this ID must match on both Dashboard and Child Site for the connection to succeed. This feature is valuable for sites requiring stricter access controls.
+
+### Connection Timeout
+
+The MainWP Child plugin includes a connection timeout to minimize exposure. After activation, if no connection is established within the specified time (in minutes), the plugin automatically deactivates itself. This prevents idle plugins from remaining accessible.
+
+### Disconnect Site Option
+
+The Disconnect Site feature allows you to clear all connection data for a Child Site directly from the Dashboard. Use this when:
+
+- Decommissioning sites
+- Re-establishing secure connections
+- Troubleshooting setup issues
+
+---
+
+## Post-Connection Security
+
+After a site is added, all communication uses OpenSSL-encrypted connections.
+
+### Key Pair Generation
+
+When MainWP Dashboard connects to a child site for the first time:
+
+1. Dashboard generates Public and Private key pairs (2048 bits) using `openssl_pkey_new()`
+2. Public key is saved on both the child site and Dashboard
+3. Private key is encrypted and saved only on the Dashboard
+
+### Request Signing and Verification
+
+| Step | Function | Description |
+|------|----------|-------------|
+| Signing | `openssl_sign()` | Dashboard creates cryptographic signature using private key |
+| Verification | `openssl_verify()` | Child site verifies signature using public key |
+
+The child site only processes requests with valid signatures that match its stored public key.
+
+---
+
+## HTTPS Request Structure
+
+MainWP Dashboard communicates with child sites via HTTPS requests using cURL. Each request includes:
+
+| Parameter | Purpose |
+|-----------|---------|
+| Username | Administrator username used to establish the connection |
+| Function | Name of the function to execute on the child site |
+| MainWP Signature | Authentication signature for request verification |
+
+### Example Sync Request
+
+```
+https://childsite.com/wp-admin/admin-ajax.php?user=demouser&function=stats&mainwpsignature=dgTOIUbQyBWvCh0pNhnwmxmHoeayfg34PCBJxhszRFASTfFwRqrJaMk%2F%2FLJSQvDKlQ8A2Wf4cwowG1PaL9f%2FdG2DzBDucu9GRMi%2Bq18iauk9JgXR%2FaPd9jSvAzoxc5GSJrDmBOLLZEFe8M0VWJ2VVdRm3Bq%2BPyD4p4AtB0%2BphMRXnP99PVMXkwMJKVnf1OT7jjAYATBuSkkccsZ5bRyZDHuJw78L%2BsGhhvKxoz0IwRNqnV4e09LuPW8CKe6DtyPc9SRD9ojc69NQxZBDa2Zyr%2FvH%2BypFvFxsw0Eh0Tnoiq9giVUSDNlEtR7RLJbtGOEKr4%2BBMtmIb1M9ODy72N9%2Ftg%3D%3D
+```
+
+If the `mainwpsignature` doesn't match, the child site rejects the request.
+
+---
+
+## Request Parameter Escaping
+
+Before sending any request to a child site, MainWP Dashboard escapes all parameter values to prevent code injection.
+
+For example, the Jump to WP Admin feature escapes `name` and `value` attributes using `esc_attr()`:
+
+![Code showing esc_attr function usage for escaping request parameters](/images/miscellaneous/advanced-miscellaneous-624352.jpg)
+
+### Why This Matters
+
+This escaping protects against scenarios where an attacker might:
+1. Trick you into clicking a crafted link
+2. Attempt to pass malicious code through request parameters
+
+Since MainWP escapes all attributes, any potentially harmful code becomes harmless before reaching the child site.
+
+---
+
+## Complete Request Flow
+
+The security system works as follows:
+
+1. **Preparation**: Dashboard escapes all request attributes
+2. **Transmission**: HTTPS request sent with MainWP Signature and parameters
+3. **Verification**: Child site validates signature against stored public key
+4. **Execution**: Only authenticated requests are processed
+
+---
+
+## Related Resources
+
+- [MainWP Security](/getting-started/how-secure-is-the-mainwp-plugin) - Security overview
+- [OpenSSL Key Encryption](/advanced/openssl-keys-encryption) - Private key encryption
+- [API Key Storage](/advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data) - Credential encryption
+- [Two-Factor Authentication](/advanced/miscellaneous/how-to-add-two-factor-authentication-2fa-to-mainwp) - Additional login security

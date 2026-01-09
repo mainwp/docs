@@ -1,0 +1,249 @@
+---
+title: Resolve system requirement issues
+description: >-
+  Fix common system requirement issues affecting your MainWP Dashboard
+  performance. Covers WordPress version, PHP settings, MySQL, SSL, cURL, and
+  directory permissions.
+---
+
+MainWP requires specific server configurations to function properly. This guide covers how to identify and fix common system requirement issues shown on the Server Information page.
+
+## What You'll Learn
+
+- Check your current system requirements status
+- Fix PHP configuration issues
+- Enable required extensions
+- Resolve directory permission problems
+
+## Prerequisites
+
+- Access to your hosting control panel or FTP
+- Ability to edit php.ini or contact hosting support
+- Admin access to your Dashboard site
+
+---
+
+## Check Your Status
+
+Go to **MainWP > Info > Server** to view your current configuration. Items that don't meet requirements are highlighted.
+
+---
+
+## WordPress Version
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | WordPress 6.2 |
+| Recommended | Latest stable version |
+
+**How to fix:** [Update your WordPress installation](https://wordpress.org/documentation/article/updating-wordpress/) to the latest stable release.
+
+---
+
+## WordPress Memory Limit
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 64MB |
+| Recommended | 256MB |
+
+**How to fix:** Add this line to your wp-config.php file:
+
+```php
+define('WP_MEMORY_LIMIT', '256M');
+```
+
+See [WordPress Memory Limit documentation](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP) for details.
+
+---
+
+## PHP Version
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 7.4 |
+| Recommended | 8.0 or newer |
+
+**How to fix:** Contact your hosting support to update PHP on your server. Most hosts provide PHP version switching in the control panel.
+
+---
+
+## MySQL Version
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 5.5 |
+| Recommended | 5.7 or newer |
+
+**How to fix:** Contact your hosting support to update MySQL. Database upgrades typically require host assistance.
+
+---
+
+## PHP Max Execution Time
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 30 seconds |
+| Recommended | 300 seconds |
+
+**How to fix:** Edit php.ini and set:
+
+```ini
+max_execution_time = 300
+```
+
+Or contact your hosting support to make this change.
+
+---
+
+## PHP Upload Max Filesize
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 2MB |
+| Recommended | 128MB |
+
+**How to fix:** Edit php.ini and set:
+
+```ini
+upload_max_filesize = 128M
+```
+
+---
+
+## PHP Post Max Size
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 2MB |
+| Recommended | 128MB |
+
+**How to fix:** Edit php.ini and set:
+
+```ini
+post_max_size = 128M
+```
+
+<Note>
+post_max_size should be equal to or larger than upload_max_filesize.
+</Note>
+
+---
+
+## SSL Extension
+
+| Requirement | Value |
+|-------------|-------|
+| Required | Enabled |
+
+**How to fix:** Edit php.ini and uncomment the OpenSSL extension:
+
+```ini
+; Change this:
+;extension=php_openssl.dll
+
+; To this:
+extension=php_openssl.dll
+```
+
+Or contact your hosting support to enable OpenSSL.
+
+---
+
+## SSL Warning
+
+| Requirement | Value |
+|-------------|-------|
+| Required | Empty (no errors) |
+
+**How to fix:** If SSL warnings appear, contact your hosting support with the specific error message. SSL issues often require server-level configuration changes.
+
+---
+
+## cURL Extension
+
+| Requirement | Value |
+|-------------|-------|
+| Required | Enabled |
+
+**How to fix:** Edit php.ini and uncomment the cURL extension:
+
+```ini
+; Change this:
+;extension=php_curl.dll
+
+; To this:
+extension=php_curl.dll
+```
+
+Or contact your hosting support to enable cURL.
+
+---
+
+## cURL Timeout
+
+| Requirement | Value |
+|-------------|-------|
+| Minimum | 60 seconds |
+| Recommended | 300 seconds |
+
+**How to fix:** Edit php.ini and set:
+
+```ini
+default_socket_timeout = 300
+```
+
+---
+
+## MainWP Upload Directory
+
+| Requirement | Value |
+|-------------|-------|
+| Required | Writable |
+
+**How to fix:**
+
+<Steps>
+<Step title="Connect via FTP">
+Connect to your site using an FTP program like FileZilla.
+</Step>
+<Step title="Navigate to the directory">
+Go to `/wp-content/uploads/mainwp/`
+</Step>
+<Step title="Create directory if missing">
+If the mainwp folder doesn't exist, create it.
+</Step>
+<Step title="Set permissions">
+Right-click the folder and set permissions (chmod) to 755. If that doesn't work, try 777.
+</Step>
+</Steps>
+
+---
+
+## Contact Your Host
+
+For most changes, contacting your hosting support is the safest approach. Provide them with:
+
+- The specific requirement that isn't met
+- The recommended value from this guide
+- A request to make the change
+
+Some servers require a reboot after php.ini changes. Your host can handle this.
+
+---
+
+## Self-Check Checklist
+
+- [ ] All requirements show as met on Server Information page
+- [ ] PHP version is current
+- [ ] Memory and execution time limits are adequate
+- [ ] SSL and cURL extensions are enabled
+- [ ] MainWP upload directory is writable
+
+---
+
+## Related Resources
+
+- [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Full requirements list
+- [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) - PHP function requirements
+- [MainWP Fails to Update](/troubleshooting/mainwp-fails-to-update-all-items-on-child-sites) - Update issues from low limits

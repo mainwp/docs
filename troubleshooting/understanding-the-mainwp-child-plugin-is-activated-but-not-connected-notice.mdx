@@ -1,0 +1,129 @@
+---
+title: Understanding the "MainWP Child Plugin is activated but not connected" Notice
+sidebarTitle: "Child Plugin Not Connected"
+description: >-
+  This notice appears when the MainWP Child plugin is active but not connected
+  to your Dashboard. Either add the site as new or reconnect an existing site
+  from MainWP > Sites > Manage Sites.
+---
+
+This notice appears in the WordPress admin area when the MainWP Child plugin is installed and activated but not connected to any MainWP Dashboard.
+
+![MainWP Child plugin not connected notice displayed in WordPress admin](/images/faq/child-activated-not-connected.png)
+
+## What You'll Learn
+
+- Why this notice appears
+- How to connect a new site to your Dashboard
+- How to reconnect a disconnected site
+- When to deactivate the plugin
+
+## Prerequisites
+
+- MainWP Child plugin installed on the site showing the notice
+- MainWP Dashboard installed on a separate WordPress site
+- Admin access to both sites
+
+---
+
+## Why This Notice Appears
+
+The notice displays in two situations:
+
+| Situation | Description |
+|-----------|-------------|
+| New installation | You activated MainWP Child but haven't added the site to your Dashboard yet |
+| Disconnected site | The site was previously connected but lost its connection (after plugin deactivation, site migration, or Dashboard changes) |
+
+The plugin is designed to communicate with a MainWP Dashboard. Until connected, it displays this reminder to complete the setup.
+
+---
+
+## Connect a New Site
+
+If you just installed MainWP Child and need to add this site to your Dashboard:
+
+<Steps>
+<Step title="Log in to your Dashboard">
+Access your MainWP Dashboard WordPress site.
+</Step>
+<Step title="Navigate to Add New Site">
+Go to **MainWP > Sites > Add New**.
+</Step>
+<Step title="Enter site details">
+Enter the child site URL and administrator credentials.
+</Step>
+<Step title="Complete connection">
+Click **Add Site**. The Dashboard connects to the child site and the notice disappears.
+</Step>
+</Steps>
+
+For detailed instructions, see [Get Started with MainWP](/getting-started/get-started-with-mainwp).
+
+---
+
+## Reconnect a Disconnected Site
+
+If the site was previously connected but became disconnected:
+
+<Steps>
+<Step title="Log in to your Dashboard">
+Access your MainWP Dashboard WordPress site.
+</Step>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Find the site">
+Locate the disconnected site in the list. It may show a connection error indicator.
+</Step>
+<Step title="Reconnect the site">
+Click **Reconnect** from the site's action menu and follow the prompts.
+</Step>
+</Steps>
+
+If the site no longer appears in your Dashboard, you may need to add it as a new site.
+
+---
+
+## Deactivate if Not Needed
+
+If you don't plan to connect this site to a MainWP Dashboard, deactivate the plugin to remove the notice:
+
+<Steps>
+<Step title="Go to Plugins">
+In the child site's WordPress admin, go to **Plugins > Installed Plugins**.
+</Step>
+<Step title="Deactivate MainWP Child">
+Find **MainWP Child** and click **Deactivate**.
+</Step>
+</Steps>
+
+The notice disappears once the plugin is deactivated.
+
+---
+
+## Common Causes of Disconnection
+
+| Cause | Solution |
+|-------|----------|
+| Plugin was deactivated and reactivated | Reconnect from Dashboard |
+| Site migrated to new domain | Update site URL in Dashboard and reconnect |
+| Dashboard migrated or reinstalled | Add site again or use Force Reconnect |
+| Security ID changed | Re-enter the Security ID when reconnecting |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Identified whether this is a new installation or disconnected site
+- [ ] Connected or reconnected the site from your Dashboard
+- [ ] Notice no longer appears on the child site
+- [ ] Site syncs successfully with Dashboard
+
+---
+
+## Related Resources
+
+- [Get Started with MainWP](/getting-started/get-started-with-mainwp) - Add your first child site
+- [Force Reconnection](/troubleshooting/how-can-i-force-my-mainwp-dashboard-to-reestablish-connection-with-child-sites) - Reconnect all sites at once
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Resolve connection issues

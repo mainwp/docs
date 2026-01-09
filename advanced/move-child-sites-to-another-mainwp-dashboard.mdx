@@ -1,0 +1,155 @@
+---
+title: How can I move Child Sites to another MainWP Dashboard?
+sidebarTitle: "Move Child Sites"
+description: >-
+  Transfer child sites between MainWP Dashboards by exporting site data,
+  disconnecting from the old Dashboard, and importing to the new Dashboard.
+---
+
+Moving child sites to a different MainWP Dashboard involves exporting your site list, disconnecting from the current Dashboard, and importing to the new Dashboard. The MainWP Child plugin remains active on child sites throughout the process.
+
+## What You'll Learn
+
+- How to export child site data for transfer
+- How to safely disconnect sites from the current Dashboard
+- How to import sites to a new Dashboard
+- When to use this process
+
+## Prerequisites
+
+- Admin access to both the old and new MainWP Dashboards
+- MainWP Child plugin installed and active on all child sites
+- New Dashboard already set up and functional
+
+---
+
+## When to Use This Process
+
+Use this process when:
+
+| Scenario | Description |
+|----------|-------------|
+| Replacing Dashboard | Setting up a fresh MainWP installation on a new server |
+| Splitting networks | Moving some sites to a separate Dashboard |
+| Agency transition | Transferring sites to a client's own Dashboard |
+| Consolidation | Combining sites from multiple Dashboards |
+
+<Note>
+If you're moving your Dashboard to a new server while keeping the same domain, you may be able to migrate the entire Dashboard instead. See [Migrate Dashboard](/advanced/how-to-migrate-the-mainwp-dashboard).
+</Note>
+
+---
+
+## Step 1: Export Child Sites
+
+Export your site list from the current Dashboard.
+
+<Steps>
+<Step title="Open MainWP Tools">
+Go to **MainWP > Settings > MainWP Tools**.
+</Step>
+<Step title="Export sites">
+Locate and click **Export Sites**.
+</Step>
+<Step title="Save the CSV file">
+Save the exported CSV file to your computer. This file contains site URLs, names, and connection data.
+</Step>
+</Steps>
+
+<Note>
+The CSV file includes site URLs but not sensitive connection keys. Sites will need to reconnect using existing MainWP Child plugin credentials on each site.
+</Note>
+
+---
+
+## Step 2: Disconnect Sites from Current Dashboard
+
+Break the connection between the old Dashboard and all child sites.
+
+<Steps>
+<Step title="Open MainWP Tools">
+Go to **MainWP > Settings > MainWP Tools**.
+</Step>
+<Step title="Disconnect all sites">
+Locate and click **Disconnect Sites**.
+</Step>
+<Step title="Confirm disconnection">
+Confirm the action when prompted.
+</Step>
+</Steps>
+
+After disconnection:
+- The MainWP Child plugin remains active on all child sites
+- Child sites are ready to connect to a new Dashboard
+- The old Dashboard no longer manages these sites
+
+<Warning>
+Only disconnect after you have successfully exported the site list and are ready to import to the new Dashboard.
+</Warning>
+
+---
+
+## Step 3: Import Sites to New Dashboard
+
+Add the sites to your new MainWP Dashboard using the exported CSV file.
+
+<Steps>
+<Step title="Access new Dashboard">
+Log in to your new MainWP Dashboard.
+</Step>
+<Step title="Open Import Sites">
+Go to **MainWP > Sites > Import Sites**.
+</Step>
+<Step title="Upload CSV file">
+Select the CSV file you exported from the old Dashboard.
+</Step>
+<Step title="Start import">
+Click **Import** to begin adding sites.
+</Step>
+<Step title="Verify connections">
+After import completes, go to **MainWP > Sites > Manage Sites** and sync all sites to verify connections.
+</Step>
+</Steps>
+
+For detailed import instructions, see [Import Sites](/sites/management/manage-child-sites).
+
+---
+
+## Troubleshooting
+
+### Sites fail to connect after import
+
+| Problem | Solution |
+|---------|----------|
+| Connection timeout | Verify child site is accessible and MainWP Child plugin is active |
+| Security ID mismatch | The Unique Security ID on the child site may need updating |
+| Firewall blocking | Check that security plugins aren't blocking the new Dashboard |
+
+### Reconnecting individual sites
+
+If a site fails to import:
+
+1. Visit the child site's WP Admin directly
+2. Go to **Settings > MainWP Child**
+3. Verify the plugin is active and configured
+4. Return to the new Dashboard and add the site manually via **MainWP > Sites > Add New**
+
+---
+
+## Self-Check Checklist
+
+- [ ] CSV file exported from old Dashboard
+- [ ] Sites disconnected from old Dashboard
+- [ ] CSV file imported to new Dashboard
+- [ ] All sites show as connected in new Dashboard
+- [ ] Sync successful for all sites
+- [ ] Jump to WP Admin works for child sites
+
+---
+
+## Related Resources
+
+- [Migrate Dashboard](/advanced/how-to-migrate-the-mainwp-dashboard) - Move entire Dashboard to new server
+- [Change Dashboard Domain](/advanced/changing-the-domain-of-your-mainwp-dashboard-site) - Domain change procedures
+- [Import Sites](/sites/management/manage-child-sites) - Detailed import instructions
+- [Reconnecting Child Sites](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) - Reconnection process

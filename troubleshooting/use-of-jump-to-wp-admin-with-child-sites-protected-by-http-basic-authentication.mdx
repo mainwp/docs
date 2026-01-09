@@ -1,0 +1,149 @@
+---
+title: Use Jump to WP Admin with HTTP Basic Authentication
+sidebarTitle: "Jump with HTTP Basic Auth"
+description: >-
+  The Jump to WP Admin feature does not work with HTTP Basic Authentication
+  protected sites. Browsers cannot pass auth credentials through link or form
+  submissions in a way that bypasses the authentication prompt.
+---
+
+If your child site is protected by HTTP Basic Authentication (commonly added via .htaccess), the **Jump to WP Admin** feature in your MainWP Dashboard will not work for that site.
+
+## What You'll Learn
+
+- Why HTTP Basic Auth blocks Jump to WP Admin
+- Alternative ways to access protected child sites
+- How to whitelist your Dashboard IP
+- Security alternatives that work with MainWP
+
+## Prerequisites
+
+- MainWP Dashboard with HTTP Basic Auth-protected child sites
+- Access to modify .htaccess (for IP whitelisting option)
+- Knowledge of your Dashboard server's IP address (for IP whitelisting)
+
+---
+
+## Why This Limitation Exists
+
+HTTP Basic Authentication operates at the server level, before WordPress even loads. When you click Jump to WP Admin, your browser attempts to access the child site's wp-admin URL directly. The server intercepts this request and demands credentials before allowing access.
+
+Browsers and HTML forms don't support passing HTTP Basic Auth credentials as part of a link or form submission. This is a security feature—browsers intentionally prevent websites from automatically authenticating to other sites on your behalf.
+
+MainWP's auto-login system works by submitting WordPress credentials through a secure form. This happens at the application level, after the server has already verified access. HTTP Basic Auth blocks the request before MainWP's authentication can occur.
+
+---
+
+## Alternative Access Methods
+
+### Option 1: Use Your Browser's Password Manager
+
+Most browsers can save HTTP Basic Auth credentials.
+
+<Steps>
+<Step title="Visit the site">
+Navigate to the child site's wp-admin URL directly in your browser.
+</Step>
+<Step title="Enter credentials">
+Enter the HTTP Basic Auth credentials when prompted.
+</Step>
+<Step title="Save credentials">
+Check "Remember" or allow your browser to save the credentials.
+</Step>
+<Step title="Access normally">
+Future visits (including Jump to WP Admin) will auto-fill the HTTP Basic Auth prompt.
+</Step>
+</Steps>
+
+This works well if you use the same browser consistently. The browser remembers credentials per-domain and fills them automatically.
+
+### Option 2: Access wp-admin Directly
+
+Instead of using Jump to WP Admin:
+
+<Steps>
+<Step title="Open new tab">
+Open a new browser tab.
+</Step>
+<Step title="Navigate to wp-admin">
+Go to `https://yourchildsite.com/wp-admin/`
+</Step>
+<Step title="Authenticate">
+Enter HTTP Basic Auth credentials if prompted.
+</Step>
+<Step title="Log in">
+Log in to WordPress normally.
+</Step>
+</Steps>
+
+Bookmark the wp-admin URL for quick access. Once authenticated with HTTP Basic Auth, your browser session typically remains valid until you close the browser.
+
+### Option 3: Whitelist the MainWP Dashboard IP
+
+If your HTTP Basic Auth is configured via .htaccess, you can allow your Dashboard server to bypass authentication:
+
+```apache
+# Existing HTTP Basic Auth configuration
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /path/to/.htpasswd
+Require valid-user
+
+# Allow MainWP Dashboard IP to bypass
+Satisfy Any
+Allow from YOUR.DASHBOARD.IP.ADDRESS
+```
+
+Replace `YOUR.DASHBOARD.IP.ADDRESS` with your MainWP Dashboard server's IP. Find this at **MainWP > Info > Server**.
+
+<Warning>
+Only use IP whitelisting if your Dashboard has a static IP address. Dynamic IPs would require frequent .htaccess updates.
+</Warning>
+
+---
+
+## Security Alternatives to HTTP Basic Auth
+
+Consider these alternatives if the Jump to WP Admin limitation affects your workflow:
+
+### Application-Level Security
+
+| Method | Description |
+|--------|-------------|
+| Security plugins | Limit login attempts, add CAPTCHA |
+| Two-factor authentication | Require 2FA for admin login |
+| IP restrictions | Restrict wp-admin access by IP at WordPress level |
+
+### Server-Level Alternatives
+
+| Method | Description |
+|--------|-------------|
+| Firewall rules | Block access based on IP at firewall level |
+| VPN requirements | Require VPN connection to access site |
+| Client certificates | SSL client certificate authentication |
+
+These alternatives protect your site while allowing MainWP's Jump to WP Admin feature to function normally.
+
+---
+
+## Security Note
+
+HTTP Basic Auth remains a valid security layer despite this limitation. The credential prompt adds protection against unauthorized access, especially for staging sites or development environments. If your security requirements include HTTP Basic Auth, use one of the alternative access methods above rather than removing the protection.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Identified which child sites use HTTP Basic Auth
+- [ ] Chose an alternative access method
+- [ ] Browser password manager configured (if using Option 1)
+- [ ] Dashboard IP whitelisted (if using Option 3)
+- [ ] Successfully accessed HTTP Basic Auth-protected sites
+
+---
+
+## Related Resources
+
+- [Troubleshoot Jump to WP Admin](/troubleshooting/troubleshooting-issues-with-jump-to-the-site-wp-admin-functionality) - Other Jump to WP Admin issues
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection troubleshooting
+- [MainWP Connection Security](/advanced/miscellaneous/mainwp-connection-security) - How MainWP secures connections

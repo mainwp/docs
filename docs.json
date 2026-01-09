@@ -1,68 +1,598 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "MainWP Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#527300",
+    "light": "#8fc31f",
+    "dark": "#8fc31f"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/mainwp-logo.svg",
+    "dark": "/logo/mainwp-logo-alt.svg",
+    "height": 48
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://mainwp.com/support"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get MainWP",
+      "href": "https://mainwp.com/pricing"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mainwp",
+      "github": "https://github.com/mainwp",
+      "linkedin": "https://linkedin.com/company/mainwp",
+      "youtube": "https://youtube.com/mainwp",
+      "facebook": "https://facebook.com/mainwp"
+    }
+  },
+  "seo": {
+    "indexing": "navigable"
+  },
+  "redirects": [
+    {
+      "source": "/advanced/miscellaneous/getting-started-with-the-free-extension-bundle",
+      "destination": "/advanced/miscellaneous/getting-started-with-mainwp-essentials"
+    }
+  ],
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
+            "icon": "play",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "getting-started/mainwp-introduction",
+              "getting-started/get-started-with-mainwp",
+              "getting-started/mainwp-user-interface",
+              "getting-started/mainwp-navigation-tutorial",
+              "getting-started/pre-install-faq",
+              "getting-started/how-can-i-initiate-the-quick-setup-wizard"
+            ]
+          },
+          {
+            "group": "Understanding MainWP",
+            "icon": "lightbulb",
+            "pages": [
+              "getting-started/mainwp-dashboard-child-synchronization-process-explained",
+              "getting-started/how-secure-is-the-mainwp-plugin",
+              "getting-started/why-does-self-hosted-and-open-source-matter",
+              "getting-started/are-you-guys-watching-what-i-am-doing"
+            ]
+          },
+          {
+            "group": "Dashboard",
+            "icon": "gauge-high",
+            "pages": [
+              "dashboard/overview/overview-of-mainwp-dashboard-icons",
+              "dashboard/overview/mainwp-dashboard-demo-mode",
+              "dashboard/overview/manage-extensions",
+              "dashboard/overview/choose-list-or-grid-view-for-manage-sites-table",
+              "dashboard/overview/mainwp-rest-api"
+            ],
+            "groups": [
+              {
+                "group": "Hosting & Performance",
+                "pages": [
+                  "dashboard/overview/how-to-install-mainwp-dashboard-app-on-cloudways-hosting",
+                  "dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Sites",
+            "icon": "globe",
+            "pages": [
+              "sites/management/manage-child-sites",
+              "sites/management/manage-sites-page-tutorial",
+              "sites/management/mainwp-dashboard-settings",
+              "sites/how-can-i-export-child-sites",
+              "sites/how-to-display-only-non-mainwp-changes-in-sites-changes",
+              "sites/users/manage-users"
+            ],
+            "groups": [
+              {
+                "group": "Plugins",
+                "pages": [
+                  "sites/plugins/managing-plugins-with-mainwp",
+                  "sites/plugins/check-for-abandoned-plugins-and-themes"
+                ]
+              },
+              {
+                "group": "Themes",
+                "pages": [
+                  "sites/themes/managing-themes-with-mainwp",
+                  "sites/themes/parent-theme-lock",
+                  "sites/themes/negative-search"
+                ]
+              },
+              {
+                "group": "Updates",
+                "pages": [
+                  "sites/updates/manage-updates",
+                  "sites/updates/does-mainwp-have-safe-updates",
+                  "sites/updates/how-to-change-daily-update-and-sync-frequency",
+                  "sites/updates/how-to-change-the-number-of-simultaneous-update-requests",
+                  "sites/updates/what-does-possibly-abandoned-mean",
+                  "sites/updates/how-to-change-tolerance-for-abandoned-plugins-and-themes"
+                ]
+              },
+              {
+                "group": "Content",
+                "pages": [
+                  "sites/content/manage-posts",
+                  "sites/content/manage-pages"
+                ]
+              },
+              {
+                "group": "Backups",
+                "pages": [
+                  "sites/backups/manage-backups",
+                  "sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Clients",
+            "icon": "users",
+            "pages": [
+              "clients/manage-clients"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "icon": "screwdriver-wrench",
+            "pages": [
+              "troubleshooting/potential-issues",
+              "troubleshooting/how-to-enable-error-logging"
+            ],
+            "groups": [
+              {
+                "group": "Connection Issues",
+                "pages": [
+                  "troubleshooting/connection-test-results-status-codes",
+                  "troubleshooting/how-can-i-force-my-mainwp-dashboard-to-reestablish-connection-with-child-sites",
+                  "troubleshooting/how-to-use-child-site-response-to-troubleshoot-connection-problems",
+                  "troubleshooting/all-child-sites-disappeared-from-my-mainwp-dashboard",
+                  "troubleshooting/understanding-the-mainwp-child-plugin-is-activated-but-not-connected-notice",
+                  "troubleshooting/how-to-resolve-issue-with-connecting-a-child-site-hosted-on-20i",
+                  "troubleshooting/wordpress-rest-api-does-not-respond",
+                  "getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id"
+                ]
+              },
+              {
+                "group": "Update Issues",
+                "pages": [
+                  "troubleshooting/mainwp-fails-to-update-all-items-on-child-sites",
+                  "troubleshooting/plugin-installation-fails-with-error-message-upload-failed",
+                  "troubleshooting/why-does-my-premium-plugin-not-show-a-changelog-on-mainwp-dashboard",
+                  "troubleshooting/premium-theme-updates-not-detected",
+                  "troubleshooting/deleting-plugins-and-themes-not-working-on-the-wp-engine-hosted-child-sites-wp-engine-hosting"
+                ]
+              },
+              {
+                "group": "Access & Authentication",
+                "pages": [
+                  "troubleshooting/troubleshooting-issues-with-jump-to-the-site-wp-admin-functionality",
+                  "troubleshooting/use-of-jump-to-wp-admin-with-child-sites-protected-by-http-basic-authentication",
+                  "troubleshooting/am-i-allowed-to-change-wp-admin-and-wp-login-php-url"
+                ]
+              },
+              {
+                "group": "Email & Notifications",
+                "pages": [
+                  "troubleshooting/my-mainwp-dashboard-not-sending-emails",
+                  "troubleshooting/why-cant-i-edit-email-templates-in-my-mainwp-dashboard"
+                ]
+              },
+              {
+                "group": "Extensions & Licensing",
+                "pages": [
+                  "troubleshooting/troubleshoot-extension-licensing-issues",
+                  "troubleshooting/why-is-my-extensions-page-empty"
+                ]
+              },
+              {
+                "group": "System & Performance",
+                "pages": [
+                  "troubleshooting/resolve-system-requirement-issues",
+                  "troubleshooting/does-mainwp-child-plugin-affect-my-child-site-loading-time",
+                  "troubleshooting/what-port-and-user-agent-does-mainwp-use",
+                  "troubleshooting/when-i-push-changes-from-live-to-staging-child-site-needs-to-be-reconnected-why",
+                  "troubleshooting/does-mainwp-have-visual-regression-tests"
+                ]
+              }
             ]
           },
           {
             "group": "Customization",
+            "icon": "palette",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "customization/overview"
+            ],
+            "groups": [
+              {
+                "group": "Dashboard Appearance",
+                "pages": [
+                  "customization/how-to-change-the-theme-for-mainwp",
+                  "customization/how-to-change-the-sidebar-position",
+                  "customization/customize-mainwp-dashboard-logo",
+                  "customization/how-can-i-change-the-number-of-widget-columns-on-the-overview-page",
+                  "customization/can-i-hide-widgets-that-i-dont-need",
+                  "customization/hiding-new-and-beta-labels-on-the-dashboard",
+                  "customization/what-profile-picture-is-shown-in-the-top-right-of-the-mainwp-dashboard"
+                ]
+              },
+              {
+                "group": "Navigation & Tables",
+                "pages": [
+                  "customization/add-new-menu-entries-to-the-mainwp-dashboard-navigation",
+                  "customization/how-to-add-wp-admin-button-to-the-main-navigation-bar",
+                  "customization/how-to-change-the-default-page-after-logging-into-wordpress",
+                  "customization/how-to-add-a-go-to-site-icon-to-manage-sites-table",
+                  "customization/how-to-create-a-new-column-in-the-manage-sites-table"
+                ]
+              },
+              {
+                "group": "Notifications & Prompts",
+                "pages": [
+                  "customization/how-to-disable-update-confirmation-popups",
+                  "customization/how-to-turn-off-guided-tours",
+                  "customization/how-to-disable-tooltips-in-mainwp-dashboard",
+                  "customization/how-can-i-hide-the-update-everything-button"
+                ]
+              },
+              {
+                "group": "Email Settings",
+                "pages": [
+                  "customization/how-to-change-the-from-address-for-mainwp-emails"
+                ]
+              },
+              {
+                "group": "Technical Settings",
+                "pages": [
+                  "customization/disable-wp-cron",
+                  "customization/required-fs_method",
+                  "customization/how-to-remove-unwanted-hardening-checks",
+                  "customization/limit-the-number-of-entries-loaded-in-the-non-mainwp-widget"
+                ]
+              },
+              {
+                "group": "Cleanup & Uninstall",
+                "pages": [
+                  "customization/delete-mainwp-related-content-from-a-child-site-database",
+                  "customization/how-to-uninstall-mainwp-child-reports-database"
+                ]
+              }
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Advanced",
+            "icon": "gears",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "advanced/overview"
+            ],
+            "groups": [
+              {
+                "group": "Migration & Domain Changes",
+                "pages": [
+                  "advanced/how-to-migrate-the-mainwp-dashboard",
+                  "advanced/changing-the-domain-of-your-mainwp-dashboard-site",
+                  "advanced/move-child-sites-to-another-mainwp-dashboard"
+                ]
+              },
+              {
+                "group": "Security & Encryption",
+                "pages": [
+                  "advanced/openssl-keys-encryption",
+                  "advanced/how-to-find-the-openssl-cnf-file",
+                  "advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl",
+                  "advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data",
+                  "advanced/miscellaneous/mainwp-connection-security",
+                  "advanced/miscellaneous/mainwp-com-login-security",
+                  "advanced/miscellaneous/how-to-add-two-factor-authentication-2fa-to-mainwp"
+                ]
+              },
+              {
+                "group": "Automation",
+                "pages": [
+                  "advanced/integrations/automate-your-mainwp-workflow-with-suretriggers",
+                  "advanced/miscellaneous/mainwp-wp-cli-commands"
+                ]
+              },
+              {
+                "group": "Hosting & Compatibility",
+                "pages": [
+                  "advanced/miscellaneous/hosting-compatibility",
+                  "advanced/miscellaneous/mainwp-system-requirements",
+                  "advanced/miscellaneous/required-php-functions-for-mainwp",
+                  "advanced/miscellaneous/enable-tmpfile-php-function-on-cloudways",
+                  "advanced/miscellaneous/mainwp-and-strattic-compatibility",
+                  "advanced/miscellaneous/mainwp-and-wordpress-multisite-compatibility-test",
+                  "advanced/how-to-change-the-number-of-simultaneous-sync-requests"
+                ]
+              },
+              {
+                "group": "Plugins & Themes",
+                "pages": [
+                  "advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed",
+                  "advanced/miscellaneous/how-to-install-a-plugin-on-sites-that-already-have-a-certain-plugin-installed",
+                  "advanced/miscellaneous/ensuring-correct-language-for-plugins-after-bulk-installation",
+                  "advanced/miscellaneous/premium-plugin-updates-not-detected",
+                  "advanced/miscellaneous/limited-access-to-wordpress-org-resources-and-its-impact-on-mainwp-users"
+                ]
+              },
+              {
+                "group": "Tools & Utilities",
+                "pages": [
+                  "advanced/miscellaneous/mainwp-browser-extensions",
+                  "advanced/miscellaneous/mainwp-bridge",
+                  "advanced/miscellaneous/reset-page-settings",
+                  "advanced/miscellaneous/understanding-the-rnd-file-found-in-the-wp-admin-directory"
+                ]
+              },
+              {
+                "group": "Beta & Early Access",
+                "pages": [
+                  "advanced/miscellaneous/early-access-updater",
+                  "advanced/miscellaneous/mainwp-telemetry-early-access",
+                  "advanced/miscellaneous/what-does-mainwp-insights-track"
+                ]
+              },
+              {
+                "group": "Third-Party Extensions",
+                "pages": [
+                  "advanced/miscellaneous/support-for-3rd-party-extensions",
+                  "advanced/miscellaneous/required-plugins-check-for-mainwp-extensions"
+                ]
+              }
             ]
           },
           {
-            "group": "AI tools",
+            "group": "API Reference",
+            "icon": "code",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "api-reference/introduction",
+              "api-reference/rest-api/overview",
+              "api-reference/abilities-api/overview",
+              "api-reference/abilities-api/mcp-server"
+            ],
+            "groups": [
+              {
+                "group": "REST API",
+                "pages": [
+                  "api-reference/rest-api/authentication",
+                  "api-reference/rest-api/sites",
+                  "api-reference/rest-api/clients",
+                  "api-reference/rest-api/costs",
+                  "api-reference/rest-api/tags",
+                  "api-reference/rest-api/updates",
+                  "api-reference/rest-api/extensions"
+                ]
+              },
+              {
+                "group": "MainWP Abilities",
+                "pages": [
+                  "api-reference/abilities-api/sites",
+                  "api-reference/abilities-api/updates",
+                  "api-reference/abilities-api/clients",
+                  "api-reference/abilities-api/tags",
+                  "api-reference/abilities-api/batch-operations"
+                ]
+              },
+              {
+                "group": "AI Integration",
+                "pages": [
+                  "api-reference/abilities-api/mcp-server",
+                  "advanced/api/customgpt-instructions-for-mainwp-rest-api-v2",
+                  "advanced/api/customgpt-schema-for-mainwp-rest-api-v2"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Resources",
+            "icon": "book",
+            "pages": [
+              "resources/do-you-have-a-coupon",
+              "resources/will-there-be-a-cyber-monday-deal"
+            ],
+            "groups": [
+              {
+                "group": "Affiliate Program",
+                "pages": [
+                  "resources/affiliate/affiliate-faqs",
+                  "resources/affiliate/direct-link-tracking-explained"
+                ]
+              }
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Add-Ons",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
+            "icon": "table-cells",
             "pages": [
-              "api-reference/introduction"
+              "add-ons/overview",
+              "add-ons/bundles",
+              "advanced/miscellaneous/getting-started-with-mainwp-essentials"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Administrative",
+            "icon": "briefcase",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "add-ons/administrative",
+              "add-ons/administrative/comments-extension",
+              "add-ons/administrative/woocommerce-shortcuts-extension",
+              "add-ons/administrative/woocommerce-status-extension",
+              "add-ons/client/cost-tracker-assistant-extension",
+              "add-ons/posts-pages/seopress-extension",
+              "add-ons/performance/wp-compress-extension"
+            ]
+          },
+          {
+            "group": "Agency",
+            "icon": "building",
+            "pages": [
+              "add-ons/agency",
+              "add-ons/agency/pro-reports-extension-overview",
+              "add-ons/agency/team-control-extension",
+              "add-ons/agency/white-label-extension"
+            ],
+            "groups": [
+              {
+                "group": "Pro Reports Guides",
+                "pages": [
+                  "add-ons/agency/create-custom-report-templates",
+                  "add-ons/agency/difference-between-client-level-and-site-level-custom-tokens",
+                  "add-ons/agency/how-to-add-images-to-custom-pro-report-templates",
+                  "add-ons/agency/how-to-create-an-html-only-report-using-the-pro-reports-extension",
+                  "add-ons/agency/how-to-use-a-different-logo-for-the-pro-reports-email-only",
+                  "add-ons/agency/limit-the-amount-of-table-entries-in-the-pro-report-sections",
+                  "add-ons/agency/conditional-messages-in-pro-reports",
+                  "add-ons/agency/available-pro-reports-tokens"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Analytics",
+            "icon": "chart-line",
+            "pages": [
+              "add-ons/analytics",
+              "add-ons/analytics/mainwp-google-analytics-extension",
+              "add-ons/analytics/fathom-extension",
+              "add-ons/analytics/matomo-extension",
+              "add-ons/analytics/google-search-console-extension",
+              "add-ons/analytics/independent-analytics-extension",
+              "add-ons/posts-pages/seopress-extension"
+            ]
+          },
+          {
+            "group": "Backups",
+            "icon": "database",
+            "pages": [
+              "add-ons/backups",
+              "add-ons/backups/updraftplus-extension",
+              "add-ons/backups/solid-backups-extension",
+              "add-ons/backups/backwpup-extension",
+              "add-ons/backups/time-capsule-extension",
+              "add-ons/backups/wpvivid-extension"
+            ]
+          },
+          {
+            "group": "Client",
+            "icon": "user",
+            "pages": [
+              "add-ons/client",
+              "add-ons/client/cost-tracker-extension",
+              "add-ons/client/mainwp-time-tracker-extension",
+              "add-ons/agency/pro-reports-extension-overview"
+            ]
+          },
+          {
+            "group": "Development",
+            "icon": "laptop-code",
+            "pages": [
+              "add-ons/development",
+              "add-ons/administrative/bulk-settings-manager-extension",
+              "add-ons/development/code-snippets-extension",
+              "add-ons/development/clone-extension",
+              "add-ons/development/staging-extension",
+              "add-ons/development/mainwp-custom-dashboard-extension",
+              "add-ons/development/favorites-extension",
+              "add-ons/development/file-uploader-extension",
+              "add-ons/development/mainwp-and-atarim-integration",
+              "add-ons/development/pressable-extension",
+              "add-ons/development/mainwp-post-smtp-extension",
+              "add-ons/development/early-access-extension"
+            ]
+          },
+          {
+            "group": "Monitoring",
+            "icon": "desktop",
+            "pages": [
+              "add-ons/monitoring",
+              "add-ons/monitoring/advanced-uptime-monitor-extension",
+              "add-ons/monitoring/mainwp-domain-monitor-extension",
+              "add-ons/monitoring/mainwp-ssl-monitor-extension",
+              "add-ons/monitoring/mainwp-lighthouse-extension"
+            ]
+          },
+          {
+            "group": "Performance",
+            "icon": "bolt",
+            "pages": [
+              "add-ons/performance",
+              "add-ons/performance/cache-control-extension",
+              "add-ons/performance/rocket-extension",
+              "add-ons/performance/maintenance-extension",
+              "add-ons/performance/wp-compress-extension"
+            ]
+          },
+          {
+            "group": "Posts/Pages",
+            "icon": "file-lines",
+            "pages": [
+              "add-ons/posts-pages",
+              "add-ons/posts-pages/post-plus-extension",
+              "add-ons/posts-pages/boilerplate-extension",
+              "add-ons/posts-pages/article-uploader-extension",
+              "add-ons/posts-pages/post-dripper-extension",
+              "add-ons/posts-pages/custom-post-types-extension",
+              "add-ons/posts-pages/url-extractor-extension",
+              "add-ons/posts-pages/yoast-seo-extension",
+              "add-ons/posts-pages/seopress-extension",
+              "add-ons/posts-pages/termageddon-for-mainwp-extension",
+              "add-ons/performance/wp-compress-extension"
+            ]
+          },
+          {
+            "group": "Security",
+            "icon": "shield-halved",
+            "pages": [
+              "add-ons/security",
+              "add-ons/security/vulnerability-checker-extension",
+              "add-ons/security/dashboard-lock-extension",
+              "add-ons/security/wordfence-extension",
+              "add-ons/security/sucuri-extension",
+              "add-ons/security/solid-security-extension",
+              "add-ons/security/jetpack-protect-extension",
+              "add-ons/security/jetpack-scan-extension",
+              "add-ons/security/mainwp-virusdie-extension",
+              "add-ons/security/patchstack-extension",
+              "add-ons/security/aam-extension",
+              "add-ons/security/security-ninja-extension",
+              "add-ons/security/wp-activity-log-extension",
+              "add-ons/security/regression-testing-extension",
+              "add-ons/security/dashboard-insights-extension"
+            ]
+          },
+          {
+            "group": "Updates",
+            "icon": "arrows-rotate",
+            "pages": [
+              "add-ons/updates",
+              "add-ons/updates/mainwp-database-updater-extension",
+              "add-ons/performance/cache-control-extension",
+              "add-ons/security/regression-testing-extension"
             ]
           }
         ]
@@ -71,52 +601,16 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "MainWP.com",
+          "href": "https://mainwp.com",
+          "icon": "globe"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Support",
+          "href": "https://mainwp.com/support",
+          "icon": "life-ring"
         }
       ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
     }
   }
 }

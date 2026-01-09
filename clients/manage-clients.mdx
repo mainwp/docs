@@ -1,0 +1,225 @@
+---
+title: Manage Clients
+description: >-
+  Learn how to create and manage clients in your MainWP Dashboard. This guide
+  covers adding new clients, editing client information, assigning sites to
+  clients, and managing client-specific settings.
+---
+
+The Clients feature lets you organize your child sites by client, track client information, and generate client-specific reports. Assign sites to clients, store contact details, create custom fields for additional data, and use the Client Card to view a consolidated overview of each client's sites and activity.
+
+## What You'll Accomplish
+
+- Create and manage client records
+- Assign child sites to clients
+- Customize the client table display
+- Use the Client Card for client overview
+- Create custom client fields for Pro Reports
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Child sites connected to your Dashboard
+- Pro Reports extension (optional, for client reporting)
+
+---
+
+## Video Tutorial
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/8Th7bSZAHjw"
+  title="Manage Clients - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## Create a New Client
+
+<Steps>
+<Step title="Navigate to Add Client">
+Go to **Clients > Add Client**.
+</Step>
+<Step title="Enter client information">
+Fill in the client name (required) and other desired fields.
+
+![Add Client form with fields for client name and contact information](/images/clients/add-client-form.png)
+</Step>
+<Step title="Assign sites (optional)">
+In the sidebar on the right, select child sites to assign to this client.
+
+![Sidebar showing child sites available to assign to the client](/images/clients/assign-sites-sidebar.png)
+</Step>
+<Step title="Save">
+Click **Add Client**.
+</Step>
+</Steps>
+
+<Note>
+The Client Email field supports multiple email addresses separated by commas: `email1@example.com, email2@example.com`. Pro Reports uses the `[client.email]` token for the **Send email to** field.
+</Note>
+
+---
+
+## Update a Client
+
+<Steps>
+<Step title="Navigate to Manage Clients">
+Go to **Clients > Manage Clients**.
+</Step>
+<Step title="Edit client">
+Find the client and click **Edit** from the actions menu.
+
+![Select Edit action from the menu on the right](/images/clients/edit-client-action.png)
+</Step>
+<Step title="Update and save">
+Make your changes and click **Update Client**.
+</Step>
+</Steps>
+
+---
+
+## Delete Clients
+
+### Delete a Single Client
+
+Go to **Clients > Manage Clients**, find the client, and click **Delete** from the actions menu.
+
+![Delete action in the client actions menu](/images/clients/delete-client-action.png)
+
+### Bulk Delete Clients
+
+<Steps>
+<Step title="Select clients">
+Go to **Clients > Manage Clients** and check the boxes next to clients you want to delete.
+</Step>
+<Step title="Apply action">
+Select **Delete** from the **Bulk Actions** dropdown and click **Apply**.
+
+![Click the Apply button](/images/clients/bulk-delete-apply.png)
+</Step>
+</Steps>
+
+---
+
+## Customize the Manage Clients Table
+
+<Steps>
+<Step title="Open Page Settings">
+Go to **Clients > Manage Clients** and click the **Page Settings** (cog icon) in the top right.
+
+![Page Settings cog icon in the top right corner](/images/clients/page-settings-button.png)
+</Step>
+<Step title="Configure display">
+Set the number of clients to display per page and select which columns to show.
+
+![Page Settings dialog with column visibility and items per page options](/images/clients/page-settings-dialog.png)
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
+## Client Card
+
+The Client Card displays a consolidated overview of all information for a specific client. Widgets on this page can be resized and rearranged.
+
+![Animation showing how to resize and rearrange widgets on the Client Card page](/images/clients/client-card-widgets.gif)
+
+### Available Actions
+
+![Client Card action buttons including Manage Sites, Edit Client, Create Report, and Suspend Sites](/images/clients/client-card-buttons.png)
+
+| Button | Action |
+|--------|--------|
+| Manage Sites | Opens Manage Sites filtered to show only this client's sites |
+| Edit Client | Opens the Edit page for this client |
+| Create Report | Opens Pro Reports with this client's sites pre-selected |
+| Suspend Sites | Suspends all sites belonging to this client (no updates allowed) |
+
+### Client Overview Widgets
+
+The Client Card includes widgets that show data only from child sites assigned to that client:
+
+- **Recent Posts** - Latest posts from client sites
+- **Recent Pages** - Latest pages from client sites
+- **Non-MainWP Changes** - Changes made directly in client site WP Admin
+
+![Recent Posts, Recent Pages, and Non-MainWP Changes widgets on the Client Overview page](/images/clients/client-overview-widgets.png)
+
+---
+
+## Client Fields
+
+Client Fields let you create custom data fields for storing additional client information. These fields generate tokens that can be used in Pro Reports.
+
+### Add a New Field
+
+<Steps>
+<Step title="Navigate to Client Fields">
+Go to **Clients > Client Fields**.
+</Step>
+<Step title="Create field">
+Click **New Field**.
+
+![Click the New Field button](/images/clients/new-field-button.png)
+</Step>
+<Step title="Configure field">
+Enter the Field Name (used as a token in Pro Reports) and Description.
+
+![New Field form with Field Name and Description input fields](/images/clients/new-field-form.png)
+</Step>
+<Step title="Save">
+Click **Save Field**.
+</Step>
+</Steps>
+
+### Edit a Field
+
+<Steps>
+<Step title="Navigate to Client Fields">
+Go to **Clients > Client Fields**.
+</Step>
+<Step title="Edit">
+Find the field and click **Edit** from the actions menu.
+
+![Edit action in the field actions menu](/images/clients/edit-field-action.png)
+</Step>
+<Step title="Update and save">
+Make changes and click **Save Field**.
+
+![Edit Field form with Field Name and Description fields](/images/clients/edit-field-form.png)
+</Step>
+</Steps>
+
+### Delete a Field
+
+Go to **Clients > Client Fields**, find the field, and click **Delete** from the actions menu.
+
+![Delete action in the field actions menu](/images/clients/delete-field-action.png)
+
+### Use Custom Fields
+
+After creating a field, set its value for each client on their Edit page. The field token can then be used in Pro Reports to display that data.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Client records are created with required information
+- [ ] Child sites are assigned to appropriate clients
+- [ ] Client Card displays correct site data
+- [ ] Custom fields are created and populated (if needed)
+- [ ] Table customization settings are saved
+
+---
+
+## Related Resources
+
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension) - Generate client reports
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Token reference for reports

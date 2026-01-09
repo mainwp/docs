@@ -1,0 +1,178 @@
+---
+title: Domain Monitor
+sidebarTitle: "Domain Monitor"
+description: >-
+  MainWP Domain Monitor Extension lets you keep a watchful eye on your domains.
+  It alerts you via email when monitored domains are nearing expiration.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Checking domain expiration dates across all sites
+- Entering domain info manually for unsupported TLDs
+- Scheduling automated domain checks
+- Using Pro Reports tokens for domain data
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Domain Monitor"
+  data-purchase-url="https://mainwp.com/extension/domain-monitor/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+## Supported TLDs
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/QMziJ1BxEcE"
+  title="Domain Monitor - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+**Domain lookup may fail or return incomplete data for some TLDs due to restrictions or a lack of available information from the RDAP. MainWP will give its best to keep the list of supported TLDs up to date for the best extension performance.**
+
+### List of supported TLDs:
+
+AC, AERO, AF, AG, AR, AS, BI, BIZ, BJ, CA, CAT, CC, CD, CI, CLOUD, CO, COM, CR, CZ, DM, FO, FR, GD, GE, GL, GS, GY, HN, HR, HT, IE, INFO, JOBS, LA, LY, MA, ME, MG, MN, MS, MUSEUM, NAME, NET, NETWORK, NF, NG, ONLINE, ORG, PM, PR, PRO, PW, RE, SB, SC, SE, SH, SO, STUDIO, SX, TEL, TL, TRAVEL, TV, UK, US, UZ, VC, WF, XXX, YT, SHOP, CLUB, ME, GURU, PHOTOGRAPHY, EQUIPMENT, APP, AGENCY, DEV, IO, LIVE, WORLD, VIP, LIFE, DESIGN
+
+If your domain is **not on the list** of supported TLDs, you can enter information for it manually as described **[below](/add-ons/monitoring/mainwp-domain-monitor-extension#manual-entry)**.
+
+## Install and Set Domain Monitor Extension
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions page">
+</Step>
+<Step title="Click the Install Extensions button">
+![Click the Install Extensions button](/images/add-ons/2833252556cc.png)
+
+</Step>
+<Step title="Locate the Domain Monitor extension and select it">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Once the installation process is complete, click the Activate Extensions button">
+Once the installation process is complete, click the **Activate Extensions** button ![Screenshot showing Activate Extensions button after installation](/images/add-ons/578da5c7dc89.png)
+</Step>
+<Step title="After successful installation, proceed to the extension settings">
+</Step>
+<Step title="Set your preferences, Save Settings, and you are ready to audit your sites.">
+</Step>
+</Steps>
+
+
+## Check Domains
+
+<Steps>
+<Step title="Go to the MainWP > Extensions > Domain Monitor > Dashboard page.">
+</Step>
+<Step title="Locate the Check All Sites Domains button">
+![Locate the Check All Sites Domains button](/images/add-ons/4bff4539063a.png)
+
+</Step>
+<Step title="Click it, and wait until the extension completes the process.">
+</Step>
+</Steps>
+
+
+Alternatively,  you can use the **Bulk Actions** menu to check only certain sites, or if needed use the **Check Domain** action from the site **Action Menu** to audit just one site.
+
+## Enter Domain Info Manually
+
+If your domain is not on the list of supported TLDs, you can add information manually by following the steps below. ![Screenshot showing Manual Domain information entry toggle in settings](/images/add-ons/domain-monitor-widget.png)
+
+<Steps>
+<Step title="Go to the MainWP > Extensions > Domain Monitor > Dashboard page.">
+</Step>
+<Step title="Click on the Child Site for which you wish to enter the domain information">
+</Step>
+<Step title="Click on the Domain Monitor tab and then Settings">
+</Step>
+<Step title="Toggle on the Manual Domain information entry option and click Save Settings">
+Toggle on the **Manual Domain information entry** option and click **Save Settings**
+</Step>
+<Step title="Then open the new Edit Domain Info tab">
+</Step>
+<Step title="Enter or change the desired information, and click Save Settings">
+</Step>
+</Steps>
+
+
+## See Domain Info
+
+<Steps>
+<Step title="Go to the Domain Monitor extension, Dashboard page">
+</Step>
+<Step title="Locate the site/domain you want to check in the list and click use the Domain Info action from the Actions Menu">
+Locate the site/domain you want to check in the list and click use the **Domain Info** action from the **Actions Menu ![Screenshot of Domain Info action in site Actions Menu](/images/add-ons/domain-monitor-overview.png)** 
+</Step>
+<Step title="Once redirected to the report page, you can review all details">
+</Step>
+</Steps>
+
+
+## Schedule Automated Checks
+
+<Steps>
+<Step title="Go to the MainWP > Extensions > Domain Monitor > Settings page.">
+</Step>
+<Step title="Locate the Automatically check sites option and Enable it.">
+</Step>
+<Step title="Locate the Automated check frequency option and set how often you want to check your sites.">
+Locate the **Automated check frequency** option and set how often you want to check your sites.
+</Step>
+<Step title="Save Settings.">
+</Step>
+</Steps>
+
+
+## Domain Monitor Settings
+
+![Screenshot of Domain Monitor settings showing notification threshold and automated check options](/images/add-ons/domain-monitor-settings.png)
+
+-   **Notifications threshold** - Set the threshold for notifications. If the domain expiration is less in the set number of days, an email will be sent.
+-   **Automatically check domains** - If you want the extension to automatically run checks, enable this feature.
+-   **Automated domain checks frequency** - If automated checks are enabled, here you can set how often you want them to run.
+
+## Check Sites via WP CLI
+
+Scan one or multiple sites:
+
+wp mainwp-domain-monitor check 129
+
+or all
+
+wp mainwp-domain-monitor check --all
+
+## Domain Monitor REST API
+
+All MainWP REST API calls, including full documentation, and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
+
+## Available Reports Tokens
+
+**\[domain.monitor.domain.name\]** - Displays the domain name **\[domain.monitor.registrar\]** - Displays the domain registrar **\[domain.monitor.updated.date\]** - Displays the domain updated date **\[domain.monitor.creation.date\]** - Displays the domain creation date **\[domain.monitor.expiry.date\]** - Displays the domain expiry date **\[domain.monitor.expires\]** - Displays the number of days left before the domain expires **\[domain.monitor.status\]** - Displays the domain status **\[domain.monitor.last.check\]** - Displays the last check time stamp
+
+---
+
+## Related Resources
+
+- [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
+- [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Monitor SSL certificates
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include domain data in reports

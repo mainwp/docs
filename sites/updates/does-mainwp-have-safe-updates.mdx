@@ -1,0 +1,42 @@
+---
+title: Does MainWP have Safe Updates / Rollback?
+description: >-
+  MainWP 5.1 introduced rollback for plugin and theme updates, compatible with
+  WordPress 6.3+. Failed updates automatically restore the previous version.
+  Regression Testing addon helps monitor unexpected changes.
+---
+
+Yes, MainWP includes a rollback feature for plugin and theme updates. Introduced in MainWP version 5.1, this feature integrates with WordPress core rollback functionality available in WordPress 6.3 and above.
+
+## How Safe Updates Work
+
+| Aspect | Detail |
+|--------|--------|
+| Activation | Automatically active on all update pages |
+| Trigger | Activates when an update fails |
+| Action | Restores the previous version automatically |
+| Notification | Dashboard displays a notice when rollback occurs |
+
+## Requirements
+
+- MainWP Dashboard 5.1 or higher
+- Child sites running WordPress 6.3 or higher
+
+## Manual Rollback
+
+MainWP does not support on-demand rollback to previous versions. However, you can:
+
+1. Download previous plugin versions from wordpress.org
+2. Install via [Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload)
+3. Store premium plugins in the [Favorites Extension](https://mainwp.com/extension/favorites/) for future use
+
+## Additional Testing
+
+The [Regression Testing](/add-ons/security/regression-testing-extension) add-on monitors your child sites for unexpected changes after updates, providing an additional layer of protection.
+
+---
+
+## Related Resources
+
+- [Manage Updates](/sites/updates/manage-updates#safe-updates--rollback) - Full rollback documentation
+- [Regression Testing](/add-ons/security/regression-testing-extension) - Monitor sites for unexpected changes

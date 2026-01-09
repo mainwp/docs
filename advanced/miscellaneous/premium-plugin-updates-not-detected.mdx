@@ -1,0 +1,139 @@
+---
+title: Premium Plugin Updates Not Detected
+sidebarTitle: "Premium Plugin Updates"
+description: >-
+  Fix premium plugin update detection issues in MainWP Dashboard using custom
+  filters for plugins with non-standard update APIs.
+---
+
+MainWP supports premium plugins that use the standard WordPress Update API. When plugins use custom update systems, you may need additional configuration for MainWP to detect their updates.
+
+## What You'll Learn
+
+- How to troubleshoot premium plugin update detection
+- How to add compatibility filters for non-standard update APIs
+- When to contact the plugin author
+
+---
+
+## Troubleshooting
+
+<Steps>
+<Step title="Check the child site">
+Go to the child site's WP Admin and check if WordPress detects updates for the plugins in question.
+</Step>
+<Step title="Evaluate the result">
+
+| Child Site Shows Updates | Action |
+|--------------------------|--------|
+| Yes | Resync your sites. If still not detected in MainWP, see Enhance Compatibility below |
+| No | Force a recheck by refreshing WP Admin > Updates on the child site |
+| Updates appear after force check | Resync MainWP. If still missing, see Enhance Compatibility |
+| Updates never appear | Report the issue to the plugin author |
+
+</Step>
+</Steps>
+
+If WordPress on the child site detects updates but MainWP Dashboard doesn't, the plugin may use a custom Update API that requires enhanced compatibility.
+
+---
+
+## Enhance Compatibility
+
+MainWP provides two filters for improving premium plugin compatibility:
+
+| Filter | Purpose |
+|--------|---------|
+| `mainwp_detect_premium_plugins_update` | Improves detection of available updates |
+| `mainwp_request_update_premium_plugins` | Improves the update process |
+
+### Add the Filters
+
+<Steps>
+<Step title="Install Custom Dashboard Extension">
+If not already installed, install the [MainWP Custom Dashboard Extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/).
+</Step>
+<Step title="Add the filter code">
+Copy this code to the **PHP Section** of the Custom Dashboard extension:
+
+```php
+// Improves detection of available updates for premium plugins
+add_filter( 'mainwp_detect_premium_plugins_update', 'hook_mainwp_detect_premium_plugins_update' );
+function hook_mainwp_detect_premium_plugins_update( $premiums = array() ){
+    $premiums[] = 'plugin-slug';
+    return $premiums;
+}
+
+// Improves the update process of premium plugins
+add_filter( 'mainwp_request_update_premium_plugins', 'hook_mainwp_request_update_premium_plugins' );
+function hook_mainwp_request_update_premium_plugins( $premiums = array() ){
+    $premiums[] = 'plugin-slug';
+    return $premiums;
+}
+```
+</Step>
+<Step title="Replace the plugin slug">
+Replace `plugin-slug` with the actual slug of the plugin having detection issues. Contact the plugin author if you're unsure of the slug.
+</Step>
+<Step title="Save and resync">
+Save the code and resync your sites.
+</Step>
+</Steps>
+
+### Multiple Plugins
+
+For multiple plugins with detection issues:
+
+```php
+// Improves detection of available updates for premium plugins
+add_filter( 'mainwp_detect_premium_plugins_update', 'hook_mainwp_detect_premium_plugins_update' );
+function hook_mainwp_detect_premium_plugins_update( $premiums = array() ){
+    $premiums[] = 'plugin-slug-1';
+    $premiums[] = 'plugin-slug-2';
+    $premiums[] = 'plugin-slug-3';
+    return $premiums;
+}
+
+// Improves the update process of premium plugins
+add_filter( 'mainwp_request_update_premium_plugins', 'hook_mainwp_request_update_premium_plugins' );
+function hook_mainwp_request_update_premium_plugins( $premiums = array() ){
+    $premiums[] = 'plugin-slug-1';
+    $premiums[] = 'plugin-slug-2';
+    $premiums[] = 'plugin-slug-3';
+    return $premiums;
+}
+```
+
+### Alternative Method
+
+If you don't want to use the Custom Dashboard extension, add the code to the `functions.php` file of your MainWP Dashboard site's active theme.
+
+---
+
+## When to Contact Plugin Author
+
+Contact the premium plugin author if:
+
+- Updates don't appear on the child site itself
+- The filter approach doesn't resolve detection
+- You need the correct plugin slug for the filters
+
+Some plugins use proprietary update systems that may have limited MainWP compatibility.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Checked if WordPress detects updates on child site
+- [ ] Synced MainWP Dashboard
+- [ ] Added compatibility filters (if needed)
+- [ ] Used correct plugin slug in filters
+- [ ] Resynced after adding filters
+
+---
+
+## Related Resources
+
+- [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected) - Similar issue for themes
+- [Install Plugin on Sites](/advanced/miscellaneous/how-to-install-a-plugin-on-sites-that-already-have-a-certain-plugin-installed) - Manual update alternative
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Extension documentation

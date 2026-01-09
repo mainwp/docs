@@ -1,0 +1,434 @@
+---
+title: Bulk Settings Manager
+sidebarTitle: "Bulk Settings Manager"
+description: >-
+  The Bulk Settings Manager Extension unlocks the world of WordPress directly
+  from your MainWP Dashboard. With Bulk Settings Manager you can adjust your
+  Child site settings for the WordPress Core and almost any WordPress Plugin or
+  Theme.
+addonType: extension
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Bulk Settings Manager"
+  data-purchase-url="https://mainwp.com/extension/bulk-settings-manager/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-bulk-settings-manager-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Creating keys with the MainWP Key Maker plugin
+- Importing and managing keys in Bulk Settings Manager
+- Applying settings to multiple child sites
+- Using Key Rings to group related keys
+- Troubleshooting common issues like nonce errors
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+With the [MainWP Bulk Settings Manager](https://mainwp.com/extension/bulk-settings-manager/) Extension, you can adjust your Child site settings for the WordPress Core and almost any WordPress Plugin or Theme.
+
+## How it Works
+
+MainWP Bulk Settings Manager Extension works together with the [MainWP Key Maker plugin](https://wordpress.org/plugins/mainwp-key-maker/). The Key Maker plugin grabs necessary data from your WordPress site (where you have set your preferences); next, the Extension converts the data to a key that you can submit to the rest of your child sites and apply your preferences. Quick and easy, with just a few clicks, you can update settings on all your child sites!
+
+## Does Bulk Settings Manager work with the XYZ plugin or theme?
+
+While we have not tested every plugin or theme, Bulk Settings Manager should technically work with any plugin or theme that uses standard forms. If you want to check if the information you want to work with will be recorded:
+
+<Steps>
+<Step title="Install the free MainWP Key Maker Plugin (link to WordPress.org)">
+</Step>
+<Step title="Submit the form you want to be able to use in Bulk Settings Manager.">
+</Step>
+<Step title="Once you have submitted the form, press the MainWP Key Maker button in your WP Admin Top Menu.">
+Once you have submitted the form, press the MainWP Key Maker button in your WP Admin Top Menu.
+</Step>
+<Step title="Select the Post-submission Request key">
+You will now see at least 2 "Keys" that will pop up for you: "Post-submission Request" and "Pre-submission Request". You almost always want to use Post-submission since that is the information gathered after you submitted the form.
+</Step>
+<Step title="Now click on “Verify Form Fields and Values” this will show you in a human-readable way what information was gathered.">
+Now click on “Verify Form Fields and Values” this will show you in a human-readable way what information was gathered.
+</Step>
+</Steps>
+
+
+If everything looks right and all your information was gathered correctly, you can be 99% sure that it will work with Bulk Settings Manager to change all your Child sites.
+An example of where Bulk Settings Manager **would not work** is during the initial setup of JetPack, where you are required to leave your Child site to verify log-in credentials.
+However, you would be able to set up keys for JetPack after the verify credential step.
+
+Pre-submission requests often don't have all fields and values detected.
+Using the Pre-submission requests may lead to incomplete Keys.
+We strongly recommend using Post-submission requests!
+
+To see the Post-submission request, you need to submit the form that you are trying to grab and make the Key.
+Once you get to the page where the form is located, make sure that the wanted values are correctly set, submit the form, and after that, you will see the Post-submission request.
+Some forms are divided into multiple mini-forms.
+MainWP Key Maker plugin detects all mini-forms and displays Post-submission requests for all of them.
+If you get multiple Post-Submission requests, be sure to use the Verify Form Fields and Values button and find the "biggest" one.
+The request that is showing all form fields will probably be the one.
+
+## Bulk Settings Manager Workflow
+
+<Steps>
+<Step title="Install the Key Maker plugin on a site that has a Theme or Plugin with settings that you want to share across your Child Sites">
+Install the Key Maker plugin on a site that has a Theme or Plugin with settings that you want to share across your Child Sites
+</Step>
+<Step title="Install the Bulk Settings Manager Extension in your MainWP Dashboard">
+</Step>
+<Step title="Go to a settings page of plugin or theme that you want to copy to all your Child sites and Submit that page, so the form is passed">
+Go to a settings page of plugin or theme that you want to copy to all your Child sites and Submit that page, so the form is passed
+</Step>
+<Step title="Press the MainWP Key Maker button listed at the top of your screen">
+Press the **MainWP Key Maker** button listed at the top of your screen![Initiate the Key Maker](/images/add-ons/bulk-settings-admin-bar-keymaker.png)
+</Step>
+<Step title="Select the post-submission Request field and copy the generated code by clicking the Copy to Clipboard button">
+Select the **post-submission Request** field and copy the generated code by clicking the **Copy to Clipboard** button
+</Step>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Click the Import Keys tab">
+![Import key code](/images/add-ons/bulk-settings-import-key-code.png)
+    1.  Paste that copied code in the Key Code field
+    2.  Give your Key a name
+    3.  Click the **Make the Key** button
+</Step>
+<Step title="After the Key has been created, you will be redirected to the Key Edit screen.">
+After the Key has been created, you will be redirected to the **Key Edit** screen.
+</Step>
+<Step title="Verify the form fields look correct for you and, if needed, update field values">
+Verify the form fields look correct for you and, if needed, update field values
+</Step>
+<Step title="Click the Save Key button">
+</Step>
+<Step title="Go to the Single Keys tab">
+Go to the **Single Keys** tab
+     1.  Select the Key
+     2.  Select your Child Sites
+     3.  Click the **Save Key to Selected Child sites** button
+</Step>
+</Steps>
+
+
+## Add a Key to a Key Ring
+
+Key Ring feature allows you to group your Keys and submit them all at once. It comes pretty handy in case one Plugin or Theme has multiple settings forms. After you create all Keys for a plugin or theme, you can group them in a single Key Rings that allow you to manage them more efficiently.
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Go to the Single Keys tab">
+</Step>
+<Step title="Locate the Key that you want to add to a Key Ring">
+</Step>
+<Step title="Click the Edit action">
+![Edit key button](/images/add-ons/bulk-settings-edit-button.png)
+</Step>
+<Step title="In the Key Settings box, locate the Key Ring options">
+</Step>
+<Step title="Create a new Key Ring for your Key or assign the Key to an existing one">
+</Step>
+<Step title="Click the Save Key button">
+</Step>
+</Steps>
+
+
+## Save Keys to Child Sites
+
+### Submit a Single Key
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Go to the Single Keys tab">
+</Step>
+<Step title="Locate the Key that you want to submit">
+</Step>
+<Step title="Select it">
+</Step>
+<Step title="Select your Child Sites">
+</Step>
+<Step title="Click the Save Key to Selected Child Sites button">
+</Step>
+</Steps>
+
+
+### Submit a Key Ring
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Go to the Key Rings tab">
+</Step>
+<Step title="Locate the Key Ring that you want to submit">
+</Step>
+<Step title="Select it">
+</Step>
+<Step title="Select your Child Sites">
+</Step>
+<Step title="Click the Save Key Ring to Selected Child Sites button">
+</Step>
+</Steps>
+
+
+## Create a Single Key
+
+MainWP Bulk Settings Manager extension allows you to create Keys manually or import them from the MainWP Key Maker plugin or a file. Please note that we highly recommend making your keys by importing them from the Key Maker plugin. This method is much easier, quicker, and minimizes potential issues. However, if you decide to make keys manually, note that it is a harder process and recommended only to advanced users.
+
+### Make a Single Key with the Key Maker plugin.
+
+The Bulk Settings Manager Extension works with the MainWP Key Maker plugin to record your form settings and make a “key.” Once you have the “key,” you save it into your Bulk Settings Manager Extension. From this point, you can submit your settings to child sites, or if needed, you can update your settings and submit them to child sites after that.
+
+<Steps>
+<Step title="Login into your website where you have the plugin set as you want it">
+</Step>
+<Step title="Install the MainWP Key Maker plugin and activate it">
+</Step>
+<Step title="Go to a settings page of a plugin, theme, or one of the WordPress settings pages that you want to copy to all your Child sites">
+Go to a settings page of a plugin, theme, or one of the WordPress settings pages that you want to copy to all your Child sites
+</Step>
+<Step title="Submit the settings form, so the form is passed">
+</Step>
+<Step title="Press the MainWP Key Maker button listed at the top of your screen">
+</Step>
+<Step title="Select the post-submission Request field and copy it to clipboard">
+</Step>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Go to the Import Keys from Key Maker tab">
+Go to the **Import Keys from Key Maker** tab
+    1.  Paste that copied code in the Key Code field
+    2.  Give your Key a name
+    3.  Click the **Make the Key** button
+</Step>
+<Step title="After the Key has been created, you will be redirected to the Key Edit screen.">
+After the Key has been created, you will be redirected to the **Key Edit** screen.
+</Step>
+<Step title="Verify the form fields look correct for you and, if needed, update field values">
+Verify the form fields look correct for you and, if needed, update field values
+</Step>
+<Step title="Click the Save Key button.">
+</Step>
+</Steps>
+
+
+## Bulk Settings Manager Settings
+
+-   **Delay** – allows you to set a time delay between two submissions. For example, if you set a delay to 5 seconds and submit a key to 3 child sites after the Key has been submitted to the first site, the extension will wait for 5 seconds before it proceeds to the next child site. **This option helps you to reduce server load.**
+-   **Clear History** – by clicking the button, you will delete all historical data from the Bulk Settings Manager extension.
+-   **Use Boilerplate** – if enabled, you will be able to use Boilerplate tokens as key field values. **Note that this option works only if the [MainWP Boilerplate Extension](https://mainwp.com/extension/boilerplate/) has been installed and activated on your MainWP Dashboard.**
+
+## Import a Bulk Settings Manager Key
+
+There are two ways to import Bulk Setting Manager Extension keys, first, by pasting a key code, and second, by importing a key file.
+
+### Paste Key Code
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Locate the Import Key from the MainWP Key Maker option box">
+Locate the **Import Key from the MainWP Key Maker** option box![Paste key code](/images/add-ons/bulk-settings-import-keymaker.png)
+    1.  Enter the key name in the **Key Name** field
+    2.  Paste the previously copied code in the **Key Code** field
+    3.  Click the **Make the Key** button
+</Step>
+</Steps>
+
+
+After pasting the key, you will be prompted to the Edit Key screen, where you can verify the key fields. Once all set, save the key, and you are ready to go.
+
+### Import Key File
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager page">
+</Step>
+<Step title="Locate the Import Key from a File option box">
+Locate the **Import Key from a File** option box![Screenshot of Import Key from a File option box with Choose File and Import Key buttons](/images/add-ons/bulk-settings-import-file.png)
+    1.  Click the **Choose File** button
+    2.  Browse and select the previously downloaded key file
+    3.  Click the **Import Key** button
+</Step>
+</Steps>
+
+
+After importing the key, you will be prompted to the Edit Key screen, where you can verify the key fields. Once all set, save the key, and you are ready to go.
+
+## Edit Key Values
+
+To edit Key values,
+
+<Steps>
+<Step title="Go to the MainWP > Extensions > Bulk Settings Manager > Single Keys page">
+</Step>
+<Step title="Locate the Key that you need to edit">
+</Step>
+<Step title="Click the Edit button">
+</Step>
+<Step title="Once prompted to the Key Edit page, locate the fields that you need to update">
+Once prompted to the **Key Edit** page, locate the fields that you need to update![Edit key field](/images/add-ons/bulk-settings-edit-field-value.jpg)
+    1.  Click the Field title to expand it
+    2.  Update the Value
+    3.  Update these two steps for all fields that you want to edit
+</Step>
+<Step title="Once ready, click the Save Key button at the bottom of the page">
+</Step>
+</Steps>
+
+
+## How to Use Boilerplate Tokens in Keys
+
+MainWP Bulk Settings Manager Extension supports Boilerplate tokens. By using tokens, it is possible to set per-site unique values in forms. Changing the WP > Settings > General Settings form is the best example of this. In the WP General Settings, 2 fields have to have unique values for each child site. Those are **Site URL** (siteurl) and **WordPress Address** (home). So to properly handle this form,
+
+<Steps>
+<Step title="Make sure that the Support for Boilerplate tokens is enabled">
+Make sure that the Support for Boilerplate tokens is enabled![Use boilerplate option](/images/add-ons/bulk-settings-boilerplate-option.jpg)
+</Step>
+<Step title="Next, after creating the Key, please find it in the list and Edit it">
+</Step>
+<Step title="Locate the siteurl and home key fields">
+</Step>
+<Step title="Replace the URL in key with the [url.site] token.">
+Replace the URL in key with the [url.site] token.![Key fields](/images/add-ons/bulk-settings-key-fields-tokens.png)
+</Step>
+<Step title="Save settings.">
+</Step>
+</Steps>
+
+
+By default, the [url.site] token values are set for each child site. But if you need to use any other token or even create a custom one, be sure that values are set for each child you submit the key to.
+
+## Change WordPress Administration Email Address on Multiple Child Sites at Once
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/RHC7gQNFY3o"
+  title="Bulk Settings Manager - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> The WordPress admin email address of all/selected Child sites can be changed using the Bulk Settings Manager extension. Considering that the Bulk Settings Manager will overwrite all WordPress General Settings and that the **WordPress Address (URL)** and **Site Address (URL)** must be unique for each Child site, we will use the Boilerplate extension to define tokens for those two fields. Both extensions are included in our [Pro plan](https://mainwp.com/signup/). Please note that the tutorial is written with the assumption that the Administration Email Address is the only field that needs to be changed and that all other options on the WordPress General Settings page should be the same on all Child sites. Follow the following steps, and visit linked articles for detailed instructions for individual steps.
+
+<Steps>
+<Step title="Install Bulk Settings Manager and Boilerplate extension on your MainWP Dashboard">
+Install Bulk Settings Manager and Boilerplate extension on your MainWP Dashboard
+</Step>
+<Step title="Install MainWP Key Maker on any of the Child Sites to create a template to replicate on other Child sites">
+Install MainWP Key Maker on any of the Child Sites to create a template to replicate on other Child sites
+</Step>
+<Step title="On MainWP Dashboard > Extensions > Bulk Settings Manager > Settings page, enable Use Boilerplate option">
+On **MainWP Dashboard > Extensions > Bulk Settings Manager > Settings** page, enable **Use Boilerplate** option ![Use boilerplate option](/images/add-ons/bulk-settings-boilerplate-option.jpg)
+</Step>
+<Step title="Navigate to WordPress Dashboard > Settings > General Settings on a Child Site with the Key Maker plugin installed in step 2, and create a Key">
+Navigate to **WordPress Dashboard > Settings > General Settings** on a Child Site with the Key Maker plugin installed in step 2, and create a Key
+</Step>
+<Step title="Navigate to MainWP Dashboard > Extensions > Bulk Settings Manager > Import Keys and import the Key you just created">
+Navigate to **MainWP Dashboard > Extensions > Bulk Settings Manager > Import Keys** and import the Key you just created
+</Step>
+<Step title="Next, after creating the Key, please find it in the list and Edit it">
+</Step>
+<Step title="Locate the siteurl and home key fields">
+</Step>
+<Step title="Replace the URL in key with the [url.site] token">
+Replace the URL in key with the [url.site] token. **Note:** In some specific WordPress installations, WordPress Address (URL) and Site Address (URL) is not the same. In that case, [url.site] token cannot be used for both fields. A custom Boilerplate token will [need to be created](/add-ons/content/boilerplate-extension#create-custom-tokens) and used for the other field.![Key fields](/images/add-ons/bulk-settings-key-fields-tokens.png)
+</Step>
+<Step title="Locate the new_admin_email key field">
+</Step>
+<Step title="Replace the Value of the field with the new address you want to apply to Child sites">
+Replace the **Value** of the field with the new address you want to apply to Child sites ![Key field email value](/images/add-ons/bulk-settings-text-field-email.png)
+</Step>
+<Step title="Save changes to the Key">
+</Step>
+<Step title="Select Child Sites from the right and Submit the Key">
+</Step>
+</Steps>
+
+
+By default, the [url.site] token values are set for each child site. But if you need to use any other token or even create a custom one, be sure that values are set for each child you submit the key to.
+
+## How to fix Invalid nonce error in Bulk Settings Manager
+
+When saving a key to a Child Sites, Bulk Setting Manager can, under some circumstances, report an "Invalid nonce" error message. ![Invalid nonce error](/images/add-ons/bulk-settings-sync-nonce-error.png) To resolve this issue:
+
+<Steps>
+<Step title="Edit the key">
+</Step>
+<Step title="Create a new text field by drag-and-dropping the 'Text Field' from the 'Available Fields' box on the right">
+Create a new text field by drag-and-dropping the "Text Field" from the "Available Fields" box on the right ![Add new key field](/images/add-ons/bulk-settings-add-text-field.gif)
+</Step>
+<Step title="Fill in the values of the Text Field">
+Fill in the values of the Text Field
+    1.  Description: can be any arbitrary value
+    2.  Name: use the text from the error message after the "Try to use:" part
+    3.  Value: mainwp-bsm-unverify-nonce ![New key field values](/images/add-ons/bulk-settings-text-field-nonce.png)
+</Step>
+<Step title="Save the key">
+</Step>
+</Steps>
+
+
+If another type of Nonce error message appears after saving the key, repeat the steps above by adding another Text Field in the key, but in the Name field, use the new error name.
+
+## How to change Rank Math settings on your child sites using Bulk Settings Manager
+
+In this help document, we will cover how to change the settings of the Rank Math plugin on your Child Sites using Bulk Settings Manager. Even though most settings pages can be changed, a notable exception is toggling Modules On/Off on the **Rank Math > Dashboard** page because that page doesn't use submission requests to save changes. ![RankMath plugin page](/images/add-ons/bulk-settings-rankmath-dashboard.png) **Note:** Considering that the Bulk Settings Manager will overwrite all options on a given settings page, please ensure that it is acceptable that all Child sites have the same options on that page. This help document will cover how to change the options on the **Rank Math > General Settings** page. However, the same logic applies to other settings pages. To change Rank Math settings, please follow the following steps, and visit linked articles for detailed instructions for individual steps.
+
+<Steps>
+<Step title="Install Bulk Settings Manager extension on your MainWP Dashboard">
+</Step>
+<Step title="Install MainWP Key Maker on any of the Child Sites to create a template to replicate on other Child sites">
+Install MainWP Key Maker on any of the Child Sites to create a template to replicate on other Child sites
+</Step>
+<Step title="Navigate to WordPress Dashboard > Rank Math > General Settings on a Child Site with the Key Maker plugin installed, and create a Key">
+Navigate to **WordPress Dashboard > Rank Math > General Settings** on a Child Site with the Key Maker plugin installed, and create a Key
+</Step>
+<Step title="Navigate to MainWP Dashboard > Extensions > Bulk Settings Manager > Import Keys and import the Key you just created">
+Navigate to **MainWP Dashboard > Extensions > Bulk Settings Manager > Import Keys** and import the Key you just created
+</Step>
+<Step title="Next, after creating the Key, please find it in the list and Edit it">
+Next, after creating the Key, please find it in the list on the **Single Keys** tab ![RankMath key](/images/add-ons/bulk-settings-rankmath-key.png)
+</Step>
+<Step title="Select Child Sites from the right and Save the Key">
+Select Child Sites from the right and Save the Key ![Site selection](/images/add-ons/bulk-settings-site-selection.png)
+</Step>
+<Step title="All options from Rank Math > General Settings page are now applied to all selected Child Sites">
+All options from **Rank Math > General Settings** page are now applied to all selected Child Sites
+</Step>
+</Steps>
+
+
+In case you would get a nonce-related error when Saving the Key in **Step 6**, please follow the instructions in this help document to resolve the issue. ![Invalid nonce error](/images/add-ons/bulk-settings-sync-nonce-error.png)
+
+---
+
+## Related Resources
+
+- [Administrative Add-ons](/add-ons/administrative) - Browse all administrative tools
+- [Code Snippets Extension](/add-ons/development/code-snippets-extension) - Deploy code snippets to child sites
+- [White Label Extension](/add-ons/agency/white-label-extension) - Customize child site branding

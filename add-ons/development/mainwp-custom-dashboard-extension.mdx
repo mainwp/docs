@@ -1,0 +1,84 @@
+---
+title: Custom Dashboard
+sidebarTitle: "Custom Dashboard"
+description: >-
+  Customize the layout, appearance, and functionality of your MainWP Dashboard
+  with this Extension to create an interface that suits your needs.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Adding custom PHP, CSS, and JavaScript to your Dashboard
+- Where custom code is stored and executed
+- Handling PHP errors safely
+- Accessing example code snippets
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Custom Dashboard"
+  data-purchase-url="https://mainwp.com/extension/mainwp-custom-dashboard-extension/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-mainwp-custom-dashboard-extension-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/T6jzvD3ogfw"
+  title="Custom Dashboard - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Custom Dashboard Extension is designed to contain your custom snippets for your MainWP Dashboard.
+By adding custom snippets to this plugin, you can easily extend your MainWP Dashboard functionality or change the way it looks.
+
+![Screenshot of Custom Dashboard extension interface showing PHP, CSS, and JS code editors](/images/add-ons/custom-dashboard-css-editor.png)
+
+This extension will help you to keep all your changes in one location and independent of the other components.
+This enables you to safely update your MainWP Dashboard plugin on your MainWP Dashboard site without worry about losing your modifications as well as deactivating your custom code if needed for troubleshooting.
+The built-in code editor allows you to add your code directly through the extension interface.
+**No FTP access is required.**
+
+Check out our Github repository where we keep example snippets that will help you get started:
+
+-   [CSS Code Snippets](https://github.com/mainwp/mainwp-custom-dashboard-extension-examples/tree/master/css)
+-   [PHP Code Snippets](https://github.com/mainwp/mainwp-custom-dashboard-extension-examples/tree/master/php)
+-   [JS Code Snippets](https://github.com/mainwp/mainwp-custom-dashboard-extension-examples/tree/master/js)
+
+## How It Works
+
+MainWP Custom Dashboard Extension saves your custom code to your MainWP Dashboard database instead of containing code in PHP/CSS/JS file.
+For CSS and JS snippets, the extension will print saved code in the element on your MainWP Dashboard site.
+Saved PHP Code Snippets will be executed by using the PHP function `eval()`.
+In case the `eval()` function is disabled on your host, please contact your host support and have them enable it for you.
+
+In case you try to save PHP code with syntax error and cause PHP Fatal Error, the extension uses the wp_php_error_message filter provided by WordPress to prevent your MainWP Dashboard site from crashing.
+After saving bad code, you will see the error message and link to go back to fix the code:
+
+![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
+
+MainWP Custom Dashboard Extension is used to apply custom code snippets to the MainWP Dashboard site ONLY!
+It doesn't apply code to child sites.
+To apply custom code snippets to child sites, please see the [MainWP Code Snippets Extension](https://mainwp.com/extension/code-snippets/).
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Code Snippets Extension](/add-ons/development/code-snippets-extension) - Deploy code to child sites
+- [Customization Guide](/customization/overview) - Dashboard customization options

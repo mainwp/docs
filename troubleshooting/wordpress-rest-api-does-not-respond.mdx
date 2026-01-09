@@ -1,0 +1,162 @@
+---
+title: WordPress REST API does not respond
+description: >-
+  REST API not responding is usually caused by disabled API, Plain permalinks,
+  or security plugins blocking access. Check permalink settings and review
+  security plugins that can disable the REST API.
+---
+
+The WordPress REST API enables MainWP features like the browser extension, external integrations, and certain Dashboard functions. When the REST API is blocked or disabled, these features won't work.
+
+## What You'll Learn
+
+- Check if the REST API is accessible
+- Fix permalink settings that block REST API
+- Identify plugins that disable REST API
+- Resolve server-level REST API blocks
+
+## Prerequisites
+
+- Admin access to your WordPress site
+- Ability to access plugin settings
+- Access to wp-config.php (for server-level fixes)
+
+---
+
+## Check if REST API is Blocked
+
+Visit this URL in your browser (replace with your actual domain):
+
+```text
+https://your-site.com/wp-json/
+```
+
+**If working:** You'll see a JSON response with site information and available endpoints.
+
+**If blocked:** You'll see an error message like:
+
+```json
+{
+  "code": "rest_cannot_access",
+  "message": "DRA: Only authenticated users can access the REST API.",
+  "data": {"status": 401}
+}
+```
+
+---
+
+## Fix Permalink Settings
+
+The REST API requires non-Plain permalinks due to a WordPress limitation.
+
+<Steps>
+<Step title="Open permalink settings">
+Go to **WP Admin > Settings > Permalinks**.
+</Step>
+<Step title="Select a non-Plain structure">
+Choose any option except **Plain** (the first option).
+
+![WordPress Permalink Settings page showing available URL structure options](/images/troubleshooting/rest-api-image1.jpg)
+</Step>
+<Step title="Save changes">
+Click **Save Changes**.
+</Step>
+<Step title="Test REST API">
+Visit `https://your-site.com/wp-json/` again to verify it's now working.
+</Step>
+</Steps>
+
+---
+
+## Check for Plugins Disabling REST API
+
+Security and performance plugins often include options to disable the REST API. While this rarely improves security or performance, some users enable it.
+
+### Plugins That Can Disable REST API
+
+| Category | Plugins |
+|----------|---------|
+| Security | Solid Security (iThemes), Wordfence, All-In-One Security (AIOS), Sucuri, Shield Security, BulletProof Security, NinjaFirewall, Titan Anti-spam & Security |
+| Performance | Perfmatters, Swift Performance, Clearfy Cache |
+| Privacy/Hiding | WP Hide & Security Enhancer, Hide My WP Ghost, Password Protected |
+| REST API Control | Disable REST API, WP REST API Controller, WP OAuth Server |
+| CDN/Firewall | Cloudflare WAF |
+
+<Note>
+These plugins don't disable REST API by default. If you have any installed, check their settings for REST API options.
+</Note>
+
+### Find the Blocking Plugin
+
+<Steps>
+<Step title="Deactivate plugins">
+Deactivate security and performance plugins one at a time.
+</Step>
+<Step title="Test after each">
+After each deactivation, test `https://your-site.com/wp-json/` to see if REST API responds.
+</Step>
+<Step title="Identify the culprit">
+When REST API starts working, you've found the plugin causing the block.
+</Step>
+<Step title="Adjust plugin settings">
+In that plugin's settings, look for REST API options and enable API access. You may be able to whitelist specific endpoints rather than disabling the block entirely.
+</Step>
+</Steps>
+
+---
+
+## Server-Level Restrictions
+
+Web server configurations (Apache or NGINX) can block REST API requests by restricting paths starting with `/wp-json/`.
+
+### Check .htaccess (Apache)
+
+Look in your site's `.htaccess` file for rules that might block `/wp-json/` requests.
+
+### Check NGINX Configuration
+
+If using NGINX, check your server configuration for location blocks that restrict `/wp-json/` access.
+
+### Contact Your Host
+
+If you're unable to identify the blocking rule, contact your hosting provider and ask them to verify that REST API requests are not being blocked at the server level.
+
+---
+
+## Required Endpoints for MainWP
+
+If you're using the MainWP browser extension or REST API integrations, these endpoints must be accessible:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/mainwp/v1/sites/all-sites` | List all connected sites |
+| `/mainwp/v1/sites/sites-available-updates-count` | Get update counts |
+| `/mainwp/v1/site/non-mainwp-changes-count` | Track non-MainWP changes |
+
+---
+
+## REST API Security Considerations
+
+The REST API is active by default on WordPress sites and is the standard communication protocol for modern WordPress functionality. Keeping it enabled:
+
+- Presents no increased security risk compared to traditional methods
+- Is required for Gutenberg editor, many plugins, and mobile apps
+- Can be secured through proper authentication rather than disabling
+
+---
+
+## Self-Check Checklist
+
+- [ ] Tested REST API by visiting /wp-json/ directly
+- [ ] Verified permalink structure is not set to Plain
+- [ ] Checked installed plugins for REST API disable options
+- [ ] Confirmed server-level restrictions are not blocking REST API
+- [ ] REST API returns JSON data when accessed
+
+---
+
+## Related Resources
+
+- [MainWP Browser Extensions](/advanced/miscellaneous/mainwp-browser-extensions) - Uses REST API
+- [MainWP REST API Overview](/api-reference/rest-api/overview) - API documentation
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection issues

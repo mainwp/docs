@@ -1,0 +1,234 @@
+---
+title: Virusdie
+sidebarTitle: "Virusdie"
+description: >-
+  MainWP Virusdie Extension uses Virusdie, a powerful, user-friendly, and
+  professional-grade WordPress virus scanner for your websites. It helps you
+  monitor all your sites directly from your MainWP Dashboard.
+addonType: integration
+thirdPartyPlugin: Virusdie
+---
+
+## What You'll Learn
+
+- Creating a Virusdie account and connecting the API
+- Adding child sites to Virusdie for malware scanning
+- Running manual and automated security scans
+- Troubleshooting sync file upload errors
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Virusdie"
+  data-purchase-url="https://mainwp.com/extension/virusdie/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-virusdie-extension/"
+  data-integrates-with="Virusdie"
+  data-owned-by="Virusdie OU"
+  data-privacy-url="https://virusdie.com/rules/privacypolicy/"
+/>
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Virusdie. Requires Virusdie to be installed on your child sites.
+</Info>
+
+Check out our other security extensions:
+
+-   [Jetpack Protect](/add-ons/security/jetpack-protect-extension)
+-   [Jetpack Scan](/add-ons/security/jetpack-scan-extension)
+-   [Solid Security (iThemes)](/add-ons/security/ithemes-security-extension)
+-   [Sucuri](/add-ons/security/sucuri-extension)
+-   [Vulnerability Checker](/add-ons/security/vulnerability-checker-extension)
+-   [Wordfence](/add-ons/security/wordfence-extension)
+
+## Virusdie
+
+The [MainWP Virusdie Extension](https://mainwp.com/extension/virusdie/) uses Virusdie to scan your sites. Virusdie features an incredibly extensive database and a stack of technologies to detect viruses and threats. Virusdie detects both viruses and website vulnerabilities, which distinguishes it from other antivirus or defender products.
+
+<Note>
+MainWP Virusdie Extension includes the Virusdie freemium model by default. You can use some Virusdie features for free and purchase a Premium license for additional options.
+</Note>
+
+Included free features:
+
+-   Unlimited sites
+-   Automated weekly scans
+-   Email Notifications
+
+## Remove Child Sites from the Virusdie
+
+To remove a child site from your Virusdie dashboard,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Virusdie page">
+</Step>
+<Step title="Locate the site that you want to remove">
+</Step>
+<Step title="Click the Remove Site button">
+![Click the Remove Site button](/images/add-ons/virusdie-remove-site.png)
+
+</Step>
+</Steps>
+
+
+**Important Notes:**
+
+After removing a site from the Virusdie, you need to **MANUALLY** delete your unique sync file from the Site Root via (S)FTP.
+
+## Scan Child Sites With Virusdie
+
+<Note>
+The on-demand scan feature requires a paid Virusdie plan. By default, Virusdie scans your sites automatically once per week on the free plan. If any problem is found, you will get a notification from the Virusdie service. If you wish to scan sites more frequently or on demand, an upgrade to a paid Virusdie plan is required.
+</Note>
+
+To request the Scan process manually:
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Virusdie page">
+</Step>
+<Step title="Locate the site that you want to scan">
+</Step>
+<Step title="Click the Scan button">
+![Click the Scan button](/images/add-ons/50714a7f2b13.png)
+
+</Step>
+</Steps>
+
+
+### Scan via WP CLI Command
+
+```solid
+wp mainwp-virusdie scan
+```
+
+Don't forget to replace the with the actual child site ID.
+
+### Scan via REST API
+
+**URI**
+
+/virusdie/scan
+
+**Method**
+
+POST
+
+**Required Parameters**
+
+-   site_id – (INT) ID of the child site
+
+**Example Request**
+
+https://example.com/wp-json/mainwp/v1/virusdie/scan?site_id=25&consumer_key=ck_b587c54fa39976a2ad47b8faf260de84beb70f5d&consumer_secret=cs_75f7a905fa7ae1243570425ede6be026f4731f9c
+
+## Set up the MainWP Virusdie Extension
+
+<Warning>
+**If you have an existing Virusdie account:** Due to limitations in Virusdie's API, existing accounts created without MainWP Virusdie Extension do not have the required permissions to manage connected sites. Use this extension only if you plan to create a new Virusdie account through the extension Sign-Up form.
+</Warning>
+
+To properly set up the MainWP Virusdie Extension:
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Virusdie > Settings page">
+</Step>
+<Step title="Locate the Create a free Virusdie account section, enter your email address and click the Sign-Up button">
+Locate the Create a free Virusdie account section, enter your email address and click the **Sign-Up** button![Screenshot of Virusdie Sign-Up form with email field and Sign-Up button](/images/add-ons/virusdie-signup-form.png)
+</Step>
+<Step title="This will automatically create an account for you, and you will get an email with a one-time password in a few minutes.">
+This will automatically create an account for you, and you will get an email with a one-time password in a few minutes.
+</Step>
+<Step title="After getting the email, go to the Log in to your Virusdie account section, enter your email address and the password you got, and click the Sign In button.">
+After getting the email, go to the **Log in to your Virusdie account** section, enter your **email address and the password** you got, and click the **Sign In** button.![Screenshot of Virusdie login form with email and password fields](/images/add-ons/695736694348.png)
+</Step>
+<Step title="Upon successful login, the MainWP Virusdie Extension will automatically get your API Credentials, and the extension is ready to go.">
+Upon successful login, the MainWP Virusdie Extension will automatically get your API Credentials, and the extension is ready to go.
+</Step>
+</Steps>
+
+
+Now, you are ready to start adding your sites to your Virusdie account.
+
+## Add Sites To Virusdie Dashboard
+
+After creating a Virusdie account and connecting the API, you can start adding your sites to your Virusdie dashboard.
+
+### Adding Sites Automatically
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Virusdie extension">
+</Step>
+<Step title="Locate the Add All Sites to Virusdie button and click it">
+Locate the **Add All Sites to Virusdie** button and click it ![Screenshot highlighting the Add All Sites to Virusdie button](/images/add-ons/8a51732041f1.png)
+</Step>
+</Steps>
+
+
+This process will connect all your child sites to your Virusdie account. This includes downloading and adding your unique sync file to the root directory of your child sites and making the API call that will connect all your sites to the Dashboard.
+
+Alternatively, if you want to add just some of your sites separately, you can use the Add to Virusdie button provided in the actions column for all sites that are not found in your Virusdie account.
+
+Now you are ready to start [scanning your sites](/add-ons/security/mainwp-virusdie-extension#scan-child-sites-with-virusdie). In case of an error message "Unique sync file could not be uploaded.", please refer to [this article](/add-ons/security/mainwp-virusdie-extension#error-unique-sync-file-could-not-be-uploaded%E2%80%9D-when-adding-a-website-to-virusdie) on how to resolve the issue.
+
+### Adding Sites Manually
+
+Adding sites to the Virusdie account manually, required 3 easy steps:
+
+<Steps>
+<Step title="Add the site to the list in your Virusdie account">
+</Step>
+<Step title="Upload your unique sync file to the root directory of your child site">
+</Step>
+<Step title="Set your preferences">
+</Step>
+</Steps>
+
+
+Full process documentation can be found in this [help document](https://virusdie.com/faq/add/).
+
+## Virusdie Extension API Compatibility
+
+### New Virusdie Users
+
+To use the MainWP Virusdie Extension, it is required to have API access. For new users that don't have a Virusdie account, the process of getting the keys is fairly simple. You can use the Signup field, and after getting the email with the one-time password and signing in, the extension will automatically load the keys. With the free account created through the MainWP Virusdie Extension, you can add your sites to the Virusdie dashboard to run weekly automated scans and get email notifications. If needed, you can upgrade your account to use premium features at Virusdie.com.
+
+### Existing Virusdie Premium Users
+
+If you already have a Premium Account with Virusdie created without the MainWP Virusdie Extension, the connection won't be possible due to restrictions in Virusdie's API. Existing accounts created without MainWP Virusdie Extension do not have the required permissions to manage connected sites. **After confirming with Virusdie, not all accounts have access to their API. If you have an older account, you will want to verify with Virusdie support. Unfortunately, this is out of MainWP control.**
+
+## Error "Unique sync file could not be uploaded" when adding a website to Virusdie
+
+![Screenshot showing error message: Unique sync file could not be uploaded](/images/add-ons/virusdie-sync-file-error.jpg) The issue occurs because authentication with the Virusdie API server is failing, and MainWP Dashboard can't download the sync file. Therefore it can not upload the sync file to the Child site. Authentication with the VD API server can fail due to multiple reasons:
+
+-   Incorrect Virusdie email address or one-time password
+-   Incompatible account type since Virusdie has some limitations specifically for MainWP users
+
+### Steps to try to resolve the problem:
+
+1.  In the Virusdie extension settings, use the Sign Out function to remove current credentials
+2.  Use the Sign Up function, but use the same email address that is already registered with Virusdie
+3.  This will trigger the One-Time Password email so that the user will get a new Password
+4.  Use Sign In form to sign in with the email address signed up in step 2 and the new password from the email (**Note**: Do  not change the password in Virusdie account)
+5.  After the successful sign-in process, try to add sites again
+6.  If it fails again, contact the Virusdie team to check the account compatibility or if something else is causing issues with the authentication process
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Sucuri Extension](/add-ons/security/sucuri-extension) - Alternative malware scanning
+- [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Scan for known vulnerabilities

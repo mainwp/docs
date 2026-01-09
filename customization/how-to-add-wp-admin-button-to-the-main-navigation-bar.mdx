@@ -1,0 +1,114 @@
+---
+title: How to add WP Admin button to the main Navigation bar
+sidebarTitle: "Add WP Admin Button"
+description: >-
+  Add the WP Admin link back to the MainWP Dashboard navigation sidebar using
+  PHP and CSS code snippets with the Custom Dashboard extension.
+---
+
+The WP Admin link was moved to the three-dot menu in the top right corner to streamline the navigation bar. If you prefer having it in the main navigation sidebar, you can add it back using PHP and CSS snippets.
+
+## What You'll Learn
+
+- How to add a WP Admin link to the sidebar
+- How to position it at the bottom of the navigation
+
+## Prerequisites
+
+- [Custom Dashboard extension](/add-ons/development/mainwp-custom-dashboard-extension) (free)
+
+---
+
+## Add the WP Admin Button
+
+This requires both a PHP snippet (to create the menu item) and a CSS snippet (to position it at the bottom).
+
+### Step 1: Add PHP Code
+
+<Steps>
+<Step title="Open Custom Dashboard">
+Navigate to the Custom Dashboard extension settings.
+</Step>
+<Step title="Add the PHP snippet">
+Go to the **PHP** tab and add this code:
+
+```php
+add_filter( 'mainwp_main_menu', 'mycustom_mainwp_main_menu', 10, 1 );
+function mycustom_mainwp_main_menu( $left_menu ) {
+    $index = 10; // Position in the menu
+    $sub_menu_after = array_splice( $left_menu['leftbar'], $index );
+
+    $addition_item = array();
+
+    $addition_item[] = 'WP Admin';           // Menu item title
+    $addition_item[] = '';                   // Parent key
+    $addition_item[] = 'index.php';          // URL to WP Admin dashboard
+    $addition_item[] = 'custom-wp-admin-item'; // HTML ID attribute
+    $addition_item[] = '';                   // Icon (optional)
+
+    $left_menu['leftbar'][] = $addition_item;
+    $left_menu['leftbar'] = array_merge( $left_menu['leftbar'], $sub_menu_after );
+
+    return $left_menu;
+}
+```
+
+![Custom Dashboard - PHP Code Snippet](/images/developers/54a20beffc3b.webp)
+</Step>
+<Step title="Save the PHP code">
+Click **Save Changes**.
+</Step>
+</Steps>
+
+### Step 2: Add CSS Code
+
+<Steps>
+<Step title="Go to CSS tab">
+Switch to the **CSS** tab in the Custom Dashboard extension.
+</Step>
+<Step title="Add the CSS snippet">
+Add this code to position the button at the bottom of the sidebar:
+
+```css
+#custom-wp-admin-item {
+    padding-left: 10px;
+    padding-right: 10px;
+    position: absolute;
+    bottom: 0;
+}
+```
+
+![Custom Dashboard - CSS snippet](/images/developers/b4bfe36309ff.webp)
+</Step>
+<Step title="Save the CSS code">
+Click **Save Changes**. The WP Admin button now appears at the bottom of the navigation sidebar.
+</Step>
+</Steps>
+
+---
+
+## Customization Options
+
+| Option | Change |
+|--------|--------|
+| Position in menu | Modify `$index` value (lower = higher in menu) |
+| Button text | Change `'WP Admin'` to your preferred label |
+| Link destination | Change `'index.php'` to another admin page |
+| Visual position | Modify CSS `bottom` value or remove `position: absolute` |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Custom Dashboard extension installed
+- [ ] PHP code added to PHP tab
+- [ ] CSS code added to CSS tab
+- [ ] Both snippets saved
+- [ ] WP Admin button visible in navigation sidebar
+
+---
+
+## Related Resources
+
+- [Add Menu Entries](/customization/add-new-menu-entries-to-the-mainwp-dashboard-navigation) - Add other custom menu items
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Full extension documentation

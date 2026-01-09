@@ -1,0 +1,1015 @@
+---
+title: Available Pro Reports Tokens
+sidebarTitle: "Token Reference"
+description: >-
+  Complete reference of all available tokens for Pro Reports templates including
+  client tokens, site tokens, report tokens, and section tokens for customizing
+  your professional reports.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Client, site, and report tokens for basic information
+- Section tokens for looping through activity data
+- Counter tokens for displaying totals
+- Extension-specific tokens for analytics and security
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<AccordionGroup>
+  <Accordion title="Client Tokens" icon="user" defaultOpen>
+    | Token | Description |
+    |-------|-------------|
+    | `[client.city]` | Displays the Client City |
+    | `[client.company]` | Displays the Client Company |
+    | `[client.contact.address.1]` | Displays the Client Contact Address 1 |
+    | `[client.contact.address.2]` | Displays the Client Contact Address 2 |
+    | `[client.contact.name]` | Displays the Client Contact Name |
+    | `[client.email]` | Displays the Client Email |
+    | `[client.name]` | Displays the Client Name |
+    | `[client.phone]` | Displays the Client Phone |
+    | `[client.site.name]` | Displays the Site Name |
+    | `[client.site.url]` | Displays the Site Url |
+    | `[client.state]` | Displays the Client State |
+    | `[client.zip]` | Displays the Client Zip |
+
+    #### Special Tokens
+
+    | Token | Description |
+    |-------|-------------|
+    | `[report.daterange]` | Displays the report date range |
+    | `[report.send.date]` | Displays the report send date |
+    | `[client.site.version]` | Displays the WP version of the child site |
+    | `[client.site.theme]` | Displays the currently active theme for the child site |
+    | `[client.site.php]` | Displays the PHP version of the child site |
+    | `[client.site.mysql]` | Displays the MySQL version of the child site |
+    | `[installed.plugins]` | Displays the list of installed plugins with version number |
+    | `[installed.themes]` | Displays the list of installed themes with version number |
+  </Accordion>
+
+  <Accordion title="Plugin Tokens" icon="puzzle-piece">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.plugins.installed][/section.plugins.installed]` | Loops through Plugins Installed during the selected date range |
+    | `[section.plugins.activated][/section.plugins.activated]` | Loops through Plugins Activated during the selected date range |
+    | `[section.plugins.edited][/section.plugins.edited]` | Loops through Plugins Edited during the selected date range |
+    | `[section.plugins.deactivated][/section.plugins.deactivated]` | Loops through Plugins Deactivated during the selected date range |
+    | `[section.plugins.updated][/section.plugins.updated]` | Loops through Plugins Updated during the selected date range |
+    | `[section.plugins.deleted][/section.plugins.deleted]` | Loops through Plugins Deleted during the selected date range |
+    | `[section.plugins.pending][/section.plugins.pending]` | Loops through Plugins that have pending updates during the selected date range |
+    | `[section.plugins.abandoned][/section.plugins.abandoned]` | Loops through abandoned Plugins during the selected date range |
+
+    #### Installed
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.installed.date]` | Displays the Plugin Installation Date |
+    | `[plugin.installed.author]` | Displays the User who Installed the Plugin |
+
+    #### Activated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.activated.date]` | Displays the Plugin Activation Date |
+    | `[plugin.activated.author]` | Displays the User who Activated the Plugin |
+
+    #### Edited
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.edited.date]` | Displays the Plugin Editing Date |
+    | `[plugin.edited.author]` | Displays the User who Edited the Plugin |
+
+    #### Deactivated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.deactivated.date]` | Displays the Plugin Deactivation Date |
+    | `[plugin.deactivated.author]` | Displays the User who Deactivated the Plugin |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.updated.date]` | Displays the Plugin Update Date |
+    | `[plugin.updated.author]` | Displays the User who Updated the Plugin |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.deleted.date]` | Displays the Plugin Deletion Date |
+    | `[plugin.deleted.author]` | Displays the User who Deleted the Plugin |
+
+    #### Pending
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.current.version]` | Displays the current Plugin version |
+    | `[plugin.new.version]` | Displays the available Plugin version |
+
+    #### Abandoned
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.name]` | Displays the Plugin Name |
+    | `[plugin.abandoned.version]` | Displays the current Plugin version |
+    | `[plugin.abandoned.lastupdated]` | Displays the date of the last Plugin update |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[plugin.old.version]` | Displays the Plugin Version Before Update |
+    | `[plugin.current.version]` | Displays the Plugin Current Version |
+    | `[plugin.installed.count]` | Displays the Number of Installed Plugins |
+    | `[plugin.edited.count]` | Displays the Number of Edited Plugins |
+    | `[plugin.activated.count]` | Displays the Number of Activated Plugins |
+    | `[plugin.deactivated.count]` | Displays the Number of Deactivated Plugins |
+    | `[plugin.deleted.count]` | Displays the Number of Deleted Plugins |
+    | `[plugin.updated.count]` | Displays the Number of Updated Plugins |
+    | `[plugin.pending.count]` | Displays the Number of Pending Plugin Updates |
+    | `[plugin.abandoned.count]` | Displays the Number of Abandoned Plugins |
+  </Accordion>
+
+  <Accordion title="Theme Tokens" icon="palette">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.themes.installed][/section.themes.installed]` | Loops through Themes Installed during the selected date range |
+    | `[section.themes.activated][/section.themes.activated]` | Loops through Themes Activated during the selected date range |
+    | `[section.themes.edited][/section.themes.edited]` | Loops through Themes Edited during the selected date range |
+    | `[section.themes.updated][/section.themes.updated]` | Loops through Themes Updated during the selected date range |
+    | `[section.themes.deleted][/section.themes.deleted]` | Loops through Themes Deleted during the selected date range |
+    | `[section.themes.pending][/section.themes.pending]` | Loops through Themes that have pending updates during the selected date range |
+    | `[section.themes.abandoned][/section.themes.abandoned]` | Loops through abandoned Themes during the selected date range |
+
+    #### Installed
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.installed.date]` | Displays the Theme Installation Date |
+    | `[theme.installed.author]` | Displays the User who Installed the Theme |
+
+    #### Activated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.activated.date]` | Displays the Theme Activation Date |
+    | `[theme.activated.author]` | Displays the User who Activated the Theme |
+
+    #### Edited
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.edited.date]` | Displays the Theme Editing Date |
+    | `[theme.edited.author]` | Displays the User who Edited the Theme |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.updated.date]` | Displays the Theme Update Date |
+    | `[theme.updated.author]` | Displays the User who Updated the Theme |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.deleted.date]` | Displays the Theme Deleting Date |
+    | `[theme.deleted.author]` | Displays the User who Deleted the Theme |
+
+    #### Pending
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.current.version]` | Displays the current Theme version |
+    | `[theme.new.version]` | Displays the available Theme version |
+
+    #### Abandoned
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.name]` | Displays the Theme Name |
+    | `[theme.abandoned.version]` | Displays the current Theme version |
+    | `[theme.abandoned.lastupdated]` | Displays the date of the last Theme update |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[theme.old.version]` | Displays the Theme Version Before Update |
+    | `[theme.current.version]` | Displays the Theme Current Version |
+    | `[theme.installed.count]` | Displays the Number of Installed Themes |
+    | `[theme.edited.count]` | Displays the Number of Edited Themes |
+    | `[theme.activated.count]` | Displays the Number of Activated Themes |
+    | `[theme.deleted.count]` | Displays the Number of Deleted Themes |
+    | `[theme.updated.count]` | Displays the Number of Updated Themes |
+    | `[theme.pending.count]` | Displays the Number of Pending Theme Updates |
+    | `[theme.abandoned.count]` | Displays the Number of Abandoned Themes |
+  </Accordion>
+
+  <Accordion title="Post Tokens" icon="file-lines">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.posts.created][/section.posts.created]` | Loops through Posts Created during the selected date range |
+    | `[section.posts.updated][/section.posts.updated]` | Loops through Posts Updated during the selected date range |
+    | `[section.posts.trashed][/section.posts.trashed]` | Loops through Posts Trashed during the selected date range |
+    | `[section.posts.deleted][/section.posts.deleted]` | Loops through Posts Deleted during the selected date range |
+    | `[section.posts.restored][/section.posts.restored]` | Loops through Posts Restored during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.title]` | Displays the Post Title |
+    | `[post.created.date]` | Displays the Post Creation Date |
+    | `[post.created.author]` | Displays the User who Created the Post |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.title]` | Displays the Post Title |
+    | `[post.updated.date]` | Displays the Post Update Date |
+    | `[post.updated.author]` | Displays the User who Updated the Post |
+
+    #### Trashed
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.title]` | Displays the Post Title |
+    | `[post.trashed.date]` | Displays the Post Trashing Date |
+    | `[post.trashed.author]` | Displays the User who Trashed the Post |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.title]` | Displays the Post Title |
+    | `[post.deleted.date]` | Displays the Post Deleting Date |
+    | `[post.deleted.author]` | Displays the User who Deleted the Post |
+
+    #### Restored
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.title]` | Displays Post Title |
+    | `[post.restored.date]` | Displays the Post Restoring Date |
+    | `[post.restored.author]` | Displays the User who Restored the Post |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[post.created.count]` | Displays the Number of Created Posts |
+    | `[post.updated.count]` | Displays the Number of Updated Posts |
+    | `[post.trashed.count]` | Displays the Number of Trashed Posts |
+    | `[post.restored.count]` | Displays the Number of Restored Posts |
+    | `[post.deleted.count]` | Displays the Number of Deleted Posts |
+  </Accordion>
+
+  <Accordion title="Page Tokens" icon="file">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.pages.created][/section.pages.created]` | Loops through Pages Created during the selected date range |
+    | `[section.pages.updated][/section.pages.updated]` | Loops through Pages Updated during the selected date range |
+    | `[section.pages.trashed][/section.pages.trashed]` | Loops through Pages Trashed during the selected date range |
+    | `[section.pages.deleted][/section.pages.deleted]` | Loops through Pages Deleted during the selected date range |
+    | `[section.pages.restored][/section.pages.restored]` | Loops through Pages Restored during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.title]` | Displays the Page Title |
+    | `[page.created.date]` | Displays the Page Creation Date |
+    | `[page.created.author]` | Displays the User who Created the Page |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.title]` | Displays the Page Title |
+    | `[page.updated.date]` | Displays the Page Updating Date |
+    | `[page.updated.author]` | Displays the User who Updated the Page |
+
+    #### Trashed
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.title]` | Displays the Page Title |
+    | `[page.trashed.date]` | Displays the Page Trashing Date |
+    | `[page.trashed.author]` | Displays the User who Trashed the Page |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.title]` | Displays the Page Title |
+    | `[page.deleted.date]` | Displays the Page Deleting Date |
+    | `[page.deleted.author]` | Displays the User who Deleted the Page |
+
+    #### Restored
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.title]` | Displays the Page Title |
+    | `[page.restored.date]` | Displays the Page Restoring Date |
+    | `[page.restored.author]` | Displays the User who Restored the Page |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[page.created.count]` | Displays the Number of Created Pages |
+    | `[page.updated.count]` | Displays the Number of Updated Pages |
+    | `[page.trashed.count]` | Displays the Number of Trashed Pages |
+    | `[page.restored.count]` | Displays the Number of Restored Pages |
+    | `[page.deleted.count]` | Displays the Number of Deleted Pages |
+  </Accordion>
+
+  <Accordion title="Comment Tokens" icon="comments">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.comments.created][/section.comments.created]` | Loops through Comments Created during the selected date range |
+    | `[section.comments.updated][/section.comments.updated]` | Loops through Comments Updated during the selected date range |
+    | `[section.comments.trashed][/section.comments.trashed]` | Loops through Comments Trashed during the selected date range |
+    | `[section.comments.deleted][/section.comments.deleted]` | Loops through Comments Deleted during the selected date range |
+    | `[section.comments.edited][/section.comments.edited]` | Loops through Comments Edited during the selected date range |
+    | `[section.comments.restored][/section.comments.restored]` | Loops through Comments Restored during the selected date range |
+    | `[section.comments.approved][/section.comments.approved]` | Loops through Comments Approved during the selected date range |
+    | `[section.comments.spam][/section.comments.spam]` | Loops through Comments Spammed during the selected date range |
+    | `[section.comments.replied][/section.comments.replied]` | Loops through Comments Replied during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Created |
+    | `[comment.created.date]` | Displays the Comment Creating Date |
+    | `[comment.created.author]` | Displays the User who Created the Comment |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Updated |
+    | `[comment.updated.date]` | Displays the Comment Updating Date |
+    | `[comment.updated.author]` | Displays the User who Updated the Comment |
+
+    #### Trashed
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Trashed |
+    | `[comment.trashed.date]` | Displays the Comment Trashing Date |
+    | `[comment.trashed.author]` | Displays the User who Trashed the Comment |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Deleted |
+    | `[comment.deleted.date]` | Displays the Comment Deleting Date |
+    | `[comment.deleted.author]` | Displays the User who Deleted the Comment |
+
+    #### Edited
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Edited |
+    | `[comment.edited.date]` | Displays the Comment Editing Date |
+    | `[comment.edited.author]` | Displays the User who Edited the Comment |
+
+    #### Restored
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Restored |
+    | `[comment.restored.date]` | Displays the Comment Restoring Date |
+    | `[comment.restored.author]` | Displays the User who Restored the Comment |
+
+    #### Approved
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Approved |
+    | `[comment.approved.date]` | Displays the Comment Approving Date |
+    | `[comment.approved.author]` | Displays the User who Approved the Comment |
+
+    #### Spam
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Spammed |
+    | `[comment.spam.date]` | Displays the Comment Spamming Date |
+    | `[comment.spam.author]` | Displays the User who Spammed the Comment |
+
+    #### Replied
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.title]` | Displays the Title of the Post or the Page where the Comment is Replied |
+    | `[comment.replied.date]` | Displays the Comment Replying Date |
+    | `[comment.replied.author]` | Displays the User who Replied the Comment |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[comment.created.count]` | Displays the Number of Created Comments |
+    | `[comment.trashed.count]` | Displays the Number of Trashed Comments |
+    | `[comment.deleted.count]` | Displays the Number of Deleted Comments |
+    | `[comment.edited.count]` | Displays the Number of Edited Comments |
+    | `[comment.restored.count]` | Displays the Number of Restored Comments |
+    | `[comment.approved.count]` | Displays the Number of Approved Comments |
+    | `[comment.spam.count]` | Displays the Number of Spam Comments |
+    | `[comment.replied.count]` | Displays the Number of Replied Comments |
+  </Accordion>
+
+  <Accordion title="User Tokens" icon="users">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.users.created][/section.users.created]` | Loops through Users Created during the selected date range |
+    | `[section.users.updated][/section.users.updated]` | Loops through Users Updated during the selected date range |
+    | `[section.users.deleted][/section.users.deleted]` | Loops through Users Deleted during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[user.name]` | Displays the User Name |
+    | `[user.created.date]` | Displays the User Creation Date |
+    | `[user.created.author]` | Displays the User who created the new User |
+    | `[user.created.role]` | Displays the Role of the Created User |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[user.name]` | Displays the User Name |
+    | `[user.updated.date]` | Displays the User Updating Date |
+    | `[user.updated.author]` | Displays the User who Updated the new User |
+    | `[user.updated.role]` | Displays the Role of the Updated User |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[user.name]` | Displays the User Name |
+    | `[user.deleted.date]` | Displays the User Deleting Date |
+    | `[user.deleted.author]` | Displays the User who Deleted the new User |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[user.created.count]` | Displays the Number of Created Users |
+    | `[user.updated.count]` | Displays the Number of Updated Users |
+    | `[user.deleted.count]` | Displays the Number of Deleted Users |
+  </Accordion>
+
+  <Accordion title="Media Tokens" icon="image">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.media.uploaded][/section.media.uploaded]` | Loops through Media Uploaded during the selected date range |
+    | `[section.media.updated][/section.media.updated]` | Loops through Media Updated during the selected date range |
+    | `[section.media.deleted][/section.media.deleted]` | Loops through Media Deleted during the selected date range |
+
+    #### Uploaded
+
+    | Token | Description |
+    |-------|-------------|
+    | `[media.name]` | Displays the Media Name |
+    | `[media.uploaded.date]` | Displays the Media Uploading Date |
+    | `[media.uploaded.author]` | Displays the User who Uploaded the Media File |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[media.name]` | Displays the Media Name |
+    | `[media.updated.date]` | Displays the Media Updating Date |
+    | `[media.updated.author]` | Displays the User who Updated the Media File |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[media.name]` | Displays the Media Name |
+    | `[media.deleted.date]` | Displays the Media Deleting Date |
+    | `[media.deleted.author]` | Displays the User who Deleted the Media File |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[media.uploaded.count]` | Displays the Number of Uploaded Media Files |
+    | `[media.updated.count]` | Displays the Number of Updated Media Files |
+    | `[media.deleted.count]` | Displays the Number of Deleted Media Files |
+  </Accordion>
+
+  <Accordion title="Widget Tokens" icon="table-cells">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.widgets.added][/section.widgets.added]` | Loops through Widgets Added during the selected date range |
+    | `[section.widgets.updated][/section.widgets.updated]` | Loops through Widgets Updated during the selected date range |
+    | `[section.widgets.deleted][/section.widgets.deleted]` | Loops through Widgets Deleted during the selected date range |
+
+    #### Added
+
+    | Token | Description |
+    |-------|-------------|
+    | `[widget.title]` | Displays the Widget Title |
+    | `[widget.added.area]` | Displays the Widget Adding Area |
+    | `[widget.added.date]` | Displays the Widget Adding Date |
+    | `[widget.added.author]` | Displays the User who Added the Widget |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[widget.title]` | Displays the Widget Name |
+    | `[widget.updated.area]` | Displays the Widget Updating Area |
+    | `[widget.updated.date]` | Displays the Widget Updating Date |
+    | `[widget.updated.author]` | Displays the User who Updated the Widget |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[widget.title]` | Displays the Widget Name |
+    | `[widget.deleted.area]` | Displays the Widget Deleting Area |
+    | `[widget.deleted.date]` | Displays the Widget Deleting Date |
+    | `[widget.deleted.author]` | Displays the User who Deleted the Widget |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[widget.added.count]` | Displays the Number of Added Widgets |
+    | `[widget.updated.count]` | Displays the Number of Updated Widgets |
+    | `[widget.deleted.count]` | Displays the Number of Deleted Widgets |
+  </Accordion>
+
+  <Accordion title="Menu Tokens" icon="bars">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.menus.created][/section.menus.created]` | Loops through Menus Created during the selected date range |
+    | `[section.menus.updated][/section.menus.updated]` | Loops through Menus Updated during the selected date range |
+    | `[section.menus.deleted][/section.menus.deleted]` | Loops through Menus Deleted during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[menu.title]` | Displays the Menu Name |
+    | `[menu.created.date]` | Displays the Menu Creation Date |
+    | `[menu.created.author]` | Displays the User who Created the Menu |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[menu.title]` | Displays the Menu Name |
+    | `[menu.updated.date]` | Displays the Menu Updating Date |
+    | `[menu.updated.author]` | Displays the User who Updated the Menu |
+
+    #### Deleted
+
+    | Token | Description |
+    |-------|-------------|
+    | `[menu.title]` | Displays the Menu Name |
+    | `[menu.deleted.date]` | Displays the Menu Deleting Date |
+    | `[menu.deleted.author]` | Displays the User who Deleted the Menu |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[menu.created.count]` | Displays the Number of Created Menus |
+    | `[menu.updated.count]` | Displays the Number of Updated Menus |
+    | `[menu.deleted.count]` | Displays the Number of Deleted Menus |
+  </Accordion>
+
+  <Accordion title="WordPress Core Tokens" icon="wordpress">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.wordpress.updated][/section.wordpress.updated]` | Loops through WordPress Updates during the selected date range |
+
+    #### Updated
+
+    | Token | Description |
+    |-------|-------------|
+    | `[wordpress.updated.date]` | Displays the WordPress Update Date |
+    | `[wordpress.updated.author]` | Displays the User who Updated the Site |
+    | `[wordpress.old.version]` | Displays the WordPress Version Before Update |
+    | `[wordpress.current.version]` | Displays the Current WordPress Version |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[wordpress.updated.count]` | Displays the Number of WordPress Updates |
+  </Accordion>
+
+  <Accordion title="Backup Tokens" icon="cloud-arrow-up">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.backups.created][/section.backups.created]` | Loops through Backups Created during the selected date range |
+
+    #### Created
+
+    | Token | Description |
+    |-------|-------------|
+    | `[backup.created.type]` | Displays the Created Backup type (Full or Database) |
+    | `[backup.created.date]` | Displays the Backups Creation date |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[backup.created.count]` | Displays the number of created backups during the selected date range |
+  </Accordion>
+
+  <Accordion title="Uptime Monitoring Tokens" icon="heart-pulse">
+    | Token | Description |
+    |-------|-------------|
+    | `[uptime.alltimeuptimeratio]` | Displays the overall uptime percentage since monitoring began |
+    | `[uptime.uptime7]` | Displays the uptime percentage for the last 7 days |
+    | `[uptime.uptime15]` | Displays the uptime percentage for the last 15 days |
+    | `[uptime.uptime30]` | Displays the uptime percentage for the last 30 days |
+    | `[uptime.uptime45]` | Displays the uptime percentage for the last 45 days |
+    | `[uptime.uptime60]` | Displays the uptime percentage for the last 60 days |
+    | `[uptime.stats]` | Provides a summary of uptime and downtime statistics for the selected date range |
+    | `[uptime.numberofincidents]` | Displays the total number of incidents recorded during the selected date range |
+    | `[uptime.responsetime.avg]` | Displays the average response time during the selected date range |
+    | `[uptime.responsetime.min]` | Displays the minimum response time during the selected date range |
+    | `[uptime.responsetime.max]` | Displays the maximum response time during the selected date range |
+    | `[uptime.startdate]` | Displays the start date of the monitoring period |
+    | `[uptime.enddate]` | Displays the end date of the monitoring period |
+    | `[uptime.visits.chart]` | Displays a chart of visits and response times during the selected date range |
+    | `[uptime.status]` | Shows the current monitor status |
+  </Accordion>
+</AccordionGroup>
+
+## Extension-Specific Tokens
+
+These tokens require specific MainWP extensions to be installed and activated.
+
+<AccordionGroup>
+  <Accordion title="Sucuri Extension Tokens" icon="shield-halved">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.sucuri.checks][/section.sucuri.checks]` | Loops through Security Checks during the selected date range |
+
+    #### Checks
+
+    | Token | Description |
+    |-------|-------------|
+    | `[sucuri.check.date]` | Displays the Security Check date |
+    | `[sucuri.check.status]` | Displays the Status info for the Child Site |
+    | `[sucuri.check.webtrust]` | Displays the Web trust info for the Child Site |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[sucuri.checks.count]` | Displays the number of performed security checks during the selected date range |
+  </Accordion>
+
+  <Accordion title="Fathom Extension Tokens" icon="chart-line">
+    | Token | Description |
+    |-------|-------------|
+    | `[fathom.visits]` | Displays the Number Visits during the selected date range |
+    | `[fathom.visitors]` | Displays the Number of Visitors during the selected date range |
+    | `[fathom.pageviews]` | Displays the Number of Page Views during the selected date range |
+    | `[fathom.avg.time]` | Displays the Average Time during the selected date range |
+    | `[fathom.bounce.rate]` | Displays the Bounce Rate during the selected date range |
+    | `[fathom.visits.chart]` | Displays a chart for the selected date range |
+    | `[fathom.visits.maximum]` | Displays the maximum visitor number and its day within the selected date range |
+    | `[fathom.startdate]` | Displays the start date for the chart |
+    | `[fathom.enddate]` | Displays the end date for the chart |
+  </Accordion>
+
+  <Accordion title="Google Search Console Tokens" icon="magnifying-glass-chart">
+    | Token | Description |
+    |-------|-------------|
+    | `[gsc.total.clicks]` | Total clicks in the selected date range |
+    | `[gsc.total.impressions]` | Total impressions during the selected date range |
+    | `[gsc.ctr]` | Click-through rate in the selected date range |
+    | `[gsc.average.position]` | Average position during the selected date range |
+    | `[gsc.total.clicks.chart]` | Chart for total clicks |
+    | `[gsc.total.impressions.chart]` | Chart for total impressions |
+    | `[gsc.top.pages]` | Top 5 performing pages |
+    | `[gsc.bottom.pages]` | Worst 5 performing pages |
+    | `[gsc.top.queries]` | Top 5 performing queries |
+    | `[gsc.bottom.queries]` | Worst 5 performing queries |
+    | `[gsc.sitemap.indexing.rate]` | Percentage of submitted URLs that Google indexed |
+    | `[gsc.sitemap.errors.count]` | Sitemap errors count |
+  </Accordion>
+
+  <Accordion title="Google Analytics Tokens" icon="chart-simple">
+    | Token | Description |
+    |-------|-------------|
+    | `[ga.visits]` | Displays the Number Visits during the selected date range |
+    | `[ga.pageviews]` | Displays the Number of Page Views during the selected date range |
+    | `[ga.pages.visit]` | Displays the Number of Page visits during the selected date range |
+    | `[ga.bounce.rate]` | Displays the Bounce Rate during the selected date range |
+    | `[ga.avg.time]` | Displays the Average Visit Time during the selected date range |
+    | `[ga.new.visits]` | Displays the Number of New Visits during the selected date range |
+    | `[ga.visits.chart]` | Displays a chart for the selected date range |
+    | `[ga.visits.maximum]` | Displays the maximum visitor number and its day within the past month |
+    | `[ga.startdate]` | Displays the start date for the chart |
+    | `[ga.enddate]` | Displays the end date for the chart |
+  </Accordion>
+
+  <Accordion title="Matomo Extension Tokens" icon="chart-pie">
+    | Token | Description |
+    |-------|-------------|
+    | `[piwik.visits]` | Displays the Number of Visits during the selected date range |
+    | `[piwik.pageviews]` | Displays the Number of Page Views during the selected date range |
+    | `[piwik.pages.visit]` | Displays the Number of Page visits during the selected date range |
+    | `[piwik.bounce.rate]` | Displays the Bounce Rate during the selected date range |
+    | `[piwik.avg.time]` | Displays the Average Visit Time during the selected date range |
+    | `[piwik.new.visits]` | Displays the Number of New Visits during the selected date range |
+  </Accordion>
+
+  <Accordion title="Advanced Uptime Monitor Tokens" icon="clock">
+    | Token | Description |
+    |-------|-------------|
+    | `[aum.alltimeuptimeratio]` | Displays the Uptime ratio from the moment the monitor has been created |
+    | `[aum.uptime7]` | Displays the Uptime ratio for the last 7 days |
+    | `[aum.uptime15]` | Displays the Uptime ratio for the last 15 days |
+    | `[aum.uptime30]` | Displays the Uptime ratio for the last 30 days |
+    | `[aum.uptime45]` | Displays the Uptime ratio for the last 45 days |
+    | `[aum.uptime60]` | Displays the Uptime ratio for last 60 days |
+  </Accordion>
+
+  <Accordion title="WooCommerce Status Tokens" icon="cart-shopping">
+    | Token | Description |
+    |-------|-------------|
+    | `[wcomstatus.sales]` | Displays total sales during the selected date range |
+    | `[wcomstatus.topseller]` | Displays the top seller product during the selected date range |
+    | `[wcomstatus.awaitingprocessing]` | Displays the number of products currently awaiting processing |
+    | `[wcomstatus.onhold]` | Displays the number of orders currently on hold |
+    | `[wcomstatus.lowonstock]` | Displays the number of products currently low on stock |
+    | `[wcomstatus.outofstock]` | Displays the number of products currently out of stock |
+  </Accordion>
+
+  <Accordion title="WordFence Extension Tokens" icon="shield">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.wordfence.scan][/section.wordfence.scan]` | Loops through Security Scans during the selected date range |
+
+    #### Details
+
+    | Token | Description |
+    |-------|-------------|
+    | `[wordfence.scan.result]` | Displays the Status info for the Child Site |
+    | `[wordfence.scan.details]` | Displays the Scan details |
+    | `[wordfence.scan.date]` | Displays the Security Scan date |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[wordfence.scan.count]` | Displays the number of performed scans during the date range |
+  </Accordion>
+
+  <Accordion title="Maintenance Extension Tokens" icon="wrench">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.maintenance.process][/section.maintenance.process]` | Loops through Maintenance actions during the selected date range |
+
+    #### Details
+
+    | Token | Description |
+    |-------|-------------|
+    | `[maintenance.process.details]` | Displays the maintenance details |
+    | `[maintenance.process.result]` | Displays the maintenance result |
+    | `[maintenance.process.date]` | Displays the maintenance action date |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[maintenance.process.count]` | Displays the number of performed maintenance tasks during the selected date range |
+  </Accordion>
+
+  <Accordion title="Page Speed Extension Tokens" icon="gauge-high">
+    | Token | Description |
+    |-------|-------------|
+    | `[pagespeed.average.desktop]` | Displays the average Desktop page speed score |
+    | `[pagespeed.average.mobile]` | Displays the average Mobile page speed score |
+  </Accordion>
+
+  <Accordion title="Virusdie Extension Tokens" icon="virus-slash">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.virusdie.scans][/section.virusdie.scans]` | Loops through Virusdie scans during the selected date range |
+
+    #### Details
+
+    | Token | Description |
+    |-------|-------------|
+    | `[virusdie.scan.time]` | Displays the scan time |
+    | `[virusdie.scan.date]` | Displays the scan date |
+    | `[virusdie.scan.status]` | Displays the site status |
+    | `[virusdie.scan.details]` | Displays the scan details |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[virusdie.scans.count]` | Displays the number of scans performed during the selected date range |
+  </Accordion>
+
+  <Accordion title="iThemes Extension Tokens" icon="lock">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.ithemes.scan][/section.ithemes.scan]` | Loops through iThemes scans during the selected date range |
+
+    #### Details
+
+    | Token | Description |
+    |-------|-------------|
+    | `[ithemes.scan.result]` | Displays the iThemes scan result |
+    | `[ithemes.scan.date]` | Displays the iThemes scan date |
+    | `[ithemes.scan.time]` | Displays the iThemes scan time |
+    | `[ithemes.scan.details]` | Displays the iThemes scan details |
+
+    #### Additional
+
+    | Token | Description |
+    |-------|-------------|
+    | `[ithemes.scan.count]` | Displays the number of performed iThemes scans during the selected date range |
+    | `[ithemes.blocked.count]` | Displays the number of iThemes Attacks Blocked during the selected date range |
+    | `[ithemes.lockout.count]` | Displays the number of iThemes lockouts during the selected date range |
+  </Accordion>
+
+  <Accordion title="Lighthouse Extension Tokens" icon="lighthouse">
+    #### Desktop
+
+    | Token | Description |
+    |-------|-------------|
+    | `[lighthouse.performance.desktop]` | Displays the desktop strategy Performance score |
+    | `[lighthouse.accessibility.desktop]` | Displays the desktop strategy Accessibility score |
+    | `[lighthouse.bestpractices.desktop]` | Displays the desktop strategy Best Practices score |
+    | `[lighthouse.seo.desktop]` | Displays the desktop strategy SEO score |
+    | `[lighthouse.audits.desktop]` | Displays the list of performed audits |
+    | `[lighthouse.lastcheck.desktop]` | Displays the last check time and date |
+
+    #### Mobile
+
+    | Token | Description |
+    |-------|-------------|
+    | `[lighthouse.performance.mobile]` | Displays the mobile strategy Performance score |
+    | `[lighthouse.accessibility.mobile]` | Displays the mobile strategy Accessibility score |
+    | `[lighthouse.bestpractices.mobile]` | Displays the mobile strategy Best Practices score |
+    | `[lighthouse.seo.mobile]` | Displays the mobile strategy SEO score |
+    | `[lighthouse.audits.mobile]` | Displays the list of performed audits |
+    | `[lighthouse.lastcheck.mobile]` | Displays the last check time and date |
+  </Accordion>
+
+  <Accordion title="Domain Monitor Tokens" icon="globe">
+    | Token | Description |
+    |-------|-------------|
+    | `[domain.monitor.domain.name]` | Displays the domain name |
+    | `[domain.monitor.registrar]` | Displays the domain registrar |
+    | `[domain.monitor.updated.date]` | Displays the domain updated date |
+    | `[domain.monitor.creation.date]` | Displays the domain creation date |
+    | `[domain.monitor.expiry.date]` | Displays the domain expiry date |
+    | `[domain.monitor.expires]` | Displays the number of days left before the domain expires |
+    | `[domain.monitor.status]` | Displays the domain status |
+    | `[domain.monitor.last.check]` | Displays the last check time stamp |
+  </Accordion>
+
+  <Accordion title="SSL Monitor Tokens" icon="lock">
+    | Token | Description |
+    |-------|-------------|
+    | `[ssl.monitor.name]` | Displays the Common Name of the certificate |
+    | `[ssl.monitor.issuer]` | Displays the name of the issuer |
+    | `[ssl.monitor.valid.from]` | Displays the certificate creation date |
+    | `[ssl.monitor.valid.to]` | Displays the certificate expiry date |
+    | `[ssl.monitor.expires]` | Displays the number of days left before the certificate expires |
+    | `[ssl.monitor.status]` | Displays the certificate status |
+    | `[ssl.monitor.last.check]` | Displays the last check time stamp |
+  </Accordion>
+
+  <Accordion title="Atarim Extension Tokens" icon="tasks">
+    | Token | Description |
+    |-------|-------------|
+    | `[atarim.all.tasks]` | Displays all tasks for a site within the selected date range |
+    | `[atarim.billable.tasks]` | Displays all billable tasks for a site within the selected date range |
+  </Accordion>
+
+  <Accordion title="Vulnerability Checker Tokens" icon="bug">
+    | Token | Description |
+    |-------|-------------|
+    | `[vulnerable.plugins]` | Displays the vulnerable plugins score at the moment of report generation |
+    | `[vulnerable.themes]` | Displays the vulnerable themes score at the moment of report creation |
+    | `[vulnerable.checkdate]` | Displays the Last vulnerable check date at the moment of report creation |
+    | `[vulnerabilities.count]` | Displays the vulnerabilities count score at the moment of report creation |
+  </Accordion>
+
+  <Accordion title="Jetpack Protect Tokens" icon="shield-check">
+    | Token | Description |
+    |-------|-------------|
+    | `[jetpack.protect.plugins.count]` | Displays the number of plugins vulnerabilities |
+    | `[jetpack.protect.themes.count]` | Displays the number of themes vulnerabilities |
+    | `[jetpack.protect.plugins]` | Displays detected vulnerabilities for plugins |
+    | `[jetpack.protect.themes]` | Displays detected vulnerabilities for themes |
+    | `[jetpack.protect.wp]` | Displays detected vulnerabilities for WP core |
+  </Accordion>
+
+  <Accordion title="Jetpack Scan Tokens" icon="radar">
+    | Token | Description |
+    |-------|-------------|
+    | `[jetpack.scan.plugins.count]` | Displays the number of plugins vulnerabilities |
+    | `[jetpack.scan.themes.count]` | Displays the number of themes vulnerabilities |
+    | `[jetpack.scan.plugins]` | Displays detected vulnerabilities for plugins |
+    | `[jetpack.scan.themes]` | Displays detected vulnerabilities for themes |
+    | `[jetpack.scan.wp]` | Displays detected vulnerabilities for WP core |
+  </Accordion>
+
+  <Accordion title="Time Tracker Tokens" icon="stopwatch">
+    #### Sections
+
+    | Token | Description |
+    |-------|-------------|
+    | `[section.timetracker.tasks][/section.timetracker.tasks]` | Loops through all tasks in the selected date range for selected site |
+
+    #### Details
+
+    | Token | Description |
+    |-------|-------------|
+    | `[timetracker.task.date]` | Displays the task submission date |
+    | `[timetracker.task.time]` | Displays the task submission time |
+    | `[timetracker.task.title]` | Displays the tasks title |
+    | `[timetracker.task.description]` | Displays the task description |
+    | `[timetracker.task.status]` | Displays the task status (Paused/Completed) |
+    | `[timetracker.task.total.price]` | Displays the totally charged amount for the task |
+    | `[timetracker.task.hourly.price]` | Displays the task hourly price (selected bucket price) |
+    | `[timetracker.task.duration]` | Displays the time spent on the task |
+    | `[timetracker.task.payment.status]` | Displays the payment status (Paid/Partially Paid/Refunded/Unpaid) |
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Related Resources
+
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Conditional Messages in Pro Reports](/add-ons/agency/conditional-messages-in-pro-reports) - Dynamic content based on data
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation

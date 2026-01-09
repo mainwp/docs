@@ -1,0 +1,464 @@
+/**
+ * MainWP Add-on Panel Styles
+ * Matches the reference design with dark theme and MainWP green accent
+ */
+
+/* Force TOC container to use flexbox for reordering */
+#table-of-contents {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4rem;  /* Add breathing room at bottom of sidebar */
+}
+
+/*
+ * Force visible scrollbar on the TOC container for add-on pages
+ * macOS uses overlay scrollbars by default, making them invisible
+ * until actively scrolling. This ensures users can see the scrollbar.
+ */
+#table-of-contents:has(.addon-panel) {
+  overflow-y: scroll !important;  /* Force scrollbar to always show */
+  scrollbar-width: thin;  /* Firefox: use thin scrollbar */
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;  /* Firefox: thumb and track colors */
+  scrollbar-gutter: stable;  /* Reserve space for scrollbar to prevent layout shift */
+  padding-right: 0.75rem;  /* Space before scrollbar for all content */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) - force visible scrollbar */
+#table-of-contents:has(.addon-panel)::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+#table-of-contents:has(.addon-panel)::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+#table-of-contents:has(.addon-panel)::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+#table-of-contents:has(.addon-panel)::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+  background-clip: content-box;
+}
+
+/*
+ * Left navigation sidebar improvements
+ * Force visible scrollbar (macOS hides by default) and add breathing room
+ */
+#sidebar-content {
+  overflow-y: scroll !important;
+  scrollbar-width: thin;  /* Firefox */
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;  /* Firefox */
+  scrollbar-gutter: stable;  /* Reserve space for scrollbar */
+  padding-bottom: 6rem !important;  /* Increase from 40px to 96px */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) scrollbar styling */
+#sidebar-content::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+#sidebar-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+#sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+#sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+  background-clip: content-box;
+}
+
+/* Fallback selectors for Mintlify right sidebar */
+[class*="TableOfContents"] {
+  padding-bottom: 4rem;
+}
+
+/* Target sticky sidebar container */
+aside[class*="sticky"],
+nav[class*="toc"],
+[class*="RightSidebar"] {
+  padding-bottom: 4rem;
+}
+
+/* Push panel to the end visually using order */
+.addon-panel {
+  order: 99;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #333;
+  font-family: inherit;
+  max-width: 100%;
+  overflow-x: hidden;  /* Prevent horizontal overflow */
+  overflow-y: visible; /* Allow content to display fully */
+  box-sizing: border-box;
+  flex-shrink: 0;  /* Prevent panel from shrinking in flex container */
+}
+
+/* CTA Card - Dark rounded container with button */
+.addon-panel__cta-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.addon-panel__cta-button {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: #8fc31f;
+  color: #000 !important;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none !important;
+  margin-bottom: 0.875rem;
+  transition: background-color 0.2s ease;
+  letter-spacing: 0.025em;
+}
+
+.addon-panel__cta-button:hover {
+  background: #7ab318;
+  text-decoration: none !important;
+}
+
+.addon-panel__bundle-note {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.addon-panel__checkmark {
+  color: #8fc31f;
+}
+
+/* Tag Pills - 2x2 Grid */
+.addon-panel__tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.addon-panel__tag {
+  text-align: center;
+  padding: 0.625rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 3rem;
+}
+
+.addon-panel__tag--outline {
+  border-color: #8fc31f;
+  color: #fff;
+  font-weight: 500;
+}
+
+.addon-panel__tag--filled {
+  background: #8fc31f;
+  color: #000;
+  border-color: #8fc31f;
+  font-weight: 600;
+}
+
+.addon-panel__tag-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 0.125rem;
+}
+
+.addon-panel__tag-value {
+  font-weight: 600;
+  color: #fff;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Version link styles */
+.addon-panel__version-link {
+  text-decoration: none !important;
+  color: #fff !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.addon-panel__version-link:hover {
+  text-decoration: underline !important;
+  color: #8fc31f !important;
+  cursor: pointer;
+}
+
+.addon-panel__link-icon-small {
+  font-size: 0.75em;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+/* Info Callout */
+.addon-panel__info {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: rgba(143, 195, 31, 0.1);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #8fc31f;
+  align-items: flex-start;
+}
+
+.addon-panel__info-icon {
+  color: #60a5fa;
+  flex-shrink: 0;
+  font-size: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(96, 165, 250, 0.2);
+  border-radius: 50%;
+}
+
+.addon-panel__info-text {
+  font-size: 0.8125rem;
+  color: #8fc31f;
+  line-height: 1.5;
+}
+
+/* Privacy Info Box content */
+.addon-panel__info--privacy {
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.addon-panel__info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  width: 100%;
+}
+
+.addon-panel__info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addon-panel__info-item-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.addon-panel__info-item-text {
+  font-size: 0.875rem;
+  color: #8fc31f;
+}
+
+.addon-panel__info-item-link {
+  font-size: 0.875rem;
+  color: #8fc31f !important;
+  text-decoration: none !important;
+  transition: opacity 0.2s ease;
+}
+
+.addon-panel__info-item-link:hover {
+  text-decoration: underline !important;
+  opacity: 0.8;
+}
+
+/* Section Headers */
+.addon-panel__section-header {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.75rem 0;
+  padding-top: 1rem;
+}
+
+.addon-panel__section-header:first-of-type {
+  padding-top: 0;
+}
+
+/* Support Links */
+.addon-panel__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.addon-panel__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #8fc31f !important;
+  font-size: 0.875rem;
+  text-decoration: none !important;
+  transition: opacity 0.2s ease;
+}
+
+.addon-panel__link:hover {
+  opacity: 0.8;
+  text-decoration: underline !important;
+}
+
+.addon-panel__link-icon {
+  font-size: 1rem;
+}
+
+/* Additional Info Text */
+.addon-panel__additional-text {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Data Privacy Items */
+.addon-panel__privacy-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.addon-panel__privacy-label {
+  font-size: 0.8125rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.addon-panel__privacy-value {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.addon-panel__privacy-link {
+  font-size: 0.875rem;
+  color: #8fc31f !important;
+  text-decoration: none !important;
+}
+
+.addon-panel__privacy-link:hover {
+  text-decoration: underline !important;
+}
+
+/* Focus states for keyboard accessibility */
+.addon-panel__cta-button:focus-visible,
+.addon-panel__version-link:focus-visible,
+.addon-panel__link:focus-visible,
+.addon-panel__info-item-link:focus-visible,
+.addon-panel__privacy-link:focus-visible {
+  outline: 2px solid #8fc31f;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.addon-panel__cta-button:focus-visible {
+  outline-offset: 3px;
+}
+
+/* Light mode overrides (if needed) */
+@media (prefers-color-scheme: light) {
+  .light .addon-panel__cta-card,
+  .light .addon-panel__tag {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+  }
+
+  .light .addon-panel__tag-value,
+  .light .addon-panel__section-header,
+  .light .addon-panel__privacy-label {
+    color: #111827;
+  }
+
+  .light .addon-panel__tag--outline {
+    color: #111827;
+  }
+}
+
+/* Mintlify theme overrides for light mode (uses .light class on html element) */
+.light .addon-panel__cta-card,
+.light .addon-panel__tag {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.light .addon-panel__tag-value,
+.light .addon-panel__section-header,
+.light .addon-panel__privacy-label {
+  color: #111827;
+}
+
+.light .addon-panel__tag--outline {
+  color: #111827;
+}
+
+.light .addon-panel__info {
+  background: rgba(143, 195, 31, 0.15);
+}
+
+.light .addon-panel__version-link {
+  color: #111827 !important;
+}
+
+.light .addon-panel__info-item-text {
+  color: #166534;
+}
+
+/* Light mode: Fix secondary text contrast (WCAG AA compliance) */
+.light .addon-panel__tag-label,
+.light .addon-panel__bundle-note,
+.light .addon-panel__additional-text,
+.light .addon-panel__privacy-value {
+  color: #4b5563;
+}
+
+/* Light mode: Fix green accent contrast */
+.light .addon-panel__info-text,
+.light .addon-panel__checkmark {
+  color: #166534;
+}
+
+.light .addon-panel__link,
+.light .addon-panel__info-item-link,
+.light .addon-panel__privacy-link {
+  color: #166534 !important;
+}
+
+/* Light mode: Focus states with dark green outline */
+.light .addon-panel__cta-button:focus-visible,
+.light .addon-panel__version-link:focus-visible,
+.light .addon-panel__link:focus-visible,
+.light .addon-panel__info-item-link:focus-visible,
+.light .addon-panel__privacy-link:focus-visible {
+  outline-color: #166534;
+}

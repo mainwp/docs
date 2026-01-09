@@ -1,0 +1,591 @@
+---
+title: Sites Endpoints
+sidebarTitle: "Sites"
+description: >-
+  17 REST API endpoints for managing MainWP child sites, including listing, syncing, plugins, themes, and connection management.
+---
+
+Manage child sites connected to your MainWP Dashboard through these endpoints.
+
+## What You'll Learn
+
+- Site listing and filtering endpoints
+- Adding, editing, and removing sites
+- Syncing and connectivity checks
+- Plugin and theme management per site
+
+---
+
+## GET /sites/
+
+Returns basic information for all child sites with pagination support.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/?per_page=20"
+```
+
+### Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number |
+| `per_page` | integer | No | 10 | Items per page |
+| `search` | string | No | — | Search in site name and URL |
+| `include` | string | No | — | Comma-separated site IDs to include |
+| `exclude` | string | No | — | Comma-separated site IDs to exclude |
+| `status` | string | No | any | Filter: any, connected, disconnected, suspended, available_update |
+
+### Response
+
+```json
+[
+  {
+    "id": 1,
+    "url": "https://example.com",
+    "name": "My Site",
+    "status": "connected",
+    "wp_version": "6.4.2",
+    "php_version": "8.2",
+    "last_sync": "2024-01-15T10:30:00"
+  }
+]
+```
+
+---
+
+## GET /sites/{site}
+
+Returns detailed information about a specific child site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "name": "My Site",
+  "status": "connected",
+  "wp_version": "6.4.2",
+  "php_version": "8.2",
+  "mysql_version": "8.0",
+  "admin_email": "admin@example.com",
+  "plugins_count": 15,
+  "themes_count": 3,
+  "last_sync": "2024-01-15T10:30:00",
+  "health_score": 85
+}
+```
+
+---
+
+## PUT /sites/add
+
+Adds a new child site to the Dashboard.
+
+**Method:** PUT
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "name": "My Site", "admin": "admin"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/add"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `url` | string | Yes | Child site URL (must have MainWP Child plugin active) |
+| `name` | string | Yes | Display name for the site |
+| `admin` | string | Yes | Admin username on the child site |
+| `groupids` | string | No | Comma-separated tag/group IDs |
+| `client_id` | integer | No | Client ID to associate site with |
+
+### Response
+
+```json
+{
+  "id": 5,
+  "url": "https://example.com",
+  "name": "My Site",
+  "status": "connected",
+  "message": "Site added successfully"
+}
+```
+
+---
+
+## PUT /sites/{site}/edit
+
+Updates a site's properties.
+
+**Method:** PUT
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/edit?name=Updated%20Name"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `name` | string | No | New display name |
+| `groupids` | string | No | Comma-separated tag IDs |
+| `client_id` | integer | No | New client ID |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "name": "Updated Name",
+  "message": "Site updated successfully"
+}
+```
+
+---
+
+## DELETE /sites/{site}
+
+Removes a child site from the Dashboard.
+
+**Method:** DELETE
+
+<Warning>
+This action is destructive and cannot be undone. The child site itself is not affected, only the Dashboard connection.
+</Warning>
+
+```bash
+curl -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Site removed successfully"
+}
+```
+
+---
+
+## POST /sites/sync
+
+Triggers synchronization for all sites. Responds immediately; sync runs in the background.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/sync"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `include` | string | No | Only sync these site IDs |
+| `exclude` | string | No | Skip these site IDs |
+
+### Response
+
+```json
+{
+  "success": 1,
+  "message": "Sync initiated for all sites"
+}
+```
+
+---
+
+## POST /sites/{site}/sync
+
+Syncs a specific child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/sync"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "status": "connected",
+  "last_sync": "2024-01-15T10:30:00",
+  "message": "Site synced successfully"
+}
+```
+
+---
+
+## POST /sites/check
+
+Runs connectivity checks for all sites.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/check"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `include` | string | No | Only check these site IDs |
+| `exclude` | string | No | Skip these site IDs |
+
+### Response
+
+```json
+{
+  "success": 1,
+  "message": "Check initiated for all sites"
+}
+```
+
+---
+
+## GET /sites/{site}/plugins
+
+Returns plugins installed on a child site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/plugins"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `page` | integer | No | Page number |
+| `per_page` | integer | No | Items per page |
+| `search` | string | No | Search plugin names |
+| `status` | string | No | Filter: active, inactive, update_available |
+| `must_use` | integer | No | Set to 1 for MU plugins only |
+
+### Response
+
+```json
+[
+  {
+    "name": "Akismet Anti-spam",
+    "slug": "akismet/akismet.php",
+    "version": "5.3",
+    "status": "active",
+    "update_available": false
+  }
+]
+```
+
+---
+
+## POST /sites/{site}/plugins/activate
+
+Activates a plugin on a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/plugins/activate?slug=akismet/akismet.php"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `slug` | string | Yes | Plugin slug (e.g., `akismet/akismet.php`) |
+
+### Response
+
+```json
+{
+  "success": true,
+  "plugin": "akismet/akismet.php",
+  "status": "active",
+  "message": "Plugin activated successfully"
+}
+```
+
+---
+
+## POST /sites/{site}/plugins/deactivate
+
+Deactivates a plugin on a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/plugins/deactivate?slug=akismet/akismet.php"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `slug` | string | Yes | Plugin slug |
+
+### Response
+
+```json
+{
+  "success": true,
+  "plugin": "akismet/akismet.php",
+  "status": "inactive",
+  "message": "Plugin deactivated successfully"
+}
+```
+
+---
+
+## GET /sites/{site}/themes
+
+Returns themes installed on a child site.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/themes"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `page` | integer | No | Page number |
+| `per_page` | integer | No | Items per page |
+| `search` | string | No | Search theme names |
+| `status` | string | No | Filter: active, inactive, update_available |
+
+### Response
+
+```json
+[
+  {
+    "name": "Twenty Twenty-Four",
+    "slug": "twentytwentyfour",
+    "version": "1.0",
+    "status": "active",
+    "update_available": false
+  }
+]
+```
+
+---
+
+## POST /sites/{site}/themes/activate
+
+Activates a theme on a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/themes/activate?slug=twentytwentyfour"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+| `slug` | string | Yes | Theme slug |
+
+### Response
+
+```json
+{
+  "success": true,
+  "theme": "twentytwentyfour",
+  "status": "active",
+  "message": "Theme activated successfully"
+}
+```
+
+---
+
+## GET /sites/{site}/non-mainwp-changes
+
+Returns changes made to the site outside of MainWP.
+
+**Method:** GET (readonly)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/non-mainwp-changes"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "plugins_installed": ["hello-dolly/hello.php"],
+  "plugins_updated": [],
+  "themes_installed": [],
+  "themes_updated": [],
+  "core_updated": false
+}
+```
+
+---
+
+## POST /sites/{site}/reconnect
+
+Attempts to reconnect a disconnected child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/reconnect"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "status": "connected",
+  "message": "Site reconnected successfully"
+}
+```
+
+---
+
+## POST /sites/{site}/suspend
+
+Suspends a child site, preventing sync and updates.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/suspend"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "status": "suspended",
+  "message": "Site suspended successfully"
+}
+```
+
+---
+
+## POST /sites/{site}/unsuspend
+
+Removes suspension from a child site.
+
+**Method:** POST
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/1/unsuspend"
+```
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site` | integer/string | Yes | Site ID or domain |
+
+### Response
+
+```json
+{
+  "id": 1,
+  "status": "connected",
+  "message": "Site unsuspended successfully"
+}
+```
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API basics and authentication
+- [Updates Endpoints](/api-reference/rest-api/updates) - Update management
+- [Clients Endpoints](/api-reference/rest-api/clients) - Client management
+- [Tags Endpoints](/api-reference/rest-api/tags) - Tag management

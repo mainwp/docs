@@ -1,0 +1,193 @@
+---
+title: MainWP Bridge (bridge.mainwp.com)
+sidebarTitle: "MainWP Bridge"
+description: >-
+  MainWP Bridge handles secure Google authentication for the Google Analytics
+  and Google Search Console extensions.
+---
+
+MainWP Bridge is a secure service operated by MainWP at `bridge.mainwp.com`. It handles Google authentication for the **Google Analytics** and **Google Search Console** extensions.
+
+Bridge provides the **Sign in with Google** flow and manages the authorization process needed for MainWP to access reporting data from your Google account.
+
+## What You'll Learn
+
+- What MainWP Bridge does and why it's used
+- How the authentication process works
+- Data handling and privacy information
+- How to troubleshoot connection issues
+
+---
+
+## What Bridge Does
+
+Bridge is only used for authentication. It does **not** create or process analytics data—it only enables MainWP to securely access data that already exists in your Google accounts.
+
+| Bridge handles | Bridge does NOT handle |
+|----------------|------------------------|
+| Sign in with Google flow | WordPress credentials |
+| OAuth authorization | Child site data |
+| Token refresh | Analytics or Search Console reports |
+
+---
+
+## Why Bridge Is Used
+
+Connecting directly to Google requires OAuth applications, credentials, and regular token renewal. Bridge handles this complexity so you don't have to.
+
+Bridge allows you to:
+
+- Sign in with Google without creating your own Google Cloud OAuth app
+- Keep Google authorization secure without storing OAuth secrets on your Dashboard
+- Automatically refresh expired tokens so reports continue working
+
+---
+
+## How Bridge Works
+
+### 1. One-Time Pairing
+
+Before your first Google sign-in, your MainWP Dashboard pairs with Bridge:
+
+1. Your Dashboard contacts Bridge to start the process
+2. Bridge verifies it can reach your Dashboard URL to confirm ownership
+3. Bridge generates a unique secret for secure communication
+
+This pairing prevents unauthorized systems from requesting Google access on your behalf.
+
+### 2. Sign in with Google
+
+When you click **Sign in with Google**:
+
+1. Your Dashboard requests a sign-in link from Bridge
+2. A browser window opens on Google's sign-in page
+3. You sign in and approve access
+
+Your Google login details are entered only on Google's pages. MainWP never receives your Google password.
+
+### 3. Authorization Stored on Dashboard
+
+After approval:
+
+1. Your Dashboard retrieves authorization tokens from Bridge
+2. Tokens are stored locally on your Dashboard in encrypted form
+3. You select which Analytics properties or Search Console sites to use
+
+Your Dashboard then communicates directly with Google APIs using those tokens.
+
+### 4. Automatic Token Refresh
+
+Google access tokens expire regularly. When this happens:
+
+1. Your Dashboard uses the secure pairing to request refreshed access through Bridge
+2. If access can't be refreshed (e.g., revoked in Google), you'll be asked to sign in again
+
+This happens in the background and keeps reports working.
+
+### 5. Retrieving Data
+
+Once connected:
+
+- Your MainWP Dashboard pulls reporting data directly from Google
+- Bridge is only used for authentication and token renewal
+- Bridge does **not** process analytics data
+
+---
+
+## Data Handling and Privacy
+
+### What Bridge Handles
+
+During authentication, Bridge may receive:
+
+- Your MainWP Dashboard URL (for pairing and verification)
+- Authorization and session information for sign-in and token refresh
+
+### What Bridge Does NOT Receive
+
+- WordPress site credentials
+- Child site data or content
+- Analytics or Search Console reports
+
+### What Your Dashboard Stores
+
+- Encrypted Google authorization tokens
+- Connected Google account identity
+- Selected Analytics properties and Search Console sites
+- Cached reporting data
+
+### Permissions
+
+Both extensions request **read-only** access. They display data in MainWP and do not change your Google Analytics or Search Console configuration.
+
+---
+
+## Requirements
+
+For Bridge to work, your Dashboard must allow:
+
+| Requirement | Details |
+|-------------|---------|
+| Outbound HTTPS | Access to `bridge.mainwp.com` |
+| Google API access | Outbound HTTPS to Google API services |
+| Browser popups | Enabled during Google sign-in |
+
+During pairing, Bridge must be able to reach your Dashboard URL. Pairing may fail if your Dashboard:
+
+- Is behind a firewall or IP restriction
+- Is in maintenance mode
+- Blocks WordPress REST API access
+
+---
+
+## Disconnect and Revoke Access
+
+<Steps>
+<Step title="Remove from extension">
+Remove the account from the Google Analytics or Google Search Console extension settings.
+</Step>
+<Step title="Revoke in Google (optional)">
+Revoke access from your [Google Account security settings](https://myaccount.google.com/permissions).
+</Step>
+</Steps>
+
+If you revoke access in Google, you'll need to sign in again to reconnect.
+
+---
+
+## Common Questions
+
+**Does Bridge see my analytics or search data?**
+No. Bridge is used for sign-in and authorization only. Reporting data is retrieved directly from Google.
+
+**Why do I need to sign in again?**
+This usually happens if access was revoked in Google, tokens expired and couldn't be refreshed, or the connection was interrupted.
+
+---
+
+## Alternative: Service Account (No Bridge)
+
+If you can't use Bridge or prefer managing credentials yourself, both extensions support connecting via a **Google service account (JSON key file)**.
+
+This method does not use Bridge but requires:
+- Manual setup in Google Cloud Console
+- Creating and downloading a service account key
+- Assigning access to Analytics properties or Search Console sites
+
+---
+
+## Self-Check Checklist
+
+- [ ] Dashboard can reach bridge.mainwp.com
+- [ ] Dashboard URL accessible from internet (not localhost)
+- [ ] REST API not blocked
+- [ ] Browser popups enabled for Google sign-in
+- [ ] Successfully signed in with Google
+- [ ] Analytics/Search Console data appearing
+
+---
+
+## Related Resources
+
+- [Google Analytics Extension](/add-ons/analytics/mainwp-google-analytics-extension) - Extension setup
+- [Google Search Console Extension](/add-ons/analytics/google-search-console-extension) - Extension setup

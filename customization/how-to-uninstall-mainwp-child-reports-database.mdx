@@ -1,0 +1,108 @@
+---
+title: How to uninstall MainWP Child Reports plugin database
+sidebarTitle: "Uninstall Reports Database"
+description: >-
+  Remove the MainWP Child Reports database tables from a child site to free up
+  space or fix issues with missing database tables.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/fvzuA-qdAG8"
+  title="How to uninstall MainWP Child Reports plugin database - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Child Reports plugin stores event tracking data in dedicated database tables. You can uninstall these tables to free up database space or resolve issues with missing tables.
+
+## What You'll Learn
+
+- How to access the uninstall option
+- What data gets removed
+- When to use this procedure
+
+## Prerequisites
+
+- Admin access to the child site
+- Child Reports plugin installed
+
+---
+
+## When to Use This
+
+Use this procedure to:
+
+- Fix issues with missing `wp_mainwp_stream` and `wp_mainwp_stream_meta` tables
+- Free up database space on child sites
+- Resolve database-related Child Reports errors
+- Clean up before removing the plugin completely
+
+---
+
+## Uninstall the Database
+
+<Steps>
+<Step title="Download the uninstaller">
+Download the uninstall utility: [mainwp-child-reports.zip](https://www.dropbox.com/s/3kqdcb12a5vj9j2/mainwp-child-reports.zip?dl=0)
+</Step>
+<Step title="Install on child site">
+Go to your child site's **WP Admin > Plugins > Add New** and install the downloaded ZIP file.
+</Step>
+<Step title="Access the uninstall page">
+Visit this URL on the child site (replace with your actual domain):
+
+```
+your-child-site-url.com/wp-admin/options-general.php?page=mainwp-reports-settings&try_uninstall=yes
+```
+</Step>
+<Step title="Find the uninstall option">
+Scroll to the bottom of the settings page to find the uninstall option.
+
+![MainWP Child Reports settings page showing the Uninstall Database option](/images/developers/uninstall-child-reports-db.jpg)
+</Step>
+<Step title="Uninstall the database">
+Click **Uninstall MainWP Child Reports Database**. This removes the database tables and all stored event data.
+</Step>
+</Steps>
+
+---
+
+## What Gets Removed
+
+| Table | Contents |
+|-------|----------|
+| `wp_mainwp_stream` | Event logs and activity records |
+| `wp_mainwp_stream_meta` | Additional metadata for logged events |
+
+<Warning>
+This permanently deletes all tracked events from the child site. Event history cannot be recovered after uninstalling.
+</Warning>
+
+---
+
+## After Uninstalling
+
+After removing the database:
+
+1. **Deactivate the uninstaller plugin** you installed
+2. **Delete the uninstaller plugin** from the Plugins page
+3. The Child Reports feature will recreate tables when re-enabled
+
+---
+
+## Self-Check Checklist
+
+- [ ] Uninstaller ZIP downloaded and installed
+- [ ] Uninstall URL accessed with `try_uninstall=yes` parameter
+- [ ] Uninstall link clicked
+- [ ] Database tables removed
+- [ ] Uninstaller plugin deactivated and deleted
+
+---
+
+## Related Resources
+
+- [Delete MainWP Data from Child Site](/customization/delete-mainwp-related-content-from-a-child-site-database) - Remove all MainWP data
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Client reporting features

@@ -1,0 +1,130 @@
+---
+title: Authentication
+sidebarTitle: "Authentication"
+description: >-
+  Authenticate with the MainWP REST API using Bearer tokens or legacy Consumer Key/Secret credentials.
+---
+
+The MainWP REST API v2 uses Bearer token authentication. Legacy v1 endpoints support Consumer Key/Secret for backward compatibility.
+
+## What You'll Learn
+
+- How to generate and use API keys
+- Permission levels for API keys
+- Legacy v1 authentication methods
+- Troubleshooting authentication errors
+
+---
+
+## Bearer Token Authentication
+
+Generate an API key in your MainWP Dashboard to authenticate requests.
+
+### Generating an API Key
+
+<Steps>
+<Step title="Navigate to REST API settings">
+Go to **Dashboard > REST API > Add API Keys**.
+</Step>
+<Step title="Create the key">
+Enter a descriptive name and click **Generate**.
+</Step>
+<Step title="Save the token">
+Copy the generated API key immediately—it cannot be retrieved later.
+</Step>
+<Step title="Set permissions">
+Select the required permissions (Read, Write, Delete).
+</Step>
+</Steps>
+
+For detailed setup instructions with screenshots, see the [REST API Setup Guide](/dashboard/overview/mainwp-rest-api).
+
+### Using the Token
+
+Include the token in the `Authorization` header:
+
+```bash
+curl -X GET "https://your-dashboard.com/wp-json/mainwp/v2/sites/basic" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+---
+
+## Permissions
+
+Each API key can have one or more permissions:
+
+| Permission | HTTP Methods | Description |
+|------------|--------------|-------------|
+| **Read** | GET | Retrieve data without modifications |
+| **Write** | POST, PUT | Create or update resources |
+| **Delete** | DELETE | Remove resources |
+
+Assign the minimum permissions necessary for your integration.
+
+<Warning>
+Store API keys securely. Never expose them in client-side code, public repositories, or logs.
+</Warning>
+
+---
+
+## Legacy API (v1)
+
+For backward compatibility, version 1 endpoints accept Consumer Key and Consumer Secret authentication.
+
+### Enabling Legacy Credentials
+
+1. Edit an existing API key or create a new one
+2. Click **Show Legacy API Credentials**
+3. Copy the Consumer Key and Consumer Secret
+4. Enable **MainWP REST API v1 Compatibility**
+
+### Using Legacy Authentication
+
+Pass credentials as HTTP Basic authentication:
+
+```bash
+curl -X GET "https://your-dashboard.com/wp-json/mainwp/v1/sites" \
+  -u "CONSUMER_KEY:CONSUMER_SECRET"
+```
+
+<Note>
+Legacy v1 endpoints are maintained for compatibility. New integrations should use v2 with Bearer tokens.
+</Note>
+
+---
+
+## Troubleshooting
+
+### Common Authentication Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Missing or invalid token | Verify the token is included and correctly formatted |
+| `403 Forbidden` | Insufficient permissions | Check that the API key has the required permission level |
+| `rest_forbidden` | Endpoint requires different permission | Verify the HTTP method matches the key's permissions |
+
+### Requirements
+
+- WordPress permalinks must be set to any option except "Plain"
+- At least one active API key must exist
+- The Dashboard must be accessible over HTTPS
+
+---
+
+## Self-Check Checklist
+
+- [ ] API key generated in Dashboard > REST API
+- [ ] API key copied and stored securely
+- [ ] Appropriate permissions assigned
+- [ ] Token included in Authorization header
+- [ ] Test request returns expected data
+
+---
+
+## Related Resources
+
+- [REST API Overview](/api-reference/rest-api/overview) - API endpoints and usage
+- [REST API Setup Guide](/dashboard/overview/mainwp-rest-api) - Detailed setup with screenshots
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management endpoints
+

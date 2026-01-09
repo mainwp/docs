@@ -1,0 +1,75 @@
+---
+title: How to create an HTML-only report using the Pro Reports extension
+sidebarTitle: "HTML-Only Reports"
+description: >-
+  Learn how to create a Pro Reports report using only the email body without a
+  PDF attachment. This tutorial covers creating HTML-only reports and customizing
+  the email template.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Disabling PDF attachments with a code snippet
+- Creating HTML-only email reports
+- Installing and using the HTML email template
+- Customizing the email template branding
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/ytUNgJMu0vg"
+  title="How to create an HTML-only report using the Pro Reports extension - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+In this tutorial, we will quickly go over how to create a Pro Reports report using only the email body and how to skip attaching the PDF to the email. Inspiration came from this [Facebook discussion in Admin Bar group](https://www.facebook.com/groups/theadminbar/permalink/3622925461289666/), where one MainWP user shared their HTML template and others expressed a desire for a simple HTML-only report.
+
+Pro Reports extension was designed to have the report data in the PDF attachment. For this purpose, we will use a code snippet to disable the PDF creation and send only an HTML report. To do this:
+
+1. Copy the snippet
+
+```php
+add_filter( 'mainwp_pro_reports_email_attachments', 'mycustom_mainwp_pro_reports_email_attachments', 10, 4 );
+function mycustom_mainwp_pro_reports_email_attachments( $attachments, $html_to_pdf, $report, $site_id = false ) {
+   return '';
+}
+
+```
+
+2. Paste the code into the PHP tab
+3. Click save
+
+With the PDF now disabled, let's move on to the email template. We have prepared a ready-to-use template, which you can find in the knowledge-base article linked in the video description. It's fully written in HTML so customization should be easy. Before use, be sure to change the URL of the logo which will be shown in the email body and if needed adjust colors to reflect your company brand.
+
+## Let's start
+
+1. [Download the template](https://www.dropbox.com/scl/fi/xlnz01g6ie1yuqiwpw8st/email-body.php?rlkey=dld8urtzs1p06cig27z8xdgj8&dl=0) (external Dropbox link) and place it in `/wp-content/uploads/mainwp/report-email-templates` directory. Once uploaded, the template will be available in the Report template dropdown.
+2. Go to the MainWP Dashboard > Clients > Pro Reports and go to the Create Report tab
+3. In the Report Settings section:
+4. Enter the Report title
+5. In the Report type dropdown, choose One-time
+6. In the Report date range, pick the starting and ending dates for the report
+7. Enter the Send email from data (in most cases, your email address and name)
+8. Enter the Send email to data (in most cases, your client email address and name. Tokens are allowed here and can be left at their default values, `[client.email]` and `[client.name]` if they have been set on the Client page or in Site settings)
+9. Optionally, enter the Reply-to email and information
+10. Enter the Email Subject
+11. Enter the Email message
+12. Select the Email template you uploaded earlier
+13. Select the wanted site(s) in the metabox on the right
+14. Once you are sure that the report is ready and want to send it, click the Send Now button
+
+---
+
+## Related Resources
+
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference

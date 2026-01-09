@@ -1,0 +1,256 @@
+---
+title: REST API Overview
+sidebarTitle: "Overview"
+description: >-
+  The MainWP REST API provides programmatic access to your Dashboard for managing child sites, updates, clients, costs, tags, and extensions.
+---
+
+The MainWP REST API enables external applications to interact with your Dashboard through standard HTTP requests. All endpoints return JSON-formatted responses and require authentication via Bearer token. The API provides approximately 72 endpoints across 6 categories for comprehensive Dashboard management.
+
+## What You'll Learn
+
+- How to authenticate with the REST API
+- Available endpoint categories
+- Request and response formats
+- Pagination and batch operations
+- Error handling
+
+<CardGroup cols={3}>
+  <Card title="Postman Collection" icon="rocket" href="https://www.postman.com/mainwp/mainwp/collection/ujfddk4/mainwp-rest-api-v2-current">
+    Interactive API documentation
+  </Card>
+  <Card title="Authentication Guide" icon="key" href="/api-reference/rest-api/authentication">
+    Set up API keys
+  </Card>
+  <Card title="Dashboard Setup" icon="gear" href="/dashboard/overview/mainwp-rest-api">
+    Enable REST API
+  </Card>
+</CardGroup>
+
+---
+
+## How It Works
+
+The REST API exposes your MainWP Dashboard functionality through standard HTTP endpoints. External tools send authenticated requests to perform actions like listing sites, triggering updates, or managing clients. Responses return structured JSON data that can be parsed by any programming language or automation platform.
+
+---
+
+## Prerequisites
+
+| Requirement | Details |
+|-------------|---------|
+| MainWP Dashboard | Version 5.2 or later |
+| Permalinks | Pretty permalinks enabled (not "Plain") |
+| API Key | Generated in Dashboard > REST API |
+| Network Access | Dashboard must be publicly accessible |
+
+<Note>
+Your MainWP Dashboard must be accessible via the internet. Locally hosted Dashboards cannot receive external API requests.
+</Note>
+
+---
+
+## Base URL
+
+All API requests target your Dashboard's WordPress REST API namespace:
+
+```
+https://your-dashboard.com/wp-json/mainwp/v2/
+```
+
+Replace `your-dashboard.com` with your actual Dashboard domain.
+
+---
+
+## Authentication
+
+All API requests require a Bearer token in the Authorization header.
+
+### Bearer Token
+
+Generate API keys in your Dashboard under **Dashboard > REST API > Add API Keys**:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/"
+```
+
+### Permissions
+
+Each API key can have granular permissions:
+
+| Permission | Methods | Description |
+|------------|---------|-------------|
+| **Read** | GET | Retrieve data only |
+| **Write** | POST, PUT | Create or modify data |
+| **Delete** | DELETE | Remove data |
+
+For detailed setup instructions, see the [Authentication Guide](/api-reference/rest-api/authentication).
+
+---
+
+## API Categories
+
+<CardGroup cols={3}>
+  <Card title="Sites" icon="server" href="/api-reference/rest-api/sites">
+    17 endpoints for site management
+  </Card>
+  <Card title="Clients" icon="users" href="/api-reference/rest-api/clients">
+    4 endpoints for client management
+  </Card>
+  <Card title="Costs" icon="dollar-sign" href="/api-reference/rest-api/costs">
+    4 endpoints for cost tracking
+  </Card>
+  <Card title="Tags" icon="tags" href="/api-reference/rest-api/tags">
+    1 endpoint for tag retrieval
+  </Card>
+  <Card title="Updates" icon="rotate" href="/api-reference/rest-api/updates">
+    13 endpoints for update management
+  </Card>
+  <Card title="Extensions" icon="puzzle-piece" href="/api-reference/rest-api/extensions">
+    33 endpoints for SSL Monitor & Pro Reports
+  </Card>
+</CardGroup>
+
+---
+
+## Request Format
+
+The API accepts parameters in different ways depending on the HTTP method:
+
+- **GET requests**: Pass parameters as URL query strings
+- **POST/PUT requests**: Send parameters as JSON in the request body
+- **DELETE requests**: Usually require only the resource identifier in the URL
+
+Include the `Content-Type: application/json` header when sending JSON bodies:
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My Site", "url": "https://example.com"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/add"
+```
+
+---
+
+## Response Format
+
+### Success
+
+All responses return JSON with the requested data:
+
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "name": "My Site",
+  "status": "connected"
+}
+```
+
+### Errors
+
+Error responses include a code and message:
+
+```json
+{
+  "code": "rest_forbidden",
+  "message": "Sorry, you are not allowed to do that.",
+  "data": {
+    "status": 403
+  }
+}
+```
+
+---
+
+## Pagination
+
+List endpoints support pagination through query parameters:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | integer | 1 | Current page number |
+| `per_page` | integer | 10 | Items per page |
+
+Response headers include pagination metadata:
+
+| Header | Description |
+|--------|-------------|
+| `X-WP-Total` | Total number of items |
+| `X-WP-TotalPages` | Total number of pages |
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/?page=2&per_page=25"
+```
+
+---
+
+## Batch Operations
+
+When triggering batch updates, the API responds immediately with confirmation rather than waiting for completion:
+
+```json
+{
+  "success": 1,
+  "message": "Batch updates all started successfully.",
+  "last_time_start_batch_updates": "2024-09-03T16:57:29"
+}
+```
+
+<Warning>
+Sync your Dashboard after allowing time for batch operations to complete to see updated results.
+</Warning>
+
+---
+
+## Error Reference
+
+### HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Request succeeded |
+| 201 | Resource created |
+| 400 | Bad request - invalid parameters |
+| 401 | Authentication required or invalid |
+| 403 | Permission denied |
+| 404 | Resource or endpoint not found |
+| 405 | Method not allowed |
+| 5XX | Server error |
+
+### MainWP-Specific Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `mainwp_site_not_found` | 404 | Site ID or domain not found |
+| `mainwp_client_not_found` | 404 | Client ID or email not found |
+| `mainwp_site_offline` | 503 | Site unreachable |
+| `mainwp_invalid_parameters` | 400 | Required parameter missing or invalid |
+| `rest_forbidden` | 403 | API key lacks required permission |
+
+---
+
+## Feature-Gated Endpoints
+
+Some endpoints require optional MainWP extensions:
+
+| Extension | Required For |
+|-----------|--------------|
+| Cost Tracker | `/costs` endpoints |
+| SSL Monitor | `/ssl-monitor` endpoints |
+| Pro Reports | `/pro-reports` endpoints |
+
+If the required extension is inactive, these endpoints return a 404 or feature-specific error.
+
+---
+
+## Related Resources
+
+- [Authentication Guide](/api-reference/rest-api/authentication) - API key setup
+- [Sites Endpoints](/api-reference/rest-api/sites) - Site management
+- [Updates Endpoints](/api-reference/rest-api/updates) - Update management
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Alternative API for AI agents
+

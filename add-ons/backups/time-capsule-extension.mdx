@@ -1,0 +1,249 @@
+---
+title: Time Capsule
+sidebarTitle: "Time Capsule"
+description: >-
+  Control WP Time Capsule Plugin settings, create incremental backups, and
+  restore Child Sites to any point in time from your MainWP Dashboard. Supports
+  Dropbox, Amazon S3, and Google Drive storage.
+addonType: integration
+thirdPartyPlugin: WP Time Capsule
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Time Capsule"
+  data-purchase-url="https://mainwp.com/extension/time-capsule/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-time-capsule-extension/"
+  data-integrates-with="WP Time Capsule"
+  data-owned-by="Revmakx, LLC."
+  data-privacy-url="https://wptimecapsule.com/privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Installing the extension and WP Time Capsule plugin
+- Connecting your wptimecapsule.com account
+- Creating manual and scheduled backups
+- Restoring sites to specific restore points
+- Creating staging sites
+
+---
+
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with WP Time Capsule. Requires WP Time Capsule to be installed on your child sites.
+</Info>
+
+With the MainWP Time Capsule Extension, you can control the WP Time Capsule Plugin settings on all your child sites directly from your MainWP Dashboard. This includes giving you the ability to create your child site backups and even restore your child sites to a point back in time directly from your Dashboard.
+
+All changes to your Child sites are backed up automatically as they happen. Any change on your website will trigger a backup in real-time. Since only the changes are backed up, the total space used for storing your backups is reduced to a minimum. The system allows you to store your backups in remote locations such as:
+
+-   Dropbox
+-   Amazon S3
+-   Google Drive
+
+**Important Notes:** For additional help with the WP Time Capsule plugin options, please consult the official [WP Time Capsule plugin documentation](https://docs.wptimecapsule.com/).
+
+## Install and Set the MainWP Time Capsule Extension
+
+Installation of the MainWP Time Capsule Extension requires two important steps:
+
+-   Installing the Extension itself on your MainWP Dashboard site
+-   Installing the [WP Time Capsule](https://wordpress.org/plugins/wp-time-capsule/) plugin on Child Sites
+
+### Installing the Extension
+
+The MainWP Time Capsule Extension needs to be installed only on your MainWP Dashboard site. You can [install it as any other MainWP Extension.](/dashboard/overview/manage-extensions#install-extensions)
+
+### Installing the Plugin
+
+For the proper use of the MainWP Time Capsule Extension, you need to install the WP Time Capsule Plugin on your child sites.
+
+### Install from MainWP Dashboard
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Plugins > Install page">
+</Step>
+<Step title="In the Search field, enter the plugin name (WP Time Capsule)">
+</Step>
+<Step title="Press enter on your keyboard">
+</Step>
+<Step title="After the search results appear, locate the plugin">
+</Step>
+<Step title="Select the Install this Plugin option">
+</Step>
+<Step title="Select your child sites">
+[Select your child](/getting-started/mainwp-user-interface) sites
+</Step>
+<Step title="In the Installation Options box, make sure that the Activate after installation option is selected.">
+In the **Installation Options** box, make sure that the **Activate after installation option** is selected.
+</Step>
+<Step title="Click the Button to complete the installation.">
+</Step>
+<Step title="Once the Installation is complete, Sync your MainWP Dashboard">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins from the MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
+
+### Install directly on Child Site
+
+<Steps>
+<Step title="Login to your child site">
+</Step>
+<Step title="Go to the WP > Plugins > Add New page">
+</Step>
+<Step title="In the Search field, enter the plugin name (WP Time Capsule)">
+</Step>
+<Step title="After the search results appear, locate the plugin">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Click the Activate button">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins, please review this [help document.](https://wordpress.org/documentation/article/manage-plugins/) **Important Notes:** After installing the WP Time Capsule plugin, it is required to Synchronize your sites so your MainWP Dashboard becomes aware that the plugin has been installed and activated.
+
+## Get Started with the Time Capsule
+
+After the successful installation of the MainWP Time Capsule Extension on your dashboard and the WP Time Capsule plugin on your child site, you are ready to connect your wptimecapsule.com account. To do that,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Time Capsule > General settings page">
+</Step>
+<Step title="Enter your wptimecapsule.com Username and Password and click the Login button">
+Enter your wptimecapsule.com **Username** and **Password** and click the **Login** button
+</Step>
+</Steps>
+
+
+Once that is done, you are ready to set your favorite **Cloud Storage** for keeping your backup files. This process has to be done directly on your child site. To do it,
+
+<Steps>
+<Step title="Go to your child site">
+</Step>
+<Step title="Go to the WP Admin > WP Time Capsule > Settings > General page">
+</Step>
+<Step title="Locate the Cloud Storage Account option and set your preferences.">
+</Step>
+</Steps>
+
+
+Now, everything is ready, and the First Initial backup will start.
+
+## Backup Your Child Sites
+
+The Time Capsule system will allow you to backup your sites on demand and to set automated backups.
+
+### Manual Backup
+
+To manually backup all your sites,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Time Capsule > Backup page">
+</Step>
+<Step title="Click the Backup Now button">
+![Click the Backup Now button](/images/add-ons/time-capsule-backup-now-button.png)
+
+</Step>
+</Steps>
+
+
+To manually backup a single site,
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites page">
+</Step>
+<Step title="Locate the site you want to backup">
+</Step>
+<Step title="Click the Edit link in the Title column">
+</Step>
+<Step title="Go to the Time Capsule > Backup tab">
+</Step>
+<Step title="Click the Backup Now button">
+</Step>
+</Steps>
+
+
+### Schedule Backups
+
+To schedule backups,
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Time Capsule > Backup page">
+</Step>
+<Step title="Locate the Backup Schedule & Timezone option">
+</Step>
+<Step title="Set your preferences">
+</Step>
+</Steps>
+
+
+## Restore a Site To a Restore Point
+
+To restore your child site to a restore point,
+
+<Steps>
+<Step title="Login to your Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites page">
+</Step>
+<Step title="Locate the site that you want to restore and click the Edit action link">
+</Step>
+<Step title="Go to the Time Capsule > Backups tab">
+</Step>
+<Step title="Locate the Restore Point that you want to restore your site to and click on it">
+Locate the **Restore Point** that you want to restore your site to and click on it![Screenshot showing available restore points in Time Capsule backups](/images/add-ons/time-capsule-restore-points.jpg)
+</Step>
+<Step title="Choose your restore preferences and click the Restore The Site to This Point button">
+Choose your restore preferences and click the **Restore The Site to This Point** button![Screenshot of restore preferences with Restore The Site to This Point button](/images/add-ons/time-capsule-restore-preferences.jpg)
+</Step>
+</Steps>
+
+
+You will be redirected to a new screen where further instructions will be provided.
+
+## Create Staging Site With the Time Capsule
+
+The Time Capsule system provides the ability to create staging sites. To create a staging site,
+
+<Steps>
+<Step title="Login to your Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites page">
+</Step>
+<Step title="Locate the site that you want to stage and click the Edit action link">
+</Step>
+<Step title="Go to the Time Capsule > Staging tab">
+</Step>
+<Step title="Locate the Staging Path option and set your preferred path">
+</Step>
+<Step title="Click the Start Staging button">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
+- [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
+- [WP Time Capsule Documentation](https://docs.wptimecapsule.com/) - Official plugin documentation

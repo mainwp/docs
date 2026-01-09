@@ -1,0 +1,124 @@
+---
+title: Reconnect Sites with Security ID
+sidebarTitle: "Reconnect with Security ID"
+description: >-
+  MainWP Child plugin version 5.2.1 enables the Unique Security ID feature by
+  default. Learn how to reconnect child sites that require the Security ID by
+  retrieving it from the Child plugin settings and updating your Dashboard.
+---
+
+Starting with MainWP Child plugin version 5.2.1, the Unique Security ID feature is enabled by default. This security enhancement requires entering the Security ID when connecting or reconnecting child sites.
+
+## What You'll Learn
+
+- Understand why the Security ID is required
+- Retrieve the Security ID from a child site
+- Enter the Security ID in your Dashboard
+- Find the Security ID when the Child plugin is hidden
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- MainWP Child plugin version 5.2.1 or later on child sites
+- Admin access to both Dashboard and child sites
+
+---
+
+## Why This Happens
+
+When connecting or reconnecting a child site with Security ID enabled, you'll see this error:
+
+> This child site is set to require a unique security ID. Please enter it before the connection can be established.
+
+![Error message indicating Unique Security ID is required for connection](/images/miscellaneous/getting-started-child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id.mdx-8dd722.png)
+
+The Security ID is re-enabled automatically if:
+
+- MainWP Child version 5.2.1 is installed fresh
+- The Child plugin is deactivated and reactivated
+
+<Note>
+This behavior is specific to version 5.2.1. Later versions may handle Security ID differently.
+</Note>
+
+---
+
+## Reconnect Using the Security ID
+
+<Steps>
+<Step title="Log in to the child site">
+Access the WordPress Admin of the child site showing the connection error.
+</Step>
+<Step title="Navigate to Child plugin settings">
+Go to **Settings > MainWP Child > Settings**.
+</Step>
+<Step title="Copy the Security ID">
+Locate the **Unique Security ID** field and copy its value.
+
+![MainWP Child plugin settings showing the Unique Security ID field](/images/miscellaneous/getting-started-child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id.mdx-ac3f23.png)
+</Step>
+<Step title="Open site settings in Dashboard">
+Log in to your MainWP Dashboard and go to **MainWP > Sites > Manage Sites**. Find the child site and click **Edit**.
+</Step>
+<Step title="Paste the Security ID">
+Paste the copied Security ID into the **Unique Security ID** field.
+
+![Dashboard Edit Site page showing the Security ID field](/images/miscellaneous/getting-started-child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id.mdx-3791e3.png)
+</Step>
+<Step title="Save settings">
+Scroll down and click **Save Settings**.
+</Step>
+<Step title="Reconnect the site">
+Click the **Reconnect** icon in the site's action menu.
+
+![Reconnect button in the Manage Sites action menu](/images/miscellaneous/getting-started-child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id.mdx-bbc119.png)
+</Step>
+</Steps>
+
+---
+
+## Find Security ID When Child Plugin is Hidden
+
+If you're using the White Label extension to hide the MainWP Child plugin, the settings page won't be visible. Retrieve the Security ID directly from the WordPress options table.
+
+<Steps>
+<Step title="Log in to the child site">
+Access the WordPress Admin of the child site.
+</Step>
+<Step title="Access the options page">
+Navigate to `your-child-site.com/wp-admin/options.php` in your browser.
+</Step>
+<Step title="Search for the Security ID">
+Use your browser's find feature (**Ctrl+F** or **Command+F**) to search for:
+
+```text
+mainwp_child_uniqueId
+```
+</Step>
+<Step title="Copy the value">
+Copy the value from the `mainwp_child_uniqueId` field.
+
+![Options.php page showing the mainwp_child_uniqueId field](/images/miscellaneous/getting-started-child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id.mdx-128642.png)
+</Step>
+<Step title="Complete reconnection">
+Return to your Dashboard and follow steps 4-7 above to paste the Security ID and reconnect.
+</Step>
+</Steps>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Retrieved Security ID from child site settings (or options.php)
+- [ ] Pasted Security ID into Dashboard site settings
+- [ ] Saved Dashboard settings
+- [ ] Successfully reconnected the child site
+- [ ] Site syncs without errors
+
+---
+
+## Related Resources
+
+- [Get Started with MainWP](/getting-started/get-started-with-mainwp) - Connect your first child site
+- [Force Reconnection](/troubleshooting/how-can-i-force-my-mainwp-dashboard-to-reestablish-connection-with-child-sites) - Reconnect all sites
+- [White Label Extension](/add-ons/agency/white-label-extension) - Hide the Child plugin

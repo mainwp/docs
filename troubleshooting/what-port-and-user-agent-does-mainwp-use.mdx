@@ -1,0 +1,86 @@
+---
+title: What port and User Agent does MainWP use?
+sidebarTitle: "Ports and User Agent"
+description: >-
+  MainWP Dashboard communicates using port 80 for HTTP and port 443 for HTTPS.
+  The User-Agent is Mozilla/5.0 (compatible; MainWP/VERSION; +http://mainwp.com)
+  with VERSION changing per release.
+---
+
+MainWP Dashboard communicates with child sites using standard web ports and a specific User-Agent string. This information is essential when configuring firewalls, security plugins, or troubleshooting blocked connections.
+
+## What You'll Learn
+
+- Network ports used by MainWP
+- The exact User-Agent string format
+- When you need this information
+
+---
+
+## Network Ports
+
+MainWP uses standard HTTP/HTTPS ports for all communication:
+
+| Protocol | Port | Usage |
+|----------|------|-------|
+| HTTP | 80 | Unencrypted connections (not recommended) |
+| HTTPS | 443 | Encrypted connections (recommended) |
+
+MainWP does not use custom ports. If your child site is accessible via a web browser, MainWP can communicate with it using the same ports.
+
+---
+
+## User-Agent String
+
+MainWP identifies itself with this User-Agent when connecting to child sites:
+
+```
+Mozilla/5.0 (compatible; MainWP/5.4.0.16; +http://mainwp.com)
+```
+
+The version number (`5.4.0.16` in this example) changes with each MainWP Dashboard release. The format remains consistent:
+
+```
+Mozilla/5.0 (compatible; MainWP/[VERSION]; +http://mainwp.com)
+```
+
+---
+
+## When You Need This Information
+
+### Firewall Configuration
+
+If your hosting provider or server firewall blocks unknown traffic, whitelist:
+
+| Setting | Value |
+|---------|-------|
+| Ports | 80, 443 |
+| User-Agent pattern | `MainWP/*` or `Mozilla/5.0 (compatible; MainWP` |
+
+### Security Plugin Rules
+
+Some security plugins (Wordfence, Sucuri, iThemes Security) may block requests from unfamiliar User-Agents. Add MainWP's User-Agent to your allowlist if connections fail.
+
+### Troubleshooting Blocked Connections
+
+If child sites won't connect, check:
+
+1. **Server logs** for blocked requests containing "MainWP" in the User-Agent
+2. **Firewall logs** for denied connections on ports 80/443
+3. **Security plugin logs** for blocked bot traffic
+
+---
+
+## Self-Check Checklist
+
+- [ ] Ports 80 and 443 are open for outbound connections from Dashboard
+- [ ] Ports 80 and 443 are open for inbound connections on child sites
+- [ ] MainWP User-Agent is whitelisted in any security plugins
+- [ ] No firewall rules blocking MainWP traffic
+
+---
+
+## Related Resources
+
+- [Connection Test Results Status Codes](/troubleshooting/connection-test-results-status-codes) - Interpret connection errors
+- [How Secure is the MainWP Plugin](/getting-started/how-secure-is-the-mainwp-plugin) - Security overview

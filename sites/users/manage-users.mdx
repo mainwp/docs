@@ -1,0 +1,243 @@
+---
+title: Manage Users
+description: >-
+  Manage WordPress users across your Child Sites from the MainWP Dashboard.
+  Create new users, edit existing users, change roles, bulk update admin
+  passwords, import users via CSV, and delete users remotely.
+---
+
+The Manage Users feature lets you control WordPress user accounts across all your child sites from a central location. Create new users on multiple sites at once, edit existing user details, update administrator passwords in bulk, import users via CSV, and remove user accounts without logging into each site individually.
+
+## What You'll Accomplish
+
+- Search and view users across all child sites
+- Create new user accounts on one or multiple sites
+- Import multiple users via CSV file
+- Edit existing user accounts
+- Bulk update administrator passwords
+- Delete single or multiple users
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- At least one child site connected to your Dashboard
+- Administrator access to your Dashboard site
+
+---
+
+## Video Tutorial
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/lvzpE04nsTs"
+  title="Manage Users - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## View Existing Users
+
+<Steps>
+<Step title="Navigate to Manage Users">
+Go to **MainWP > Users > Manage Users**.
+
+![Go to the MainWP > Users > Manage Users page](/images/dashboard/sites-users-27ef2c.png)
+</Step>
+<Step title="Set search preferences">
+In the Search section, configure your filter criteria (role, username, email, etc.).
+</Step>
+<Step title="Select child sites">
+[Select the child sites](/getting-started/mainwp-user-interface) you want to search.
+</Step>
+<Step title="Execute search">
+Click **Show Users**.
+
+A list of matching users appears at the bottom of the page.
+</Step>
+</Steps>
+
+---
+
+## Create a New User
+
+Create a WordPress user on one or multiple child sites simultaneously.
+
+<Steps>
+<Step title="Navigate to Add New">
+Go to **MainWP > Users > Add New**.
+
+![Go to the MainWP > Users > Add New page](/images/dashboard/sites-users-a2d483.png)
+</Step>
+<Step title="Enter user details">
+Complete the user information:
+
+| Field | Description |
+|-------|-------------|
+| Username | Login name for the user |
+| Email Address | User's email for notifications and password resets |
+| First Name | User's first name (optional) |
+| Last Name | User's last name (optional) |
+| Website URL | User's website (optional) |
+| Password | Enter custom password or use auto-generated one |
+| Send Password | Check to email the password to the user |
+| Role | Select the user's WordPress role |
+</Step>
+<Step title="Select sites">
+[Select the child sites](/getting-started/mainwp-user-interface) where you want to create this user.
+</Step>
+<Step title="Create user">
+Click **Add New User**.
+
+MainWP creates the user account on all selected sites.
+</Step>
+</Steps>
+
+---
+
+## Import Users via CSV
+
+Import multiple users at once using a CSV file.
+
+<Steps>
+<Step title="Navigate to Import Users">
+Go to **MainWP > Users > Import Users**.
+</Step>
+<Step title="Download sample">
+Click **Download Sample CSV file** to get the template.
+</Step>
+<Step title="Edit CSV file">
+Open the downloaded file in a text editor. Replace the demo values (lines 2-6) with your user data.
+
+![Import Users - Sample CSV](/images/dashboard/sites-users-8236fd.jpg)
+</Step>
+<Step title="Format entries">
+Enter values in this order, separated by commas:
+
+| Position | Field | Notes |
+|----------|-------|-------|
+| 1 | Username | Required |
+| 2 | Email Address | Required |
+| 3 | First Name | Optional |
+| 4 | Last Name | Optional |
+| 5 | Website URL | Optional |
+| 6 | Send Password | 0 = don't email, 1 = email password |
+| 7+ | Sites/Tags | Child site URLs or tag names |
+</Step>
+<Step title="Upload and import">
+Upload the CSV file to your Dashboard. Check **CSV file contains a header** if you kept line 1 from the sample. Click **Import Users**.
+</Step>
+</Steps>
+
+<Warning>
+MainWP requires CSV format. TXT and other text formats will not work.
+</Warning>
+
+---
+
+## Edit Existing Users
+
+<Steps>
+<Step title="Search for user">
+Go to **MainWP > Users > Manage Users** and search for the user.
+</Step>
+<Step title="Open edit form">
+In the search results, locate the user and click **Edit** in the Actions column.
+
+![User search results table showing matching users](/images/dashboard/sites-users-a4612a.png)
+</Step>
+<Step title="Update details">
+Modify the user information and save changes.
+</Step>
+</Steps>
+
+---
+
+## Bulk Update Admin Passwords
+
+Update the password for the administrator account used to connect child sites to your Dashboard (the "Secure Connection User").
+
+<Steps>
+<Step title="Navigate to Administrator Passwords">
+Go to **MainWP > Users > Administrator Passwords**.
+</Step>
+<Step title="Enter new password">
+In the **Update Administrator Passwords** section, enter the new password in the **New Password** field.
+</Step>
+<Step title="Select sites">
+[Select the child sites](/getting-started/mainwp-user-interface) where you want to update the password.
+</Step>
+<Step title="Update">
+Click **Update Now**.
+
+MainWP updates the administrator password on all selected sites.
+</Step>
+</Steps>
+
+---
+
+## Delete Users
+
+### Delete a Single User
+
+<Steps>
+<Step title="Search for user">
+Go to **MainWP > Users > Manage Users** and search for the user.
+</Step>
+<Step title="Delete">
+In the search results, locate the user and click **Delete** in the Actions column.
+
+![User search results with users selected for deletion](/images/dashboard/sites-users-5b800a.png)
+</Step>
+</Steps>
+
+### Bulk Delete Users
+
+<Steps>
+<Step title="Search for users">
+Go to **MainWP > Users > Manage Users** and search for the users you want to delete.
+</Step>
+<Step title="Select users">
+Check the checkbox next to each user you want to delete.
+</Step>
+<Step title="Apply bulk action">
+Select **Delete** from the **Bulk Actions** dropdown and click **Apply**.
+</Step>
+</Steps>
+
+---
+
+## Important Limitations
+
+### Cannot Delete Connection User
+
+MainWP prevents deleting the administrator account used to establish the connection with a child site. To delete this user:
+
+1. Go to **MainWP > Sites > Manage Sites**
+2. Edit the child site settings
+3. Change the connected administrator to a different user
+4. Delete the original user
+
+### Content Attribution
+
+When you delete a user who authored posts or pages, their content is automatically attributed to the connection administrator. To change authorship to a different user, bulk-edit the content directly in the child site's WP Admin.
+
+---
+
+## Self-Check Checklist
+
+- [ ] You can search and view users across child sites
+- [ ] New users are created successfully on selected sites
+- [ ] CSV imports complete without errors
+- [ ] User edits save correctly
+- [ ] Password updates apply to selected sites
+- [ ] User deletions complete as expected
+
+---
+
+## Related Resources
+
+- [Manage Sites](/sites/management/manage-child-sites) - Connect and manage child sites
+- [MainWP User Interface](/getting-started/mainwp-user-interface) - Learn site selection controls

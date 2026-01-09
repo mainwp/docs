@@ -1,0 +1,105 @@
+---
+title: Cost Tracker
+sidebarTitle: "Cost Tracker"
+description: >-
+  The MainWP Cost Tracker is designed to help you efficiently manage and track
+  costs associated with your websites within the MainWP Dashboard. This tool
+  provides a centralized view to monitor, add, and analyze expenses.
+addonType: extension
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Cost Tracker"
+  data-purchase-url="https://mainwp.com/extension/cost-tracker/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-cost-tracker-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Understanding the Cost Summary page and widgets
+- Adding and managing cost tracking items
+- Configuring currencies and payment methods
+- Using the Cost Tracker REST API
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/Q1aVVGpkJAQ"
+  title="MainWP Cost Tracker - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Cost Tracker is designed to help you efficiently manage and track costs associated with your websites within the MainWP Dashboard. This tool provides a centralized view to monitor, add, and analyze expenses, making your cost management more streamlined and effective.
+
+## Cost Summary page
+
+![Cost Tracker summary page](/images/add-ons/cost-tracker-summary-page.webp) Cost Summary is a widgetized page providing easy to understand, visual breakdown of all costs associated with Clients and their Child sites. Widgets can be resized, and re-arranged, and they can even be disabled in [Page Settings](https://mainwpcs.com/kb/page-settings). ![Cost Tracker monthly totals widget](/images/add-ons/cost-tracker-monthly-totals.webp) Data for some of the widgets can be exported in SVG, PNG and CSV format. Please note that only the chart data will be exported, and not the entire content of the widget.
+
+## Manage Costs page
+
+![Cost Tracker manage costs page](/images/add-ons/cost-tracker-manage-costs.webp) The Manage Costs page serves as a central dashboard where users can view, manage, and analyze all costs associated with their websites and clients. It provides a comprehensive summary of expenses, including recent additions, total costs, and categorization by type (e.g., subscription, one-time purchase) and by product (e.g., plugins, themes). ![Cost Tracker costs filters](/images/add-ons/cost-tracker-filters.gif) The data in the table can be **filtered** by Sites, Clients, Subscription types, Payment Methods, and more. After you've filtered the table, you can save it by clicking the **Save Segment** button and, later on, access it by clicking the **Load a Segment** button.
+
+## Adding a New Cost to track
+
+![Add a new cost](/images/add-ons/cost-tracker-add-new.gif) Navigate to **Dashboard -> Cost Tracker -> Add New** page**.** **Enter Cost Details:** Fill in the necessary information such as Name, Product URL (if applicable), Upload or Select product icon, type (Subscription, Lifetime), product type (Plugin, Theme, Hosting, Service, Other), license type, price, purchase date, and payment method. From the sidebar on the right, select applicable Sites or Clients, and click the **Save Cost Tracking Item** button.
+
+## Edit an item
+
+Navigate to Dashboard -> Cost Tracker -> Overview, locate the desired item, and from the ellipsis menu, select **Edit**. ![Edit a cost item](/images/add-ons/cost-tracker-edit-item.gif)
+
+## Delete an item
+
+Navigate to Dashboard -> Cost Tracker -> Overview, locate the desired item, and from the ellipsis menu, select **Delete**.
+
+## Settings page
+
+Navigate to **Dashboard -> Cost Tracker -> Settings** page**.**
+
+1.  Currency: select preferred currency
+2.  Currency symbol position: choose the position of the currency symbol, before or after the amount
+3.  Thousand separator: select a separator for thousands to enhance readability
+4.  Decimal separator: choose a symbol to separate decimal portions in numbers
+5.  Decimal places: set the number of decimal places for numerical values
+6.  Default Product Categories
+    1.  Default product types are Plugin, Theme, Hosting, Service, and Other. By clicking **Add new** you can create custom ones which will be become available in the Product Type dropdown when creating a new item to track.
+    2.  For both the default and custom product categories, you can define custom icons and color.
+7.  Custom payment methods
+    1.  Default Payment methods are Paypal, Credit/Debit Card. Here you can create custom methods which will be become available when creating a new item to track.
+8.  Notification (**ONLY WITH THE COST TRACKER PRO EXTENSION)**
+    1.  If enabled, you will be able to set the number of days before a subscription expiration to get notified via email.
+
+## Widgets and table information
+
+![Cost tracker widget](/images/add-ons/cost-tracker-site-widget.webp) Access cost-related **widgets** on each site's overview page to get a quick glance at associated costs. Similar to the Site Overview, the Client page widget offers a simplified look at costs per client. ![Cost tracker table column](/images/add-ons/cost-tracker-sites-column.webp) In the Manage Clients and Manage Sites sections, new **table columns** show the number of costs tied to each entry, providing a quick overview of expenses related to specific clients or sites.
+
+## Cost Tracker Pro extension
+
+The Cost Tracker Pro extension enhances MainWP by adding timely notifications for upcoming subscription renewals and automates cost tracking for newly installed plugins and themes through zip uploads, streamlining cost management tasks. Read more about the extension here: [https://mainwpcs.com/kb/mainwp-cost-tracker-extension](https://mainwpcs.com/kb/mainwp-cost-tracker-extension)
+
+## Cost Tracker REST API
+
+For advanced users, the Cost Tracker offers REST API support for integrating and automating cost data retrieval. This feature is essential for developers looking to create custom solutions or integrate with other systems. All MainWP REST API calls, including full documentation and examples, are now publicly available on [Postman](https://mainwpcs.com/kb/mainwp-cost-tracker-extension). Please refer to our REST API document for more details on enabling REST API and managing Keys: [REST API Overview](/api-reference/rest-api/overview)
+
+---
+
+## Related Resources
+
+- [Client Add-ons](/add-ons/client) - Browse all client management add-ons
+- [Manage Clients](/clients/manage-clients) - Client management in MainWP Dashboard
+- [Cost Tracker Assistant](/add-ons/client/cost-tracker-assistant-extension) - AI-powered cost tracking

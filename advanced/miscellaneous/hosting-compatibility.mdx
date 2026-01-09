@@ -1,0 +1,94 @@
+---
+title: Hosting Compatibility
+sidebarTitle: "Hosting Compatibility"
+description: >-
+  Hosting compatibility information for MainWP Dashboard and Child Sites,
+  including recommended hosts and providers requiring additional configuration.
+---
+
+MainWP runs on standard WordPress hosting. If your host supports WordPress and meets the [system requirements](/advanced/miscellaneous/mainwp-system-requirements), MainWP will work. Performance scales with your server resources, so Dashboard sites managing many Child Sites benefit from adequate memory, CPU, and PHP execution time.
+
+## What You'll Learn
+
+- Recommended hosting providers for MainWP
+- Hosts that require additional configuration
+- How to address shared hosting limitations
+
+---
+
+## Recommended Hosts
+
+These hosts offer WordPress-optimized environments that work well with MainWP:
+
+[![Pressable hosting logo](/images/miscellaneous/advanced-miscellaneous-3fce4b.png)](https://pressable.com/)
+
+**Pressable** - Managed WordPress hosting with MainWP-friendly configurations and strong performance for Dashboard sites.
+
+[![GridPane hosting logo](/images/miscellaneous/advanced-miscellaneous-8c61f3.png)](https://gridpane.com/?via=mainwp)
+
+**GridPane** - Server management panel for WordPress, giving you full control over PHP settings and server configuration.
+
+[![Cloudways hosting logo](/images/miscellaneous/advanced-miscellaneous-71ac7e.png)](https://www.cloudways.com/en/wordpress-hosting.php?id=125194&a_bid=4869f424)
+
+**Cloudways** - Managed cloud hosting with easy access to PHP configuration, useful for enabling required functions.
+
+---
+
+## General Compatibility
+
+MainWP has no inherent size or speed limits. Performance depends on your server's configuration and resources. A slow or underpowered server affects plugin performance just as it affects WordPress overall.
+
+Before choosing a host:
+
+1. Review the [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements)
+2. Confirm the host meets [WordPress hosting requirements](https://wordpress.org/hosting/)
+3. Check if the host allows required PHP functions (see [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp))
+
+---
+
+## Hosts Requiring Additional Configuration
+
+Some hosting providers have security policies that require specific setup for MainWP to function properly:
+
+| Host | Configuration Needed | Documentation |
+|------|---------------------|---------------|
+| WP Engine | Whitelist MainWP user agent for API access | [Deleting plugins on WP Engine](/troubleshooting/deleting-plugins-and-themes-not-working-on-the-wp-engine-hosted-child-sites-wp-engine-hosting) |
+| Cloudways | Enable tmpfile() PHP function | [Enable tmpfile on Cloudways](/advanced/miscellaneous/enable-tmpfile-php-function-on-cloudways) |
+| 20i | Whitelist MainWP Dashboard IP address | [Resolving 20i connection issues](/troubleshooting/how-to-resolve-issue-with-connecting-a-child-site-hosted-on-20i) |
+
+---
+
+## Shared Hosting Considerations
+
+Shared hosting environments sometimes limit PHP functions or maximum run time. If you experience issues:
+
+- Check if your host disables functions like `tmpfile()`, cURL functions, or `set_time_limit()`
+- Request function access from hosting support (see [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp))
+- Consider enabling [optimized data loading](/dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting) for Dashboards managing 30+ sites
+
+---
+
+## Firewall and Security Plugins
+
+Some hosts use web application firewalls (WAFs) that may block MainWP communication. If you have connection issues:
+
+1. Check the [connection troubleshooting guide](/troubleshooting/potential-issues)
+2. Review the [ports and user agent](/troubleshooting/what-port-and-user-agent-does-mainwp-use) that MainWP uses
+3. Whitelist the MainWP user agent in your security rules
+
+---
+
+## Self-Check Checklist
+
+- [ ] Host meets MainWP system requirements
+- [ ] Required PHP functions enabled
+- [ ] No WAF blocking MainWP communication
+- [ ] Adequate server resources for number of child sites
+
+---
+
+## Related Resources
+
+- [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Minimum requirements
+- [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) - Function reference
+- [Optimize for Shared Hosting](/dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting) - Performance tuning

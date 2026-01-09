@@ -1,0 +1,289 @@
+---
+title: Abilities API Overview
+sidebarTitle: "Overview"
+description: >-
+  MainWP registers 62 abilities into WordPress Core's Abilities API framework for programmatic site management via AI agents and automation tools.
+---
+
+The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
+
+MainWP Dashboard registers 62 abilities into this framework across five categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
+
+## What You'll Learn
+
+- How the Abilities API enables discovery of MainWP capabilities
+- Available ability categories and endpoints
+- How to execute abilities and handle responses
+- Error handling for AI agent integrations
+
+<CardGroup cols={3}>
+  <Card title="Introduction" icon="book-open" href="https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/">
+    WordPress Developer Blog
+  </Card>
+  <Card title="Handbook" icon="graduation-cap" href="https://make.wordpress.org/ai/handbook/projects/abilities-api/">
+    Full framework documentation
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/WordPress/abilities-api">
+    Source and issues
+  </Card>
+</CardGroup>
+
+---
+
+## How It Works
+
+The Abilities API adds a **discovery layer** to WordPress. AI agents and automation tools query `/wp-abilities/v1/abilities` to see all available actions, their input schemas, output schemas, and behavioral annotations. This enables dynamic discovery of what operations are possible and automated parameter validation.
+
+<Card title="MainWP MCP Server" icon="robot" href="/api-reference/abilities-api/mcp-server">
+  Connect Claude, VS Code Copilot, and Cursor to your MainWP Dashboard through the Model Context Protocol. The MCP Server exposes MainWP abilities as tools that AI assistants can call directly.
+</Card>
+
+---
+
+## Prerequisites
+
+- WordPress 6.9 or later
+- MainWP Dashboard 6.0 or later
+- WordPress user with `manage_options` capability
+- API key with appropriate permissions
+
+---
+
+## Base URL
+
+All Abilities API endpoints use the WordPress Abilities namespace:
+
+```
+https://your-dashboard.com/wp-json/wp-abilities/v1/
+```
+
+---
+
+## Authentication
+
+The Abilities API accepts any WordPress REST API authentication method.
+
+### Bearer Token
+
+Use the same API keys generated for the MainWP REST API:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities"
+```
+
+### Application Passwords
+
+Create an Application Password in WordPress under Users > Profile:
+
+```bash
+curl -u "USERNAME:APPLICATION_PASSWORD" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities"
+```
+
+---
+
+## Discovery Endpoints
+
+These endpoints let you explore what abilities are available.
+
+### List All Abilities
+
+```http
+GET /wp-json/wp-abilities/v1/abilities
+```
+
+Returns registered abilities with pagination.
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | integer | 1 | Page number |
+| `per_page` | integer | 50 | Items per page (max 100) |
+| `category` | string | — | Filter by category slug |
+
+```bash
+curl -u "admin:xxxx" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-sites"
+```
+
+### Get Single Ability
+
+```http
+GET /wp-json/wp-abilities/v1/abilities/{name}
+```
+
+Returns full details for a specific ability including input/output schemas.
+
+```bash
+curl -u "admin:xxxx" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-sites-v1"
+```
+
+### List Categories
+
+```http
+GET /wp-json/wp-abilities/v1/categories
+```
+
+MainWP registers these categories:
+
+| Category | Abilities | Description |
+|----------|-----------|-------------|
+| `mainwp-sites` | 30 | Site management and monitoring |
+| `mainwp-updates` | 13 | Update detection and execution |
+| `mainwp-clients` | 11 | Client management |
+| `mainwp-tags` | 7 | Tag/group management |
+| `mainwp-batch` | 1 | Batch operation monitoring |
+
+<CardGroup cols={2}>
+  <Card title="Sites Abilities" icon="server" href="/api-reference/abilities-api/sites">
+    30 abilities for site management
+  </Card>
+  <Card title="Updates Abilities" icon="rotate" href="/api-reference/abilities-api/updates">
+    13 abilities for update management
+  </Card>
+  <Card title="Clients Abilities" icon="users" href="/api-reference/abilities-api/clients">
+    11 abilities for client management
+  </Card>
+  <Card title="Tags Abilities" icon="tags" href="/api-reference/abilities-api/tags">
+    7 abilities for tag management
+  </Card>
+</CardGroup>
+
+---
+
+## Executing Abilities
+
+### Endpoint
+
+```http
+GET|POST /wp-json/wp-abilities/v1/abilities/{name}/run
+```
+
+### HTTP Methods
+
+Each ability specifies whether it reads or modifies data:
+
+- **GET** — Read-only abilities (marked `readonly: true`)
+- **POST** — Abilities that create, update, or delete data
+
+### Input Handling
+
+**GET requests**: Omit the `input` parameter to use schema defaults. URL-encoded JSON in query strings does not work reliably.
+
+```bash
+curl -u "admin:xxxx" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-sites-v1/run"
+```
+
+**POST requests**: Pass input in the JSON body:
+
+```bash
+curl -X POST -u "admin:xxxx" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-v1/run"
+```
+
+---
+
+## Response Format
+
+### Success
+
+Abilities return their defined output schema directly:
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "url": "https://example.com",
+      "name": "My Site",
+      "status": "connected"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 150
+}
+```
+
+### Errors
+
+Error responses follow WordPress REST API conventions:
+
+```json
+{
+  "code": "ability_invalid_input",
+  "message": "Invalid parameter: site_id_or_domain is required",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+---
+
+## Ability Annotations
+
+Each ability includes metadata describing its behavior:
+
+| Annotation | Type | Description |
+|------------|------|-------------|
+| `readonly` | boolean | True if ability only reads data |
+| `destructive` | boolean | True if ability deletes data |
+| `idempotent` | boolean | True if repeated calls have no additional effect |
+| `instructions` | string | Custom usage guidance |
+
+These annotations help AI agents make informed decisions about which abilities to call and in what order.
+
+---
+
+## Error Reference
+
+### Abilities API Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `ability_invalid_input` | 400 | Input fails JSON Schema validation |
+| `ability_missing_input_schema` | 400 | Required input not provided |
+| `ability_invalid_permissions` | 403 | Permission callback returned false |
+| `ability_invalid_output` | 500 | Output fails validation |
+| `rest_ability_not_found` | 404 | Ability not registered |
+| `rest_ability_invalid_method` | 405 | Wrong HTTP method for ability type |
+
+### MainWP-Specific Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `mainwp_site_not_found` | 404 | Site ID or domain not found |
+| `mainwp_client_not_found` | 404 | Client ID or email not found |
+| `mainwp_tag_not_found` | 404 | Tag ID not found |
+| `mainwp_job_not_found` | 404 | Batch job expired or not found |
+| `mainwp_confirmation_required` | 400 | Destructive operation missing `confirm: true` |
+| `mainwp_site_offline` | 503 | Site unreachable |
+| `mainwp_module_not_available` | 501 | Required module not active |
+
+---
+
+## Feature-Gated Abilities
+
+Some abilities require optional MainWP modules:
+
+| Module | Required For |
+|--------|--------------|
+| Cost Tracker | `get-site-costs-v1`, `get-client-costs-v1` |
+| Logs | `get-site-changes-v1` |
+
+If the required module is inactive, these abilities return a `mainwp_module_not_available` error.
+
+---
+
+## Related Resources
+
+- [MCP Server](/api-reference/abilities-api/mcp-server) - Connect AI assistants to MainWP
+- [Sites Abilities](/api-reference/abilities-api/sites) - Site management abilities
+- [REST API Overview](/api-reference/rest-api/overview) - Alternative REST API
+- [Batch Operations](/api-reference/abilities-api/batch-operations) - Monitor batch jobs
+

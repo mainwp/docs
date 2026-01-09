@@ -1,0 +1,164 @@
+---
+title: All child sites disappeared from my MainWP Dashboard
+description: >-
+  Missing child sites usually indicates database corruption. Check if ANSI_QUOTES
+  MySQL mode is enabled, then repair the database using WP_ALLOW_REPAIR or
+  phpMyAdmin, or restore from a recent backup.
+---
+
+When all child sites disappear from the Manage Sites table, the most common cause is database corruption. This guide covers how to diagnose the issue and repair your database to restore your sites.
+
+## What You'll Learn
+
+- Check for MySQL configuration issues
+- Repair the database using WordPress built-in tools
+- Repair the database using phpMyAdmin
+- Restore from backup as a last resort
+
+## Prerequisites
+
+- FTP or file manager access to your Dashboard site
+- Ability to edit wp-config.php
+- cPanel or phpMyAdmin access (for database repair method)
+- Recent backup (optional, for restore method)
+
+---
+
+## Check MySQL Configuration
+
+Before repairing the database, verify that the **ANSI_QUOTES** MySQL mode is not causing the issue.
+
+<Steps>
+<Step title="Check MySQL modes">
+Go to **MainWP > Info > Server Information** and locate the **MySQL Modes** row.
+
+![MainWP Server Information page showing MySQL Modes section](/images/troubleshooting/disappeared-sites-step2.png)
+</Step>
+<Step title="Verify ANSI_QUOTES is disabled">
+Confirm that **ANSI_QUOTES** is not listed in the MySQL modes. If it is enabled, contact your hosting provider to disable it.
+</Step>
+</Steps>
+
+---
+
+## Repair Database Using WP_ALLOW_REPAIR
+
+WordPress includes a built-in database repair feature that requires minimal technical knowledge.
+
+<Steps>
+<Step title="Download wp-config.php">
+Connect to your Dashboard site via FTP and download `wp-config.php` from the WordPress root folder.
+</Step>
+<Step title="Add the repair constant">
+Open wp-config.php in a text editor and add this line before the `if ( !defined('ABSPATH') )` line:
+
+```php
+define( 'WP_ALLOW_REPAIR', true );
+```
+
+![wp-config.php showing WP_ALLOW_REPAIR constant](/images/troubleshooting/disappeared-sites-step1.png)
+</Step>
+<Step title="Upload the file">
+Save the file and upload it back to your server, overwriting the existing copy.
+</Step>
+<Step title="Access the repair page">
+In your browser, go to:
+
+```text
+https://yourdashboard.com/wp-admin/maint/repair.php
+```
+
+Replace `yourdashboard.com` with your actual Dashboard URL.
+
+![WordPress Database Repair page with repair options](/images/troubleshooting/disappeared-sites-step4.png)
+</Step>
+<Step title="Run the repair">
+Click **Repair and Optimize Database**. This option repairs corrupted tables and optimizes performance.
+</Step>
+<Step title="Verify completion">
+Scroll to the bottom of the results page. You should see the message: "Repairs complete. Please remove the following line from wp-config.php to prevent this page from being used by unauthorized users."
+</Step>
+<Step title="Remove the repair constant">
+Edit wp-config.php again and remove the `WP_ALLOW_REPAIR` line you added. Upload the file to your server.
+</Step>
+<Step title="Verify sites restored">
+Go to **MainWP > Sites > Manage Sites** and confirm your child sites are visible again.
+</Step>
+</Steps>
+
+<Warning>
+Always remove the WP_ALLOW_REPAIR line after repairing. Leaving it enabled allows anyone to access the repair page without authentication.
+</Warning>
+
+---
+
+## Repair Database Using phpMyAdmin
+
+If the WordPress repair method doesn't work, try repairing directly through phpMyAdmin.
+
+<Steps>
+<Step title="Open phpMyAdmin">
+Log in to your hosting cPanel and open the phpMyAdmin module.
+</Step>
+<Step title="Select your database">
+In the left sidebar, click your WordPress database name. If you're unsure which database to select, check the `DB_NAME` value in your wp-config.php file.
+</Step>
+<Step title="Select tables to repair">
+If you know which table is corrupted, select only that table. Otherwise, click **Check all** to select all tables.
+
+![phpMyAdmin interface showing table selection and Repair option](/images/troubleshooting/disappeared-sites-step3.png)
+</Step>
+<Step title="Run repair">
+From the dropdown menu at the bottom, select **Repair table** and click **Go**.
+</Step>
+<Step title="Verify completion">
+phpMyAdmin displays the repair results. Once complete, go to your Dashboard and verify your sites are restored.
+</Step>
+</Steps>
+
+---
+
+## Restore from Backup
+
+If database repair doesn't resolve the issue, restore your Dashboard database from a recent backup.
+
+<Steps>
+<Step title="Access your backup">
+Locate your most recent Dashboard database backup. This may be in your hosting account, a backup plugin, or an offsite backup service.
+</Step>
+<Step title="Restore the database">
+Use phpMyAdmin, your hosting control panel, or your backup plugin to restore the database.
+</Step>
+<Step title="Verify restoration">
+After restoring, log in to your Dashboard and verify your child sites are visible.
+</Step>
+</Steps>
+
+<Note>
+Restoring a backup may result in some data loss if changes were made after the backup date. Re-sync all sites after restoration to ensure current data.
+</Note>
+
+---
+
+## If Nothing Works
+
+If you've tried all methods and your sites are still missing, [contact MainWP Support](https://mainwp.com/mainwp-support/) for assistance.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Verified ANSI_QUOTES MySQL mode is disabled
+- [ ] Attempted WordPress built-in repair
+- [ ] Attempted phpMyAdmin repair (if needed)
+- [ ] Restored from backup (if needed)
+- [ ] Removed WP_ALLOW_REPAIR from wp-config.php
+- [ ] Child sites visible in Manage Sites table
+
+---
+
+## Related Resources
+
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Other connection issues
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues) - Server configuration issues
+- [Manage Backups](/sites/backups/manage-backups) - Backup your Dashboard site

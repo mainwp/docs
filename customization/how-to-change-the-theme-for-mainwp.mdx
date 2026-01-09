@@ -1,0 +1,102 @@
+---
+title: How to change the style of your MainWP Dashboard
+sidebarTitle: "Change Dashboard Theme"
+description: >-
+  Switch themes directly from the Dashboard Settings or create custom themes by
+  uploading CSS files. Available since MainWP Dashboard version 4.3.
+---
+
+MainWP Dashboard includes multiple built-in themes and supports custom CSS themes. You can switch themes instantly from the Dashboard interface or create your own custom theme.
+
+## What You'll Learn
+
+- Switch between built-in themes
+- Create and upload custom themes
+- Where theme files are stored
+
+## Prerequisites
+
+- MainWP Dashboard version 4.3 or newer
+- FTP or file manager access (for custom themes only)
+
+---
+
+## Change the Dashboard Theme
+
+<Steps>
+<Step title="Open your Dashboard">
+Navigate to your MainWP Dashboard.
+</Step>
+<Step title="Find the theme selector">
+Click the theme icon in the top right corner of the Dashboard.
+</Step>
+<Step title="Select a theme">
+Choose your desired theme from the dropdown menu.
+</Step>
+<Step title="Save your selection">
+Click **Save Settings** to apply the theme.
+
+![Theme selection interface](/images/developers/change-theme.gif)
+</Step>
+</Steps>
+
+The theme change takes effect immediately.
+
+---
+
+## Create a Custom Theme
+
+You can create custom themes by modifying existing CSS files and uploading them to your Dashboard site.
+
+<Steps>
+<Step title="Download the MainWP Dashboard plugin">
+Download the **MainWP Dashboard** plugin from the [WordPress.org repository](https://wordpress.org/plugins/mainwp/).
+</Step>
+<Step title="Extract the plugin files">
+Unzip the plugin files to your computer.
+</Step>
+<Step title="Find the default themes">
+Navigate to `/mainwp/assets/css/themes` directory to find the built-in theme CSS files.
+</Step>
+<Step title="Copy and customize a theme">
+Copy one of the CSS files and open it in your preferred code editor. Make your customizations.
+</Step>
+<Step title="Rename your theme file">
+Save the file with a new descriptive name (e.g., `my-agency-theme.css`).
+</Step>
+<Step title="Upload to your Dashboard">
+Upload the CSS file to `/wp-content/uploads/mainwp/themes/` on your Dashboard site using FTP or your hosting file manager.
+</Step>
+<Step title="Select your custom theme">
+Your custom theme now appears in the **Select MainWP Theme** dropdown in the Dashboard.
+</Step>
+</Steps>
+
+---
+
+## Theme File Locations
+
+| Location | Purpose |
+|----------|---------|
+| `/wp-content/plugins/mainwp/assets/css/themes/` | Built-in themes (do not modify) |
+| `/wp-content/uploads/mainwp/themes/` | Custom themes (upload yours here) |
+
+<Note>
+Custom themes in the uploads directory persist through plugin updates. Built-in themes may be overwritten during updates.
+</Note>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Theme selector visible in top right corner
+- [ ] Selected theme applies after saving
+- [ ] Custom theme appears in dropdown (if created)
+
+---
+
+## Related Resources
+
+- [Change Sidebar Position](/customization/how-to-change-the-sidebar-position) - Adjust sidebar location
+- [Customize Dashboard Logo](/customization/customize-mainwp-dashboard-logo) - Brand your Dashboard
+- [Widget Column Layout](/customization/how-can-i-change-the-number-of-widget-columns-on-the-overview-page) - Adjust widget arrangement

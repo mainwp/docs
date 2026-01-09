@@ -1,0 +1,137 @@
+---
+title: >-
+  When I Push Changes from Live to Staging, Child Site Needs to be Reconnected,
+  Why?
+sidebarTitle: "Staging Sync Breaks Connection"
+description: >-
+  Pushing changes between Live and Staging overwrites the mainwp_child_pubkey
+  in wp_options, breaking the connection. Exclude this field from sync or
+  deactivate/reactivate the Child plugin to reconnect.
+---
+
+When you push changes between a live site and its staging copy (or vice versa), the MainWP connection often breaks. This happens because the synchronization process copies the encryption key that MainWP uses to identify the connection.
+
+## What You'll Learn
+
+- Why staging sync breaks the MainWP connection
+- How to exclude the MainWP key from sync operations
+- How to reconnect after syncing
+
+---
+
+## Why This Happens
+
+MainWP uses OpenSSL encryption to secure communication between your Dashboard and child sites. When a child site connects to your Dashboard:
+
+1. The Dashboard generates a unique public key
+2. This key is stored in the child site's database as `mainwp_child_pubkey` (in the `wp_options` table)
+3. All subsequent communication uses this key for encryption
+
+When you sync databases between live and staging, the staging plugin copies the `mainwp_child_pubkey` value from one site to the other. This overwrites the correct key, and the connection breaks because the key no longer matches what the Dashboard expects.
+
+---
+
+## Solution 1: Exclude the Key from Sync
+
+The best approach is to configure your staging plugin to exclude the MainWP key from synchronization.
+
+### WP Staging
+
+<Steps>
+<Step title="Open settings">
+Navigate to **WP Staging > Settings**.
+</Step>
+<Step title="Go to Advanced tab">
+Select the **Advanced** tab.
+</Step>
+<Step title="Add exclusion">
+In the database exclusion section, add:
+```
+mainwp_child_pubkey
+```
+</Step>
+<Step title="Save settings">
+Save your settings before the next push/pull operation.
+</Step>
+</Steps>
+
+### Duplicator Pro
+
+<Steps>
+<Step title="Create package">
+During package creation, go to the **Database** tab.
+</Step>
+<Step title="Find options section">
+Under **Tables**, locate the options section.
+</Step>
+<Step title="Add exclusion filter">
+Add an exclusion filter for `option_name = 'mainwp_child_pubkey'`.
+</Step>
+</Steps>
+
+### WP Migrate
+
+<Steps>
+<Step title="Open migration settings">
+In migration settings, go to **Advanced Options**.
+</Step>
+<Step title="Add exclusion">
+Add to the "Exclude Post Types" or custom SQL section:
+```sql
+option_name = 'mainwp_child_pubkey'
+```
+</Step>
+</Steps>
+
+### Other Staging Tools
+
+Check your staging tool's documentation for database field exclusions. The goal is to prevent `mainwp_child_pubkey` from being copied during sync operations.
+
+---
+
+## Solution 2: Reconnect After Sync
+
+If your staging tool doesn't support exclusions, reconnect the site after each sync:
+
+<Steps>
+<Step title="Access the staged site">
+Log in to the staged site's wp-admin directly (not through MainWP).
+</Step>
+<Step title="Navigate to Child settings">
+Go to **Settings > MainWP Child**.
+</Step>
+<Step title="Deactivate the plugin">
+Click **Deactivate** (or deactivate from the Plugins page).
+</Step>
+<Step title="Reactivate the plugin">
+Reactivate the MainWP Child plugin.
+</Step>
+<Step title="Reconnect from Dashboard">
+Return to your MainWP Dashboard and reconnect the child site using the same process as initial setup.
+</Step>
+</Steps>
+
+---
+
+## Prevention Tips
+
+- Configure exclusions before your first staging sync
+- Document which sites have staging environments
+- Consider using separate MainWP Dashboards for staging networks if you manage many staging sites
+- Test the exclusion by syncing and verifying the connection remains intact
+
+---
+
+## Self-Check Checklist
+
+- [ ] Staging plugin configured to exclude `mainwp_child_pubkey`
+- [ ] Test sync completed without breaking connection
+- [ ] Documentation updated for your staging workflow
+
+---
+
+## Related Resources
+
+- [OpenSSL Keys Encryption](/advanced/openssl-keys-encryption) - How MainWP encryption works
+- [Reconnecting Child Sites](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) - Reconnection process
+- [Staging Extension](/add-ons/development/staging-extension) - MainWP's built-in staging solution

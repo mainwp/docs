@@ -1,0 +1,118 @@
+---
+title: Create Custom Report Templates
+sidebarTitle: "Custom Templates"
+description: >-
+  The Pro Reports Extension uses PHP templates that allow you to design and
+  create professional reports with the information you want to show to your
+  clients, including custom content, images, and additional text.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Creating and uploading custom PHP template files
+- Using Client, Section, Data, and Counter tokens
+- Customizing report output with HTML
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/1qLxJz1-5RI"
+  title="Create Custom Report Templates - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## Introduction
+
+The Pro Reports Extension uses PHP templates that allow you to design and create professional reports with the information you want to show to your clients. The extension also allows you to add custom content, including contact info, images, additional text, or any other content you want to include in your report.
+
+Creating a custom report consists of two steps. The first step is to create the actual PHP file representing the template, and the second is to edit and customize that PHP file. Customizing the template by adding or removing Pro Reports Tokens should be easy and straightforward for most readers. Advanced customization of the report requires some knowledge of HTML.
+
+## Creating a PHP file for the Custom report
+
+We will be using one of the built-in templates as a starting point for the custom report. We will do so by downloading MainWP Pro Reports Extension in ZIP file format and copying one of the PHP template files.
+
+<Steps>
+<Step title="Download the MainWP Pro Reports Extension from your MainWP Account">
+[Download the MainWP Pro Reports Extension](/dashboard/overview/manage-extensions) from your MainWP Account
+</Step>
+<Step title="Extract the plugin files to your computer">
+</Step>
+<Step title="Locate one of the default PHP templates in the /mainwp-pro-reports-extension/templates/reports/ directory">
+Locate one of the default PHP templates in the **/mainwp-pro-reports-extension/templates/reports/** directory
+</Step>
+<Step title="Copy a PHP file, rename the file to a new desired title, and use your favorite code editor to make customizations (see the following chapter for instructions on customization)">
+Copy a PHP file, rename the file to a new desired title, and use your favorite code editor to make customizations (see the following chapter for instructions on customization)
+</Step>
+<Step title="Once you are finished with the customization and the template is ready, upload the PHP file the /wp-content/uploads/mainwp/report-templates/ directory on your Dashboard site">
+Once you are finished with the customization and the template is ready, upload the PHP file the **/wp-content/uploads/mainwp/report-templates/** directory on your Dashboard site
+</Step>
+<Step title="Once uploaded, the template will be available in the Report template dropdown">
+Once uploaded, the template will be available in the **Report template** dropdown ![Report template dropdown showing custom template option](/images/add-ons/pro-reports-template-dropdown.png)
+</Step>
+</Steps>
+
+
+## How to Use Tokens
+
+Tokens offer an easy way to customize your Pro Report. They can be added directly to the PHP file of your custom report or in the existing Reports through the visual editor on MainWP Dashboard. The MainWP Client Reports extension uses three different types of tokens:
+
+-   Client Tokens
+-   Section Tokens
+-   Data Tokens
+
+A list of all available tokens for the Pro Reports extension is available here: [/add-ons/reporting/available-pro-reports-tokens)
+
+### Client Tokens
+
+These tokens will allow you to display data you have set in the **Edit tab** of the [Individual Child site overview](/getting-started/mainwp-user-interface). If you plan to use one of the Client tokens in a report for a certain Child site, a value for it must be set. ![Edit tab of Individual Child site overview with client token fields](/images/add-ons/pro-reports-site-tokens.png) For example, by setting the value for \[client.email\], that token can be used in the **Send email to** field in order to send a report for multiple websites and multiple clients. ![Send email to field using client.email token](/images/add-ons/pro-reports-email-settings.png) You can easily see available Client Tokens and insert them into a field by clicking on the **Insert tokens** link. ![Insert tokens link showing available Client Tokens](/images/add-ons/pro-reports-available-tokens.png)
+
+### Section Tokens
+
+Section tokens require both opening and closing tags. They can easily be recognized by the starting part **section**. For example, \[section.plugins.installed\] is an **Opening tag** and \[/section.plugins.installed\] is a **Closing tag** for that Section token. **Section token loops through the database and searches for the relevant data during the selected date range.** **Example:** **\[section.plugins.installed\]** The following code would loop through all selected Child sites and, within the selected Date range, list all instances of plugin installations.
+
+\[section.plugins.installed\]
+\[plugin.name\]
+\[plugin.installed.date\]
+\[/section.plugins.installed\]
+
+![Pro Report output showing Section token loop results for installed plugins](/images/add-ons/pro-reports-plugins-list.png)
+
+### Data Tokens
+
+Data tokens have only one tag; they have to be used inside section tokens and have to be added between an opening and closing tag of a section token. From the example above for the Section Tokens, the \[plugin.name\] and \[plugin.installed.date\] are Data Tokens.
+
+\[section.plugins.installed\]
+\[plugin.name\]
+\[plugin.installed.date\]
+\[/section.plugins.installed\]
+
+In our [help article,](/add-ons/reporting/available-pro-reports-tokens) you can find all available Data Tokens and the respective Section tokens into which they can be inserted. ![Pro Reports token reference showing Data tokens and their Section tokens](/images/add-ons/pro-reports-token-reference.png)
+
+### Counter Tokens
+
+Counter Tokens are a special type of Data tokens. You will be able to recognize these tokens by the first word. They end with “.count.” For example \[plugin.installed.count\] These tokens won’t work inside of the section tokens. You need to use them outside of section tokens. **Example**: **\[plugin.installed.count\]** The counter token will display the number of Installed Plugins, but it must be placed outside of the opening and closing tag of the section token.
+
+\[section.plugins.installed\]
+\[plugin.name\]
+\[plugin.installed.date\]
+\[/section.plugins.installed\]
+
+Total number of plugin installations: \[plugin.installed.count\]
+
+![Pro Report showing Counter token output for total plugin installations](/images/add-ons/pro-reports-counter-output.png)
+
+---
+
+## Related Resources
+
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Add Images to Templates](/add-ons/agency/how-to-add-images-to-custom-pro-report-templates) - Adding images to reports

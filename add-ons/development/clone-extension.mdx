@@ -1,0 +1,208 @@
+---
+title: Clone
+sidebarTitle: "Clone"
+description: >-
+  The MainWP Clone Extension provides you the only tool needed to easily clone
+  your WordPress sites and replicate your successful strategies to other niches.
+  The MainWP Clone Extension is much more than a cloning tool but we are certain
+  that it is the fastest, easiest and the most user friendly cloning process on
+  the market.
+addonType: extension
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Clone"
+  data-purchase-url="https://mainwp.com/extension/clone/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-clone-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+
+## What You'll Learn
+
+- Understanding Quick Clone vs Clone from Backup
+- Preparing destination sites for cloning
+- Cloning sites under 200MB with Quick Clone
+- Cloning larger sites using backup files
+- Troubleshooting common cloning issues
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+The [MainWP Clone Extension](https://mainwp.com/extension/clone/) provides the ability to clone your WordPress sites. With the MainWP Clone Extension, you will create an exact copy of the site configuration, themes, themes settings, plugins, plugin settings, posts, pages, images, videos…pretty much everything on your site.
+
+## How it Works
+
+The Clone extension requires a preinstalled WordPress site connected to your MainWP Dashboard **(Destination Site)**. Once you install a fresh WordPress website and connect it to your MainWP Dashboard, you will be able to use the clone feature and clone your template **(Source Site)** site.
+
+The Extension allows you to clone websites in two ways:
+
+1.  Quick Clone
+2.  Clone from Backup
+
+### Quick Clone
+
+The quick clone feature allows you to clone one child site to another child site. This method allows you to quickly clone your website simply by selecting a Source Site and following the process in a few quick, easy steps. **This method is recommended for smaller WordPress sites ( < 200MB ).** 
+
+### Clone from Backup
+
+This method allows you to clone one child site to another, simply by uploading a backup file (created by the MainWP native backup feature) of the source site to your destination site server. **This method is recommended for larger WordPress sites ( > 200MB ).**
+
+#### Important Notes
+
+To clone a site, the connection between two child sites (Source and Destination) needs to be established without issues. If the Quick Clone feature fails for you, it is more than likely due to insufficient server resources. Be sure to review [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) and [resolve any of the potential issues](/troubleshooting/resolve-system-requirement-issues).
+
+## Clone WordPress Site (Quick Clone)
+
+Quick Clone feature enables you to clone one child site to another child site. This means that both child sites need to be connected to your MainWP Dashboard.
+
+### 1\. Destination site preparation
+
+<Steps>
+<Step title="Install a new WordPress site">
+[Install a new WordPress site](https://developer.wordpress.org/advanced-administration/before-install/howto-install/)
+</Step>
+<Step title="Install the MainWP Child plugin to a newly created WordPress site">
+[Install the MainWP Child plugin](/getting-started/get-started-with-mainwp) to a newly created WordPress site
+</Step>
+<Step title="Connect the newly created site to your MainWP Dashboard">
+[Connect the newly created site](/getting-started/get-started-with-mainwp) to your MainWP Dashboard
+</Step>
+</Steps>
+
+
+### 2\. Enable the Clone Feature
+
+![Enable MainWP Clone Feature](/images/add-ons/clone-enable-feature.jpg)
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Clone page">
+</Step>
+<Step title="Enable the Clone feature">
+</Step>
+</Steps>
+
+
+### 3\. Clone a Child Site
+
+<Steps>
+<Step title="Login in to your newly created Child Site (Destination)">
+</Step>
+<Step title="Go to the WP > Settings > MainWP Child > Restore / Clone page">
+</Step>
+<Step title="Locate the Clone Options box">
+Locate the **Clone Options** box![Clone Options ](/images/add-ons/clone-options-list.png)
+</Step>
+<Step title="Select the Child Site that you want to clone (Source)">
+</Step>
+<Step title="Click the Clone Website button">
+</Step>
+</Steps>
+
+
+Once the Clone process is successfully completed, you will be asked to re-login to your child site. Use your source site login credentials to log in. After that, you need to resave your [Permalinks Settings](https://wordpress.org/documentation/article/customize-permalinks/#Choosing_your_permalink_structure) to complete the process.
+
+#### Important Notes
+
+If, after the cloning process, your destination site is redirecting you back to the source site, it is more than likely that the process failed to update the **siteurl** and the **home** values in the wp_options table inside the database. In this case, please check this [help document](https://developer.wordpress.org/advanced-administration/upgrade/migrating/) to see how to update it manually. If your Source child site is larger than 200MB, you will be it is more than likely that the cloning process will fail. In this case, try to clone your child site by using the Clone from the Backup method.
+
+## Clone WordPress Site (Clone from Backup)
+
+Quick Clone feature enables you to clone one child site to another child site. This means that both child sites need to be connected to your MainWP Dashboard.
+
+### 1\. Destination site preparation
+
+<Steps>
+<Step title="Install a new WordPress site">
+[Install a new WordPress site](https://developer.wordpress.org/advanced-administration/before-install/howto-install/)
+</Step>
+<Step title="Install the MainWP Child plugin to the newly created WordPress site">
+[Install the MainWP Child plugin](/getting-started/get-started-with-mainwp) to the newly created WordPress site
+</Step>
+<Step title="Connect the newly created site to your MainWP Dashboard">
+[Connect the newly created site](/getting-started/get-started-with-mainwp) to your MainWP Dashboard
+</Step>
+</Steps>
+
+
+### 2\. Enable the Clone Feature
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Clone page">
+</Step>
+<Step title="Enable the Clone feature">
+</Step>
+<Step title="Click the Save button">
+</Step>
+<Step title="Sync your sites">
+</Step>
+</Steps>
+
+
+### 3\. Create a Backup of the Source Site
+
+This step requires the **MainWP Legacy Backups** feature enabled. If you have it disabled, enable it on the **MainWP > Settings** page and set it as a primary backup solution. Once you are done with the cloning process, revert your settings to the previous state.
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites page">
+</Step>
+<Step title="Locate the Site you want to clone">
+</Step>
+<Step title="Click the Backup Now button">
+</Step>
+<Step title="Create the Full Backup of the Child site">
+</Step>
+<Step title="Download the backup file">
+</Step>
+</Steps>
+
+
+### 4\. Clone a Child Site
+
+<Steps>
+<Step title="Use your favorite FTP Client to upload the downloaded backup file to your Destination site server">
+Use your favorite FTP Client to **upload** the downloaded backup file to your Destination site server
+</Step>
+<Step title="Login in to your Destination site">
+</Step>
+<Step title="Go to the WP > Settings > MainWP Child > Restore / Clone page">
+</Step>
+<Step title="Locate the Option 2: Restore / Clone from Server box">
+Locate the **Option 2: Restore / Clone from Server** box![Clone From Backup](/images/add-ons/clone-restore-from-server.png)
+</Step>
+<Step title="Select the previously uploaded backup file">
+</Step>
+<Step title="Click the Restore/Clone Website button">
+</Step>
+</Steps>
+
+
+Once the Clone process is successfully completed, you will be asked to re-login to your child site. Use your source site login credentials to log in. After that, you need to resave your [Permalinks Settings](https://wordpress.org/documentation/article/customize-permalinks/#Choosing_your_permalink_structure) in order to complete the process.
+
+#### Important Notes
+
+If after the cloning process, your destination site is redirecting you back to the source site, it is more than likely that the process failed to update the **siteurl** and the **home** values in the wp_options table inside the database. In this case, please check this [help document](https://developer.wordpress.org/advanced-administration/upgrade/migrating/) to see how to update it manually. Before trying to clone a website, make sure that the backup file is not corrupted by trying to open it on your local computer. Also, verify that there are no files missing.
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Staging Extension](/add-ons/development/staging-extension) - Create staging environments
+- [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Verify server requirements

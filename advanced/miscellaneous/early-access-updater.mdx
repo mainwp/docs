@@ -1,0 +1,206 @@
+---
+title: MainWP Early Access Extension
+sidebarTitle: "Early Access"
+description: >-
+  Test pre-release versions of MainWP Dashboard and Child plugins before they
+  are officially released on WordPress.org.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/aX-LTHqmmBg"
+  title="MainWP Early Access extension - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Early Access extension lets you opt into pre-release versions of both the MainWP Dashboard plugin and the MainWP Child plugin. This allows you to test upcoming features, help evaluate changes before they reach WordPress.org, or prepare workflows for new versions still in development.
+
+## What You'll Learn
+
+- How to install and configure the Early Access extension
+- How to enable pre-release updates globally or per-site
+- How to create a GitHub Personal Access Token for higher rate limits
+- How to roll back to stable versions
+
+## Prerequisites
+
+- Active MainWP license with Early Access extension access
+- Staging or testing environment (pre-release builds should not be used in production)
+
+<Warning>
+Early Access builds are best used on staging or testing environments, not production sites.
+</Warning>
+
+---
+
+## Install the Early Access Extension
+
+![MainWP Add-ons page showing Early Access extension installation](/images/miscellaneous/advanced-miscellaneous-a96553.png)
+
+<Steps>
+<Step title="Open the Add-ons page">
+Go to **MainWP Dashboard > Add-ons**.
+</Step>
+<Step title="Click Install Add-ons">
+Click the **Install Add-ons** button.
+</Step>
+<Step title="Search for Early Access">
+Search for "MainWP Early Access" in the add-on list.
+</Step>
+<Step title="Install the extension">
+Select it in the list, then click **Install Selected Add-ons**.
+</Step>
+<Step title="Wait for installation">
+The page will automatically refresh after installation completes.
+</Step>
+<Step title="Activate the license">
+Click the **Activate Add-ons** button to activate the license for the newly installed add-on.
+</Step>
+</Steps>
+
+---
+
+## Access Early Access Settings
+
+The extension provides two settings locations:
+
+| Location | Path |
+|----------|------|
+| Global settings | **MainWP > Add-ons > Early Access** |
+| Per-site settings | **MainWP > Sites > Manage Sites > (Select Site) > MainWP Early Access tab** |
+
+---
+
+## Global Settings
+
+![Early Access global settings page with Dashboard plugin options](/images/miscellaneous/advanced-miscellaneous-731b89.png)
+
+### Enable Early Access for MainWP Dashboard
+
+Toggle this option to receive pre-release updates for your Dashboard plugin. When enabled, update checks include GitHub releases marked as prereleases.
+
+### GitHub Personal Access Token (PAT)
+
+If you manage many sites, GitHub rate limits may slow update checks. Adding a PAT increases your limit from 60 requests/hour to 5,000 requests/hour.
+
+<Steps>
+<Step title="Open GitHub Developer Settings">
+Go to [GitHub Developer Settings](https://github.com/settings/apps).
+</Step>
+<Step title="Navigate to tokens">
+Click **Personal access tokens > Fine-Grained tokens**.
+</Step>
+<Step title="Generate new token">
+Click **Generate new token**.
+</Step>
+<Step title="Name the token">
+Give the token a descriptive name (e.g., "MainWP Early Access").
+</Step>
+<Step title="Set expiration">
+Select an expiration date. We recommend longer than the default 30 days.
+</Step>
+<Step title="Select scopes">
+Use the default scope (Public repositories, no additional permissions). This provides the minimal required permission level.
+</Step>
+<Step title="Generate and copy">
+Click **Generate token** and copy the token immediately.
+</Step>
+<Step title="Save in MainWP">
+Paste your PAT into the Early Access settings field and save.
+</Step>
+</Steps>
+
+<Note>
+The PAT key is securely encrypted by the Dashboard.
+</Note>
+
+### Roll Back to Latest Stable Release
+
+This reinstalls the current stable version of the MainWP Dashboard plugin from WordPress.org.
+
+Use this option if:
+- You no longer want to stay on prerelease builds
+- A prerelease build causes compatibility issues
+
+---
+
+## Child Site Settings
+
+![Early Access Child Site settings with per-site options](/images/miscellaneous/advanced-miscellaneous-da4400.png)
+
+These settings control Early Access for the MainWP Child plugin on your connected sites.
+
+### Enable Early Access for MainWP Child Plugin
+
+When enabled, all child sites will use the Early Access track unless an individual site overrides this setting.
+
+### Update MainWP Child Plugin on Sites to Pre-Release Version
+
+Runs a bulk update across all eligible sites. A modal window displays progress and site-by-site results.
+
+### Check for Updates
+
+If a new prerelease version is available, this link forces a fresh update check.
+
+### Roll Back Child Plugins on Sites to Latest Stable Release
+
+Reinstalls the stable WordPress.org version of MainWP Child on all eligible sites.
+
+---
+
+## Per-Site Settings
+
+These controls are available inside each site's **MainWP Early Access** tab.
+
+### MainWP Child Early Access
+
+A dropdown lets you choose:
+- **Use global setting** - Follow the global Early Access configuration
+- **Enable** - Force Early Access on for this site
+- **Disable** - Force Early Access off for this site
+
+### Update MainWP Child Plugin on Site to Pre-Release Version
+
+Runs the same action as the global updater but affects only that single site. A **Check for updates** link refreshes prerelease availability for that site.
+
+### Roll Back Child Plugin on Site to Latest Stable Release
+
+Reverts the site back to the stable MainWP Child plugin from WordPress.org.
+
+---
+
+## What to Expect During Updates
+
+- Manual **Check for updates** links are available on both global and per-site pages
+- If a prerelease child version is available and Early Access is enabled, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
+- When the Early Access extension license is active, plugin row meta will include a **Check for updates now** link
+
+---
+
+## Best Practices
+
+- Test Early Access builds on staging sites before rolling into production
+- Per-site overrides always take priority over global settings
+- If a prerelease update fails, check the site's connection status and retry from the modal
+- Rollback operations always use the stable version provided by WordPress.org
+
+---
+
+## Self-Check Checklist
+
+- [ ] Early Access extension installed and activated
+- [ ] License activated for the extension
+- [ ] Global settings configured for Dashboard and/or Child plugin
+- [ ] GitHub PAT added (optional, for higher rate limits)
+- [ ] Per-site overrides configured where needed
+- [ ] Testing on staging environment (not production)
+
+---
+
+## Related Resources
+
+- [Manage Extensions](/dashboard/overview/manage-extensions) - Extension management
+- [MainWP Telemetry](/advanced/miscellaneous/mainwp-telemetry-early-access) - Early Access telemetry options
+

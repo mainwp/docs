@@ -1,0 +1,87 @@
+---
+title: Update Frequency Settings
+description: >-
+  Configure how often MainWP automatically synchronizes data and runs updates on your child sites. Adjust the daily update frequency and set your preferred sync time.
+---
+
+MainWP automatically synchronizes data from your child sites and can run automatic updates on a schedule you define. Adjusting the update frequency determines how often MainWP checks for and applies trusted updates.
+
+## What You'll Learn
+
+- Configure the automatic daily sync time
+- Set how many times per day MainWP runs automatic updates
+- Understand how sync timing works
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Access to Dashboard settings
+
+---
+
+## Configure Update Frequency
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find General Settings">
+Locate the **General Settings** section.
+</Step>
+<Step title="Set daily sync time">
+Find **Automatic daily sync time** and set your preferred start time.
+
+This determines when MainWP begins the first automatic sync of the day.
+</Step>
+<Step title="Set update frequency">
+Find **Daily update frequency** and select how many times per day MainWP should run automatic syncs and updates.
+
+| Option | Sync Times |
+|--------|------------|
+| Once daily | At the configured sync time |
+| Twice daily | Sync time + 12 hours later |
+| Three times daily | Every 8 hours starting at sync time |
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
+## How Timing Works
+
+If you set:
+- **Automatic daily sync time**: 7:00 AM
+- **Daily update frequency**: 3 times per day
+
+MainWP will sync and check for updates at:
+- 7:00 AM
+- 3:00 PM (8 hours later)
+- 11:00 PM (8 hours later)
+
+---
+
+## Important Notes
+
+- Automatic updates only apply to items marked as **Trusted**
+- Updates may take up to 24 hours after MainWP detects a new version
+- MainWP uses WP Cron for scheduling; ensure cron runs reliably
+- Consider using Uptime Robot to ping your Dashboard for consistent cron execution
+
+---
+
+## Self-Check Checklist
+
+- [ ] Daily sync time is configured
+- [ ] Update frequency matches your needs
+- [ ] Settings are saved
+- [ ] WP Cron runs reliably on your Dashboard
+
+---
+
+## Related Resources
+
+- [Manage Updates](/sites/updates/manage-updates) - Full update management documentation
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - All Dashboard settings
+- [Disable WP Cron](/customization/disable-wp-cron) - Set up server-side cron

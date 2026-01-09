@@ -1,0 +1,100 @@
+---
+title: Can I change wp-admin and wp-login.php URLs?
+sidebarTitle: "Custom Admin URLs"
+description: >-
+  MainWP supports custom wp-admin and wp-login.php URLs on child sites. Custom
+  wp-admin paths work automatically, while custom login URLs are supported on
+  both Dashboard and child sites.
+---
+
+MainWP is compatible with sites that use custom WordPress admin and login URLs. This is common when using security plugins that rename these paths to reduce brute force attacks.
+
+## What You'll Learn
+
+- Whether MainWP supports custom admin URLs
+- Which changes are safe on child sites vs. Dashboard
+- How MainWP handles custom paths automatically
+
+## Prerequisites
+
+- MainWP Dashboard installed
+- Understanding of which plugin modifies your login/admin URLs
+
+---
+
+## Custom wp-admin Path
+
+MainWP supports customized `/wp-admin/` paths on child sites.
+
+### How It Works
+
+When connecting to a child site, MainWP attempts to reach `http://url.com/wp-admin/admin-ajax.php`. If that fails, it automatically retries with `http://url.com`. This fallback mechanism allows MainWP to work with most custom wp-admin configurations.
+
+### Compatibility Summary
+
+| Location | Custom wp-admin | Supported |
+|----------|----------------|-----------|
+| Child sites | Changed path | Yes |
+| Dashboard | Changed path | **No** - may cause issues |
+
+<Warning>
+Do not change the wp-admin path on your MainWP Dashboard site. This can cause various issues with Dashboard functionality. Only change wp-admin on child sites.
+</Warning>
+
+---
+
+## Custom wp-login.php URL
+
+MainWP supports renamed `wp-login.php` URLs on both child sites and your Dashboard.
+
+### Compatibility Summary
+
+| Location | Custom login URL | Supported |
+|----------|-----------------|-----------|
+| Child sites | Renamed login | Yes |
+| Dashboard | Renamed login | Yes |
+
+Common plugins that rename wp-login.php:
+- WPS Hide Login
+- Rename wp-login.php
+- iThemes Security (now Solid Security)
+- All-In-One Security
+
+---
+
+## Common Issues
+
+### Jump to WP Admin Not Working
+
+If Jump to WP Admin doesn't work after changing login URLs:
+
+1. Clear your browser cache
+2. Verify the security plugin allows external logins
+3. Check that the URL in MainWP matches the actual site URL
+4. See [Troubleshoot Jump to WP Admin](/troubleshooting/troubleshooting-issues-with-jump-to-the-site-wp-admin-functionality)
+
+### Connection Fails After Changing Paths
+
+If your site stops connecting after changing admin paths:
+
+1. Ensure the MainWP Child plugin is still active
+2. Verify the site is accessible at its new path
+3. Resync the site from your Dashboard
+4. Check server error logs for blocked requests
+
+---
+
+## Self-Check Checklist
+
+- [ ] Custom paths only changed on child sites (not Dashboard wp-admin)
+- [ ] Sites remain connected after path changes
+- [ ] Jump to WP Admin works (or using alternative access)
+- [ ] Security plugin configured to allow MainWP operations
+
+---
+
+## Related Resources
+
+- [Troubleshoot Jump to WP Admin](/troubleshooting/troubleshooting-issues-with-jump-to-the-site-wp-admin-functionality) - Jump to WP Admin issues
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Connection issues after changes
+- [HTTP Basic Authentication](/troubleshooting/use-of-jump-to-wp-admin-with-child-sites-protected-by-http-basic-authentication) - Another security layer consideration

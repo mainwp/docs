@@ -1,0 +1,88 @@
+---
+title: How can I change tolerance for Abandoned Plugins and Themes?
+description: >-
+  Adjust the Abandoned plugins/themes tolerance setting in MainWP Settings to
+  control when plugins and themes are flagged as possibly abandoned. The default
+  is 365 days without an update from the author.
+---
+
+The abandoned tolerance setting controls how long a plugin or theme must go without updates before MainWP flags it as "Possibly Abandoned." The default is 365 days, but you can adjust this based on your needs.
+
+## What You'll Learn
+
+- Adjust the abandoned tolerance threshold
+- Understand when to increase or decrease the value
+- Disable abandoned checking entirely
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Access to Dashboard settings
+
+---
+
+## Configure Abandoned Tolerance
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to **MainWP > Settings**.
+</Step>
+<Step title="Find Update Settings">
+Locate the **Update Settings** section.
+</Step>
+<Step title="Set tolerance">
+Find **Abandoned plugins/themes tolerance** and enter your preferred number of days.
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
+## Recommended Values
+
+| Days | Use Case |
+|------|----------|
+| 180 | Stricter monitoring, early warning of potential issues |
+| 365 | Default balance between useful alerts and noise |
+| 730 | Lenient monitoring, fewer alerts |
+| 0 | Disable abandoned checking entirely |
+
+---
+
+## When to Adjust
+
+### Use a shorter tolerance (180-270 days) if:
+
+- You prioritize security and want early warning
+- You manage high-profile or sensitive sites
+- You prefer proactive plugin/theme replacement
+
+### Use a longer tolerance (500+ days) if:
+
+- You use stable plugins that update infrequently
+- You receive too many false positives
+- Your plugins are intentionally feature-complete without frequent updates
+
+### Disable checking (0 days) if:
+
+- You manually track plugin/theme status
+- You use mostly premium plugins not on wordpress.org
+- The alerts are not useful for your workflow
+
+---
+
+## Self-Check Checklist
+
+- [ ] Tolerance is set to your preferred value
+- [ ] Settings are saved
+- [ ] Abandoned items appear in Updates page
+
+---
+
+## Related Resources
+
+- [What does Possibly Abandoned mean](/sites/updates/what-does-possibly-abandoned-mean) - Understanding abandoned status
+- [Check for Abandoned Plugins and Themes](/sites/plugins/check-for-abandoned-plugins-and-themes) - Manual checks
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - All settings reference

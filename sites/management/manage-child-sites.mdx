@@ -1,0 +1,579 @@
+---
+title: Manage Sites
+description: >-
+  Connect and manage Child Sites on your MainWP Dashboard. Add single or
+  multiple sites, import via CSV, sync data, edit settings, manage tags, run
+  security scans, and configure uptime and site health monitoring.
+---
+
+The Manage Sites feature lets you connect WordPress sites to your MainWP Dashboard and control them from a single location. From here, you can add new sites, synchronize data, edit site settings, organize sites with tags, run security scans, and configure monitoring.
+
+## What You'll Accomplish
+
+After following this guide, you will be able to:
+
+- Connect single or multiple WordPress sites to your Dashboard
+- Import sites in bulk using CSV files
+- Synchronize site data between Dashboard and child sites
+- Edit site settings and manage tags
+- Run security scans and fix detected issues
+- Configure uptime and site health monitoring
+
+## Prerequisites
+
+- MainWP Dashboard plugin installed and activated on your Dashboard site
+- MainWP Child plugin installed and activated on each site you want to connect
+- Administrator access to both Dashboard and child sites
+- Valid SSL certificates recommended for secure connections
+
+---
+
+## Video Tutorials
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/3MpdBhKHoSY"
+  title="Manage Sites - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/k1-4x6h0LfE"
+  title="Manage Sites - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/W_G1giH7T-c"
+  title="Manage Sites - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+---
+
+## Connect Sites to Your Dashboard
+
+### Connect a Single Site
+
+After installing the MainWP Child plugin on your website, add it to your Dashboard.
+
+<Steps>
+<Step title="Open Add New Site">
+Log in to your Dashboard site and go to **MainWP > Sites > Add New**.
+</Step>
+<Step title="Enter site details">
+In the **Add a Single Site** section:
+
+![Add single child site UI](/images/dashboard/sites-management-4eb5cc.png)
+
+| Field | Description |
+|-------|-------------|
+| URL | Your website URL |
+| Verify Child plugin | Toggle on to reveal additional fields |
+| Administrator Username | Admin username on the child site |
+</Step>
+<Step title="Configure authentication">
+![Connection Settings UI](/images/getting-started/29c48a441594.png)
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| Administrator Password | Uses admin password for initial authentication. See [connection security](/advanced/miscellaneous/mainwp-connection-security#password-authentication) | Enabled |
+| Unique Security ID | Optional additional security layer. Configure in MainWP Child settings | Disabled |
+
+Find both options at: `your-child-site.com/wp-admin/options-general.php?page=mainwp_child_tab`
+
+![MainWP Child settings with Unique Security ID](/images/getting-started/1950ef01c5b2.png)
+</Step>
+<Step title="Configure optional settings">
+![Optional Settings section](/images/getting-started/3fb27ff0bbbd.png)
+
+| Option | Description |
+|--------|-------------|
+| Site icon | Upload custom icon (site favicon used if empty) |
+| Select icon | Choose from built-in icons (uploaded icon takes priority) |
+| Tags | Add to existing tags or create new ones |
+| Client | Associate with a client |
+| Verify SSL certificate | Enable for sites with valid SSL. Disable for self-signed or outdated certificates |
+| SSL version | Leave default if no SSL certificate |
+| HTTP username/password | Required if site uses HTTP Basic Authentication |
+</Step>
+<Step title="Add the site">
+Click **Add New Site**.
+</Step>
+</Steps>
+
+#### Extensions Settings Synchronization
+
+When using [MainWP Add-ons](https://mainwp.com/mainwp-add-ons/) that require third-party plugins:
+
+| Extension Type | What Happens |
+|----------------|--------------|
+| Requires third-party plugin | Option to install plugin and sync default settings |
+| Standalone extension | Option to sync extension default settings only |
+
+<Note>
+If you experience connection issues, use **Test Connection** to verify Dashboard-to-site communication. Check [Potential Issues](/troubleshooting/potential-issues) for solutions or [submit a support ticket](https://mainwp.com/mainwp-support/).
+</Note>
+
+### Connect Multiple Sites
+
+Add several sites simultaneously using the Multiple Sites table.
+
+**Prerequisite:** Install and activate MainWP Child plugin on each site before connecting.
+
+<Steps>
+<Step title="Open Multiple Sites tab">
+Navigate to **MainWP > Sites > Add New > Multiple Sites**.
+
+![Connect Multiple Sites UI](/images/dashboard/sites-management-4635dd.png)
+</Step>
+<Step title="Enter required fields">
+| Field | Required | Description |
+|-------|----------|-------------|
+| Site URL | Yes | Full URL of each site |
+| Admin Username | Yes | Administrator username for each site |
+| Admin Password | If enabled | Admin password (leave blank if disabled in Child settings) |
+</Step>
+<Step title="Configure optional fields">
+| Field | Description |
+|-------|-------------|
+| Site Title | Auto-filled from URL, customize for dashboard display |
+| Tag | Assign tag for organization |
+| Unique Security ID | Enter if configured on the site |
+| HTTP Username/Password | For sites with HTTP Basic Authentication |
+| Verify SSL | 1 = enabled, 0 = disabled |
+| SSL Version | Auto for most configurations |
+</Step>
+<Step title="Add rows and connect">
+Click **Add New Row** for additional sites. When ready, click **Add Sites**.
+</Step>
+</Steps>
+
+---
+
+## Import Sites (CSV Import)
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/jZ6K1C6Ykzg"
+  title="Import Sites - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Import multiple sites using a CSV file.
+
+<Steps>
+<Step title="Prepare sites">
+Install and activate MainWP Child Plugin on all sites you want to import.
+</Step>
+<Step title="Download sample CSV">
+Go to **MainWP > Sites > Import Sites** and download the Sample CSV file.
+</Step>
+<Step title="Edit the CSV">
+Open in a text editor and replace demo values (lines 9-13) with your site details.
+</Step>
+<Step title="Format entries">
+Use comma-separated values in this order:
+
+| Position | Field | Notes |
+|----------|-------|-------|
+| 1 | Site Name | Display name |
+| 2 | Site URL | Full URL |
+| 3 | Administrator Username | Required |
+| 4 | Admin Password | If enabled |
+| 5 | Tag name | Optional |
+| 6 | Unique Security ID | If enabled |
+| 7 | HTTP Username | If using Basic Auth |
+| 8 | HTTP Password | If using Basic Auth |
+| 9 | Verify Certificate | T = true, F = false |
+| 10 | SSL Version | auto, 1.x, 1, 2, 1.1, 1.2, 1.3 |
+</Step>
+<Step title="Upload and import">
+Save the CSV, upload it to your Dashboard, check **CSV file contains a header** if applicable, and click **Import Sites**.
+</Step>
+</Steps>
+
+<Warning>
+MainWP requires CSV format. TXT and other text formats will not work.
+</Warning>
+
+---
+
+## Export Sites
+
+<Steps>
+<Step title="Open Tools">
+Go to **MainWP > Settings > Tools**.
+</Step>
+<Step title="Export">
+Click **Export Child Sites**.
+![Export Child Sites button](/images/dashboard/sites-management-cde833.png)
+</Step>
+</Steps>
+
+Sites export to a CSV file.
+
+---
+
+## Synchronize a Child Site
+
+Regular synchronization keeps your Dashboard current with child site data.
+
+### Global Synchronization
+
+Click the **Sync Dashboard with Child Sites** button in the header.
+
+![Sync button in header](/images/dashboard/sites-management-b05cf8.png)
+
+### Individual Site Synchronization
+
+<Steps>
+<Step title="Open Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Sync the site">
+Locate the site, open the actions menu, and click **Sync Data**.
+![Sync Data action](/images/dashboard/2505e38c5fc6.gif)
+</Step>
+</Steps>
+
+<Note>
+MainWP automatically syncs sites once daily via WP Cron. For reliable cron execution, consider using Uptime Robot to ping your Dashboard regularly.
+</Note>
+
+---
+
+## Edit Child Site Settings
+
+Access per-site settings to update site name, administrator username, tags, and other options.
+
+<Steps>
+<Step title="Navigate to settings">
+Go to **MainWP > Sites > Manage Sites**, locate the site, and click **Settings** in the actions menu.
+</Step>
+</Steps>
+
+### General Settings
+
+| Setting | Description |
+|---------|-------------|
+| Site URL | Change between HTTP and HTTPS if SSL certificate changes |
+| Administrator Username | Update the connected user |
+| Site Title | Update friendly name |
+| Unique Security ID | Update if changed on the site |
+| Tags | Add or remove tags |
+| Auto Update Core | Enable automatic WordPress core updates |
+| Ignore Core Update | Ignore WordPress core updates for this site |
+| Ignore all Plugin Updates | Mark all plugin updates as ignored |
+| Ignore all Theme Updates | Mark all theme updates as ignored |
+
+### Advanced Options
+
+| Setting | Description |
+|---------|-------------|
+| SSL verification | Adjust if experiencing certificate issues |
+| SSL Version | Leave Auto Detect unless specific version needed |
+| HTTP username/password | Configure if site uses HTTP Basic Authentication |
+
+---
+
+## Access Child Site WP Admin
+
+MainWP provides one-click access to child site admin areas.
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Access admin">
+Locate the site and click the **Login** icon.
+</Step>
+</Steps>
+
+---
+
+## Security Issues
+
+MainWP scans child sites for known security issues and provides tools to fix them.
+
+### Detected Security Issues
+
+| Issue | Description | Fix Action |
+|-------|-------------|------------|
+| Directory listing | Checks if wp-content directories are listable | Adds empty index.php files |
+| WordPress version | Checks if WP version is detectable | Removes generator meta tag |
+| RSD meta tag | Checks for Really Simple Discovery tag | Removes RSD meta tag |
+| WLW meta tag | Checks for Windows Live Writer tag | Removes WLW meta tag |
+| Database errors | Checks if DB error reporting is enabled | Disables DB error reporting |
+| PHP errors | Checks if PHP error reporting is enabled | Disables PHP error reporting |
+| readme.html | Checks if readme.html exists in root | Deletes the file (cannot be unfixed) |
+| "admin" user | Checks for admin username | Manual fix required |
+
+![Security Issues table](/images/dashboard/sites-management-7c13e2.png)
+
+<Note>
+If security issues are fixed by another plugin, MainWP detects them as fixed but cannot use the Unfix function.
+</Note>
+
+### Security Scan
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Run scan">
+Locate the site, open the actions menu, and click **Security Scan**.
+![Security Scan action](/images/dashboard/sites-management-8ebb16.png)
+</Step>
+<Step title="Fix issues">
+Click **Fix All** to fix all issues, or use individual **Fix** or **Unfix** actions per row.
+</Step>
+</Steps>
+
+---
+
+## Reconnect a Child Site
+
+### Single Site Reconnection
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Reconnect">
+Locate the disconnected site and click **Reconnect** in the actions menu.
+</Step>
+</Steps>
+
+### Bulk Reconnection
+
+<Steps>
+<Step title="Select sites">
+Go to **MainWP > Sites > Manage Sites** and check disconnected sites.
+</Step>
+<Step title="Reconnect">
+Select **Reconnect** from Bulk Actions and click **Apply**.
+</Step>
+</Steps>
+
+---
+
+## Delete a Child Site
+
+### Delete Single Site
+
+<Steps>
+<Step title="Navigate to Manage Sites">
+Go to **MainWP > Sites > Manage Sites**.
+</Step>
+<Step title="Remove site">
+Locate the site and click **Remove Site** in the actions menu.
+![Remove Site action](/images/dashboard/sites-management-686b8b.gif)
+</Step>
+</Steps>
+
+### Delete Multiple Sites
+
+<Steps>
+<Step title="Select sites">
+Go to **MainWP > Sites > Manage Sites** and check sites to delete.
+</Step>
+<Step title="Remove sites">
+Select **Remove** from Bulk Actions and click **Apply**.
+![Bulk remove action](/images/dashboard/sites-management-210c71.gif)
+</Step>
+</Steps>
+
+<Note>
+When deleting a properly connected site, MainWP automatically deactivates the Child plugin. For disconnected sites, manually deactivate the Child plugin on the site.
+</Note>
+
+---
+
+## Manage Child Site Notes
+
+### Create a Note
+
+<Steps>
+<Step title="Open notes">
+Go to **MainWP > Sites > Manage Sites** and click the Note icon for the site.
+</Step>
+<Step title="Add note">
+Click **Edit**, add content, and click **Save note**.
+![Add note](/images/dashboard/sites-management-15feb3.gif)
+</Step>
+</Steps>
+
+### View Notes
+
+View notes through the Notes column or the Notes widget on the Individual Child Site Dashboard.
+
+---
+
+## Manage Child Site Tags
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/W_G1giH7T-c"
+  title="Managing Tags - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Tags (formerly Groups) help organize sites for easier selection and management. Multiple tags can be applied to any site.
+
+### Create a Tag
+
+<Steps>
+<Step title="Open Tags page">
+Go to **MainWP > Sites > Tags** and click **New Tag**.
+![New Tag button](/images/dashboard/sites-management-fdc6d7.png)
+</Step>
+<Step title="Name the tag">
+Enter a tag name and click **Create Tag**.
+![Tag name field](/images/dashboard/sites-management-e62ec8.png)
+</Step>
+<Step title="Assign sites">
+Click the tag name, select sites, and click **Save Selection**.
+![Assign sites to tag](/images/dashboard/sites-management-827cf6.gif)
+</Step>
+</Steps>
+
+### Edit a Tag
+
+Go to **MainWP > Sites > Tags**, click the tag name, add or remove sites, and click **Save Selection**.
+
+### Delete a Tag
+
+Go to **MainWP > Sites > Tags** and click the **Trash** icon next to the tag name.
+
+![Delete tag](/images/dashboard/sites-management-e3d6c9.png)
+
+---
+
+## Uptime Monitoring
+
+Monitor the online status of connected child sites with customizable intervals, methods, and notifications.
+
+### Global Settings
+
+![Uptime Monitoring settings](/images/dashboard/sites-management-0d82bf.png)
+
+Navigate to **Dashboard > Settings > General settings**.
+
+| Setting | Description |
+|---------|-------------|
+| Enable Uptime Monitoring | Toggle monitoring for all sites |
+| Monitor Type | HTTP(s)/Website, Ping, or Keyword monitoring |
+| HTTP Method | GET, POST, PUT, PATCH, or DELETE |
+| Monitor Interval | 5 minutes to once daily |
+| Request Timeout | Maximum seconds before timeout |
+| Down Confirmation Check | Confirm downtime before alerting |
+| Up HTTP Status Codes | Status codes considered "Up" (default: all 2XX) |
+
+<Note>
+Configure **Maximum simultaneous uptime monitoring requests** in Advanced Settings. For server-side cron jobs, see [Disable WP Cron](/customization/disable-wp-cron).
+</Note>
+
+### Notification Settings
+
+![Uptime email settings](/images/dashboard/sites-management-c33b3f.png)
+
+Navigate to **Dashboard > Settings > Email settings > Uptime Monitoring Email**.
+
+| Setting | Description |
+|---------|-------------|
+| Enable | Toggle email notifications |
+| Recipient(s) | Email addresses for notifications |
+| Subject/Heading | Customize email subject and heading |
+| HTML Template | Customize by copying template to `wp-content/uploads/mainwp/templates/emails/` |
+
+### Per-Site Settings
+
+![Individual site uptime settings](/images/dashboard/sites-management-68b8c5.png)
+
+Access per-site settings at **Child Site Dashboard > Uptime Monitoring**.
+
+| Option | Description |
+|--------|-------------|
+| Override Global Settings | Customize options for this site |
+| Sub-Page Monitoring | Monitor additional pages by clicking Add Sub-Page Monitor |
+| Per-Site Email Settings | Customize notifications at **Child Site Dashboard > Email settings** |
+
+---
+
+## Site Health Monitoring
+
+WordPress Site Health checks security and performance. MainWP monitors child site health status and alerts you when sites need attention.
+
+<Steps>
+<Step title="Enable monitoring">
+Go to **MainWP > Settings** and enable Site Health Monitoring.
+</Step>
+<Step title="Set threshold">
+Choose the health threshold for notifications.
+![Site Health settings](/images/dashboard/sites-management-110944.jpg)
+</Step>
+<Step title="Save settings">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+### Individual Site Settings
+
+Configure per-site settings on the site Edit page:
+- Custom check intervals
+- Site Health threshold
+- Disable monitoring
+- Additional email recipients (comma-separated)
+
+### Manual Checks
+
+Go to **MainWP > Sites > Monitoring** and use **Check Now** from the Actions menu for single sites or Bulk Actions for multiple sites.
+
+---
+
+## Common Problems and Fixes
+
+| Problem | Likely Cause | Fix |
+|---------|--------------|-----|
+| Site won't connect | MainWP Child plugin not activated | Verify the Child plugin is installed and activated on the site |
+| Connection fails with SSL error | Invalid or self-signed SSL certificate | Disable **Verify SSL certificate** in the site's connection settings |
+| Site shows as disconnected | Changed admin credentials or site URL | Use **Reconnect** from the actions menu and update credentials |
+| Sync fails for a site | Firewall or security plugin blocking requests | Whitelist your Dashboard IP in the site's firewall settings |
+| Security scan shows issues already fixed | Another plugin fixed the issue | MainWP detects the fix; no action needed |
+| CSV import fails | Wrong file format or missing required fields | Ensure file is CSV format with all required columns filled |
+
+---
+
+## Self-Check Checklist
+
+After working through this guide, confirm:
+
+- [ ] Sites appear in the Manage Sites table with green status indicators
+- [ ] Sync completes without errors
+- [ ] You can access child site WP Admin via the Login icon
+- [ ] Tags are assigned and sites can be filtered by tag
+- [ ] Security scan runs and shows results
+- [ ] Uptime monitoring is configured (if needed)
+- [ ] Site Health monitoring is enabled (if needed)
+
+---
+
+## Related Resources
+
+- [Manage Sites Page Tutorial](/sites/management/manage-sites-page-tutorial) - Detailed walkthrough of the Manage Sites interface
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - Configure global dashboard settings
+- [Potential Issues](/troubleshooting/potential-issues) - Troubleshoot common connection problems
+- [Connection Security](/advanced/miscellaneous/mainwp-connection-security) - Learn about MainWP's security model

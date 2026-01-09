@@ -1,0 +1,121 @@
+---
+title: How to change the default page after logging into WordPress
+sidebarTitle: "Change Login Redirect"
+description: >-
+  Change the default WordPress login redirect from wp-admin to the MainWP
+  Overview page using a filter in the Custom Dashboard extension or functions.php.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/q-83zyXF4r8"
+  title="How to change the default page after logging into WordPress - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+By default, WordPress redirects users to the standard wp-admin dashboard after login. You can change this to redirect directly to the MainWP Overview page instead.
+
+## What You'll Learn
+
+- How to redirect login to the MainWP Overview page
+- Two methods to implement the redirect
+
+## Prerequisites
+
+- MainWP Dashboard installed
+- Choose **one** method below (using both simultaneously can cause issues)
+
+---
+
+## Method 1: Custom Dashboard Extension (Recommended)
+
+<Steps>
+<Step title="Install Custom Dashboard">
+[Install](/dashboard/overview/manage-extensions#install-extensions) the [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension (free).
+</Step>
+<Step title="Open the extension">
+Navigate to **MainWP > Extensions > Custom Dashboard**.
+</Step>
+<Step title="Add the PHP code">
+Go to the **PHP** tab and add this code:
+
+```php
+function admin_default_page() {
+    return 'wp-admin/admin.php?page=mainwp_tab';
+}
+
+add_filter('login_redirect', 'admin_default_page');
+```
+
+![Custom Dashboard extension PHP tab with login redirect code](/images/developers/default-page-result.jpg)
+</Step>
+<Step title="Save changes">
+Click **Save Changes**. The next time you log in, you'll be redirected to the MainWP Overview page.
+</Step>
+</Steps>
+
+---
+
+## Method 2: Edit functions.php
+
+Use this method if you prefer not to install an extension.
+
+<Warning>
+If you're not using a child theme, theme updates will overwrite your changes. Consider using a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/) instead.
+</Warning>
+
+<Steps>
+<Step title="Open Theme File Editor">
+Navigate to **WP Admin > Tools > Theme File Editor** on your Dashboard site.
+</Step>
+<Step title="Select functions.php">
+In the right sidebar, click on **Theme Functions (functions.php)**.
+</Step>
+<Step title="Add the code">
+Add this code at the end of the file:
+
+```php
+function admin_default_page() {
+    return 'wp-admin/admin.php?page=mainwp_tab';
+}
+
+add_filter('login_redirect', 'admin_default_page');
+```
+</Step>
+<Step title="Save the file">
+Click **Update File**.
+
+![Click Update File button](/images/developers/default-page-login.jpg)
+</Step>
+</Steps>
+
+---
+
+## Redirect to a Different Page
+
+To redirect to a different MainWP page, change the URL in the code:
+
+| Page | URL |
+|------|-----|
+| Overview | `admin.php?page=mainwp_tab` |
+| Manage Sites | `admin.php?page=managesites` |
+| Updates | `admin.php?page=UpdatesManage` |
+| Clients | `admin.php?page=ManageClients` |
+
+---
+
+## Self-Check Checklist
+
+- [ ] Code added via Custom Dashboard OR functions.php (not both)
+- [ ] Changes saved
+- [ ] Tested by logging out and back in
+- [ ] Redirects to MainWP Overview page
+
+---
+
+## Related Resources
+
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Extension documentation
+- [Add Menu Entries](/customization/add-new-menu-entries-to-the-mainwp-dashboard-navigation) - Customize navigation

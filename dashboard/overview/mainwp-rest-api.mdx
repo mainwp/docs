@@ -1,0 +1,122 @@
+---
+title: MainWP REST API
+description: >-
+  The MainWP REST API uses REST conventions and returns JSON data. Authenticate
+  using a Bearer token or Consumer Key/Secret for Legacy API. Enable and manage
+  API keys with granular read, write, and delete permissions.
+---
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/soSpRy8ovBo"
+  title="MainWP REST API - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP API uses REST conventions and returns all data in JSON format. Authenticate requests using an **API key (Bearer token)** or **Consumer Key/Consumer Secret** for Legacy REST API (Version 1).
+
+All MainWP REST API calls, including documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/mainwp/overview).
+
+<Note>
+Your MainWP Dashboard must be on a web host accessible via the internet. Locally hosted Dashboards cannot receive REST API requests.
+</Note>
+
+## Enable REST API
+
+<Steps>
+<Step title="Configure permalinks">
+Go to **WP Admin > Settings > Permalinks** and choose any setting except **Plain** (WordPress REST API limitation).
+![Permalinks settings](/images/add-ons/c87f79edc47e.jpg)
+</Step>
+<Step title="Create an API key">
+Navigate to **Dashboard > REST API > Add API Keys** and enter a name for your key.
+</Step>
+<Step title="Save the Bearer token">
+Copy the generated API key (Bearer token) to a safe location.
+![Add API Key form showing the generated Bearer token](/images/dashboard/dashboard-overview-4f2818.png)
+
+<Warning>
+The API key cannot be revealed after you save. Store it securely before proceeding.
+</Warning>
+</Step>
+<Step title="Set permissions">
+Select the permissions your key requires (Read, Write, Delete).
+</Step>
+<Step title="(Optional) Enable Legacy API">
+To use Legacy REST API (Version 1):
+- Click **Show Legacy API Credentials**
+- Copy the Consumer Key and Consumer Secret
+- Enable **MainWP REST API v1 Compatibility**
+![Animation showing Legacy API credentials and Enable REST API v1 Compatibility toggle](/images/dashboard/dashboard-overview-75e153.gif)
+</Step>
+<Step title="Save settings">
+Click **Save Settings** to activate the key.
+</Step>
+</Steps>
+
+The REST API is enabled as long as at least one API key is active.
+
+## REST API Permissions
+
+MainWP REST API uses granular permissions that you can assign individually or in combination.
+
+| Permission | HTTP Methods | Use Case |
+|------------|--------------|----------|
+| **Read** | GET | Retrieve data without modifications |
+| **Write** | POST, PUT | Create or update data, trigger actions |
+| **Delete** | DELETE | Remove data |
+
+<Note>
+API keys created before version 4.5 have all three permissions enabled by default. Edit existing keys to adjust permissions.
+</Note>
+
+![API Key permissions table showing Read, Write, and Delete options](/images/dashboard/dashboard-overview-cab613.png)
+
+## Disable REST API
+
+Navigate to **Dashboard > REST API > Manage API Keys** and disable any enabled keys.
+
+![Manage API Keys page showing enabled keys with disable toggle](/images/dashboard/dashboard-overview-0479f2.png)
+
+## Delete REST API Keys
+
+Navigate to **Dashboard > REST API > Manage API Keys**. Click **Delete** to remove individual keys, or select multiple keys and choose **Delete** from the Bulk actions dropdown.
+
+![Manage API Keys page with Delete button and Bulk actions dropdown](/images/dashboard/dashboard-overview-4a7ea2.png)
+
+## Batch Update Response Handling
+
+Batch update endpoints respond immediately with a confirmation rather than waiting for completion:
+
+```json
+{
+    "success": 1,
+    "message": "Batch updates all started successfully.",
+    "last_time_start_batch_updates": "2024-09-03T16:57:29"
+}
+```
+
+Allow sufficient time for the update process to complete, then sync your Dashboard to fetch updated information.
+
+## API Reference Documentation
+
+For complete endpoint documentation including request parameters, response schemas, and code examples:
+
+<CardGroup cols={2}>
+  <Card
+    title="REST API Reference"
+    icon="code"
+    href="/api-reference/rest-api/overview"
+  >
+    Complete endpoint documentation for sites, updates, clients, and more.
+  </Card>
+  <Card
+    title="Abilities API Reference"
+    icon="robot"
+    href="/api-reference/abilities-api/overview"
+  >
+    Structured capability registry for AI and automation integrations.
+  </Card>
+</CardGroup>

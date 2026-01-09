@@ -1,0 +1,105 @@
+---
+title: Required PHP Functions for MainWP
+sidebarTitle: "Required PHP Functions"
+description: >-
+  PHP functions required for MainWP functionality, including how to check if
+  they're enabled and how to request access from your host.
+---
+
+Most web hosts enable these PHP functions by default. Issues typically arise on shared hosting where providers disable certain functions for security reasons. If you experience problems with specific MainWP features, check whether your host has disabled any of these functions.
+
+## What You'll Learn
+
+- Which PHP functions MainWP requires
+- How to check if functions are enabled
+- How to request function access from your host
+
+---
+
+## Required Functions
+
+| Function | Required For | PHP Extension |
+|----------|-------------|---------------|
+| `imagepng` | PDF generation in Pro Reports | GD |
+| `mb_internal_encoding` | PDF generation in Pro Reports | mbstring |
+| `allow_url_fopen` | PDF generation, remote file access | Core PHP setting |
+| `bccomp` | Google Analytics add-on | BC Math |
+| `putenv` | Google Analytics add-on, Pro Reports with GA data | Core |
+| `curl_init`, `curl_setopt` | Adding child sites, API communication | cURL |
+| `tmpfile` | ZIP uploads, Favorites add-on | Core |
+| `set_time_limit` | Long-running operations, bulk updates | Core |
+
+---
+
+## Check If Functions Are Enabled
+
+### Option 1: MainWP Server Information
+
+Navigate to **MainWP > Info > Server**. This page displays your PHP configuration, including disabled functions.
+
+### Option 2: PHP Info File
+
+Create a temporary file on your server:
+
+```php
+<?php phpinfo(); ?>
+```
+
+Access it through your browser, then search for "disable_functions" to see which functions are blocked. Delete the file after checking.
+
+### Option 3: Contact Hosting Support
+
+Ask your host which functions are disabled and whether they can be enabled for your account.
+
+---
+
+## Symptoms of Disabled Functions
+
+| Missing Function | Symptoms |
+|-----------------|----------|
+| cURL functions | Cannot add child sites, connection errors |
+| `tmpfile` | ZIP uploads fail, plugin/theme installation errors |
+| `imagepng` / `mb_internal_encoding` | Pro Reports PDF generation fails |
+| `set_time_limit` | Bulk operations timeout on large networks |
+| `bccomp` / `putenv` | Google Analytics data unavailable |
+
+---
+
+## Request Function Access
+
+If your host has disabled required functions, contact their support. Here's a template:
+
+> I'm using the MainWP WordPress management plugin, which requires certain PHP functions that appear to be disabled on my hosting account. Could you please enable the following functions for my account?
+>
+> - tmpfile (for plugin/theme uploads)
+> - [list other functions you need]
+>
+> These are standard PHP functions used by many WordPress plugins and should not pose a security risk when used by legitimate software.
+
+---
+
+## Host-Specific Guides
+
+Some hosts require specific steps to enable functions:
+
+- [Enable tmpfile() on Cloudways](/advanced/miscellaneous/enable-tmpfile-php-function-on-cloudways)
+
+If your host doesn't allow enabling these functions, consider a different hosting provider. See [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) for recommended hosts.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Checked MainWP > Info > Server for disabled functions
+- [ ] Verified cURL is enabled
+- [ ] Verified tmpfile is enabled (if using ZIP uploads)
+- [ ] Contacted host if functions are disabled
+- [ ] Tested affected features after enabling functions
+
+---
+
+## Related Resources
+
+- [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Full requirements list
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Provider-specific notes
+- [Resolve System Requirement Issues](/troubleshooting/resolve-system-requirement-issues) - Troubleshooting

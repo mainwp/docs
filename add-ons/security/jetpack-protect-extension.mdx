@@ -1,0 +1,143 @@
+---
+title: Jetpack Protect
+sidebarTitle: "Jetpack Protect"
+description: >-
+  The Jetpack Protect Extension effectively detects vulnerabilities and provides
+  detailed information about them, along with an easy update to the fixed
+  version of WordPress, Plugins, or Themes.
+addonType: integration
+thirdPartyPlugin: Jetpack Protect
+---
+
+## What You'll Learn
+
+- Installing Jetpack Protect extension and plugin
+- Viewing and fixing vulnerabilities on child sites
+- Connecting child sites to Jetpack
+- Using bulk actions to manage multiple sites
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Jetpack Protect"
+  data-purchase-url="https://mainwp.com/extension/jetpack-protect/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-jetpack-protect-extension/"
+  data-integrates-with="Jetpack Protect"
+  data-owned-by="Automattic Inc."
+  data-privacy-url="https://automattic.com/privacy/"
+/>
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Jetpack Protect. Requires Jetpack Protect to be installed on your child sites.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/pSdC5kPPxA4"
+  title="Jetpack Protect - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Jetpack Protect extension allows you to see any vulnerabilities on your child sites directly in your MainWP Dashboard. The extension works in tandem with the [Jetpack Protect](https://wordpress.org/plugins/jetpack-protect/) plugin on your child sites. Both the extension and the plugin are free to download and use.
+
+<Note>
+Jetpack Protect automatically scans your child sites once per day. This means that after resolving vulnerability issues, it can take up to 24 hours before the extension reflects changes.
+</Note>
+
+<Frame>
+  <img src="/images/add-ons/6929ff0b0f8e.png" alt="Screenshot of Jetpack Protect dashboard showing vulnerability counts for child sites" />
+</Frame>
+
+## Installing the extension
+
+First step is to install the Jetpack Protect plugin on the desired child sites and activate it. After that, follow these steps to install the MainWP Jetpack Protect extension.
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions page">
+</Step>
+<Step title="Click the Install Extensions button">
+Click the **Install Extensions** button ![Screenshot highlighting the Install Extensions button on the Extensions page](/images/add-ons/2833252556cc.png)
+</Step>
+<Step title="Locate the Jetpack Protect extension and select it">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Once the installation process is complete, click the Activate Extensions button.">
+Once the installation process is complete, click the **Activate Extensions** button. ![Screenshot showing the Activate Extensions button after Jetpack Protect installation](/images/add-ons/578da5c7dc89.png)
+</Step>
+</Steps>
+
+
+## Vulnerabilities tab
+
+![Screenshot of Jetpack Protect Vulnerabilities tab showing child sites with vulnerability counts](/images/add-ons/jetpack-protect-vulnerabilities.png)
+
+The vulnerabilities tab shows you all the child sites that have the Jetpack Plugin installed, when was the last scan performed, and the number of vulnerabilities found for WordPress core, Plugins, and Themes. You can click on the child site row to expand it and reveal detailed information about the detected vulnerabilities.
+
+### Fix a vulnerability
+
+Then you can click on any of the vulnerabilities to reveal even more information about it, and here you can decide how to fix it. Either to update the plugin/theme or to delete it. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
+
+## Overview tab
+
+This page provides you with additional actions related to the Jetpack Protect plugin. The ellipsis menu reveals additional actions such as the ability to hide the Jetpack Protect plugin on the child site and the ability to disconnect it.
+
+![Animated screenshot showing ellipsis menu with hide and disconnect options](/images/add-ons/jetpack-protect-scan.gif)
+
+The Bulk Actions menu provides the same actions but for multiple child sites at once.
+
+![Animated screenshot demonstrating bulk actions menu for multiple sites](/images/add-ons/04394bef107f.gif)
+
+## Jetpack Protect REST API
+
+All MainWP REST API calls, including full documentation, and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
+
+## Quick Start with Jetpack Protect
+
+The extension works in tandem with the Jetpack Protect plugin on your Child Sites. Both the extension and the plugin are free to download and use.
+
+<Steps>
+<Step title="Install the MainWP Jetpack Protect extension">
+</Step>
+<Step title="Install the Jetpack Protect plugin on all desired child sites">
+</Step>
+<Step title="Navigate to MainWP Dashboard > Extensions > Jetpack Protect page">
+Navigate to **MainWP Dashboard > Extensions > Jetpack Protect** page.
+
+**NOTE**: If you don't immediately see all Child Sites on which you've installed Jetpack Protect plugin, please Synchronize all sites.
+
+![Screenshot of Jetpack Protect extension page with child sites listed](/images/add-ons/jetpack-protect-overview-empty.png)
+</Step>
+<Step title="You should now see all sites in the table, with the red X icon in the Jetpack Connection column">
+You should now see all sites in the table, with the red X icon in the **Jetpack Connection** column
+</Step>
+<Step title="To connect the Jetpack extension to the Jetpack plugin">
+To connect the Jetpack extension to the Jetpack plugin
+    1.  Select all sites in the table
+    2.  From the Bulk actions menu, select **Connect Jetpack**
+    3.  Click **Apply** button ![Animated screenshot showing bulk Connect Jetpack action being applied to multiple sites](/images/add-ons/a02bfdaee9bc.gif)
+</Step>
+<Step title="Perform another synchronization to get fresh data">
+Perform another synchronization to get fresh data.
+
+**NOTE:** After connecting the Child Sites to the Jetpack Protect extension, it can take some time before the Jetpack Scan completes the first scan.
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Jetpack Scan Extension](/add-ons/security/jetpack-scan-extension) - Premium malware scanning
+- [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning

@@ -1,0 +1,196 @@
+---
+title: UpdraftPlus
+sidebarTitle: "UpdraftPlus"
+description: >-
+  Control UpdraftPlus Plugin settings, create backups, schedule automated
+  backups, and restore Child Sites directly from your MainWP Dashboard.
+  Supports both free and premium UpdraftPlus versions.
+addonType: integration
+thirdPartyPlugin: UpdraftPlus
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="UpdraftPlus"
+  data-purchase-url="https://mainwp.com/extension/updraftplus/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-updraftplus-extension/"
+  data-integrates-with="UpdraftPlus"
+  data-owned-by="Updraft WP Software Ltd."
+  data-privacy-url="https://updraftplus.com/data-protection-and-privacy-centre/"
+/>
+
+## What You'll Learn
+
+- Installing the UpdraftPlus extension and plugin
+- Configuring backup schedules and settings
+- Creating and restoring backups from MainWP
+- Managing per-site backup configurations
+
+---
+
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with UpdraftPlus. Requires UpdraftPlus to be installed on your child sites.
+</Info>
+
+Installation of the MainWP UpdraftPlus Extension requires two important steps:
+
+-   Installing the Extension itself on your MainWP Dashboard site
+-   Installing the UpdraftPlus plugin on Child Sites
+
+### Installing the Extension
+
+The MainWP UpdraftPlus Extension needs to be installed only on your MainWP Dashboard site. You can [install it as any other MainWP Extension.](/dashboard/overview/manage-extensions#install-extensions)
+
+### Installing the Plugin
+
+For the proper use of the MainWP UpdraftPlus Extension, you need to install the UpdraftPlus Plugin on your child sites.
+
+### Install from MainWP Dashboard
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Plugins > Install > Upload page">
+</Step>
+<Step title="Click the Upload Now button">
+</Step>
+<Step title="Upload the UpdraftPlus plugin">
+</Step>
+<Step title="Select your child sites">
+[Select your child](/getting-started/mainwp-user-interface) sites
+</Step>
+<Step title="In the Installation Options box, make sure that the Activate after installation option is selected.">
+In the **Installation Options** box, make sure that the **Activate after installation option** is selected.
+</Step>
+<Step title="Click the button to complete the installation.">
+</Step>
+<Step title="Once the installation is complete, Sync your MainWP Dashboard">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins from the MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
+
+### Install directly on Child Site
+
+<Steps>
+<Step title="Login into your child site">
+</Step>
+<Step title="Go to the WP > Plugins > Add New page">
+</Step>
+<Step title="Click the Upload Plugin button">
+</Step>
+<Step title="Upload the UpdraftPlus plugin">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Click the Activate button">
+</Step>
+</Steps>
+
+
+For additional help with installing WordPress plugins, please review this [help document.](https://wordpress.org/documentation/article/manage-plugins/)
+
+#### Important Note
+
+After installing the UpdraftPlus plugin, it is required to Synchronize your sites so your MainWP Dashboard becomes aware that the plugin has been installed and activated.
+
+## UpdraftPlus Backups Dashboard
+
+From the **MainWP > Extensions > UpdraftPlus > Overview page****,** you can monitor all of your child sites where you have the UpdraftPlus plugin installed. In the sites list, you will be notified if the plugin has an update available or if the plugin is deactivated.
+
+-   In case the plugin is not activated, the **Activate** action will appear in the corresponding site row.
+-   If there is a new version of the plugin, the **Update** action will appear in the corresponding site row.
+
+### Available Actions
+
+From the **MainWP > Extensions > UpdraftPlus > Overview page****,** you can **hide/unhide** the UpdraftPlus plugin on your child sites, quickly **access** the plugin settings on a child site or the WP Admin section. Actions are provided in the actions menu.
+
+#### Important Notes
+
+If you know that you have the plugin installed on a child site, but the child site doesn't appear in the list, try to re-sync your sites.
+
+## UpdraftPlus Settings
+
+MainWP UpdraftPlus Extension allows you to manage UpdraftPlus Plugin settings on your child sites. From the settings tab, you can set the following options for your child sites.
+
+-   Files Backup Schedule
+-   Database Backup Schedule
+-   Include/Exclude Files from Backups
+-   Database options
+-   Notifications
+-   Set Remote Storage options
+    -   Note: Due to security reasons imposed by the providers of remote storage options, some of them may need to be authenticated on the child site itself. After that initial authentication, the rest of the setup can be performed via MainWP Dashboard.
+-   Advanced Debugging Options
+
+If you use the Premium version of the UpdraftPlus Plugin, make sure the Use Premium Version is set to YES. This will show you premium version options.
+
+<Frame>
+  <img src="/images/add-ons/updraftplus-premium-toggle.jpg" alt="Screenshot of UpdraftPlus extension settings with Use Premium Version toggle" />
+</Frame>
+
+### UpdraftPlus Settings per Child Site
+
+All UpdraftPlus Settings can be set separately for different child sites. To do this, go to the MainWP > Sites page, and in the sites table, under the child site URL, you can find the UpdraftPlus Backup/Restore link. This link will open Individual site UpdraftPlus Options. The Settings tab will show you all plugin options to set custom settings for the child site. To override global options, set the **Override General Settings** to **YES** and click the Save button.
+
+## MainWP UpdraftPlus Extensions Backup/Restore
+
+To backup your child site with the MainWP UpdraftPlus Extension
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the site that you want to backup and click Edit action">
+</Step>
+<Step title="Go to the UpdraftPlus tab">
+![Go to the UpdraftPlus tab](/images/add-ons/updraftplus-tab.png)
+
+</Step>
+</Steps>
+
+
+**You can get to the UpdraftPlus Backups tab from various places. In the extension settings page, in all provided tables, you will find the Backup Now link. It will lead you directly to the child site backup page.**
+
+On the backup child site UpdraftPlus Backups page on the Status tab:
+
+<Frame>
+  <img src="/images/add-ons/updraftplus-status-tab.png" alt="Screenshot of UpdraftPlus Status tab with Backup Now and Restore buttons" />
+</Frame>
+
+You will find the Backup Now and Restore buttons. To create a Backup of your child site, click the **Backup Now** link. To restore a backup of your child site, click the **Restore** button, and follow the process.
+
+<Frame>
+  <img src="/images/add-ons/updraftplus-backup-restore-buttons.png" alt="Screenshot showing Backup Now and Restore buttons on the UpdraftPlus Status tab" />
+</Frame>
+
+## Schedule Backups With MainWP UpdraftPlus Extension
+
+MainWP UpdraftPlus Extension allows you to schedule your backups easily. To set scheduled backups, go to the Extension Settings page and locate the **File Backups Intervals** and the **Database Backup Intervals** options.
+
+<Frame>
+  <img src="/images/add-ons/updraftplus-schedule-options.png" alt="Screenshot of File Backup and Database Backup schedule interval options" />
+</Frame>
+
+Set the frequency of the wanted backup and click the **Save Settings** button at the bottom of the page. To see your schedule status, go to the **Scheduled Backups** tab, and check the times in the provided table.
+
+<Frame>
+  <img src="/images/add-ons/updraftplus-scheduled-backups-tab.png" alt="Screenshot of Scheduled Backups tab showing backup schedule status table" />
+</Frame>
+
+<Tip>
+To be sure you see the fresh data, select wanted sites, and click the Reload Data button.
+</Tip>
+
+---
+
+## Related Resources
+
+- [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
+- [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
+- [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp) - Installing plugins on child sites

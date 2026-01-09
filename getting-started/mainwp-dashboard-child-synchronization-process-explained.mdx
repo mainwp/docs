@@ -1,0 +1,71 @@
+---
+title: How MainWP Syncs with Child Sites
+description: >-
+  Learn how MainWP Dashboard communicates with Child Sites via HTTPS requests
+  using cURL. Understand the sync process, OpenSSL encryption, and asymmetric
+  cryptography that secures the connection between your Dashboard and sites.
+---
+
+MainWP Dashboard communicates with child sites by executing HTTPS requests using [cURL](https://www.php.net/manual/en/intro.curl.php). Each sync request contains three required parameters:
+
+| Parameter | Purpose |
+|-----------|---------|
+| **Username** | Administrator username for establishing the secure connection |
+| **Function** | Name of the function to execute on the child site |
+| **MainWP Signature** | Authentication signature. If it doesn't match, the request fails. |
+
+## Example Sync Request
+
+```
+https://childsite.com/wp-admin/admin-ajax.php?user=demouser&function=stats&mainwpsignature=dgTOIUbQyBWvCh0pNhnwmxmHoeayfg34...
+```
+
+This request executes the `stats` function after authentication. The sync request passes data from Dashboard to child sites, including settings like Abandoned Plugins/Themes tolerance (`&numberdaysOutdatePluginTheme=365`).
+
+<Note>
+Some MainWP settings require syncing after changes because the sync request sets values on child sites.
+</Note>
+
+## Extension Data in Sync Requests
+
+MainWP provides the `mainwp-sync-others-data` hook for extensions to include data in sync requests. The `othersData` parameter contains encoded data for plugins like BackWPup, BackupWordPress, BackupBuddy, Client Reports, WP Staging, WP Time Capsule, UpdraftPlus, Page Speed, and WP Rocket.
+
+## What the Sync Process Retrieves
+
+The sync request executes `get_site_stats()` in the MainWP Child plugin (via `&function=stats`). This function fetches information from child sites and passes it to your Dashboard:
+
+- Available updates for plugins, themes, and WordPress core
+- Potentially abandoned plugins/themes
+- Site health data
+- Extension-specific data
+
+## Performance Considerations
+
+Synchronizing with child sites requires CPU resources, so you may see a brief spike in CPU usage on your Dashboard server.
+
+If sync operations cause availability issues for other sites on the same server:
+- Increase server resources
+- Decrease **Maximum simultaneous sync requests** at **Dashboard > Settings > Advanced Settings** (increases sync time but reduces CPU load)
+
+## Sync Request Security
+
+When MainWP Dashboard first connects to a child site, it generates a 2048-bit public/private key pair using the `openssl_pkey_new()` function. The public key is stored on the child site; the private key is stored on the Dashboard.
+
+| Step | Function | Location |
+|------|----------|----------|
+| Sign request | `openssl_sign()` | MainWP Dashboard |
+| Verify request | `openssl_verify()` | MainWP Child plugin |
+
+The Dashboard signs each request with the private key. The Child plugin verifies the signature using the public key. Requests with invalid signatures are rejected.
+
+## How Asymmetric Cryptography Works
+
+Asymmetric encryption uses key pairs where one key encrypts data and only the other key can decrypt it.
+
+**Example:** John wants to send sensitive data to Alice.
+1. John encrypts the data using Alice's public key
+2. Only Alice has the corresponding private key
+3. Only Alice can decrypt the data back to its original form
+4. Even if someone intercepts the encrypted data, they cannot read it without Alice's private key
+
+MainWP uses this principle: the Dashboard signs requests with its private key, and child sites verify them with the corresponding public key. This ensures requests genuinely come from your authorized Dashboard.

@@ -1,0 +1,197 @@
+---
+title: Lighthouse
+sidebarTitle: "Lighthouse"
+description: >-
+  MainWP Lighthouse WordPress Extension is used for measuring the quality of
+  your websites. It uses the Google PageSpeed Insights API to audit the
+  performance, accessibility, and search engine optimization of your WordPress
+  sites.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Installing and configuring the Lighthouse add-on
+- Running performance audits on child sites
+- Getting your Google PageSpeed Insights API key
+- Understanding Lighthouse scores and reports
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Lighthouse"
+  data-purchase-url="https://mainwp.com/extension/lighthouse/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-lighthouse-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/GNYKJsoJso8"
+  title="MainWP Lighthouse add-on - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## Install and Set MainWP Lighthouse Add-on
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-ons page">
+</Step>
+<Step title="Click the Install Add-ons button">
+</Step>
+<Step title="Locate the Lighthouse add-on and select it">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Once the installation process is complete, click the Activate Add-ons button">
+</Step>
+</Steps>
+
+
+![Screenshot of Lighthouse add-on installation confirmation page](/images/add-ons/445c4bb68bdc.png)
+
+-   After successful installation, proceed to the Lighthouse settings
+-   Insert your **Google PageSpeed Insights API key**. If you don't have it, [see here how to get it](#get-the-google-pagespeed-insights-api-key).  
+    ![Screenshot of Lighthouse settings page with Google PageSpeed Insights API key field](/images/add-ons/876c22954fd1.png)
+    
+-   **Save Settings**, and you are ready to audit your sites.
+
+## Audit Child Sites
+
+![Screenshot of Lighthouse Dashboard page with Audit All Sites button](/images/add-ons/46448916b42b.png)
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > Lighthouse > Dashboard page.">
+</Step>
+<Step title="Locate the Audit All Sites button">
+</Step>
+<Step title="Click it, and wait until the add-on completes the process.">
+</Step>
+</Steps>
+
+
+Alternatively,  you can use the **Bulk Actions** menu to audit only certain sites, or if needed use the Audit Site action from the site **Action Menu** to audit just one site.
+
+
+## Schedule Automated Audits
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > Lighthouse > Settings page.">
+</Step>
+<Step title="Locate the Automatically audit sites option and Enable it.">
+Locate the **Automatically audit sites** option and Enable it.![Screenshot showing Automatically audit sites toggle option](/images/add-ons/lighthouse-seo-score.jpg)
+</Step>
+<Step title="Locate the Automated audit frequency option and set how often you want to check your sites.">
+Locate the **Automated audit frequency** option and set how often you want to check your sites.![Screenshot showing Automated audit frequency dropdown options](/images/add-ons/lighthouse-performance-score.jpg)
+</Step>
+<Step title="Save Settings.">
+</Step>
+</Steps>
+
+
+Get Lighthouse Report for a Site
+
+<Steps>
+<Step title="Go to the Lighthouse > Dashboard page">
+</Step>
+<Step title="Locate the site and click the Lighthouse Report action from the Actions Menu">
+Locate the site you want to check in the list and click use the **Lighthouse Report** action from the Actions Menu  
+    ![Screenshot showing Lighthouse Report action in site Actions Menu](/images/add-ons/65dc0ec03c90.png)
+    
+</Step>
+<Step title="Once redirected to the report page, you can review all details">
+</Step>
+</Steps>
+
+
+## Widgets and Manage Sites table information
+
+You can enable Performance Score columns (Desktop and Mobile) for the Manage Sites table from the Page Settings menu.
+
+![Screenshot of Page Settings menu with Performance Score columns option](/images/add-ons/268cb5b38c9f.png)
+
+Widgets are available on the main Overview page and on the Child Site's Overview page. 
+
+They can also be enabled in the Page Settings on the relevant page.
+
+The widget on the main Overview page provides scores for the best and worst performing sites:
+
+![Animated screenshot of Lighthouse widget showing best and worst performing sites](/images/add-ons/lighthouse-widget-scores.gif)
+
+And the widget on the Child Site's Overview page provides scores for Desktop and Mobile and how that score has changed since the preceding audit.
+
+![Screenshot of Lighthouse widget on child site page showing Desktop and Mobile scores with change indicators](/images/add-ons/lighthouse-dashboard.png)
+
+## Lighthouse Settings
+
+![Screenshot of Lighthouse settings page showing all configuration options](/images/add-ons/lighthouse-widget.png)
+
+-   **Google PageSpeed Insights API key** - In order to run audits, you need to enter your Google PageSpeed API key, if you don't have it, [see here how to get it](/add-ons/performance/mainwp-lighthouse-extension#get-the-google-pagespeed-insights-api-key).
+-   **Language** - Select language for Lighthouse reports.
+-   **Strategy** - Select if you want to get reports for Desktop, Mobile, or Both versions of sites.
+-   **Notifications threshold** - Set the threshold for notifications. If the score goes under the set value, the add-on will notify you.
+-   **Automatically audit sites** - If you want the add-on to automatically run audits, enable this feature.
+-   **Automated audit frequency** - If automated audits are enabled, here you can set how often you want them to run.
+-   **Maximum execution time** - Change the Max execution time if needed. If the Lighthouse reports are not being completed, increasing this value may help.
+-   **Maximum script run time** - Change the Max script run time if needed. If your scans do not finish completely and changing the Maximum Execution Time does not help, increase this value until you find the maximum allowed runtime.
+-   **Throttling delay time** - Change the Throttling delay time. Increasing this value may slow down Lighthouse reporting, but may help provide more accurate reports on poorly performing web servers.
+
+## Audit Sites via WP CLI
+
+Scan one or multiple sites:
+
+wp mainwp-lighthouse audit 125,126
+
+or all
+
+wp mainwp-lighthouse audit --all
+
+## Lighthouse REST API
+
+All MainWP REST API calls, including full documentation, and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview).
+
+Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
+
+## Get the Google PageSpeed Insights API Key
+
+<Steps>
+<Step title="Log into your Google account.">
+</Step>
+<Step title="Navigate to https://developers.google.com/speed/docs/insights/v5/get-started and click Get a Key button">
+Navigate to [https://developers.google.com/speed/docs/insights/v5/get-started](https://developers.google.com/speed/docs/insights/v5/get-started) and click **Get a Key** button  
+    ![Screenshot of Google PageSpeed documentation page with Get a Key button](/images/add-ons/62ce1ad35182.png)
+</Step>
+<Step title="Select existing or Create a new project and click Next">
+**Select** existing or **Create** a new project and click **Next  
+    ![Screenshot of project selection dialog for API key creation](/images/add-ons/69254f6a7899.png)**
+</Step>
+<Step title="Copy API Key to clipboard and click Done">
+**Copy API Key** to clipboard and click **Done  
+    ![Screenshot showing generated API key ready to copy](/images/add-ons/lighthouse-settings.png)**
+</Step>
+<Step title="Paste the Key to the add-on Settings.">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
+- [Cache Control](/add-ons/performance/cache-control-extension) - Performance optimization
+- [WP Rocket Extension](/add-ons/performance/rocket-extension) - Advanced caching tools

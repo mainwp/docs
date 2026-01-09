@@ -1,0 +1,114 @@
+---
+title: Does MainWP Child plugin affect my child site loading time?
+sidebarTitle: "Child Plugin Performance"
+description: >-
+  Testing with Pingdom, Lighthouse, and GTMetrix shows the MainWP Child plugin
+  has no measurable impact on child site loading time. Average load times were
+  nearly identical with and without the plugin active.
+---
+
+The MainWP Child plugin has no measurable impact on child site loading time. Testing with multiple industry-standard tools shows load times are virtually identical with and without the plugin active.
+
+## What You'll Learn
+
+- Performance test methodology used
+- Detailed results from three testing tools
+- How the Child plugin handles requests
+
+## Test Results Summary
+
+| Tool | Without MainWP Child | With MainWP Child | Difference |
+|------|---------------------|-------------------|------------|
+| Pingdom | 241 ms | 221 ms | -20 ms |
+| Lighthouse | 0.33 s | 0.33 s | 0 ms |
+| GTMetrix | 933 ms | 951 ms | +18 ms |
+
+The differences are within the normal variance of page load testing and show no consistent performance impact.
+
+---
+
+## Detailed Test Results
+
+### Pingdom
+
+**Without MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 299 ms |
+| 2 | 187 ms |
+| 3 | 237 ms |
+| **Average** | **241 ms** |
+
+**With MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 244 ms |
+| 2 | 187 ms |
+| 3 | 234 ms |
+| **Average** | **221 ms** |
+
+---
+
+### Lighthouse
+
+**Without MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 0.3 s |
+| 2 | 0.4 s |
+| 3 | 0.3 s |
+| **Average** | **0.33 s** |
+
+**With MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 0.4 s |
+| 2 | 0.3 s |
+| 3 | 0.3 s |
+| **Average** | **0.33 s** |
+
+---
+
+### GTMetrix
+
+**Without MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 979 ms |
+| 2 | 927 ms |
+| 3 | 893 ms |
+| **Average** | **933 ms** |
+
+**With MainWP Child:**
+
+| Run | Load Time |
+|-----|-----------|
+| 1 | 977 ms |
+| 2 | 901 ms |
+| 3 | 974 ms |
+| **Average** | **951 ms** |
+
+---
+
+## Why There's No Performance Impact
+
+The MainWP Child plugin is designed to have minimal footprint on frontend performance:
+
+- **Backend-only processing** - The plugin primarily handles admin-side operations
+- **No frontend scripts** - No JavaScript or CSS added to public-facing pages
+- **Request-based activation** - Code only runs when the Dashboard communicates with the site
+- **Optimized queries** - Database interactions are minimized and optimized
+
+Normal visitors to your site won't experience any slowdown from having MainWP Child installed.
+
+---
+
+## Related Resources
+
+- [How Secure is the MainWP Plugin](/getting-started/how-secure-is-the-mainwp-plugin) - Security considerations
+- [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Requirements for optimal performance

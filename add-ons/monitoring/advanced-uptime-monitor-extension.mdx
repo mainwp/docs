@@ -1,0 +1,303 @@
+---
+title: Advanced Uptime Monitor
+sidebarTitle: "Uptime Monitor"
+description: >-
+  This Advanced Uptime Monitor for WordPress is a free MainWP extension that
+  extends your ability to monitor the uptime of all your connected Child Sites
+  at once on one screen.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Creating and managing uptime monitors
+- Connecting Uptime Robot and Better Uptime accounts
+- Understanding monitor types (HTTP, ping, keyword, port)
+- Scheduling automated uptime checks
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Advanced Uptime Monitor"
+  data-purchase-url="https://mainwp.com/extension/advanced-uptime-monitor/"
+  data-pricing-tier="free"
+  data-bundle="Essentials"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-advanced-uptime-monitor-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/3PIsyNM3OM0"
+  title="Advanced Uptime Monitor - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The MainWP Advanced Uptime Monitor extension allows you to monitor your websites' uptime by integrating with various uptime monitoring services through their APIs. This extension enables you to create, edit, display, or delete your monitors directly from the MainWP Dashboard.
+
+The extension currently supports these uptime monitoring services:
+
+-   Uptime Robot
+-   Better Uptime
+-   NodePing
+-   Site24x7
+
+The extension itself does not check for uptime, nor does it notify in case of some event. Both of these actions are performed by third-party uptime monitoring services.
+
+## Create New Monitor
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Monitoring tab">
+</Step>
+<Step title="Click the Create New Monitor button">
+
+<Frame>
+  <img src="/images/add-ons/12b13b1f88cc.png" alt="Click the Create New Monitor button" />
+</Frame>
+</Step>
+<Step title="A popup screen will appear">
+
+<Frame>
+  <img src="/images/add-ons/uptime-monitor-create-dialog.png" alt="A popup screen will appear" />
+</Frame>
+
+1.  Select **Monitor Type**
+2.  Set **Monitor Friendly Name**
+3.  Add **URL or IP** address of your website
+4.  Set **Monitor Interval**
+5.  Select **Contacts to Notify**
+</Step>
+</Steps>
+
+
+### Monitor Types
+
+-   **http(s):** Perfect for website monitoring. The service regularly sends requests (which are the same as if a visitor is browsing your website) to the URL and decides if it is up or down depending on the HTTP statuses returned from the website (200-success, 404-not found, etc.)
+-   **ping:** Good for monitoring a server. Ping (ICMP) requests are sent, and up/down status is decided according to whether responses are received. Ping is not a good fit for monitoring websites as a website (its IP) can respond to ping requests while it is down (which means that the site is down but the server hosting the site is up)
+-   **keyword:** Checks if a keyword exists or does not exist on a web page
+-   **port:** Good for monitoring services like SMTP, DNS, POP as all these services run from a specific port, and Uptime Robot decides their statuses based on whether they respond to the requests
+
+## Edit Monitor
+
+<Frame>
+  <img src="/images/add-ons/uptime-monitor-list-edit.png" alt="Edit monitor button" />
+</Frame>
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Got to the Monitoring tab">
+</Step>
+<Step title="Locate the Monitor that you want to Edit">
+</Step>
+<Step title="Click the Edit button in the corresponding row">
+</Step>
+<Step title="Once to popup screen opens">
+Once the popup screen opens:
+
+1.  Edit monitor data
+2.  Click the **Save** button
+</Step>
+</Steps>
+
+
+## Start-Pause Monitor
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Monitoring tab">
+</Step>
+<Step title="Locate the Monitor that you want to Start / Pause">
+</Step>
+<Step title="Click the Start / Pause button in the corresponding row">
+</Step>
+</Steps>
+
+<Frame>
+  <img src="/images/add-ons/11cf45ae833e.png" alt="Pause monitor button" />
+</Frame>
+
+## Monitor Statistics
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Monitoring tab">
+</Step>
+<Step title="Locate the Monitor that you want to check">
+</Step>
+<Step title="Click the Details button in the corresponding row">
+</Step>
+</Steps>
+
+<Frame>
+  <img src="/images/add-ons/uptime-monitor-list-details.png" alt="Monitor details view" />
+</Frame>
+
+## Delete Monitor
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Monitoring tab">
+</Step>
+<Step title="Locate the Monitor that you want to Delete">
+</Step>
+<Step title="Click the Delete button in the corresponding row">
+</Step>
+</Steps>
+
+<Frame>
+  <img src="/images/add-ons/uptime-monitor-delete-button.png" alt="Delete monitor button" />
+</Frame>
+
+## Create Monitors for All Child Sites
+
+To automatically create monitors for all child sites that don't have corresponding monitors:
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Monitoring tab">
+</Step>
+<Step title="Click the Create Monitors for all Sites button">
+</Step>
+<Step title="The extension will automatically create HTTP(s) monitors">
+</Step>
+</Steps>
+
+
+## Connect Your Uptime Robot Account
+
+To get your Uptime Robot API Key to use the [MainWP Advanced Uptime Monitor](https://mainwp.com/extension/advanced-uptime-monitor/) extension, visit the [Uptime Robot Webpage.](http://uptimerobot.com/)
+
+<Steps>
+<Step title="Click the Sign-Up button (If you already have an account, proceed to step 4)">
+Click the **Sign-Up** button _(If you already have an account, proceed to step 4)_
+
+<Frame>
+  <img src="/images/add-ons/uptime-robot-homepage-signup.jpg" alt="Uptime Robot - Signup" />
+</Frame>
+</Step>
+<Step title="Fill up the registration form and check your email to activate your account">
+Fill up the registration form and check your email to activate your account. Follow the link in the email. You will get the confirmation note.
+</Step>
+<Step title="After confirmation, you are successfully registered">
+After confirmation, you are successfully registered. Next, you need to log in and generate an API Key.
+</Step>
+<Step title="Click the Login button">
+</Step>
+<Step title="When you type in your email address and password and click the Login button, you will be prompted to the Account Dashboard page">
+When you type in your email address and password and click the **Login** button, you will be prompted to the **Account Dashboard** page
+</Step>
+<Step title="Proceed to the My Settings page">
+Proceed to the **My Settings** page
+
+<Frame>
+  <img src="/images/add-ons/83b42e1d1e46.jpg" alt="Uptime Robot - My Settings" />
+</Frame>
+</Step>
+<Step title="Scroll down to the API Information area and click the Create the main API key link">
+Scroll down to the API Information area and click the **Create the main API key** link
+</Step>
+<Step title="Then it will show you the Create the main API key button, click that button">
+Then it will show you the **Create the main API key** button, click that button
+
+<Frame>
+  <img src="/images/add-ons/uptime-robot-create-api-key.jpg" alt="Uptime Robot - Create the Main API Key" />
+</Frame>
+</Step>
+<Step title="And your API Key will appear.">
+</Step>
+</Steps>
+
+
+Before being able to create, display, or manage your monitors, you need to add your [Uptime Robot API key](/add-ons/monitoring/advanced-uptime-monitor-extension#create-uptime-robot-api-key) to your Advanced Uptime Monitor extension.
+
+<Steps>
+<Step title="Login in to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Advanced Uptime Monitor page">
+</Step>
+<Step title="Go to the Settings tab">
+
+<Frame>
+  <img src="/images/add-ons/1a931013f05d.png" alt="Go to the Settings tab" />
+</Frame>
+
+1.  Enter your **Uptime Robot Main API Key** in the provided field
+2.  Click the **Save Settings** button
+</Step>
+</Steps>
+
+
+After you connect your account, you will be able to set the default Notification email address.
+
+### API limitations of the free Uptime Robot plan
+
+Uptime Robot has recently reduced the limit to only **10 requests per minute**. Requests include creating new monitors through the MainWP extension and fetching information about existing monitors. Reaching the limit is fairly easy for a large number of sites.
+
+This limit is most often hit when creating monitors for all sites by clicking the **"Create Monitors for All Sites"** button in the UI. You will likely be able to create 2 or 3 monitors **per attempt** and receive an error (red exclamation mark) for other sites because the API limit will be reached.
+
+<Frame>
+  <img src="/images/add-ons/22a002fdb75f.png" alt="Screenshot showing API rate limit error when creating monitors for all sites" />
+</Frame>
+
+## How to get a Better Uptime API token
+
+To get the Better Uptime API token:
+
+<Steps>
+<Step title="Login to your Better Uptime account">
+</Step>
+<Step title="Go to the Integrations > APIs page">
+</Step>
+<Step title="Copy the REST API token">
+
+<Frame>
+  <img src="/images/add-ons/better-uptime-api-token.jpg" alt="Better Uptime REST API token" />
+</Frame>
+</Step>
+</Steps>
+
+<Warning>
+**Important Notes:**
+- MainWP Advanced Uptime Monitor Extension does not support Monitor Specific API Keys.
+- If you cannot create your first monitor from the MainWP Advanced Uptime Monitor Extension, try creating the first monitor directly in the Uptime Robot dashboard, then create subsequent monitors from your Extension.
+- If you cannot connect your account, try re-creating your Uptime Robot API key and try again.
+- If data is not loading properly from your Uptime Robot account, try resaving the Uptime Robot settings in the Advanced Uptime Monitor Extension.
+</Warning>
+
+---
+
+## Related Resources
+
+- [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
+- [Domain Monitor](/add-ons/monitoring/mainwp-domain-monitor-extension) - Track domain expiration
+- [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Monitor SSL certificates

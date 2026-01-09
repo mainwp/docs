@@ -1,0 +1,93 @@
+---
+title: Conditional Messages in Pro Reports
+sidebarTitle: "Conditional Messages"
+description: >-
+  Pro Reports doesn't support conditional text in templates via raw PHP because
+  the template PHP runs before tokens are replaced. Learn how to use filters to
+  modify parsed token arrays for conditional output.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Understanding why raw PHP conditions don't work in templates
+- Using Pro Reports filter hooks for conditional output
+- Creating custom placeholder tokens
+- Building conditional messages based on data values
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+Pro Reports doesn’t support conditional text in templates via raw PHP, because the template PHP runs before tokens are replaced (so variables still contain the literal token strings). To change output based on actual token values, modify the parsed token arrays with filters and output into your own placeholder token.
+
+Two filters are available for this purpose:
+
+-   `mainwp_pro_reports_parsed_section_tokens`
+-   `mainwp_pro_reports_parsed_other_tokens`  
+    Use them to read existing values and set your own token’s value. Do not change the structure or order of the arrays, only the values.
+
+If your condition relies on a “count” token (e.g., `[plugin.updated.count]`), remember those must be placed outside section tags in the template.
+
+A full token reference is here: [https://mainwp.com/kb/available-pro-reports-tokens/](/add-ons/reporting/available-pro-reports-tokens)
+
+## How to use it
+
+1.  In your report template, insert a custom placeholder where the message should appear, e.g. `[my.custom.message]`. (You’re just placing a token name; you’ll set its value via the filter.)
+2.  Add your code on the **Dashboard**, either in your Dashboard theme’s `functions.php` or via the **Custom Dashboard** extension.
+3.  In your filter, read the parsed token you care about (for example `[plugin.updated.count]`) and set the value for your placeholder token. Don’t alter array structure or token order.
+4.  (General setup reminder) Pro Reports pulls activity from the free **MainWP Child Reports** plugin so new installs may need some time to record data.
+
+## Example: one message for 0, 1, or many updates
+
+**Goal**
+
+-   0 → “No updates needed this month.”
+-   1 → “We performed 1 update during this period.”
+-   ≥2 → “We performed X updates during this period.”
+
+**Template**  
+Place `[my.custom.message]` where the text should appear. If you also show a count like `[plugin.updated.count]`, keep that outside any section token.
+
+```php
+add_filter( 'mainwp_pro_reports_parsed_other_tokens', 'my_custom_parsed_other_tokens_messages', 10, 3 );
+function my_custom_parsed_other_tokens_messages( $parsed_other_tokens, $report, $website ) {
+
+// Read the parsed count token that Pro Reports provides.
+if ( is_array( $parsed_other_tokens )
+     && isset( $parsed_other_tokens['other_tokens_data']['body']['[plugin.updated.count]'] ) ) {
+
+    $count = (int) $parsed_other_tokens['other_tokens_data']['body']['[plugin.updated.count]'];
+
+    if ( $count === 0 ) {
+        $msg = 'No updates needed this month.';
+    } elseif ( $count === 1 ) {
+        $msg = 'We performed 1 update during this period.';
+    } else {
+        $msg = sprintf( 'We performed %d updates during this period.', $count );
+    }
+
+    // Output into your custom placeholder token.
+    $parsed_other_tokens['other_tokens_data']['body']['[my.custom.message]'] = $msg;
+}
+
+return $parsed_other_tokens;
+}
+```
+
+**Why this works**
+
+-   The condition runs **after** Pro Reports has built the token array, so `[plugin.updated.count]` is a real integer, not a placeholder string.
+-   You’re only changing token **values**, as required by the filter contract.
+
+If you want different drivers (themes, WordPress core, etc.), swap `[plugin.updated.count]` for the relevant token from the tokens list.
+
+---
+
+## Related Resources
+
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation

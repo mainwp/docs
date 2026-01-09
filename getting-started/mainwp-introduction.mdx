@@ -1,0 +1,64 @@
+---
+title: MainWP Introduction
+description: >-
+  Learn what MainWP is and how it works. MainWP is a free, open-source,
+  self-hosted WordPress management solution using the MainWP Dashboard
+  and Child plugins with OpenSSL encryption for secure communication.
+---
+
+This is Part 1 of the MainWP Getting Started guide. [Continue to Part 2: Get Started with MainWP →](/getting-started/get-started-with-mainwp)
+
+## What is MainWP
+
+MainWP is a free, open-source, self-hosted solution for managing multiple WordPress sites. Whether maintaining personal blogs or client sites, MainWP provides centralized management.
+
+MainWP consists of two essential plugins:
+
+- **MainWP Dashboard** - Your control center, installed on a dedicated WordPress site
+- **MainWP Child** - Deployed on each WordPress site you want to manage
+
+<Note>
+MainWP is not designed for WordPress Multisite setups.
+</Note>
+
+### MainWP Dashboard
+
+The Dashboard plugin operates as your control center for all managed sites. We highly recommend installing it on a clean, dedicated WordPress installation to avoid plugin conflicts.
+
+### MainWP Child
+
+The Child plugin enables secure communication between your Dashboard and managed sites, allowing remote management and automated actions.
+
+## Is it Secure?
+
+### Encryption & Key Management
+
+MainWP uses OpenSSL encryption (2048-bit) for all communication between your Dashboard and Child sites. During the initial connection, a public-private key pair is generated. The public key is stored on child sites, and the private key remains on the Dashboard.
+
+To disconnect a child site, you need access to that site's WordPress admin credentials.
+
+### Privacy Philosophy
+
+Since MainWP operates entirely on your server with open-source, unencrypted code, you can audit the complete codebase via [GitHub](https://github.com/mainwp/mainwp). We do not track or keep any information about your child sites.
+
+## How it Works
+
+### Communication Protocol
+
+MainWP communicates with your child sites using:
+
+- **Ports**: 80 (HTTP) and 443 (HTTPS)
+- **Encryption**: OpenSSL when available
+- **User-Agent**:
+
+```
+Mozilla/5.0 (compatible; MainWP/[version]; +https://mainwp.com)
+```
+
+### No Footprint
+
+By default, MainWP leaves no server footprint, maintaining complete privacy on your installation.
+
+---
+
+**Next Step**: [Get Started with MainWP →](/getting-started/get-started-with-mainwp)

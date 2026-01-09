@@ -1,0 +1,53 @@
+---
+title: What does "Possibly Abandoned" mean?
+description: >-
+  MainWP checks the last updated status of plugins and themes and alerts you
+  if they haven't been updated within a threshold (default 365 days). This helps
+  identify potentially abandoned plugins or themes.
+---
+
+MainWP marks plugins and themes as "Possibly Abandoned" when the author has not released an update for a specified period. By default, this threshold is 365 days. Items without an official release for this duration appear in the Abandoned Plugins and Abandoned Themes sections of your Dashboard.
+
+## Why This Matters
+
+Abandoned plugins and themes can create problems for your sites:
+
+| Risk | Impact |
+|------|--------|
+| Security vulnerabilities | No patches for discovered security issues |
+| Compatibility issues | May break with newer WordPress or PHP versions |
+| Missing features | No improvements or bug fixes |
+| Support unavailable | Developer may no longer provide assistance |
+
+## How MainWP Detects Abandonment
+
+MainWP checks the last-updated date on wordpress.org for each plugin and theme. If no update has been released within your configured threshold, the item is flagged as possibly abandoned.
+
+<Note>
+MainWP can only check items listed on wordpress.org. Premium plugins and themes or those delisted from wordpress.org cannot be detected as abandoned.
+</Note>
+
+## Where to View Abandoned Items
+
+Find abandoned items at:
+
+- **MainWP > Updates > Abandoned Plugins**
+- **MainWP > Updates > Abandoned Themes**
+
+## What to Do with Abandoned Items
+
+1. **Assess the risk** - Consider if the plugin is critical and if alternatives exist
+2. **Check GitHub** - Some plugins have active development on GitHub even without wordpress.org updates
+3. **Find alternatives** - Search for actively maintained replacements
+4. **Plan migration** - Replace abandoned items before they cause issues
+
+## Adjust the Threshold
+
+To change the number of days or disable this check, see [How to change tolerance for Abandoned Plugins and Themes](/sites/updates/how-to-change-tolerance-for-abandoned-plugins-and-themes).
+
+---
+
+## Related Resources
+
+- [Check for Abandoned Plugins and Themes](/sites/plugins/check-for-abandoned-plugins-and-themes) - Manual abandonment checks
+- [Change Abandoned Tolerance](/sites/updates/how-to-change-tolerance-for-abandoned-plugins-and-themes) - Adjust the threshold

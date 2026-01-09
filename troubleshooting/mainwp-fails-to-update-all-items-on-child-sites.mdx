@@ -1,0 +1,159 @@
+---
+title: MainWP fails to update all items on child sites
+description: >-
+  Troubleshoot failed updates caused by server requirements, plugin conflicts,
+  or MainWP settings. Check PHP memory, execution time, cURL timeout, and
+  adjust simultaneous request settings for your setup.
+---
+
+When bulk updates fail to complete on some or all child sites, the cause is typically insufficient server resources, plugin conflicts, or settings that don't match your hosting environment.
+
+## What You'll Learn
+
+- Check if system requirements are met
+- Identify plugin conflicts blocking updates
+- Adjust MainWP settings for your setup
+- Troubleshoot premium plugin update failures
+
+## Prerequisites
+
+- MainWP Dashboard installed and activated
+- Admin access to Dashboard and child sites
+- Ability to modify PHP settings (or host support)
+
+---
+
+## Check System Requirements
+
+Bulk updates require sufficient time and memory on both your Dashboard and child sites. These values often need increasing from defaults.
+
+### Key Settings to Check
+
+| Setting | Recommended Minimum | Where to Check |
+|---------|---------------------|----------------|
+| PHP Memory Limit | 256M | MainWP > Info > Server |
+| WordPress Memory Limit | 256M | MainWP > Info > Server |
+| PHP Max Execution Time | 300 seconds | MainWP > Info > Server |
+| cURL Timeout | 300 seconds | MainWP > Info > Server |
+
+### How to Increase These Values
+
+<Steps>
+<Step title="Check current values">
+Go to **MainWP > Info > Server** to see current PHP and WordPress settings.
+</Step>
+<Step title="Update Dashboard settings">
+Contact your Dashboard hosting provider or edit php.ini/wp-config.php to increase limits.
+</Step>
+<Step title="Update child site settings">
+Repeat the same increases on child sites experiencing update failures.
+</Step>
+</Steps>
+
+<Warning>
+Running MainWP on shared hosting often causes update failures due to strict resource limits. Consider VPS or managed WordPress hosting for better performance. [Read more about hosting considerations](https://managers.mainwp.com/t/why-are-you-still-using-shared-hosting-in-2023/2873).
+</Warning>
+
+---
+
+## Check for Plugin Conflicts
+
+Security and caching plugins sometimes interfere with update processes.
+
+<Steps>
+<Step title="Identify problem sites">
+Note which child sites fail to update.
+</Step>
+<Step title="Temporarily disable plugins">
+On a failing child site, temporarily deactivate security and caching plugins.
+</Step>
+<Step title="Test updates">
+Run updates again from your Dashboard.
+</Step>
+<Step title="Identify the conflict">
+If updates succeed, re-enable plugins one at a time to identify which one causes the conflict.
+</Step>
+<Step title="Configure the plugin">
+Adjust the conflicting plugin's settings to allow MainWP operations, or contact the plugin developer for guidance.
+</Step>
+</Steps>
+
+### Common Conflicting Plugin Types
+
+- Security plugins (Wordfence, Sucuri, Solid Security)
+- Caching plugins (WP Rocket, W3 Total Cache, LiteSpeed Cache)
+- Firewall plugins (NinjaFirewall, BulletProof Security)
+
+---
+
+## Adjust MainWP Settings
+
+If system requirements are met and plugins aren't the issue, fine-tune MainWP's request handling.
+
+<Steps>
+<Step title="Open Advanced Options">
+Go to **MainWP > Settings > Advanced Options**.
+</Step>
+<Step title="Reduce simultaneous requests">
+Lower the **Maximum Simultaneous Requests** value. Try reducing by half.
+</Step>
+<Step title="Reduce simultaneous update requests">
+Lower the **Maximum Simultaneous Update Requests** value.
+</Step>
+<Step title="Add delays between requests">
+Increase the **Minimum Delay Between Requests** value.
+</Step>
+<Step title="Test and iterate">
+Save settings and test updates. Repeat the process, adjusting values until you find settings that work reliably for your setup.
+</Step>
+</Steps>
+
+| Setting | What It Does |
+|---------|--------------|
+| Maximum Simultaneous Requests | How many sites MainWP contacts at once during sync |
+| Maximum Simultaneous Update Requests | How many sites receive updates at once |
+| Minimum Delay Between Requests | Pause between batches of requests |
+
+---
+
+## Troubleshoot Premium Plugin Failures
+
+If only premium plugins fail to update:
+
+| Issue | Solution |
+|-------|----------|
+| License not activated | Activate the license on the child site |
+| License expired | Renew the license with the plugin vendor |
+| Update server unreachable | Check the premium plugin's status page |
+| API credentials missing | Enter API keys in the plugin's settings |
+
+For more details, see [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected).
+
+---
+
+## Get Support
+
+If you've tried all steps and updates still fail, [open a helpdesk ticket](https://mainwp.com/my-account/get-support/) with:
+
+- Screenshots of Server Information page
+- List of plugins on the failing child site
+- Description of which updates fail (all, specific plugins, premium only)
+
+---
+
+## Self-Check Checklist
+
+- [ ] Server Information shows adequate PHP memory and execution time
+- [ ] Child sites also have adequate resource limits
+- [ ] Security and caching plugins temporarily disabled for testing
+- [ ] Advanced Options adjusted for fewer simultaneous requests
+- [ ] Premium plugin licenses are active (if applicable)
+- [ ] Updates complete successfully after adjustments
+
+---
+
+## Related Resources
+
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues) - Fix server configuration
+- [Change Simultaneous Update Requests](/sites/updates/how-to-change-the-number-of-simultaneous-update-requests) - Detailed settings guide
+- [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected) - Premium update issues

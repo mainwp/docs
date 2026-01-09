@@ -1,0 +1,129 @@
+---
+title: Cache Control
+sidebarTitle: "Cache Control"
+description: >-
+  MainWP Cache Control allows you to automatically purge Cache on your Child
+  Sites after performing an update of WP Core, Theme, or a Plugin through the
+  MainWP Dashboard.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Supported caching plugins and solutions
+- Automatically purging cache after updates
+- Manually clearing cache from the Dashboard
+- Configuring Cloudflare cache integration
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Cache Control"
+  data-purchase-url="https://mainwp.com/extension/cache-control/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/-ddw2U7az2o"
+  title="Cache Control - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> MainWP Cache Control extension allows you to automatically purge the Cache on your child sites after performing an update of WP Core, Theme, or a Plugin through the MainWP Dashboard. Currently supported caching solutions are
+
+-   Cloudflare
+
+and the following caching plugins:
+
+-   Breeze
+-   LiteSpeed Cache
+-   Siteground Optimizer
+-   Swift Performance Lite and Pro
+-   WP Fastest Cache
+-   W3 Total Cache
+-   WP Rocket
+-   Hummingbird Performance
+-   Cache Enabler
+-   Nitropack
+-   Autoptimize
+-   Nginx Helper
+-   WP Optimize
+-   Comet Cache
+-   FlyingPress
+-   WP Super Cache
+-   Rocket.net
+-   Pressable Cache Management
+-   RunCloud Hub
+
+Overview of when the last automatic Cache purge occurred and what the currently detected Caching solution is for your Child sites can be found in the table located on **MainWP > Sites > Manage Sites** page. ![Screenshot of Manage Sites table showing Cache Control columns with last purge time and caching solution](/images/add-ons/cache-control-settings.png)
+
+## Manually clear cache
+
+The cache will be cleared automatically upon WP Core, Theme, or a Plugin update, but you can also manually trigger the clear.
+
+### From the Manage Sites table
+
+Cache can be cleared for any number of sites from the Manage Sites page. Select a number of desired sites, or all of them, and then from the Bulk Actions menu, select Clear Cache Control, and then click **Apply**. ![Animated screenshot showing bulk Clear Cache Control action being applied to multiple sites](/images/add-ons/cache-control-purge-action.gif)
+
+### Using widgets
+
+Cache Control widgets are located on the [Overview](/getting-started/mainwp-user-interface) page and the [Individual Child Sites Overview](/getting-started/mainwp-user-interface) pages. Locate them and simply click the Clear Cache button. If you do not see the widget, you may need to enable it from the [Page Settings](/getting-started/mainwp-user-interface). ![Screenshot of Cache Control widget with Clear Cache button](/images/add-ons/cache-control-purge-success.png)
+
+## Cloudflare cache purging
+
+For the Cloudflare cache purging to work, you must enter a valid Cloudflare API Email and Cloudflare API Key and enable "Use Cloudflare Cache API" setting. ![Screenshot of Cloudflare API settings with Email and API Key fields](/images/add-ons/cache-control-cloudflare-settings.png) **NOTE** Since version 4.0.1, the Cache Control extension will handle cache purging of both Cloudflare and the supported caching plugin at the same time. Previously, if both caching solutions were present, only the caching plugin was supported.
+
+## Change Cache Control settings on All child sites
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions > Cache Control page">
+</Step>
+<Step title="Enable the feature, click Save button">
+</Step>
+<Step title="Synchronize your Child sites">
+![Synchronize your Child sites](/images/add-ons/531aaaa2ca29.png)
+
+</Step>
+</Steps>
+
+
+## Change Cache Control settings on a Single Site
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the Child site, open its Dashboard and go Cache Control page">
+Locate the Child site, open its Dashboard and go **Cache Control** page
+    1.  Override the global settings by selecting Yes or No from the dropdown
+    2.  Optionally, enable the Cloudflare Cache API and enable the site-specific API key ![Screenshot of Cache Control settings page for individual site with override and Cloudflare options](/images/add-ons/cache-control-overview.png)
+</Step>
+<Step title="Click Save button">
+</Step>
+<Step title="Synchronize your Child site">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Performance Add-ons](/add-ons/performance) - Browse all performance tools
+- [WP Rocket Extension](/add-ons/performance/rocket-extension) - Advanced WP Rocket management
+- [Manage Updates](/sites/updates/manage-updates) - Update management guide

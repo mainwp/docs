@@ -1,0 +1,205 @@
+---
+title: Regression Testing
+sidebarTitle: "Regression Testing"
+description: >-
+  The Regression Testing extension for MainWP helps you monitor changes in your
+  child sites' source code. Any modifications to your site's HTML output are
+  detected and reported so you can catch unexpected changes.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Configuring automated and manual HTML scans
+- Setting up post-update regression scans
+- Viewing raw HTML and rendered differences
+- Using change thresholds for notifications
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Regression Testing"
+  data-purchase-url="https://mainwp.com/extension/regression-testing/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="1.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-regression-testing-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/rrynCqVxKSw"
+  title="Regression Testing - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The **Regression Testing** extension for MainWP helps you monitor changes in your child sites' source code. Any modification to a site's HTML, whether from a plugin update, theme change, or a manual edit can introduce unexpected issues. This extension allows you to detect these differences early by comparing the most recent scan with the previous one.
+
+You can configure scans to run on a **fixed schedule** (daily, weekly, twice per month, or monthly) or **automatically trigger** them after an update to plugins, themes, or WordPress core. Once a scan is complete, the system evaluates the differences, and if the percentage change exceeds a defined threshold, an email notification can be sent to alert you.
+
+![Regression Testing extension overview showing child sites list](/images/add-ons/a2bb475893cd.png)
+
+## Regression Testing Dashboard
+
+To open the add-on, go to **MainWP > Add-ons > Regression Testing**. The **Dashboard** page provides an overview of all connected child sites and their scan results.
+
+Each site in the list includes:
+
+• **Site Name & URL** – Click the site name to open its MainWP child site Dashboard.
+
+• **Change Percentage** – Displays how much the site’s HTML has changed since the last scan, giving you an immediate sense of whether an update introduced modifications.
+
+• **Comparison Timeframe** – Shows when the last two scans occurred.
+
+• **Settings Mode** – Lets you know if the site is using global settings or has custom, per-site configurations
+
+![Animation showing Regression Testing Dashboard with site scan results and change percentages](/images/add-ons/80bf06b8ffcc.gif)
+
+At the far right of each row, clicking the **ellipsis menu (⋮)** reveals additional options:
+
+• **Overview**  – Opens the Overview page of this Child Site.
+
+• **Edit –** Opens the Edit page of this Child Site.
+
+• **Scan Site** – Manually trigger a new Regression Testing scan for the site.
+
+• **Raw HTML Diff** – View side-by-side changes in the site's HTML code to detect structural modifications.
+
+• **Rendered HTML Diff** – See a visual before-and-after comparison to spot layout or content changes.
+
+• **Enqueued Files Diff** – Compare changes in CSS and JavaScript files if tracking is enabled in the Settings.
+
+## General Settings
+
+To customize how scans are performed, navigate to **MainWP > Add-ons > Regression Testing** **\> Settings**.
+
+![Regression Testing Settings page with target page and highlight colors options](/images/add-ons/81b2c6f703c7.png)
+
+• **Target Page** – By default, the add-on scans the site's homepage. If you want to scan a different page, enter its URL slug (e.g., /contact-us). This is useful if a particular page, such as a pricing or checkout page, is more critical to monitor.
+
+• **Highlight Colors** – Set custom colors to highlight added and removed content in difference views.
+
+• **Exclude HTML Elements** – Specify elements to ignore, such as , #header, or .wrapper. Enter one per line.
+
+• **Track Enqueued CSS & JS Files** – If enabled, the add-on will also track changes to JavaScript and CSS files. However, **this can significantly increase scan time**.
+
+• **Exclude Specific Directories** – Prevent certain CSS or JS files from being included in the scan by specifying directories (e.g., /wp-admin/\*).
+
+• **Snapshot retention policy** - Set how long HTML snapshots should be kept before they are automatically deleted. Choose from 1 day, 1 week, 2 weeks, 1 month, 2 months, 3 months, 6 months, 1 year, or unlimited. Default is 30 days. You can view these the score history in the widget on the Child Site's Overview page.
+
+### Automated Scan Settings
+
+• **Post-Update Scans** – Automatically perform a scan after a plugin, theme, or WordPress core update. After updates are finished on a Child Site, Regression Testing will begin automatically. The UI reflects this sequence, with status messages and icons that accurately indicate when a an update or a regression scan is underway.
+
+![Animation showing automatic post-update scan with status indicators](/images/add-ons/regression-post-update-scan.gif)
+
+• **Scheduled Scans** – Choose how often automatic scans run: Once a day, Once a week, Twice a month, Once a month.
+
+### **Notification Settings**
+
+• **Enable Notification Emails** – Get an email alert if a site's changes exceed a specified threshold.
+
+• **Change Score Threshold** – Set the percentage difference that triggers a notification.
+
+## Per-site Settings
+
+<Steps>
+<Step title="Go to the MainWP > Sites > Manage Sites page">
+</Step>
+<Step title="Locate the desired child site and click on its name">
+</Step>
+<Step title="Click Regression Testing in the sidebar on the left">
+</Step>
+<Step title="Click the Settings tab">
+</Step>
+<Step title="Set the Overwrite General Settings option to YES and click Save">
+</Step>
+<Step title="Set your desired per-site preferences">
+</Step>
+<Step title="Click the Save Changes button at the bottom of the page">
+</Step>
+</Steps>
+
+
+## Viewing Scan Results
+
+<Steps>
+<Step title="Navigate to MainWP > Add-ons > Regression Testing page.">
+</Step>
+<Step title="Locate the desired Child Site in the table, and then from the ellipsis menu choose:">
+Locate the desired Child Site in the table, and then from the ellipsis menu choose:
+</Step>
+</Steps>
+
+
+**Raw HTML Diff**
+
+![Animation showing Raw HTML Diff with side-by-side code comparison](/images/add-ons/7ffdeb6b54b7.gif)
+
+Provides a side-by-side comparison of the site's HTML between the last two scans. The left side displays removed elements, while the right side highlights newly added content. This helps detect missing sections, unexpected code injections, or unwanted structural modifications caused by updates.
+
+**Rendered HTML Diff**
+
+![Animation showing Rendered HTML Diff with visual before-and-after comparison](/images/add-ons/regression-rendered-html-diff.gif)
+
+Shows a visual before-and-after comparison of the site. This allows you to spot layout shifts, missing elements, or content changes. **However, due to security restrictions, JavaScript execution is blocked, external scripts are not loaded, and some HTML tags are escaped.** While the rendering may not be 100% accurate, it remains a reliable way to track unintended modifications.
+
+**Enqueued Files Diff**
+
+![Animation showing Enqueued Files Diff comparing CSS and JavaScript changes](/images/add-ons/395b188a7158.gif)
+
+Displays changes in CSS and JavaScript files if tracking is enabled in the settings. This helps you identify updates to stylesheets and scripts that might have affected the site's design or functionality.
+
+**Running a Manual Scan**
+
+If you need to check a site immediately, you can manually trigger a scan from the **Regression Testing Dashboard** by clicking the ellipsis menu and selecting “Scan Site.”
+
+You can also initiate a scan from an individual **Child Site Overview Page** under the Regression Testing tab. Manual scans are useful when performing maintenance or troubleshooting specific issues.
+
+## Widgets
+
+**MainWP Overview Page Widget**
+
+![MainWP Overview widget showing HTML changes summary across child sites](/images/add-ons/regression-overview-widget.png)
+
+This widget offers a high-level summary of HTML changes across all connected child sites. It displays a list of sites where significant modifications have been detected, allowing you to identify potential issues at a glance. This is particularly useful for catching unexpected changes across multiple sites without needing to open each one individually.
+
+**Child Site Overview Page Widget**
+
+On an individual site level, the **Child Site Overview Page Widget** provides a quick way to review the latest scan results. It displays the most recent **Change Percentage**, the **Target URL** that was scanned, and the timestamp of the **Last Scan**. This allows you to monitor specific sites directly from their MainWP overview pages, making it easy to track and review unexpected modifications as they occur.
+
+The chart also includes timestamps on the x-axis and reflects the history of Change Percentage values within your snapshot retention window.
+
+![Child Site Overview widget with change percentage chart and scan history](/images/add-ons/regression-site-chart-widget.png)
+
+## Scheduled Bulk Scanning Behavior
+
+When Regression Testing is scheduled to run automatically (e.g., daily or weekly), the system does **not** attempt to scan all sites or all pages at once.
+
+Instead, it follows a phased approach:
+
+• At the scheduled start time, the system selects the **first three websites** to begin scanning.  
+• Each page on a site is scanned **one at a time**, with a **5-second interval** between scans.  
+• After **5 minutes**, it proceeds to the **next batch of three websites**, repeating the same behavior.  
+• This cycle continues until all selected websites have been processed.
+
+This method ensures the scanning load is spread out and doesn't overwhelm your server or the connected sites.
+
+---
+
+## Related Resources
+
+- [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Manage Updates](/sites/updates/manage-updates) - Update management guide
+- [Dashboard Insights Extension](/add-ons/security/dashboard-insights-extension) - Analytics for your Dashboard

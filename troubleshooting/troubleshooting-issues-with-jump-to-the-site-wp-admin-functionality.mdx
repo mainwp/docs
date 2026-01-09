@@ -1,0 +1,145 @@
+---
+title: Troubleshoot Jump to WP Admin issues
+sidebarTitle: "Jump to WP Admin Issues"
+description: >-
+  Troubleshoot Jump to WP Admin issues caused by security plugins, WWW prefix
+  mismatches, or HTTP/HTTPS protocol differences. Adjust security plugin
+  settings and verify Site URL matches the actual URL.
+---
+
+Jump to WP Admin lets you open a child site's WordPress admin area directly from your MainWP Dashboard, automatically logged in as the administrator account used during connection. When this feature doesn't work, security plugins or URL mismatches are typically the cause.
+
+![Jump to WP Admin button in the MainWP Dashboard interface](/images/troubleshooting/4d35411a7e7e.png)
+
+## What You'll Learn
+
+- Identify why Jump to WP Admin fails
+- Resolve security plugin conflicts
+- Fix WWW prefix mismatches
+- Correct HTTP/HTTPS protocol issues
+
+## Prerequisites
+
+- MainWP Dashboard with connected child sites
+- Admin access to child sites (for security plugin adjustments)
+
+---
+
+## Security Plugin Conflicts
+
+Security plugins that modify login behavior or hide WordPress admin URLs can interfere with Jump to WP Admin.
+
+### Known Conflicting Plugins
+
+- WPS Hide Login
+- Solid Security (formerly iThemes Security)
+- Hide My WP Ghost
+- All-In-One WP Security
+
+### Troubleshoot Security Plugins
+
+<Steps>
+<Step title="Test with plugins disabled">
+Temporarily deactivate security plugins on the child site and test Jump to WP Admin.
+</Step>
+<Step title="Identify the conflict">
+If it works, re-enable plugins one at a time to identify which one causes the issue.
+</Step>
+<Step title="Adjust plugin settings">
+Look for settings that modify:
+- Login URL or path
+- Admin URL protection
+- Session handling
+- Auto-logout behavior
+
+Adjust these settings to allow MainWP's login process.
+</Step>
+</Steps>
+
+---
+
+## WWW Prefix Mismatch
+
+The site URL in MainWP must exactly match the actual URL of the child site, including whether it uses the WWW prefix.
+
+| Site Actual URL | MainWP Site URL | Result |
+|-----------------|-----------------|--------|
+| example.com | example.com | Works |
+| www.example.com | www.example.com | Works |
+| example.com | www.example.com | **Fails** |
+| www.example.com | example.com | **Fails** |
+
+### Fix WWW Settings
+
+<Steps>
+<Step title="Navigate to site settings">
+Go to **MainWP > Sites > Manage Sites**, find the child site, and click **Edit**.
+</Step>
+<Step title="Adjust WWW setting">
+Locate the **www** dropdown and select the appropriate option:
+- **Use if required** - Adds www if the site uses it
+- **Do not use** - Removes www
+
+![Child Site Edit page showing the www dropdown selector](/images/troubleshooting/jump-to-admin-fix1.png)
+</Step>
+<Step title="Save settings">
+Click **Save Settings** at the bottom of the page.
+</Step>
+<Step title="Test Jump to WP Admin">
+Try the Jump to WP Admin feature again.
+</Step>
+</Steps>
+
+---
+
+## HTTP/HTTPS Protocol Mismatch
+
+The site URL must match the protocol (HTTP or HTTPS) the site actually uses.
+
+| Site Uses | MainWP Site URL | Result |
+|-----------|-----------------|--------|
+| HTTPS | https://example.com | Works |
+| HTTP | http://example.com | Works |
+| HTTPS | http://example.com | **Fails** |
+| HTTP | https://example.com | **Fails** |
+
+### Fix Protocol Settings
+
+<Steps>
+<Step title="Navigate to site settings">
+Go to **MainWP > Sites > Manage Sites**, find the child site, and click **Edit**.
+</Step>
+<Step title="Adjust protocol setting">
+Locate the **https://** dropdown and select the appropriate protocol for your site.
+
+![Child Site Edit page showing the HTTPS protocol dropdown selector](/images/troubleshooting/jump-to-admin-fix2.png)
+</Step>
+<Step title="Save settings">
+Click **Save Settings** at the bottom of the page.
+</Step>
+<Step title="Test Jump to WP Admin">
+Try the Jump to WP Admin feature again.
+</Step>
+</Steps>
+
+<Note>
+If your site has an SSL certificate, always use HTTPS. Most modern sites should use HTTPS.
+</Note>
+
+---
+
+## Self-Check Checklist
+
+- [ ] Security plugins temporarily disabled for testing
+- [ ] WWW setting matches actual site URL
+- [ ] Protocol (HTTP/HTTPS) matches actual site
+- [ ] Settings saved after adjustments
+- [ ] Jump to WP Admin works correctly
+
+---
+
+## Related Resources
+
+- [Use Jump to WP Admin with HTTP Basic Auth](/troubleshooting/use-of-jump-to-wp-admin-with-child-sites-protected-by-http-basic-authentication) - Special configuration for protected sites
+- [Change WP Admin URL](/troubleshooting/am-i-allowed-to-change-wp-admin-and-wp-login-php-url) - Custom admin URL considerations
+- [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection issues

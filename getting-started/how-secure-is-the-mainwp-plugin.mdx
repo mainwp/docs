@@ -1,0 +1,32 @@
+---
+title: How secure is the MainWP plugin?
+description: >-
+  MainWP uses OpenSSL encrypted communication between Dashboard and Child Sites.
+  Sites can only connect to one Dashboard at a time, passwords are not stored,
+  and regular penetration tests are performed via PatchStack and HackerOne.
+---
+
+MainWP implements multiple security measures to protect communication between your Dashboard and child sites.
+
+## Security Measures
+
+- **Encrypted communication**: MainWP Dashboard and child sites communicate using OpenSSL encryption. If OpenSSL is unavailable or misconfigured, MainWP uses PHPSecLib as a fallback.
+- **Single Dashboard lock**: A child site can only connect to one MainWP Dashboard at a time. Once connected, the site cannot be added to another Dashboard without first disconnecting it.
+- **No password storage**: WordPress passwords are not stored on the MainWP Dashboard.
+- **Regular security testing**: Penetration tests are performed through white hat security programs on PatchStack and HackerOne.
+- **In-house development**: All features are developed internally.
+- **Self-hosted architecture**: MainWP Dashboard runs on your own server, giving you complete control over security and privacy.
+
+## Could someone else connect their Dashboard to my child site?
+
+Once a child site connects to your Dashboard, the connection is locked. Someone would need access to the child site's WordPress admin to disable and re-enable the MainWP Child plugin, which breaks the existing connection.
+
+If an attacker has WordPress admin access to your child site, you face security concerns beyond what any unique ID can address.
+
+## Why is the Unique Security ID optional?
+
+MainWP establishes a secure locked connection programmatically without requiring additional user input. The Unique Security ID exists as an optional extra layer for users who prefer it.
+
+When enabled, the Unique Security ID on the child site must match the ID entered on the Dashboard during connection. This feature has been available since MainWP Dashboard version 0.1.0 and Child version 0.1.
+
+For most setups, the default connection security is sufficient without enabling the Unique Security ID.

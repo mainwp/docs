@@ -1,0 +1,102 @@
+---
+title: MainWP System Requirements
+sidebarTitle: "System Requirements"
+description: >-
+  Minimum and recommended server requirements for running MainWP Dashboard,
+  including PHP, MySQL, and WordPress settings.
+---
+
+MainWP runs on standard WordPress hosting that meets these requirements. Before choosing a hosting provider, check the [Hosting Compatibility guide](/advanced/miscellaneous/hosting-compatibility) for any provider-specific notes.
+
+## What You'll Learn
+
+- Minimum requirements to run MainWP
+- Recommended settings for optimal performance
+- How to scale resources as your network grows
+
+---
+
+## Minimum Requirements
+
+| Requirement | Minimum Value |
+|-------------|---------------|
+| WordPress Version | 6.2 |
+| WordPress Memory Limit | 40MB |
+| PHP Version | 8.1 |
+| PHP Safe Mode | Disabled |
+| PHP Max Execution Time | 30 seconds |
+| PHP Memory Limit | 256MB |
+| cURL Library | Enabled |
+| cURL Timeout | 60 seconds |
+| MySQL Version | 5.0 |
+
+---
+
+## Recommended Settings
+
+| Requirement | Recommended Value |
+|-------------|-------------------|
+| WordPress Version | Latest |
+| WordPress Memory Limit | 256MB |
+| PHP Version | 8.3 |
+| PHP Safe Mode | Disabled |
+| PHP Max Execution Time | 300 seconds |
+| PHP Memory Limit | 1024MB |
+| cURL Library | Enabled |
+| cURL Timeout | 300 seconds |
+| MySQL Version | 5.0+ |
+
+---
+
+## Additional Requirements
+
+For the Dashboard server:
+
+- **Connection limit**: Increase the open file limit of the operating system if limited by host
+- **Request handling**: Disable aborting request processing if users close the site (`ignore_user_abort` in php.ini)
+- **PHP functions**: Ensure all [required PHP functions](/advanced/miscellaneous/required-php-functions-for-mainwp) are enabled
+
+---
+
+## Scaling for Network Size
+
+As you add more child sites, your Dashboard server needs additional resources.
+
+| Network Size | Hosting Type | Recommendations |
+|--------------|--------------|-----------------|
+| Up to 30 sites | Shared hosting | Standard shared plans work well |
+| 31-100 sites | Reseller hosting | Additional server memory; enable "Optimize for Large Networks" in MainWP Settings |
+| 100+ sites | VPS | At least 512MB PHP and WP memory; enable "Optimize for Large Networks" in MainWP Settings |
+
+<Note>
+The "Optimize for Large Networks" setting adjusts how MainWP loads data to reduce memory usage. Find it in **MainWP > Settings > Advanced Settings**.
+</Note>
+
+---
+
+## Checking Your Configuration
+
+You can verify your server meets requirements from within MainWP:
+
+1. Go to **MainWP > Info > Server**
+2. Review the displayed PHP and server settings
+3. Check for any warnings or recommendations
+
+---
+
+## Self-Check Checklist
+
+- [ ] PHP version 8.1 or higher
+- [ ] PHP memory limit at least 256MB
+- [ ] cURL enabled with adequate timeout
+- [ ] Required PHP functions available
+- [ ] Server resources appropriate for network size
+
+---
+
+## Related Resources
+
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Provider-specific notes
+- [Required PHP Functions](/advanced/miscellaneous/required-php-functions-for-mainwp) - Function reference
+- [Optimize for Shared Hosting](/dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting) - Performance tuning
+- [Resolve System Requirement Issues](/troubleshooting/resolve-system-requirement-issues) - Troubleshooting

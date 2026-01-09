@@ -1,0 +1,155 @@
+---
+title: Pressable
+sidebarTitle: "Pressable"
+description: >-
+  MainWP Pressable Extension simplifies your Pressable hosting management
+  experience, such as creating, disabling, and deleting websites, enabling or
+  disabling CDN, managing backups, and more without the need to log in to your
+  Pressable account.
+addonType: integration
+thirdPartyPlugin: Pressable
+---
+
+## What You'll Learn
+
+- Connecting your Pressable account to MainWP
+- Creating new Pressable sites from the Dashboard
+- Managing CDN, backups, and site state
+- Understanding the Dashboard page features
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Pressable"
+  data-purchase-url="https://mainwp.com/extension/pressable/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="integration"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-pressable-extension/"
+  data-integrates-with="Pressable"
+  data-owned-by="Pressable, Inc."
+  data-privacy-url="https://automattic.com/privacy/"
+/>
+<Info>
+**Integration Add-on** - This add-on extends MainWP to work with Pressable. Requires Pressable to be installed on your child sites.
+</Info>
+
+MainWP Pressable extension provides access to the most important Pressable management features. It allows you to quickly **create new Pressable sites** directly in the extension and at a glance, gives quick insight into the **State, Environment** and **Data Center** of the Pressable site and **Visitor Analytics**, and provides **Backup** and **CDN management**.
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/TKnPW-QghHo"
+  title="Pressable - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## Installing the extension
+
+Follow these steps to install the Pressable extension.
+
+<Steps>
+<Step title="Go to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Extensions page">
+</Step>
+<Step title="Click the Install Extensions button">
+Click the **Install Extensions** button [![MainWP Domain Monitor Extension 1](/images/add-ons/install-domain-monitor.png)](/images/add-ons/install-domain-monitor.png)
+</Step>
+<Step title="Locate the Pressable extension and select it">
+</Step>
+<Step title="Click the Install button">
+</Step>
+<Step title="Once the installation process is complete, click the Activate Extensions button.">
+Once the installation process is complete, click the **Activate Extensions** button. [![MainWP Domain Monitor Extension 2](/images/add-ons/activate-domain-monitor.png)](/images/add-ons/activate-domain-monitor.png)
+</Step>
+</Steps>
+
+
+## Connect extension to your Pressable account
+
+<Steps>
+<Step title="Navigate to your Pressable account and open the API Application page">
+Navigate to your Pressable account and open the [API Application](https://my.pressable.com/api/applications) page
+</Step>
+<Step title="Click the Create New API Application button">
+![Click the Create New API Application button](/images/add-ons/pressable-create-api.png)
+
+</Step>
+<Step title="Enter a desired name for the API Application, give the application all permissions, and click the Save button">
+Enter a desired name for the API Application, give the application all permissions, and click the **Save** button ![Pressable API Application form with name field and permissions options](/images/add-ons/pressable-api-permissions.png)
+</Step>
+<Step title="You will be presented with a Client ID and Client Secret">
+You will be presented with a Client ID and Client Secret. We will use these to connect the extension, so copy them somewhere or leave this browser tab open ![Pressable Client ID and Client Secret displayed after creating API application](/images/add-ons/pressable-client-credentials.png)
+</Step>
+<Step title="Now navigate to your MainWP Dashboard > Extensions > Pressable page, and open the Settings tab">
+Now navigate to your **MainWP Dashboard > Extensions > Pressable** page, and open the Settings tab
+</Step>
+<Step title="Enter the Client ID and Client Secret and click the Save Settings button">
+Enter the Client ID and Client Secret and click the **Save Settings** button ![MainWP Pressable Settings with Client ID and Client Secret fields](/images/add-ons/pressable-mainwp-settings.png)
+</Step>
+</Steps>
+
+
+## Dashboard page of the extension
+
+This page contains all of the features or shortcuts to the features of the Pressable extension. ![Pressable Dashboard showing connected sites with CDN, State, and Environment columns](/images/add-ons/pressable-dashboard-overview.png) This table will contain all sites from the Pressable account you connected in the extension Settings that are also added to this MainWP Dashboard. Sites from the Pressable account that are not added to the MainWP Dashboard as child sites will NOT be shown here. The columns of the table that are specific to the Pressable extension are as follows:
+
+-   **CDN**: Shows a graphical indicator of whether the Pressable CDN is enabled on the child site
+-   **State**: Displays the status of the child site, either Live or Disabled
+-   **Environment:** Displays the environment type, either Staging, Development or Production
+-   **Data Center:** Displays the location of the Pressable data center where the child site is hosted at
+-   **IP Address:** Displays the IP Address of the Pressable data center where the child site is hosted at
+-   **Visits This Month:** Displays the number of visits for this child site for this month, as logged by Pressable
+-   **Visits Last Two Years:** Displays the number of visits for this child site for the last two years, as logged by Pressable
+-   **Last Backup:** Displays the date and time of the last performed Pressable backup
+
+## Create a new Pressable site
+
+<Steps>
+<Step title="Navigate to MainWP Dashboard > Extensions > Pressable page">
+</Step>
+<Step title="Click the Create New Site button">
+![Click the Create New Site button](/images/add-ons/90a2156a9937.png)
+
+</Step>
+<Step title="Enter the information for the new site">
+![Enter the information for the new site](/images/add-ons/pressable-create-new-site.png)
+
+1.  Enter the desired **Site Name** **NOTE:** Periods, spaces, and other special characters are not permitted in site names. Dashes are fine, but the name cannot start or end with a dash. The name must be at least 3 characters in length.
+    2.  Choose whether the site should be **Staging** or not
+    3.  From the **Site Type** dropdown, select either WordPress or WooCommerce
+    4.  From the **PHP Version** dropdown, select the available PHP version
+    5.  From the **Datacenter** dropdown, optionally select the location of the data center
+</Step>
+<Step title="Click the Create Site button">
+</Step>
+</Steps>
+
+
+## Available Actions for Child Sites
+
+Available actions you can perform on the child sites are located in the ellipsis menu, or if you want to perform them in bulk, you can find them in the Bulk Actions menu. ![Animation showing available actions in the site ellipsis menu and Bulk Actions](/images/add-ons/pressable-bulk-actions.gif)
+
+-   **Sync Data:** Synchronizes the data collected by the MainWP Child plugin
+-   **Overview**: Opens the Child Site Overview on the MainWP Dashboard
+-   **Edit**: Opens the Child Site Edit page on the MainWP Dashboard
+-   **Enable/Disable Site**: Changes the State of the site in the Pressable hosting account to either Live or Disabled
+-   **Delete Site:** Deletes the site from the Pressable hosting account
+-   **Convert to Staging** / **Staging to Live:** Converts the site either from Staging to Live, or from Live to Staging
+-   **Enable/Disable CDN:** Either enables or disables the CDN feature on the Pressable hosting account
+-   **Go to phpMyAdmin:** Opens the phpMyAdmin page for that child site on the Pressable hosting account
+-   **Manage Backups:** Opens the Pressable Backups page for that Child Site. You can either initialize a Site Restore or download one of the existing backup files. ![Pressable Backups page with Site Restore and download options](/images/add-ons/pressable-sites-dashboard.png)
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Hosting provider information
+- [Manage Child Sites](/sites/management/manage-child-sites) - Site management guide

@@ -1,0 +1,162 @@
+---
+title: URL Extractor
+sidebarTitle: "URL Extractor"
+description: >-
+  URL Extractor allows you to extract URLs by custom tokens like (Title, Status,
+  Author, Website URL and Website Name) from any post or page on your child
+  sites and export them as CSV or TXT file. This is often helpful for both
+  client reports and indexing software.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Extracting URLs using custom tokens
+- Configuring output format and separators
+- Saving and loading extraction templates
+- Exporting results in CSV, TXT, or JSON format
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="URL Extractor"
+  data-purchase-url="https://mainwp.com/extension/url-extractor/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-url-extractor-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/H1tL1VAOVlk"
+  title="URL Extractor - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe> URL Extractor allows you to extract URLs using custom tokens (Title, Post URL, Date, Status, Author, Website URL, Website Name) of any post or page from your Child Sites and export them as CSV or TXT files. Provided search options will enable you to refine your search by:
+
+-   Type: Post or Page
+-   Status: Published, Pending, Private, Scheduled, Draft, Trash
+-   Arbitrary keywords
+-   Date Range
+-   Child Sites
+
+You can easily customize your output. Combining the provided tokens and custom characters, create any output structure you need. This is often helpful for both client reports and indexing software.
+
+## How to use URL Extractor
+
+![URL Extractor page with output format tokens and sidebar options](/images/add-ons/url-extractor-tokens-page.png)
+
+<Steps>
+<Step title="Navigate to MainWP Dashboard > Extensions > URL Extractor page">
+</Step>
+<Step title="Configure the output format using Available Tokens">
+In the **Output format** field, either type in the Available Tokens or click on the green bubbles of respective tokens to insert them automatically **NOTE:** You can also combine plain text with the token names. For example: `This is the Post URL [post.url], and this is the Post Title [post.title]`
+</Step>
+<Step title="Enter a separator in the Separator field">
+Type in the desired text in the Separator field **NOTE:** This text will be used to separate individual entries in the output. By leaving the field empty, the individual entries will be placed in a new line.
+</Step>
+<Step title="In the Sidebar">
+In the Sidebar
+    1.  Select the desired Sites, either individually or by Tags
+    2.  Select the post type, either Post or Page, or both
+    3.  Select one or multiple statuses from the list: Published, Pending, Private, Scheduled, Draft, Trash
+    4.  Optionally filter the results by a Keyword
+    5.  Select the desired Date Range
+</Step>
+<Step title="Click the Preview Output button">
+</Step>
+<Step title="Review the Output in the popup modal and Export it as .txt, .csv, .json file">
+</Step>
+</Steps>
+
+
+## URL Extractor Templates
+
+The values in the Output format and Separator fields can be saved as templates for speed and convenience.
+
+### Saving a template
+
+![Animation showing how to save a URL Extractor template](/images/add-ons/url-extractor-preview.gif)
+
+<Steps>
+<Step title="Navigate to MainWP Dashboard > Extensions > URL Extractor page">
+</Step>
+<Step title="Enter the desired text in the Output format and Separator fields">
+</Step>
+<Step title="Enter the template name">
+</Step>
+<Step title="Click the Save Template button">
+</Step>
+</Steps>
+
+
+### Loading a template
+
+![Animation showing how to load a saved template](/images/add-ons/40134b0f3f65.gif)
+
+<Steps>
+<Step title="Navigate to MainWP Dashboard > Extensions > URL Extractor page">
+</Step>
+<Step title="Select the desired template from the Available Templates dropdown">
+</Step>
+<Step title="Click the Use Template button">
+</Step>
+</Steps>
+
+
+### Deleting a template
+
+<Steps>
+<Step title="Navigate to MainWP Dashboard > Extensions > URL Extractor page">
+</Step>
+<Step title="Select the desired template from the Available Templates dropdown">
+</Step>
+<Step title="Click the Delete button">
+</Step>
+</Steps>
+
+
+## Increase the maximum number of Posts returned from a Child site
+
+URL Extractor extensions returns a maximum of 50 posts from a single child site. This number can be customized with a filter. As an example, this code snippet will increase the maximum number of posts to 500.
+
+```php
+add_filter( 'mainwp_url_extractor_max_posts_number', 'max_url_extractor_posts' );
+
+function max_url_extractor_posts() {
+	return 500;
+}
+
+```
+The easiest way to insert this code snippet to the MainWP Dashboard site is by using our [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension.
+
+<Steps>
+<Step title="Install the Custom Dashboard extension">
+</Step>
+<Step title="Add the code snippet to the PHP tab in the Custom Dashboard extension">
+Add the code snippet to the PHP tab in the Custom Dashboard extension ![Custom Dashboard PHP tab with code snippet for max posts](/images/add-ons/7d9bde1c6d30.png)
+</Step>
+<Step title="Adjust the number of returned posts as desired">
+</Step>
+<Step title="Click the Save Changes button">
+</Step>
+</Steps>
+
+---
+
+## Related Resources
+
+- [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
+- [Post Plus Extension](/add-ons/posts-pages/post-plus-extension) - Advanced post creation
+- [Manage Posts](/sites/content/manage-posts) - Post management guide

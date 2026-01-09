@@ -1,0 +1,205 @@
+---
+title: Batch Operations
+sidebarTitle: "Batch Operations"
+description: >-
+  Understanding batch processing, job queuing, and status monitoring for large-scale MainWP operations.
+---
+
+Operations affecting more than 200 sites are automatically queued for background processing. This prevents timeouts and provides progress monitoring for large operations.
+
+## What You'll Learn
+
+- Understanding batch thresholds and affected abilities
+- Reading immediate vs. queued response patterns
+- Monitoring batch job status
+- Handling errors in batch operations
+
+---
+
+## Batch Threshold
+
+The default threshold is 200 sites. Operations below this threshold execute synchronously and return results immediately.
+
+```php
+// Default: 200 sites
+$threshold = apply_filters( 'mainwp_abilities_batch_threshold', 200 );
+```
+
+## Affected Abilities
+
+These abilities support batch queuing:
+
+| Ability | Description |
+|---------|-------------|
+| `mainwp/sync-sites-v1` | Sync multiple sites |
+| `mainwp/run-updates-v1` | Execute updates across sites |
+| `mainwp/update-all-v1` | Apply all updates |
+| `mainwp/reconnect-sites-v1` | Batch reconnect |
+| `mainwp/disconnect-sites-v1` | Batch disconnect |
+| `mainwp/check-sites-v1` | Batch connectivity check |
+| `mainwp/suspend-sites-v1` | Batch suspend |
+
+## Response Patterns
+
+### Immediate Response (≤200 sites)
+
+```json
+{
+  "queued": false,
+  "synced": [
+    {"id": 1, "url": "https://example.com", "name": "Site 1"}
+  ],
+  "errors": [],
+  "total_synced": 1,
+  "total_errors": 0
+}
+```
+
+### Queued Response (>200 sites)
+
+```json
+{
+  "queued": true,
+  "job_id": "sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "sites_queued": 350
+}
+```
+
+## mainwp/get-batch-job-status-v1
+
+Retrieves the current status of a queued batch operation.
+
+**Method:** POST
+
+```bash
+curl -X POST -u "admin:xxxx" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"job_id":"sync_abc123def456"}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run"
+```
+
+### Input Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `job_id` | string | Yes | Job ID from queued operation |
+
+### Response
+
+```json
+{
+  "job_id": "sync_abc123def456",
+  "type": "sync",
+  "status": "processing",
+  "progress": 45,
+  "processed": 90,
+  "total": 200,
+  "succeeded": 88,
+  "failed": 2,
+  "started_at": "2024-01-15T10:30:00Z",
+  "completed_at": null,
+  "errors": [
+    {
+      "site_id": 15,
+      "code": "mainwp_site_offline",
+      "message": "Site is unreachable"
+    }
+  ]
+}
+```
+
+### Status Values
+
+| Status | Description |
+|--------|-------------|
+| `queued` | Waiting to start |
+| `processing` | Currently running |
+| `completed` | Finished successfully |
+| `failed` | Failed with errors |
+
+## Polling Workflow
+
+```bash
+#!/bin/bash
+
+# 1. Start the operation
+RESPONSE=$(curl -s -X POST -u "admin:xxxx" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"site_ids_or_domains":[]}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-sites-v1/run")
+
+# 2. Check if queued
+QUEUED=$(echo $RESPONSE | jq -r '.queued // false')
+JOB_ID=$(echo $RESPONSE | jq -r '.job_id // empty')
+
+if [ "$QUEUED" = "true" ] && [ -n "$JOB_ID" ]; then
+  echo "Job queued: $JOB_ID"
+
+  # 3. Poll for status
+  while true; do
+    STATUS=$(curl -s -X POST -u "admin:xxxx" \
+      -H "Content-Type: application/json" \
+      -d "{\"input\":{\"job_id\":\"$JOB_ID\"}}" \
+      "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run")
+
+    PROGRESS=$(echo $STATUS | jq -r '.progress')
+    STATE=$(echo $STATUS | jq -r '.status')
+    SUCCEEDED=$(echo $STATUS | jq -r '.succeeded')
+    FAILED=$(echo $STATUS | jq -r '.failed')
+
+    echo "Progress: $PROGRESS% - Status: $STATE - Succeeded: $SUCCEEDED - Failed: $FAILED"
+
+    if [ "$STATE" = "completed" ] || [ "$STATE" = "failed" ]; then
+      echo "Job finished with status: $STATE"
+      echo $STATUS | jq '.errors'
+      break
+    fi
+
+    sleep 10
+  done
+else
+  echo "Executed immediately"
+  echo $RESPONSE | jq '.'
+fi
+```
+
+## Job Lifecycle
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| TTL | 24 hours | Jobs expire after completion |
+| Timeout | 4 hours | Maximum runtime |
+| Chunk Size | 20 sites | Sites processed per cron run |
+| Reschedule Delay | 30 seconds | Delay between chunks |
+
+## Error Handling
+
+When a batch job encounters errors, individual failures are recorded while the job continues processing remaining items. Check the `errors` array in the status response for details:
+
+```json
+{
+  "errors": [
+    {
+      "site_id": 15,
+      "code": "mainwp_site_offline",
+      "message": "Site is unreachable"
+    },
+    {
+      "site_id": 23,
+      "code": "mainwp_child_version_outdated",
+      "message": "MainWP Child plugin needs update"
+    }
+  ]
+}
+```
+
+Jobs with errors complete with `status: "completed"` if any operations succeeded, or `status: "failed"` if all operations failed.
+
+---
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - API basics and authentication
+- [Sites Abilities](/api-reference/abilities-api/sites) - Site management abilities
+- [Updates Abilities](/api-reference/abilities-api/updates) - Update management abilities

@@ -1,0 +1,443 @@
+---
+title: Pro Reports
+sidebarTitle: "Pro Reports"
+description: >-
+  The MainWP Pro Reports extension is a fully customizable reporting engine that
+  allows you to create the type of report you are proud to send to your clients.
+addonType: extension
+---
+
+## What You'll Learn
+
+- Setting up the Pro Reports extension and Child Reports plugin
+- Creating recurring and one-time reports
+- Customizing report templates with tokens
+- Managing client information and branding
+
+---
+
+<div
+  id="addon-data"
+  style={{display: 'none'}}
+  data-title="Pro Reports"
+  data-purchase-url="https://mainwp.com/extension/pro-reports/"
+  data-pricing-tier="pro"
+  data-bundle="MainWP Pro"
+  data-addon-type="extension"
+  data-version="5.0"
+  data-developer="MainWP"
+  data-changelog-url="https://mainwp.com/changelog/mainwp-pro-reports-extension/"
+  data-owned-by="Jestart LLC"
+  data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
+/>
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/4uF7wmvLigA"
+  title="Pro Reports - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+The [MainWP Pro Reports Extension](https://mainwp.com/extension/pro-reports/) combines the free [MainWP Child Reports](https://wordpress.org/plugins/mainwp-child-reports/) plugin with a customizable reporting engine. The Child Reports plugin tracks changes on your child sites, while the Pro Reports Extension on your Dashboard gathers that information and converts it to PDF reports.
+
+**Key features:**
+- Generate professional reports in seconds
+- Pre-made templates to get you started
+- Automatic PDF attachment to emails
+- Include or exclude specific content
+- Customizable template system
+- Custom branding options
+
+![Report preview](/images/add-ons/pro-reports-preview.png)
+
+## Setting up the Pro Reports Extension
+
+### Installation
+
+<Steps>
+<Step title="Install MainWP Child Reports">
+[Install](/sites/plugins/managing-plugins-with-mainwp) the [MainWP Child Reports](https://wordpress.org/plugins/mainwp-child-reports/) plugin on all child sites. This free plugin records logging events that appear in your reports. Records are kept for 100 days.
+</Step>
+<Step title="Install Pro Reports Extension">
+[Install](/dashboard/overview/manage-extensions#install-add-ons) the MainWP Pro Reports Extension on your Dashboard.
+</Step>
+<Step title="Sync your sites">
+Sync your sites so the Dashboard can detect which sites have the Child Reports plugin installed.
+</Step>
+</Steps>
+
+<Warning>
+**Reports require recorded activity.** The MainWP Child Reports plugin must collect site data before reports can show meaningful content. After installation, allow several days for the plugin to record events such as updates, posts, and changes. Reports generated immediately after installation will display empty sections.
+</Warning>
+
+<Tip>
+To test Pro Reports with default settings, skip to [Create a One-Time Report](#create-a-one-time-report). Client information and custom branding can be configured later.
+</Tip>
+
+## MainWP Child Reports Plugin
+
+The [MainWP Child Reports plugin](https://wordpress.org/plugins/mainwp-child-reports/) records changes on your child sites and communicates them to the Pro Reports Extension. Built on the [Stream Plugin](https://wordpress.org/plugins/stream/), it requires PHP 7.0 or higher.
+
+### Viewing Recorded Data
+
+Go to **WP Admin > Settings > MainWP Child > MainWP Child Reports** on your child site to see recorded activity.
+
+![Child reports data](/images/add-ons/pro-reports-activity-log.jpg)
+
+### Child Reports Settings
+
+![Child Reports settings](/images/add-ons/pro-reports-child-settings.png)
+
+Navigate to **WP Admin > Settings > MainWP Child > MainWP Child Reports Settings** to configure the plugin.
+
+| Setting | Description |
+|---------|-------------|
+| Hide from reports | Excludes the MainWP Child Reports plugin from reports |
+| Keep Records Indefinitely | Retains all records (not recommended for performance) |
+| Keep Records for | Maximum days to retain activity records (default: 100) |
+| Akismet Tracking | Track comment spam attempts blocked by Akismet (not recommended) |
+| Comment Flood Tracking | Track duplicate comments blocked by WordPress (not recommended) |
+| WP-Cron Tracking | Track cron event activity (not recommended) |
+| Reset Database | Delete all activity reports from the database |
+
+### Client Information
+
+Pro Reports uses tokens to personalize reports without creating separate versions for each client. Tokens are placeholders like `[client.email]` and `[client.name]` that get replaced with actual values when reports generate. You can define client information in two ways:
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| Client Feature | Define information once, assign multiple sites to a client | Managing many sites per client |
+| Per-Site Settings | Set information individually on each site's Edit page | Maximum flexibility |
+
+<Note>
+When the same token is defined in both locations, the per-site value takes priority.
+</Note>
+
+#### Setting Per-Site Client Information
+
+<Steps>
+<Step title="Navigate to site settings">
+Go to **MainWP Dashboard > Sites > Manage Sites** and click **Edit** on the desired site.
+</Step>
+<Step title="Configure tokens">
+Locate the **Pro Reports Tokens** section and enter values for tokens you plan to use.
+![Pro report tokens](/images/add-ons/pro-reports-tokens-form.jpg)
+</Step>
+<Step title="Save settings">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Token Configuration" icon="book-open" defaultOpen>
+    <Card title="Client vs Site Tokens" icon="arrows-split-up-and-left" href="/add-ons/agency/difference-between-client-level-and-site-level-custom-tokens">
+      Understand token priority and when to use each level.
+    </Card>
+  </Accordion>
+</AccordionGroup>
+
+## Report Types
+
+Pro Reports offers two report formats. Recurring reports run on a schedule you define. One-time reports cover a specific date range you select manually.
+
+| Aspect | Recurring | One-Time |
+|--------|-----------|----------|
+| Schedule | Daily, Weekly, or Monthly | None (manual send) |
+| Date Range | Automatic based on schedule | Custom start and end dates |
+| Action | Schedule Report | Send Now |
+| Use Case | Ongoing client updates | Project completion, audits |
+
+## Create a Recurring Report
+
+<Steps>
+<Step title="Open Create Report">
+Go to **MainWP Dashboard > Extensions > Pro Reports > Create Report**.
+</Step>
+<Step title="Configure report settings">
+![Create report](/images/add-ons/pro-reports-create-page.png)
+
+| Setting | Description |
+|---------|-------------|
+| Report title | Name for identifying this report |
+| Report type | Select **Recurring** |
+| Schedule | Daily, Weekly, or Monthly |
+| Send report on | Day of week or month (for Weekly/Monthly schedules) |
+| Report PDF file name | Optional custom filename for the PDF attachment |
+| Report Template | Select from available templates |
+</Step>
+<Step title="Customize content and design">
+![Report settings](/images/add-ons/pro-reports-custom-content.png)
+
+| Tab | Options |
+|-----|---------|
+| Custom Content | Customize heading, introduction, and closing message using tokens |
+| Report Data | Choose sections to include. Default "Hide if empty" omits sections with no activity |
+| Custom Branding | Upload logo and header image, customize colors |
+</Step>
+<Step title="Configure email settings">
+| Field | Description |
+|-------|-------------|
+| Send email from | Your email address and name |
+| Send email to | Client email and name (supports tokens like `[client.email]`) |
+| Reply-to | Optional reply address |
+| Email subject | Subject line (supports tokens) |
+| Email message | Email body (supports tokens) |
+| Email template | Select template style |
+| BCC email address | Optional blind copy recipient |
+| Additional attachments | Optional extra files |
+</Step>
+<Step title="Select sites and schedule">
+Select sites in the right-hand metabox. Preview as HTML or download the PDF for review. Click **Save Draft** to save without scheduling, or **Schedule Report** when ready.
+![Report site selection](/images/add-ons/pro-reports-recurring-settings.gif)
+</Step>
+</Steps>
+
+## Create a One-Time Report
+
+<Steps>
+<Step title="Open Create Report">
+Go to **MainWP Dashboard > Extensions > Pro Reports > Create Report**.
+</Step>
+<Step title="Configure report settings">
+![One time report](/images/add-ons/pro-reports-onetime-settings.gif)
+
+| Setting | Description |
+|---------|-------------|
+| Report title | Name for identifying this report |
+| Report type | Select **One-time** |
+| Report date range | Starting and ending dates |
+| Report PDF file name | Optional custom filename |
+| Report Template | Select from available templates |
+</Step>
+<Step title="Customize content and design">
+![Report data settings](/images/add-ons/pro-reports-custom-content.png)
+
+| Tab | Options |
+|-----|---------|
+| Custom Content | Customize heading, introduction, and closing message using tokens |
+| Report Data | Choose sections to include. Default "Hide if empty" omits sections with no activity |
+| Custom Branding | Upload logo and header image, customize colors |
+</Step>
+<Step title="Configure email settings">
+| Field | Description |
+|-------|-------------|
+| Send email from | Your email address and name |
+| Send email to | Client email and name (supports tokens) |
+| Reply-to | Optional reply address |
+| Email subject | Subject line (supports tokens) |
+| Email message | Email body (supports tokens) |
+| Email template | Select template style |
+| BCC email address | Optional blind copy recipient |
+| Additional attachments | Optional extra files |
+</Step>
+<Step title="Select sites and send">
+Select sites in the right-hand metabox. Preview as HTML or download the PDF for review. Click **Save Draft** to save without sending, or **Send Now** when ready.
+![Report sites selection](/images/add-ons/pro-reports-site-selection.gif)
+</Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Email Customization" icon="book-open" defaultOpen>
+    <CardGroup cols={2}>
+      <Card title="Custom Email Logo" icon="envelope" href="/add-ons/agency/how-to-use-a-different-logo-for-the-pro-reports-email-only">
+        Use a different logo in email body versus PDF attachment.
+      </Card>
+      <Card title="HTML-Only Reports" icon="code" href="/add-ons/agency/how-to-create-an-html-only-report-using-the-pro-reports-extension">
+        Send reports as HTML email without PDF attachments.
+      </Card>
+    </CardGroup>
+  </Accordion>
+</AccordionGroup>
+
+## Pro Reports Dashboard
+
+![MainWP Child Reports Overview](/images/add-ons/pro-reports-child-dashboard.png)
+
+The **MainWP > Extensions > Pro Reports > Child Reports Dashboard** page monitors all child sites with the MainWP Child Reports plugin installed.
+
+### Status Indicators
+
+| Row Color | Meaning | Available Action |
+|-----------|---------|------------------|
+| Red | Plugin not activated | Activate |
+| Yellow | Update available | Update |
+| Normal | Plugin active and current | Hide/Unhide |
+
+### Dashboard Columns
+
+| Column | Description |
+|--------|-------------|
+| Version | MainWP Child Reports plugin version |
+| Last Report | When the last report was sent |
+| Reports DB Size | Database space used by reports |
+
+Bulk actions for Activate, Update, Hide, and Unhide are available at the top of the page. If a site with the plugin installed does not appear, re-sync your sites.
+
+## Translate Titles and Headings
+
+Pro Reports 4.1.1 introduced the **Custom Titles** feature for translating and customizing all titles, subtitles, and table headings. Find this option in the **Report Content & Design Customization** section.
+
+![Report custom titles](/images/add-ons/pro-reports-custom-titles.gif)
+
+Customized strings are saved per report, allowing multiple language versions. Actual data values depend on the language of plugins, themes, and WordPress Core on child sites and cannot be translated through this feature.
+
+## Create Custom Report Templates
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/1qLxJz1-5RI"
+  title="Pro Reports - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+Pro Reports uses PHP templates that you can customize with HTML. The process involves copying a built-in template and modifying it to suit your needs.
+
+### Creating a Custom Template
+
+<Steps>
+<Step title="Download the extension">
+[Download the MainWP Pro Reports Extension](/dashboard/overview/manage-extensions) from your MainWP Account.
+</Step>
+<Step title="Extract and locate templates">
+Extract the plugin files and find the default templates in `/mainwp-pro-reports-extension/templates/reports/`.
+</Step>
+<Step title="Copy and customize">
+Copy a PHP file, rename it, and edit with your preferred code editor.
+</Step>
+<Step title="Upload the template">
+Upload your customized PHP file to `/wp-content/uploads/mainwp/report-templates/` on your Dashboard site.
+</Step>
+<Step title="Select the template">
+Your template appears in the **Report template** dropdown.
+![Report template selection](/images/add-ons/pro-reports-template-dropdown.png)
+</Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Template Resources" icon="book-open" defaultOpen>
+    <CardGroup cols={3}>
+      <Card title="Custom Templates Guide" icon="file-code" href="/add-ons/agency/create-custom-report-templates">
+        Build custom PHP templates from scratch with detailed token placement.
+      </Card>
+      <Card title="Add Images to Templates" icon="image" href="/add-ons/agency/how-to-add-images-to-custom-pro-report-templates">
+        Insert custom images and graphics into your report templates.
+      </Card>
+      <Card title="Limit Table Entries" icon="list-ol" href="/add-ons/agency/limit-the-amount-of-table-entries-in-the-pro-report-sections">
+        Control how many rows appear in report sections using CSS.
+      </Card>
+    </CardGroup>
+  </Accordion>
+</AccordionGroup>
+
+### Token Types
+
+Pro Reports uses four token types that you can add directly to PHP templates or through the visual editor.
+
+| Type | Description | Example |
+|------|-------------|---------|
+| Client Tokens | Display data from Individual Child site settings | `[client.email]`, `[client.name]` |
+| Section Tokens | Loop through database records within a date range | `[section.plugins.installed]...[/section.plugins.installed]` |
+| Data Tokens | Display specific values inside section tokens | `[plugin.name]`, `[plugin.installed.date]` |
+| Counter Tokens | Display counts outside section tokens | `[plugin.installed.count]` |
+
+See all available tokens: [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens)
+
+### Client Tokens
+
+Client tokens display data set in the Individual Child site Edit tab. Set values for tokens you plan to use in reports.
+
+![Site token values](/images/add-ons/pro-reports-site-tokens.png)
+
+Use `[client.email]` in the **Send email to** field to send reports to multiple clients automatically.
+
+![Email settings](/images/add-ons/pro-reports-email-settings.png)
+
+Click **Insert tokens** to see available options.
+
+![Field tokens](/images/add-ons/pro-reports-available-tokens.png)
+
+### How Tokens Work Together
+
+The following example demonstrates all three token types working together in a template:
+
+```
+Plugins installed: [plugin.installed.count]
+
+[section.plugins.installed]
+  Plugin: [plugin.name]
+  Installed: [plugin.installed.date]
+[/section.plugins.installed]
+```
+
+**Counter tokens** display totals and must appear outside section tags. They end with `.count`.
+
+**Section tokens** loop through database records within the report date range. They require opening and closing tags.
+
+**Data tokens** display specific values and must appear between section token tags.
+
+![Report data preview](/images/add-ons/pro-reports-plugins-list.png)
+
+![Template tokens](/images/add-ons/pro-reports-token-reference.png)
+
+<AccordionGroup>
+  <Accordion title="Token Reference" icon="book-open" defaultOpen>
+    <CardGroup cols={2}>
+      <Card title="Available Tokens" icon="book" href="/add-ons/agency/available-pro-reports-tokens">
+        Complete reference of 100+ tokens for plugins, themes, posts, users, and more.
+      </Card>
+      <Card title="Conditional Messages" icon="code-branch" href="/add-ons/agency/conditional-messages-in-pro-reports">
+        Use PHP filters to display dynamic messages based on data values.
+      </Card>
+    </CardGroup>
+  </Accordion>
+</AccordionGroup>
+
+## Delete Reports
+
+![Delete report](/images/add-ons/pro-reports-delete-report.gif)
+
+<Steps>
+<Step title="Navigate to reports">
+Go to **MainWP > Extensions > Pro Reports > Reports**.
+</Step>
+<Step title="Delete the report">
+Click the Actions Menu on the report you want to delete, select **Delete**, and confirm.
+</Step>
+</Steps>
+
+## Duplicate Reports
+
+![Duplicate report](/images/add-ons/pro-reports-duplicate-report.gif)
+
+<Steps>
+<Step title="Navigate to reports">
+Go to **MainWP > Extensions > Pro Reports > Reports**.
+</Step>
+<Step title="Duplicate the report">
+Click the Actions Menu, select **Duplicate**, enter a new title, configure Send To and Send From fields, and click **Save Draft**.
+</Step>
+</Steps>
+
+## PDF Storage
+
+PDFs generated by Pro Reports are saved on the Dashboard site in `/wp-content/uploads/mainwp_pro_reports/`.
+
+## Pro Reports REST API
+
+All MainWP REST API calls, including documentation and examples, are available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). See [MainWP REST API](/api-reference/rest-api/overview) for details on enabling the API and managing keys.
+
+---
+
+## Related Resources
+
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom templates
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Token reference
+- [Agency Add-ons](/add-ons/agency) - Browse agency add-ons
