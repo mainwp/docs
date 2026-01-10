@@ -1,43 +1,63 @@
-# Mintlify Starter Kit
+# MainWP Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+Official documentation for MainWP - the self-hosted WordPress site management platform.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+**Live site:** https://docs.mainwp.com/
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+## About
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+This repository contains the source files for MainWP's documentation, built with [Mintlify](https://mintlify.com). The documentation covers:
 
-## Development
+- Getting started with MainWP
+- Dashboard and site management
+- Extensions and add-ons
+- REST API and Abilities API
+- Troubleshooting and customization
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+## Content Structure
 
-```
+- `/getting-started/` - Introduction and setup guides
+- `/dashboard/` - Dashboard features and configuration
+- `/sites/` - Site management (plugins, themes, updates, backups)
+- `/clients/` - Client management features
+- `/add-ons/` - Extension documentation (100+ extensions)
+- `/troubleshooting/` - Common issues and solutions
+- `/customization/` - Dashboard customization
+- `/advanced/` - Advanced topics, security, integrations
+- `/api-reference/` - REST API and Abilities API documentation
+- `/resources/` - Additional resources
+
+## Local Development
+
+```bash
+# Install Mintlify CLI
 npm i -g mint
-```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
+# Start development server
 mint dev
+
+# View at http://localhost:3000
 ```
 
-View your local preview at `http://localhost:3000`.
+## Configuration
 
-## Publishing changes
+- `docs.json` - Navigation structure, theme, and site settings
+- Navigation uses two tabs: Documentation and Add-Ons
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+## Contributing
 
-## Need help?
+- Follow existing content patterns
+- Use MDX format with YAML frontmatter
+- Test locally before submitting changes
+- See CLAUDE.md for detailed content guidelines
 
-### Troubleshooting
+## Resources
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+- [MainWP Website](https://mainwp.com/)
+- [MainWP Support](https://mainwp.com/support/)
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+### Mintlify Platform
+
+- [Mintlify Documentation](https://mintlify.com/docs) - General docs
+- [Components & API](https://mintlify.com/docs/api/introduction) - MDX components
+- [Guides](https://mintlify.com/docs/guides) - How-to guides
