@@ -79,7 +79,6 @@
             "icon": "gauge-high",
             "pages": [
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
-              "dashboard/overview/mainwp-dashboard-demo-mode",
               "dashboard/overview/manage-extensions",
               "dashboard/overview/choose-list-or-grid-view-for-manage-sites-table",
               "dashboard/overview/mainwp-rest-api"
@@ -107,45 +106,49 @@
             ],
             "groups": [
               {
-                "group": "Plugins",
-                "pages": [
-                  "sites/plugins/managing-plugins-with-mainwp",
-                  "sites/plugins/check-for-abandoned-plugins-and-themes"
-                ]
-              },
-              {
-                "group": "Themes",
-                "pages": [
-                  "sites/themes/managing-themes-with-mainwp",
-                  "sites/themes/parent-theme-lock",
-                  "sites/themes/negative-search"
-                ]
-              },
-              {
-                "group": "Updates",
-                "pages": [
-                  "sites/updates/manage-updates",
-                  "sites/updates/does-mainwp-have-safe-updates",
-                  "sites/updates/how-to-change-daily-update-and-sync-frequency",
-                  "sites/updates/how-to-change-the-number-of-simultaneous-update-requests",
-                  "sites/updates/what-does-possibly-abandoned-mean",
-                  "sites/updates/how-to-change-tolerance-for-abandoned-plugins-and-themes"
-                ]
-              },
-              {
-                "group": "Content",
-                "pages": [
-                  "sites/content/manage-posts",
-                  "sites/content/manage-pages"
-                ]
-              },
-              {
                 "group": "Backups",
                 "pages": [
                   "sites/backups/manage-backups",
                   "sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard"
                 ]
               }
+            ]
+          },
+          {
+            "group": "Updates",
+            "icon": "arrows-rotate",
+            "pages": [
+              "sites/updates/manage-updates",
+              "sites/updates/does-mainwp-have-safe-updates",
+              "sites/updates/how-to-change-daily-update-and-sync-frequency",
+              "sites/updates/how-to-change-the-number-of-simultaneous-update-requests",
+              "sites/updates/what-does-possibly-abandoned-mean",
+              "sites/updates/how-to-change-tolerance-for-abandoned-plugins-and-themes"
+            ]
+          },
+          {
+            "group": "Plugins",
+            "icon": "plug",
+            "pages": [
+              "sites/plugins/managing-plugins-with-mainwp",
+              "sites/plugins/check-for-abandoned-plugins-and-themes"
+            ]
+          },
+          {
+            "group": "Themes",
+            "icon": "swatchbook",
+            "pages": [
+              "sites/themes/managing-themes-with-mainwp",
+              "sites/themes/parent-theme-lock",
+              "sites/themes/negative-search"
+            ]
+          },
+          {
+            "group": "Posts & Pages",
+            "icon": "file-lines",
+            "pages": [
+              "sites/content/manage-posts",
+              "sites/content/manage-pages"
             ]
           },
           {
@@ -410,8 +413,7 @@
             "group": "Resources",
             "icon": "book",
             "pages": [
-              "resources/do-you-have-a-coupon",
-              "resources/will-there-be-a-cyber-monday-deal"
+              "resources/do-you-have-a-coupon"
             ],
             "groups": [
               {
@@ -536,7 +538,8 @@
               "add-ons/monitoring/advanced-uptime-monitor-extension",
               "add-ons/monitoring/mainwp-domain-monitor-extension",
               "add-ons/monitoring/mainwp-ssl-monitor-extension",
-              "add-ons/monitoring/mainwp-lighthouse-extension"
+              "add-ons/monitoring/mainwp-lighthouse-extension",
+              "add-ons/security/regression-testing-extension"
             ]
           },
           {
@@ -584,7 +587,6 @@
               "add-ons/security/aam-extension",
               "add-ons/security/security-ninja-extension",
               "add-ons/security/wp-activity-log-extension",
-              "add-ons/security/regression-testing-extension",
               "add-ons/security/dashboard-insights-extension"
             ]
           },
@@ -594,8 +596,7 @@
             "pages": [
               "add-ons/updates",
               "add-ons/updates/mainwp-database-updater-extension",
-              "add-ons/performance/cache-control-extension",
-              "add-ons/security/regression-testing-extension"
+              "add-ons/performance/cache-control-extension"
             ]
           }
         ]
