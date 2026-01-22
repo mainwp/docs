@@ -20,61 +20,70 @@ These guides cover advanced MainWP configurations for users who need to migrate 
 
 ## Topics
 
-<CardGroup cols={2}>
-  <Card
-    title="Migration & Domain Changes"
-    icon="truck-moving"
-    href="/advanced/how-to-migrate-the-mainwp-dashboard"
-  >
+<AccordionGroup>
+  <Accordion title="Migration & Domain Changes" icon="truck-moving">
     Move your Dashboard to a new server, change domains, or transfer child sites between installations.
-  </Card>
-  <Card
-    title="Security & Encryption"
-    icon="lock"
-    href="/advanced/openssl-keys-encryption"
-  >
+
+    - [Can I migrate the MainWP Dashboard to a different server?](/advanced/how-to-migrate-the-mainwp-dashboard)
+    - [Changing the domain of your MainWP Dashboard site](/advanced/changing-the-domain-of-your-mainwp-dashboard-site)
+    - [How can I move Child Sites to another MainWP Dashboard?](/advanced/move-child-sites-to-another-mainwp-dashboard)
+  </Accordion>
+  <Accordion title="Security & Encryption" icon="lock">
     Configure OpenSSL encryption, manage API key storage, and enable two-factor authentication.
-  </Card>
-  <Card
-    title="Automation"
-    icon="robot"
-    href="/advanced/integrations/automate-your-mainwp-workflow-with-suretriggers"
-  >
+
+    - [OpenSSL Key Encryption After Upgrading to v5.3](/advanced/openssl-keys-encryption)
+    - [How to find the OpenSSL.cnf file](/advanced/how-to-find-the-openssl-cnf-file)
+    - [Custom signature algorithm and PHPSecLib as alternative to OpenSSL](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl)
+    - [How MainWP stores 3rd-party API Keys and other sensitive data](/advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data)
+    - [MainWP connection security](/advanced/miscellaneous/mainwp-connection-security)
+    - [MainWP.com Login Security](/advanced/miscellaneous/mainwp-com-login-security)
+    - [How to add Two-Factor Authentication (2FA) to MainWP](/advanced/miscellaneous/how-to-add-two-factor-authentication-2fa-to-mainwp)
+  </Accordion>
+  <Accordion title="Automation" icon="robot">
     Automate workflows with SureTriggers and manage sites using WP-CLI commands.
-  </Card>
-  <Card
-    title="Hosting & Compatibility"
-    icon="server"
-    href="/advanced/miscellaneous/hosting-compatibility"
-  >
+
+    - [Automate your MainWP workflow with SureTriggers](/advanced/integrations/automate-your-mainwp-workflow-with-suretriggers)
+    - [MainWP WP CLI Commands](/advanced/miscellaneous/mainwp-wp-cli-commands)
+  </Accordion>
+  <Accordion title="Hosting & Compatibility" icon="server">
     System requirements, PHP functions, Cloudways configuration, and multisite compatibility.
-  </Card>
-  <Card
-    title="Plugins & Themes"
-    icon="puzzle-piece"
-    href="/advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed"
-  >
+
+    - [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility)
+    - [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements)
+    - [Required PHP Functions for MainWP](/advanced/miscellaneous/required-php-functions-for-mainwp)
+    - [Enable tmpfile() PHP function on Cloudways](/advanced/miscellaneous/enable-tmpfile-php-function-on-cloudways)
+    - [MainWP and Strattic compatibility](/advanced/miscellaneous/mainwp-and-strattic-compatibility)
+    - [MainWP and WordPress Multisite compatibility test](/advanced/miscellaneous/mainwp-and-wordpress-multisite-compatibility-test)
+    - [How can I change the number of Simultaneous Sync Requests?](/advanced/how-to-change-the-number-of-simultaneous-sync-requests)
+  </Accordion>
+  <Accordion title="Plugins & Themes" icon="puzzle-piece">
     Advanced plugin and theme management including detection, bulk installation, and language handling.
-  </Card>
-  <Card
-    title="Tools & Utilities"
-    icon="wrench"
-    href="/advanced/miscellaneous/mainwp-browser-extensions"
-  >
+
+    - [How to find sites that don't have a certain plugin or theme installed](/advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed)
+    - [How to install a plugin on sites that already have a certain plugin installed](/advanced/miscellaneous/how-to-install-a-plugin-on-sites-that-already-have-a-certain-plugin-installed)
+    - [Ensuring correct language for plugins after bulk Installation](/advanced/miscellaneous/ensuring-correct-language-for-plugins-after-bulk-installation)
+    - [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected)
+    - [Limited Access to WordPress.org Resources and its Impact on MainWP Users](/advanced/miscellaneous/limited-access-to-wordpress-org-resources-and-its-impact-on-mainwp-users)
+  </Accordion>
+  <Accordion title="Tools & Utilities" icon="wrench">
     Browser extensions, MainWP Bridge, page settings reset, and system file reference.
-  </Card>
-  <Card
-    title="Beta & Early Access"
-    icon="flask"
-    href="/advanced/miscellaneous/early-access-updater"
-  >
+
+    - [MainWP Browser Extensions](/advanced/miscellaneous/mainwp-browser-extensions)
+    - [MainWP Bridge (bridge.mainwp.com)](/advanced/miscellaneous/mainwp-bridge)
+    - [Reset page settings](/advanced/miscellaneous/reset-page-settings)
+    - [Understanding the .rnd File Found in the wp-admin Directory](/advanced/miscellaneous/understanding-the-rnd-file-found-in-the-wp-admin-directory)
+  </Accordion>
+  <Accordion title="Beta & Early Access" icon="flask">
     Test upcoming features through the Early Access program and telemetry insights.
-  </Card>
-  <Card
-    title="Third-Party Extensions"
-    icon="plug"
-    href="/advanced/miscellaneous/support-for-3rd-party-extensions"
-  >
+
+    - [MainWP Early Access Extension](/advanced/miscellaneous/early-access-updater)
+    - [MainWP Telemetry (Early Access)](/advanced/miscellaneous/mainwp-telemetry-early-access)
+    - [What Does MainWP Insights Track?](/advanced/miscellaneous/what-does-mainwp-insights-track)
+  </Accordion>
+  <Accordion title="Third-Party Extensions" icon="plug">
     Support policies and plugin requirements for third-party MainWP extensions.
-  </Card>
-</CardGroup>
+
+    - [Support for 3rd Party Extensions](/advanced/miscellaneous/support-for-3rd-party-extensions)
+    - [Required Plugins Check for MainWP Extensions](/advanced/miscellaneous/required-plugins-check-for-mainwp-extensions)
+  </Accordion>
+</AccordionGroup>
