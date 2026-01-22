@@ -162,13 +162,10 @@
             "group": "Troubleshooting",
             "icon": "screwdriver-wrench",
             "pages": [
-              "troubleshooting/potential-issues",
-              "troubleshooting/how-to-enable-error-logging"
-            ],
-            "groups": [
               {
                 "group": "Connection Issues",
                 "pages": [
+                  "troubleshooting/potential-issues",
                   "troubleshooting/connection-test-results-status-codes",
                   "troubleshooting/how-can-i-force-my-mainwp-dashboard-to-reestablish-connection-with-child-sites",
                   "troubleshooting/how-to-use-child-site-response-to-troubleshoot-connection-problems",
@@ -214,6 +211,7 @@
               {
                 "group": "System & Performance",
                 "pages": [
+                  "troubleshooting/how-to-enable-error-logging",
                   "troubleshooting/resolve-system-requirement-issues",
                   "troubleshooting/does-mainwp-child-plugin-affect-my-child-site-loading-time",
                   "troubleshooting/what-port-and-user-agent-does-mainwp-use",
