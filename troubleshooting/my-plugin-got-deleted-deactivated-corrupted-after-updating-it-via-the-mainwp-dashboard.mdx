@@ -1,0 +1,32 @@
+---
+title: My plugin got deleted/deactivated/corrupted after updating it via the MainWP Dashboard
+sidebarTitle: "Plugin Deleted After Update"
+description: >-
+  Understand why plugins may appear missing or deactivated after updates initiated
+  from MainWP, and what typically causes the issue on the child site.
+---
+
+## Did MainWP delete or "break" my plugin during the update?
+
+MainWP triggers the update on the child site, but the update itself is still processed by WordPress on that child site. If something goes wrong during the update process, it's usually related to the child site/server environment (timeouts, low resources, security rules, etc.), not MainWP doing something to the plugin files directly.
+
+## Why would a plugin disappear (or end up deactivated) right after an update?
+
+A failed/blocked update can leave the plugin folder incomplete or missing, which can make WordPress treat the plugin as "not installed" or automatically deactivate it.
+
+### Common causes
+
+- Server-side limits (memory, execution time, cURL timeout)
+- Conflicts from security/caching plugins
+- A firewall/WAF rule blocking the download/unpack step (Cloudflare/Sucuri/etc.)
+- File permission/FS_METHOD issues (updates require the filesystem method to work properly)
+
+## Is my data/settings gone if the plugin folder is missing?
+
+In many cases, plugin data is stored in the database, so reinstalling the plugin is often enough to bring things back. That said, it depends on the plugin (some plugins remove data only if you explicitly choose to, others don't).
+
+## Related Resources
+
+- [MainWP fails to update all items on child sites](/troubleshooting/mainwp-fails-to-update-all-items-on-child-sites)
+- [Resolve System Requirements](/troubleshooting/resolve-system-requirement-issues)
+- [Plugin installation fails with "Upload failed"](/troubleshooting/plugin-installation-fails-with-error-message-upload-failed)

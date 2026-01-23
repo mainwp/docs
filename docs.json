@@ -180,6 +180,7 @@
                 "group": "Update Issues",
                 "pages": [
                   "troubleshooting/mainwp-fails-to-update-all-items-on-child-sites",
+                  "troubleshooting/my-plugin-got-deleted-deactivated-corrupted-after-updating-it-via-the-mainwp-dashboard",
                   "troubleshooting/plugin-installation-fails-with-error-message-upload-failed",
                   "troubleshooting/why-does-my-premium-plugin-not-show-a-changelog-on-mainwp-dashboard",
                   "troubleshooting/premium-theme-updates-not-detected",
