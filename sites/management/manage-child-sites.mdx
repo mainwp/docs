@@ -197,6 +197,10 @@ Use comma-separated values in this order:
 | 8 | HTTP Password | If using Basic Auth |
 | 9 | Verify Certificate | T = true, F = false |
 | 10 | SSL Version | auto, 1.x, 1, 2, 1.1, 1.2, 1.3 |
+
+<Note>
+The CSV importer reads each line with `str_getcsv()` and maps the fifth column (`wpgroups`) into the import payload, so anything you place in that column becomes the raw tag list for a site. When the importer creates a site, it splits that tag list with `preg_split('/[;,]/', $params['groupnames_import'])`, which means commas and semicolons are treated as tag separators. Because the CSV itself is comma-delimited, the simplest way to import multiple tags is to separate them with semicolons (for example, `Tag A;Tag B;Tag C`).
+</Note>
 </Step>
 <Step title="Upload and import">
 Save the CSV, upload it to your Dashboard, check **CSV file contains a header** if applicable, and click **Import Sites**.
