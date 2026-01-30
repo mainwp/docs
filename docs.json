@@ -226,7 +226,6 @@
             "group": "Customization",
             "icon": "palette",
             "pages": [
-              "customization/overview",
               {
                 "group": "Dashboard Appearance",
                 "pages": [
@@ -286,7 +285,6 @@
             "group": "Advanced",
             "icon": "gears",
             "pages": [
-              "advanced/overview",
               {
                 "group": "Migration & Domain Changes",
                 "pages": [
