@@ -206,7 +206,8 @@
                 "group": "Extensions & Licensing",
                 "pages": [
                   "troubleshooting/troubleshoot-extension-licensing-issues",
-                  "troubleshooting/why-is-my-extensions-page-empty"
+                  "troubleshooting/why-is-my-extensions-page-empty",
+                  "troubleshooting/pro-reports-pdf-images-not-showing"
                 ]
               },
               {
