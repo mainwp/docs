@@ -1,0 +1,135 @@
+---
+title: Pro Reports PDF images not showing
+description: >-
+  Fix missing images in Pro Reports PDFs by checking HTTPS media URLs, required
+  PHP functions, supported image formats, and access restrictions.
+---
+
+When images appear in the Pro Reports preview but are missing from the PDF, the issue is typically within the MainWP Dashboard environment. Child sites and the MainWP Child plugin are not involved.
+
+## What You'll Learn
+
+- Identify common causes of missing PDF images
+- Confirm required PHP settings and functions
+- Verify supported image formats and HTTPS media URLs
+- Know when to contact support
+
+## Prerequisites
+
+- Admin access to your MainWP Dashboard
+- Access to hosting settings or hosting support
+
+Open **System Info** from the top-right profile image menu: **MainWP Dashboard > Profile image (top right) > System Info**. You can also go directly to `your-mainwp-dashboard.com/wp-admin/admin.php?page=ServerInformation`.
+
+---
+
+## Before You Start
+
+Rule out image issues before troubleshooting server settings:
+
+- Test with a small JPG image uploaded to the Dashboard Media Library
+- Avoid large images (for example, 5MB or larger)
+- Do not use SVG files
+
+If a small JPG renders correctly in the PDF, the issue is likely image size or format rather than server configuration.
+
+Also confirm:
+
+- MainWP Dashboard plugin is up to date
+- Pro Reports extension is up to date
+- PHP version meets current MainWP requirements
+
+---
+
+## Mixed Content (HTTP Images on HTTPS Sites)
+
+If your Dashboard uses HTTPS but the report image URL uses HTTP, PDF generation can block those images even when the preview looks fine.
+
+### How to check
+
+- Open **Media > Library** on your Dashboard site
+- Click the image used in the report
+- Confirm the image URL starts with `https://`
+
+### What to do
+
+- Ensure the Dashboard site has a valid SSL certificate
+- Enforce HTTPS so all media URLs load over `https://`
+- WordPress will automatically serve media over HTTPS once enforced
+
+---
+
+## PHP `imagepng()` Disabled
+
+The `imagepng()` function is required to generate images inside PDF reports.
+
+### How to check
+
+- Open **System Info** from the top-right profile image menu: **MainWP Dashboard > Profile image (top right) > System Info**
+- Look for `imagepng` under **Disabled PHP Functions**
+
+### What to do
+
+- Ask your host to enable `imagepng`
+- The function is part of the PHP **GD** extension
+
+---
+
+## PHP `allow_url_fopen` Disabled
+
+PDF generation may need PHP to fetch image URLs.
+
+### How to check
+
+- Open **System Info** from the top-right profile image menu: **MainWP Dashboard > Profile image (top right) > System Info**
+- Review the check for `allow_url_fopen`
+
+### What to do
+
+- Ask your host to enable `allow_url_fopen`
+
+---
+
+## HTTP Basic Authentication Blocking Image Access
+
+If your Dashboard is protected with HTTP Basic Authentication, PDF generation may be blocked from loading images.
+
+### Recommended solution
+
+Use the [Dashboard Lock extension](/add-ons/security/dashboard-lock-extension) instead of HTTP Basic Authentication. It protects access while allowing MainWP features, including Pro Reports PDF generation, to function correctly.
+
+---
+
+## Required PHP Functions Missing
+
+Pro Reports PDFs require the `mb_internal_encoding` PHP function.
+
+### How to check
+
+- Open **System Info** from the top-right profile image menu: **MainWP Dashboard > Profile image (top right) > System Info**
+- Verify that `mb_internal_encoding` is available
+
+### What to do
+
+- Ask your host to enable the PHP **mbstring** extension
+
+---
+
+## Supported Image Formats
+
+Only the following formats are supported in Pro Reports PDFs:
+
+- JPG / JPEG
+- PNG
+
+SVG files are not supported and will not render in the PDF.
+
+---
+
+## Still Having Issues?
+
+If the issue persists after checking everything above, open a support ticket:
+
+[https://mainwp.com/mainwp-support/](https://mainwp.com/mainwp-support/)
+
+Include your **MainWP System Info** so the support team can review your server and PHP configuration.
