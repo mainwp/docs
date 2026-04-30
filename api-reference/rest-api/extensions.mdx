@@ -2,8 +2,8 @@
 title: Extensions Endpoints
 sidebarTitle: "Extensions Endpoints"
 description: >-
-  Route-level reference for MainWP extension REST endpoints including SSL
-  Monitor, Domain Monitor, Lighthouse, Pro Reports, and Time Tracker.
+  Route-level reference for MainWP extension REST endpoints including Comments,
+  SSL Monitor, Domain Monitor, Lighthouse, Pro Reports, and Time Tracker.
 ---
 
 Extension endpoints provide access to functionality from MainWP add-ons. These routes require each corresponding extension to be installed and active on your MainWP Dashboard.
@@ -16,11 +16,26 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 - Which extension routes are available in MainWP REST API v2
 - Which parameters each extension endpoint accepts
-- How to call SSL Monitor, Domain Monitor, Lighthouse, Pro Reports, and Time Tracker routes
+- How to call Comments, SSL Monitor, Domain Monitor, Lighthouse, Pro Reports, and Time Tracker routes
 
 ---
 
 ## Route Matrix
+
+### Comments
+
+`{id_or_domain}` accepts either a numeric site ID or a site domain.
+
+| Method | Path | Purpose | Key Params |
+|---|---|---|---|
+| GET | `/comments` | List comments across selected sites | `websites`, `groups`, `clients`, `status`, `keyword`, `dtsstart`, `dtsstop`, `maximum` |
+| GET | `/comments/{id_or_domain}` | List comments for one site | `status`, `keyword`, `dtsstart`, `dtsstop`, `maximum` |
+| PUT, PATCH | `/comments/{id_or_domain}/{id_comment}/action` | Perform an action on a single comment | `action` |
+| PUT, PATCH | `/comments/{id_or_domain}/bulk-action` | Perform an action on multiple comments | `action`, `comment_ids` |
+
+Allowed `action` values: `approve`, `unapprove`, `spam`, `unspam`, `trash`, `restore`, `delete`.
+
+Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`). The `maximum` parameter caps the number of comments returned per site (default `50`, max `500`).
 
 ### SSL Monitor
 
@@ -121,6 +136,55 @@ Common query parameters for Pro Reports routes:
 
 ## Representative Requests
 
+### List pending comments across selected sites
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://your-dashboard.com/wp-json/mainwp/v2/comments?status=pending&websites=12,19&maximum=50"
+```
+
+```json
+{
+  "success": 1,
+  "message": "Comments retrieved successfully.",
+  "data": {
+    "https://example.com": [
+      {
+        "comment_id": 482,
+        "comment_author": "Jane Doe",
+        "comment_content": "Great post!",
+        "comment_status": "pending",
+        "post_id": 341,
+        "post_title": "Quarterly Report",
+        "website_id": 12,
+        "website_url": "https://example.com",
+        "website_name": "Example"
+      }
+    ]
+  }
+}
+```
+
+### Approve a single comment
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "action": "approve" }' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/comments/12/482/action"
+```
+
+### Bulk-trash comments on one site
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "action": "trash", "comment_ids": "482,483,491" }' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/comments/12/bulk-action"
+```
+
 ### SSL Monitor for one site
 
 ```bash
@@ -164,6 +228,7 @@ curl -X POST \
 ## Related Resources
 
 - [REST API Overview](/api-reference/rest-api/overview)
+- [Comments Extension](/add-ons/administrative/comments-extension)
 - [SSL Monitor Extension](/add-ons/monitoring/mainwp-ssl-monitor-extension)
 - [Domain Monitor Extension](/add-ons/monitoring/mainwp-domain-monitor-extension)
 - [Lighthouse Extension](/add-ons/monitoring/mainwp-lighthouse-extension)

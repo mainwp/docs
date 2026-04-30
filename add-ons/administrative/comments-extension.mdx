@@ -204,9 +204,42 @@ The comments table also includes **Restore** and **Not Spam** bulk actions. When
 
 To set the custom comment length, please [see this gist.](https://gist.github.com/bogdan-mainwp/8fab61ca689f24aae74565f714ef00b6)
 
+## Network Activity Logging
+
+Comment moderation actions performed through the extension (approve, unapprove, spam, unspam, trash, restore, delete) are recorded in [Network Activity](/sites/network-activity) under the **Comments** connector. Use this to audit who moderated which comment and when, alongside the rest of your Dashboard activity.
+
+Network Activity logging must be enabled in **MainWP > Settings > Network Activity Settings** for these events to be stored.
+
+## Manage Comments via the REST API
+
+The Comments Extension exposes REST API v2 routes so you can list and moderate comments programmatically across your child sites.
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/mainwp/v2/comments` | List comments across selected sites |
+| GET | `/mainwp/v2/comments/{id_or_domain}` | List comments for one site |
+| PUT, PATCH | `/mainwp/v2/comments/{id_or_domain}/{id_comment}/action` | Perform an action on one comment |
+| PUT, PATCH | `/mainwp/v2/comments/{id_or_domain}/bulk-action` | Perform an action on multiple comments |
+
+Supported actions: `approve`, `unapprove`, `spam`, `unspam`, `trash`, `restore`, `delete`.
+
+Example — approve a comment on site `12`:
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "action": "approve" }' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/comments/12/482/action"
+```
+
+See [Extensions Endpoints](/api-reference/rest-api/extensions#comments) for the full parameter reference and additional examples.
+
 ---
 
 ## Related Resources
 
 - [Administrative Add-ons](/add-ons/administrative) - Browse administrative add-ons
 - [Add-ons Overview](/add-ons/overview) - All add-on categories
+- [Extensions Endpoints](/api-reference/rest-api/extensions#comments) - Comments REST API reference
+- [Network Activity](/sites/network-activity) - Review and configure activity logging
