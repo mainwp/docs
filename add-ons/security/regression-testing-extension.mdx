@@ -104,6 +104,23 @@ To customize how scans are performed, navigate to **MainWP > Add-ons > Regressio
 
 ![Animation showing automatic post-update scan with status indicators](/images/add-ons/regression-post-update-scan.gif)
 
+<Info>
+Post-update scans run **5 minutes after** the update completes by default. This delay allows page caches, CDNs, and object caches to refresh so the scan compares the final rendered HTML rather than stale cached output. Duplicate scans queued for the same page during the delay window are deduplicated automatically.
+</Info>
+
+#### Customizing the post-update scan delay
+
+Developers can adjust the delay using the `mainwp_html_regression_post_update_scan_delay` filter. The value is in seconds and applies per scan. Set it to `0` to scan immediately after an update:
+
+```php
+// Reduce the post-update scan delay to 1 minute.
+add_filter( 'mainwp_html_regression_post_update_scan_delay', function( $delay, $website, $setting, $regression ) {
+    return MINUTE_IN_SECONDS;
+}, 10, 4 );
+```
+
+Use a longer delay if your child sites use aggressive page caching or a CDN with long purge times.
+
 • **Scheduled Scans** – Choose how often automatic scans run: Once a day, Once a week, Twice a month, Once a month.
 
 ### **Notification Settings**
