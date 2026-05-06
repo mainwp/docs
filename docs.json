@@ -576,6 +576,7 @@
                   "add-ons/agency/create-a-custom-pro-reports-email-template",
                   "add-ons/agency/limit-the-amount-of-table-entries-in-the-pro-report-sections",
                   "add-ons/agency/conditional-messages-in-pro-reports",
+                  "add-ons/agency/skip-suspended-sites-in-pro-reports",
                   "add-ons/agency/available-pro-reports-tokens"
                 ]
               },

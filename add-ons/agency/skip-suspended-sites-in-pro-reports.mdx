@@ -1,0 +1,82 @@
+---
+title: Skip suspended sites in Pro Reports
+sidebarTitle: "Skip Suspended Sites"
+description: >-
+  Pro Reports automatically excludes suspended child sites from scheduled
+  reports. Learn how this works and how to override the behavior with the
+  mainwp_pro_reports_skip_suspended_site filter.
+addonType: extension
+---
+
+## What you'll learn
+
+- How Pro Reports handles suspended child sites in scheduled reports
+- How to override the default skip behavior with a filter
+- When to keep suspended sites included in a report
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+When a scheduled Pro Report runs, the extension now checks each selected child site and automatically removes any site that is currently suspended before the report is generated and sent. This prevents monthly or recurring reports from being delivered for sites that you've paused in MainWP Dashboard.
+
+For details on suspending sites, see [Suspend or Unsuspend a Child Site](/sites/management/manage-child-sites#suspend-or-unsuspend-a-child-site).
+
+## Default behavior
+
+For each scheduled report:
+
+- Pro Reports loads the sites assigned to the report (directly, by group, or by client).
+- Any site whose status is **Suspended** is removed from the report run.
+- A log entry is written for each skipped site, for example: `Skipping suspended site :: https://example.com`.
+- The report is generated and emailed only for the remaining active sites.
+
+If every site in the report is suspended, no report is sent.
+
+## Override with the filter
+
+Use the `mainwp_pro_reports_skip_suspended_site` filter when you need to keep suspended sites in a report (for example, to still send a final summary, or to make the decision conditional on the report or site).
+
+**Filter signature**
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `$skip` | bool | `true` if the site is suspended and would be skipped. Return `false` to include it. |
+| `$value` | object\|array | The site row from the database. Includes the site `url` and `suspended` flag. |
+| `$report` | object | The Pro Report being processed. |
+
+Return `false` to include the suspended site, or `true` to skip it.
+
+### Example: include suspended sites for a specific report
+
+This snippet keeps suspended sites in any report whose title contains "Final":
+
+```php
+add_filter( 'mainwp_pro_reports_skip_suspended_site', 'mycustom_keep_suspended_in_final_report', 10, 3 );
+function mycustom_keep_suspended_in_final_report( $skip, $site, $report ) {
+    if ( ! empty( $report->title ) && false !== stripos( $report->title, 'Final' ) ) {
+        return false; // Do not skip — include the suspended site.
+    }
+    return $skip;
+}
+```
+
+### Example: never skip suspended sites
+
+If you want to revert to the previous behavior and always include every assigned site:
+
+```php
+add_filter( 'mainwp_pro_reports_skip_suspended_site', '__return_false' );
+```
+
+Add the snippet to your Dashboard theme's `functions.php` or to a PHP snippet using the [Code Snippets extension](/add-ons/development/code-snippets-extension).
+
+---
+
+## Related Resources
+
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
+- [Suspend or Unsuspend a Child Site](/sites/management/manage-child-sites#suspend-or-unsuspend-a-child-site) - Manage suspended sites
+- [How to send a missed recurring Pro Report](/add-ons/agency/how-to-send-a-missed-recurring-pro-report) - Resend missed reports
