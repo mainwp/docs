@@ -104,6 +104,16 @@ To customize how scans are performed, navigate to **MainWP > Add-ons > Regressio
 
 ![Animation showing automatic post-update scan with status indicators](/images/add-ons/regression-post-update-scan.gif)
 
+• **Delay Regression Scans After Updates** – When **Post-Update Scans** are enabled, you can choose to delay the regression scan instead of running it immediately after updates finish. This gives caches, CDNs, page builders, and background processes time to settle before a snapshot is captured, reducing false positives caused by transient changes.
+
+  When enabled, set the **Delay Duration (minutes)** to any value between **1 and 60 minutes**. The post-update regression scan will be queued and begin once the delay has elapsed. If Post-Update Scans are disabled, the delay setting is hidden and ignored.
+
+  Use this when:
+
+  - Your sites use full-page caching, object caching, or a CDN that needs time to refresh after updates.
+  - Plugins or themes perform background tasks (e.g., asset rebuilding, cache warming) immediately after activation or update.
+  - You want a more stable baseline by scanning after the site has stabilized post-update.
+
 • **Scheduled Scans** – Choose how often automatic scans run: Once a day, Once a week, Twice a month, Once a month.
 
 ### **Notification Settings**
