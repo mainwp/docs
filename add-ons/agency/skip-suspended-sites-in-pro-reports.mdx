@@ -20,11 +20,13 @@ addonType: extension
 **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
 </Info>
 
-When a scheduled Pro Report runs, the extension now checks each selected child site and automatically removes any site that is currently suspended before the report is generated and sent. This prevents monthly or recurring reports from being delivered for sites that you've paused in MainWP Dashboard.
+When a Pro Report runs, the extension checks each selected child site and automatically removes any site that is currently suspended before the report is generated and sent. This prevents both recurring (monthly/scheduled) reports and one-time reports from being delivered for sites that you've paused in MainWP Dashboard.
 
 For details on suspending sites, see [Suspend or Unsuspend a Child Site](/sites/management/manage-child-sites#suspend-or-unsuspend-a-child-site).
 
 ## Default behavior
+
+### Scheduled (recurring) reports
 
 For each scheduled report:
 
@@ -34,6 +36,14 @@ For each scheduled report:
 - The report is generated and emailed only for the remaining active sites.
 
 If every site in the report is suspended, no report is sent.
+
+### One-time (manually sent) reports
+
+When you send a report manually from the Pro Reports overview:
+
+- Suspended sites are filtered out before the report is sent.
+- If the selected sites include only suspended ones, the Dashboard shows: *"There are no active websites with the MainWP Child Reports plugin installed and activated for this report. Please ensure at least one selected website has the Child Reports plugin active and not suspended."*
+- The report is sent only to the remaining active sites.
 
 ## Override with the filter
 
