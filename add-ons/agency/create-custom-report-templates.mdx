@@ -169,7 +169,9 @@ If you use multiple font weights, load each font file separately. Defining bold 
 
 ### Font Works in Preview but Not PDF
 
-Some Pro Reports versions apply a PDF fallback font during PDF generation. If the custom font works in the browser preview but the generated PDF still uses a default font, keep the `@font-face` declarations in the template `<head>` and add a second stylesheet immediately after the opening `<body>` tag.
+By default, Pro Reports does not inject a PDF-only font override, so custom template fonts—including valid `@font-face` declarations—flow through to Dompdf. If Dompdf cannot resolve the requested font, it falls back to its `defaultFont` option.
+
+If the custom font works in the browser preview but the generated PDF still uses a different font, keep the `@font-face` declarations in the template `<head>` and add a second stylesheet immediately after the opening `<body>` tag.
 
 This later stylesheet can reapply the custom font for the PDF output:
 
@@ -187,6 +189,45 @@ This later stylesheet can reapply the custom font for the PDF output:
 ```
 
 Use this override only when the generated PDF ignores a valid custom font that works in the preview.
+
+#### Inject a global PDF font override with a filter
+
+If you need to apply the same PDF-only font override to every report without editing each template, use the `mainwp_pro_reports_pdf_font_override_css` filter. Returning a CSS string from this filter injects a `<style>` block into the PDF HTML just before `</head>`. Returning `false` or an empty value (the default) skips the override.
+
+Add the following to a custom plugin or your theme's `functions.php` on the MainWP Dashboard site:
+
+```php
+add_filter(
+    'mainwp_pro_reports_pdf_font_override_css',
+    function ( $css, $html, $legacy_style ) {
+        // Return the CSS rules to inject into every generated PDF.
+        return 'body, p, div, span, td, th, a, li, h1, h2, h3, h4, h5, h6 {
+            font-family: "DejaVu Sans", sans-serif !important;
+        }';
+    },
+    10,
+    3
+);
+```
+
+The filter passes three arguments:
+
+- `$css` — the current value (`false` by default; return a CSS string to enable the override).
+- `$html` — the full report HTML, in case you want to vary the CSS per report.
+- `$legacy_style` — the previous built-in `DejaVu Sans` rule, provided for convenience if you want to restore the pre-existing behavior.
+
+To restore the old behavior of forcing `DejaVu Sans` on every PDF, return `$legacy_style`:
+
+```php
+add_filter(
+    'mainwp_pro_reports_pdf_font_override_css',
+    function ( $css, $html, $legacy_style ) {
+        return $legacy_style;
+    },
+    10,
+    3
+);
+```
 
 ### Line Height and Table Alignment
 
