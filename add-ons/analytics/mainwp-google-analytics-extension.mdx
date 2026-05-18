@@ -200,6 +200,14 @@ As always, widgets can be enabled or disabled in [Page Settings](/getting-starte
 - If HTTP basic auth protects your MainWP Dashboard, **Sign In with Google** can fail because MainWP Bridge cannot complete the initial pairing or re-registration check.
 - If you need to keep HTTP basic auth enabled, use **Import JSON File** instead.
 
+**Corrupted or missing site secret (Reset Now)**
+
+If the site secret used to authenticate with MainWP Bridge becomes corrupted or goes missing, the extension shows the following notice on its pages:
+
+> The lost secret for the MainWP Google Analytics Extension is corrupted. You need to recover it to be able to use the extension.
+
+Click **Reset Now** in the notice to regenerate the site secret. After the reset completes, reconnect any affected Sign In accounts from **MainWP > Add-ons > Google Analytics > Manage Accounts** using **Reconnect Account**.
+
 **Sign-in account needs verification/reconnection**
 
 - Go to **MainWP > Add-ons > Google Analytics > Manage Accounts**
