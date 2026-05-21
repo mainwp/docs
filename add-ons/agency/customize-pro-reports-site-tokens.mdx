@@ -1,0 +1,90 @@
+---
+title: Customize Pro Reports site tokens
+sidebarTitle: "Customize Site Tokens"
+description: >-
+  Use the mainwp_pro_reports_custom_tokens filter to add or override site-level
+  token values before Pro Reports generates the report content for each child
+  site.
+addonType: extension
+---
+
+## What you'll learn
+
+- When to use the `mainwp_pro_reports_custom_tokens` filter
+- How to add a custom site-level token to Pro Reports
+- How to override an existing token value per site or per report
+
+---
+
+<Info>
+**Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+</Info>
+
+Pro Reports builds a per-site token array (for tokens like `[site.url]`, `[plugin.updated.count]`, and any extension tokens) before it renders each child site's section of the report. The `mainwp_pro_reports_custom_tokens` filter lets you add or change values in that array for a specific site, report, or template.
+
+Use this filter when you need to:
+
+- Add a brand-new placeholder token (for example `[my.site.note]`) that you reference in a custom template.
+- Override a built-in site-level token value for a single report or website.
+- Pull a value from another plugin, post meta, or external API and expose it as a Pro Reports token.
+
+If your condition depends on parsed section data (such as counts), use [Conditional Messages in Pro Reports](/add-ons/agency/conditional-messages-in-pro-reports) instead. The `mainwp_pro_reports_custom_tokens` filter runs earlier and operates on the raw site token array.
+
+## Filter signature
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `$single_tokens` | array | Associative array of site tokens keyed by their bracketed placeholder (for example `[site.url]`). Add or update entries to expose new tokens. |
+| `$report` | object | The Pro Report being processed. |
+| `$website` | array | The child site row, including `id` and `url`. |
+| `$templ_content` | string | The raw template content for the current report. Useful when you only want to set a token if the template actually uses it. |
+
+Return the modified `$single_tokens` array.
+
+## Example: add a custom site-level token
+
+This snippet exposes a `[site.note]` token that reads from a site option stored on the child site's row.
+
+```php
+add_filter( 'mainwp_pro_reports_custom_tokens', 'mycustom_pro_reports_site_note', 10, 4 );
+function mycustom_pro_reports_site_note( $single_tokens, $report, $website, $templ_content ) {
+    // Only set the token if the template references it.
+    if ( false === strpos( (string) $templ_content, '[site.note]' ) ) {
+        return $single_tokens;
+    }
+
+    $note = get_post_meta( (int) $website['id'], 'mainwp_site_note', true );
+
+    $single_tokens['[site.note]'] = ! empty( $note ) ? $note : '';
+
+    return $single_tokens;
+}
+```
+
+Reference `[site.note]` anywhere in your custom Pro Reports template to render the value.
+
+## Example: override a token for a single report
+
+Use the `$report` argument to scope changes to a specific report:
+
+```php
+add_filter( 'mainwp_pro_reports_custom_tokens', 'mycustom_override_client_name', 10, 4 );
+function mycustom_override_client_name( $single_tokens, $report, $website ) {
+    if ( ! empty( $report->title ) && false !== stripos( $report->title, 'VIP' ) ) {
+        $single_tokens['[client.company]'] = 'VIP Client Services';
+    }
+    return $single_tokens;
+}
+```
+
+Add the snippet to your Dashboard theme's `functions.php` or to a PHP snippet using the [Code Snippets extension](/add-ons/development/code-snippets-extension).
+
+---
+
+## Related Resources
+
+- [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Complete token reference
+- [Conditional Messages in Pro Reports](/add-ons/agency/conditional-messages-in-pro-reports) - Modify parsed token arrays for conditional output
+- [Difference between Client-level and Site-level Custom Tokens](/add-ons/agency/difference-between-client-level-and-site-level-custom-tokens) - Token resolution rules
+- [Create Custom Report Templates](/add-ons/agency/create-custom-report-templates) - Build custom PHP templates
+- [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Main Pro Reports documentation
