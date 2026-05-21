@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.0.3"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
@@ -111,17 +111,38 @@ After setting custom permissions, you are ready to assign this role to an existi
 </Step>
 <Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
 </Step>
-<Step title="Go to the Manage Dashboard Users tab">
-</Step>
-<Step title="Search for existing users on your MainWP Dashboard">
+<Step title="Go to the Dashboard Users tab">
 </Step>
 <Step title="Locate the user you want to update">
-Locate the user you want to update, select the user, choose the new role in the role dropdown, and click **Change Role**.
+Use the **All roles** filter in the top-right to narrow the list, then click **Filter Users**.
+</Step>
+<Step title="Select one or more users">
+Tick the checkbox next to each user you want to change.
+</Step>
+<Step title="Apply the Change role bulk action">
+In the **Bulk actions** dropdown choose **Change role**, pick the new role from the role selector that appears, and click **Apply**.
 </Step>
 </Steps>
 
 
 **Note:** If you'd like a user to have access through a site tag, grant the role access to that tag in **Allowed Child Sites** > **Select by Tag**.
+
+## Filter Users by Role
+
+The **Dashboard Users** tab includes a multi-select role filter so you can review only the users assigned to specific roles, including users with **No role** assigned.
+
+<Steps>
+<Step title="Go to the Dashboard Users tab">
+</Step>
+<Step title="Open the role selector in the top-right">
+Choose one or more roles. Both built-in WordPress roles and custom roles created in Team Control are listed.
+</Step>
+<Step title="Click Filter Users">
+The users table reloads showing only matching users. If nothing matches, an empty-state message is shown so you can clear the filter and try again.
+</Step>
+</Steps>
+
+You can also jump straight to a filtered user list from the **Roles & Permissions** tab: each custom role row shows a **Users** count that links to the **Dashboard Users** tab pre-filtered to that role.
 
 ## Edit Custom Role
 
