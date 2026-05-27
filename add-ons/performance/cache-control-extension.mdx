@@ -65,7 +65,44 @@ Cache Control widgets are located on the [Overview](/getting-started/mainwp-user
 
 ## Cloudflare cache purging
 
-For the Cloudflare cache purging to work, you must enter a valid Cloudflare API Email and Cloudflare API Key and enable "Use Cloudflare Cache API" setting. <img src="/images/add-ons/cache-control-cloudflare-settings.png" alt="Screenshot of Cloudflare API settings with Email and API Key fields" /> **NOTE** Since version 4.0.1, the Cache Control extension will handle cache purging of both Cloudflare and the supported caching plugin at the same time. Previously, if both caching solutions were present, only the caching plugin was supported.
+To enable Cloudflare cache purging, turn on the **Use Cloudflare Cache API** setting and provide valid Cloudflare credentials. <img src="/images/add-ons/cache-control-cloudflare-settings.png" alt="Screenshot of Cloudflare API settings with Email and API Key fields" />
+
+**NOTE** Since version 4.0.1, the Cache Control extension will handle cache purging of both Cloudflare and the supported caching plugin at the same time. Previously, if both caching solutions were present, only the caching plugin was supported.
+
+### Choose an authentication method
+
+Cache Control supports two ways to authenticate with Cloudflare. Pick the one that matches how you manage your Cloudflare account:
+
+- **Global API Key** (default) — Authenticates with your Cloudflare account email and Global API Key. Use this if you've previously configured Cache Control or rely on the legacy key.
+- **API Token** — Authenticates with a scoped Cloudflare API Token (Bearer Token). Recommended for most accounts because tokens can be limited to specific zones and permissions, and can be revoked individually.
+
+To switch methods, toggle **Use Cloudflare Token** on the Cache Control settings page. The relevant credential fields appear based on your selection.
+
+<Tabs>
+  <Tab title="API Token (recommended)">
+    1. In your Cloudflare dashboard, go to **My Profile \> API Tokens** and create a token with **Zone.Cache Purge** permission for the zones you want to manage.
+    2. In MainWP, go to **Extensions \> Cache Control**.
+    3. Enable **Use Cloudflare Cache API**.
+    4. Enable **Use Cloudflare Token**.
+    5. Paste the token into the **Token** field and click **Save Settings**.
+  </Tab>
+  <Tab title="Global API Key">
+    1. Retrieve your Global API Key from your Cloudflare profile.
+    2. In MainWP, go to **Extensions \> Cache Control**.
+    3. Enable **Use Cloudflare Cache API**.
+    4. Leave **Use Cloudflare Token** disabled.
+    5. Enter your **Cloudflare API Email** and **Cloudflare API Key**, then click **Save Settings**.
+  </Tab>
+</Tabs>
+
+### Per-site Cloudflare credentials
+
+Each Child Site can override the global Cloudflare credentials, which is useful when different sites are on different Cloudflare accounts.
+
+1. Go to **Sites \> Manage Sites**, open the Child Site, and click the **Cache Control** tab.
+2. Enable **Use Cloudflare Cache API** to override the global settings.
+3. Choose the authentication method with the **Use Cloudflare Token** toggle.
+4. Enter either the **Token** or the **Cloudflare API Email** and **API Key**, then save.
 
 ## Change Cache Control settings on All child sites
 
