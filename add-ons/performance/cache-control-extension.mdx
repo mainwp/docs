@@ -65,7 +65,31 @@ Cache Control widgets are located on the [Overview](/getting-started/mainwp-user
 
 ## Cloudflare cache purging
 
-For the Cloudflare cache purging to work, you must enter a valid Cloudflare API Email and Cloudflare API Key and enable "Use Cloudflare Cache API" setting. <img src="/images/add-ons/cache-control-cloudflare-settings.png" alt="Screenshot of Cloudflare API settings with Email and API Key fields" /> **NOTE** Since version 4.0.1, the Cache Control extension will handle cache purging of both Cloudflare and the supported caching plugin at the same time. Previously, if both caching solutions were present, only the caching plugin was supported.
+To purge Cloudflare cache, enable **Purge Cloudflare cache** in the extension settings and provide valid Cloudflare API credentials. <img src="/images/add-ons/cache-control-cloudflare-settings.png" alt="Screenshot of Cloudflare API settings with Email and API Key fields" />
+
+<Note>
+  Since version 4.0.1, Cache Control purges both Cloudflare and the supported caching plugin at the same time. Previously, only the caching plugin was purged when both were present.
+</Note>
+
+### Choose an authentication method
+
+From version 5.1, you can choose how the extension authenticates with Cloudflare using the **Authentication method** dropdown:
+
+- **API Token** (recommended) — A scoped token created in your Cloudflare dashboard. Use this for least-privilege access; tokens can be limited to the zones and permissions required for purging cache.
+- **Email & API key** — Your Cloudflare account email and Global API Key. The Global API Key grants full access to your Cloudflare account, so prefer API Token when possible.
+
+The credential fields shown on the settings page change to match the method you select.
+
+### Credential validation
+
+When you save the settings, the extension makes a lightweight test request to the Cloudflare API to verify your credentials:
+
+- For **API Token**, it calls `GET /user/tokens/verify`.
+- For **Email & API key**, it calls `GET /user`.
+
+If validation fails, your settings are still saved, but a yellow notice appears with the error returned by Cloudflare (for example, an invalid token or incorrect email/key). Update the credentials and save again to clear the notice.
+
+Validation is skipped when the credential fields for the selected method are empty.
 
 ## Change Cache Control settings on All child sites
 
@@ -96,8 +120,12 @@ For the Cloudflare cache purging to work, you must enter a valid Cloudflare API 
   <Step title="Locate the Child site, open its Dashboard and go Cache Control page">
     Locate the Child site, open its Dashboard and go **Cache Control** page
 
-    1. Override the global settings by selecting Yes or No from the dropdown
-    2. Optionally, enable the Cloudflare Cache API and enable the site-specific API key <img src="/images/add-ons/cache-control-overview.png" alt="Screenshot of Cache Control settings page for individual site with override and Cloudflare options" />
+    1. Set **Automatically purge cache** to **Yes**, **No**, or **Use global setting**.
+    2. Set **Purge Cloudflare cache** to one of:
+       - **Use global setting** — inherit the dashboard-wide Cloudflare configuration.
+       - **Yes (use site-specific credentials)** — override globals and enter dedicated Cloudflare credentials for this site. Pick **API Token** or **Email & API key** as the authentication method.
+       - **No (disabled for this site)** — never purge Cloudflare for this site, even if globally enabled.
+    <img src="/images/add-ons/cache-control-overview.png" alt="Screenshot of Cache Control settings page for individual site with override and Cloudflare options" />
   </Step>
   <Step title="Click Save button">
     
