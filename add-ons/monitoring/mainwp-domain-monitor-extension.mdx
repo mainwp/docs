@@ -14,7 +14,7 @@ addonType: "extension"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.1.5" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.2" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/QMziJ1BxEcE" title="Domain Monitor - Video Tutorial" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
 
@@ -73,6 +73,17 @@ If the extension cannot retrieve your domain information automatically, you can 
 </Steps>
 
 Alternatively, you can use the **Bulk actions** menu to check selected sites, or use the **Check Domain** action from the site **Actions** menu to audit just one site.
+
+### Unscanned Sites
+
+Sites that have not been checked yet are highlighted in the Domain Monitor dashboard so you can spot them at a glance:
+
+- The row is shaded yellow.
+- The **Expires** column shows a **Not checked** button instead of remaining days. Click it to run a check for that site.
+- Domain fields with no data display **N/A**.
+- The **Domain Info** action is disabled until the first successful check completes.
+
+Once a check completes, the row returns to its normal style and the remaining-days indicator (green, yellow, or red hourglass) appears based on how close the domain is to expiration.
 
 ## Enter Domain Info Manually
 
