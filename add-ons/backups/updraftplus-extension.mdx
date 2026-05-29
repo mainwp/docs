@@ -169,6 +169,64 @@ You will find the Backup Now and Restore buttons. To create a Backup of your chi
   <img src="/images/add-ons/updraftplus-backup-restore-buttons.png" alt="Screenshot showing Backup Now and Restore buttons on the UpdraftPlus Status tab" />
 </Frame>
 
+### Backup Now options
+
+When you click **Backup Now** for an individual child site, the dialog loads the backup settings from that site and adapts the available options to whichever version of UpdraftPlus (free or Premium) is installed there. Options that require UpdraftPlus Premium or one of its paid add-ons are only shown when the child site can use them.
+
+The dialog always exposes these top-level toggles:
+
+- **Include your database in the backup** - clear this checkbox to back up files only.
+- **Include your files in the backup** - clear this checkbox to back up the database only.
+- **Send this backup to remote storage** - clear this checkbox to keep the backup on the child site instead of uploading it to a configured remote destination.
+
+Click the **`...`** link next to **Include your database** or **Include your files** to expand the advanced selectors described below.
+
+#### File selection and exclusions
+
+Expanding the files options shows one checkbox per backup entity reported by the child site (plugins, themes, uploads, `wp-content` "others", must-use plugins, and any extra paths configured on the site). For the **uploads** and **others** entities, you can also add per-path exclusion rules - for example, to skip a cache directory or a large media folder. Wildcards (`*`) are supported at the start or end of an entry.
+
+#### Database table selection (Premium)
+
+With UpdraftPlus Premium installed on the child site, expanding the database options lists every table in the WordPress database with checkboxes. Use the **Select all**, **Select all (this site)**, and **Deselect all** links to quickly pick a subset:
+
+- **Select all** - includes every table, including tables from other WordPress installs that share the database.
+- **Select all (this site)** - includes only tables that use the current site's table prefix.
+- **Deselect all** - clears the selection so you can pick tables manually.
+
+Non-WordPress tables are listed but unchecked by default.
+
+#### Remote storage selection
+
+If the child site has multiple remote storage destinations configured, expanding the cloud options shows one checkbox per destination so you can target a specific provider (for example, send one backup to Dropbox and skip Amazon S3). If no remote storage is configured on the child site, the option is disabled and a link to the site's UpdraftPlus settings is shown.
+
+#### Retention override
+
+Enable **Only allow this backup to be deleted manually** to mark the resulting backup set as "always keep". UpdraftPlus will not remove it when retention limits would otherwise prune it - useful for milestone backups taken before a major update or migration.
+
+#### Backup label (Reporting add-on)
+
+If the child site has the UpdraftPlus **Reporting** add-on active, a **Your label for this backup (optional)** field is shown. Enter a short label (up to 40 characters) to make the backup easier to identify in the backup history and in reporting emails.
+
+#### Incremental backup (Premium add-on)
+
+If the child site has the UpdraftPlus **Incremental Backups** add-on active and an existing backup set is available to append to, the dialog adds files changed since the last backup as a new increment in that set instead of creating a new full backup. If no suitable existing backup is found, the option is disabled and a notice is shown.
+
+<Info>
+Incremental backups apply to files only. To also capture database changes, run a separate database backup.
+</Info>
+
+#### Database anonymization (Anonymisation add-on)
+
+If the child site has the UpdraftPlus **Anonymisation** add-on active, the database options expand to include checkboxes that strip personal data from the backup before it is written:
+
+- **Anonymize personal data for all users except the logged-in user**
+- **Anonymize personal data for all users except staff**
+- **Anonymize WooCommerce order data** - only shown when WooCommerce is detected on the child site.
+
+<Warning>
+Anonymized data cannot be recovered from the backup. Use anonymization for backups you intend to share with developers or to seed staging environments, not for disaster-recovery copies.
+</Warning>
+
 ## Schedule Backups With MainWP UpdraftPlus Extension
 
 MainWP UpdraftPlus Extension allows you to schedule your backups easily. To set scheduled backups, go to the Extension Settings page and locate the **File Backups Intervals** and the **Database Backup Intervals** options.
