@@ -67,6 +67,7 @@ You can connect Google Analytics in two ways. Use whichever fits your setup (you
 
 - If your MainWP Dashboard server does not meet the required PHP version, the **Sign In with Google** tab is disabled and you can use **Import JSON File**.
 - This flow uses MainWP Bridge (`bridge.mainwp.com`) for secure authentication. See [MainWP Bridge](/advanced/miscellaneous/mainwp-bridge) and the [MainWP Bridge Privacy Policy](https://mainwp.com/mainwp-bridge-privacy-policy).
+- Before any OAuth action, the extension checks that your Dashboard's WordPress REST API root (`/wp-json/`) is reachable. If it isn't, the **Sign In with Google**, **Continue**, **Confirm**, **Reconnect Account**, and refresh buttons are disabled and an in-page notice links to [WordPress REST API does not respond](/troubleshooting/wordpress-rest-api-does-not-respond). Use **Import JSON File** to connect in the meantime.
 
 <Warning>
 If HTTP basic auth protects your MainWP Dashboard before it has paired with MainWP Bridge, **Sign In with Google** can fail because MainWP Bridge must be able to reach your Dashboard. If you need to keep HTTP basic auth enabled, use **Import JSON File** instead.
@@ -193,12 +194,18 @@ As always, widgets can be enabled or disabled in [Page Settings](/getting-starte
 
 ## Troubleshooting
 
+**Sign In with Google buttons are disabled / "Google OAuth requires the WordPress REST API" notice**
+
+The extension performs a pre-flight check on your Dashboard's WordPress REST API root (`/wp-json/`) before any Google OAuth action. When the REST API is unreachable, the **Sign In with Google**, **Continue**, **Confirm**, **Reconnect Account**, and refresh buttons are disabled, and a red notice appears on the Add Account and Manage Accounts pages.
+
+- See [WordPress REST API does not respond](/troubleshooting/wordpress-rest-api-does-not-respond) for steps to restore access (permalinks, security plugins, server rules).
+- If HTTP basic auth protects your MainWP Dashboard, **Sign In with Google** can fail because MainWP Bridge cannot complete the initial pairing or re-registration check.
+- If you need to keep the REST API restricted, use **Import JSON File** instead — the Service Account flow does not require `/wp-json/` to be public.
+
 **Sign In with Google shows `site secret not found`**
 
 - This error usually means the default WordPress REST API endpoint at `/wp-json/` is blocked, disabled, filtered, or behind authentication.
 - Make sure your MainWP Dashboard allows access to `/wp-json/`.
-- If HTTP basic auth protects your MainWP Dashboard, **Sign In with Google** can fail because MainWP Bridge cannot complete the initial pairing or re-registration check.
-- If you need to keep HTTP basic auth enabled, use **Import JSON File** instead.
 
 **Corrupted or missing site secret (Reset Now)**
 
