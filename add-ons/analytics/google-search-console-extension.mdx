@@ -72,6 +72,8 @@ The MainWP Google Search Console Add‑on brings your Google Search Console (GSC
 **Requirements**
 
 -   PHP 8.1 or higher on the MainWP Dashboard (required by Google libraries)
+-   PHP **BCMath** extension enabled on the MainWP Dashboard (used by the report generator)
+-   The default WordPress REST API endpoint (`/wp-json/`) on the MainWP Dashboard must be reachable. The **Sign in with Google** OAuth flow uses it to pair with the add-on.
 -   Your sites must be verified in **Google Search Console**
 -   For JSON Import: Google Search Console API
 
@@ -204,12 +206,24 @@ If you use **MainWP Pro Reports**, you can include Google Search Console data in
 
 ## Troubleshooting
 
+**"Google OAuth requires the WordPress REST API to be enabled and reachable"**
+
+- The add-on checks whether `/wp-json/` on your MainWP Dashboard returns the expected REST API metadata. When the check fails, the add-on shows a red notice on the **Add Property**, **Manage Properties**, and **Overview** screens, and disables the OAuth buttons (**Sign in with Google**, **Continue**, **Confirm**, **Verify Now**, **Reset Now**, and **Reconnect Property**). The **Import JSON File** flow is unaffected and can still be used.
+- Make sure the default WordPress REST API endpoint at `/wp-json/` is not blocked, disabled, filtered, or behind HTTP basic auth on your MainWP Dashboard.
+- See the [WordPress REST API troubleshooting guide](https://docs.mainwp.com/troubleshooting/wordpress-rest-api-does-not-respond) for steps to restore REST API access.
+- If you need to keep HTTP basic auth or REST API restrictions enabled, use **Import JSON File** instead.
+
 **Sign in with Google shows `site secret not found`**
 
-- This error usually means the default WordPress REST API endpoint at `/wp-json/` is blocked, disabled, filtered, or behind authentication.
+- This error has the same root cause as above: the default WordPress REST API endpoint at `/wp-json/` is blocked, disabled, filtered, or behind authentication.
 - Make sure your MainWP Dashboard allows access to `/wp-json/`.
 - If HTTP basic auth protects your MainWP Dashboard, **Sign in with Google** can fail because MainWP Bridge cannot complete the initial pairing or re-registration check.
 - If you need to keep HTTP basic auth enabled, use **Import JSON File** instead.
+
+**"Your server does not have the PHP BCMath extension enabled"**
+
+- The MainWP Google Search Console add-on requires the PHP **BCMath** extension on the MainWP Dashboard server to run the background processes used for Pro Reports.
+- Ask your host to enable the `bcmath` PHP extension. After it is enabled, refresh the add-on page and the notice will clear.
 
 **No data available**
 
