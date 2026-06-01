@@ -11,6 +11,8 @@ addonType: extension
 
 - Adding custom PHP, CSS, and JavaScript to your Dashboard
 - Where custom code is stored and executed
+- Using the built-in code editor (CodeMirror 6) with autocompletion, code folding, and the One Dark theme
+- Validating PHP snippets before saving with the built-in syntax check
 - Handling PHP errors safely
 - Accessing example code snippets
 
@@ -24,7 +26,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="extension"
-  data-version="5.0.1"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-custom-dashboard-extension/"
   data-owned-by="Jestart LLC"
@@ -63,17 +65,60 @@ Check out our Github repository where we keep example snippets that will help yo
 ## How It Works
 
 MainWP Custom Dashboard Extension saves your PHP, CSS, and JS snippets in WordPress options on your MainWP Dashboard site instead of requiring separate PHP, CSS, or JS files.
-CSS snippets are added as inline styles on MainWP pages, and JS snippets are added as inline admin scripts on the MainWP Dashboard site.
-Saved PHP Code Snippets are executed on page load by using the PHP function `eval()`.
+CSS and JS snippets are added inline on MainWP pages only — they don't load on the rest of WP Admin or the front-end.
+Saved PHP Code Snippets are executed on page load using the PHP function `eval()`.
 In case the `eval()` function is disabled on your host, please contact your host support and have them enable it for you.
-
-If a saved PHP snippet causes a parse or compile fatal error, the extension uses WordPress fatal-error handling or a shutdown handler to show an error message and a link back to the PHP editor with snippet execution disabled:
-
-![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
 
 MainWP Custom Dashboard Extension is used to apply custom code snippets to the MainWP Dashboard site ONLY!
 It doesn't apply code to child sites.
 To apply custom code snippets to child sites, please see the [MainWP Code Snippets Extension](https://mainwp.com/extension/code-snippets/).
+
+## The Code Editor
+
+The editor is powered by CodeMirror 6 and ships with productivity features enabled by default:
+
+- **Syntax highlighting** for PHP, CSS, and JavaScript
+- **One Dark** theme for better readability
+- **Autocompletion** as you type
+- **Automatic bracket closing** for `()`, `{}`, `[]`, and quotes
+- **Code folding** with gutter handles and keyboard shortcuts
+- **Tab indentation** that respects natural tab behavior inside the editor
+
+Use the language tab at the top of the page to switch between the PHP, CSS, and JS editors. Each language is saved independently.
+
+## Writing PHP Snippets
+
+PHP snippets are saved as **tagless** PHP — write your code without `<?php` or `?>` tags. The extension validates this on save and rejects snippets that contain PHP tags.
+
+```php
+// ✅ Correct — no opening or closing tags
+add_action( 'admin_footer', function () {
+    echo '<!-- Custom Dashboard snippet loaded -->';
+} );
+```
+
+```php
+// ❌ Rejected — PHP tags are not allowed inside the editor
+<?php
+add_action( 'admin_footer', function () {
+    echo '<!-- ... -->';
+} );
+?>
+```
+
+### Pre-save syntax validation
+
+Before a PHP snippet is saved, the extension runs a syntax check on the code. If the snippet contains a parse error, the save is rejected and the editor displays the error message so you can fix it before it ever runs.
+
+This catches the most common cause of a broken dashboard — a typo in a snippet — without you having to reload the page to find out.
+
+### Runtime error handling
+
+If a saved PHP snippet still produces a parse or compile fatal error at runtime, the extension catches it and shows a safe error message with a link back to the PHP editor. Snippet execution is disabled until you fix the code:
+
+![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
+
+Other runtime exceptions (`Throwable`s) thrown by a snippet are caught and logged instead of taking down the page.
 
 ---
 
