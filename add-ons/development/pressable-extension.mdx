@@ -27,7 +27,7 @@ thirdPartyPlugin: Pressable
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0.1"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-pressable-extension/"
   data-integrates-with="Pressable"
@@ -96,9 +96,32 @@ Enter the Client ID and Client Secret and click the **Save Settings** button ![M
 </Steps>
 
 
+## Clearing Pressable credentials
+
+To disconnect the extension from your Pressable account, open the **Settings** tab, clear both the **Client ID** and **Client Secret** fields, and click **Save Settings**. Saving empty values removes the stored credentials and the cached access token. The Dashboard tab then shows an empty-state placeholder prompting you to add credentials again.
+
+## Empty-state placeholders
+
+The Dashboard tab shows contextual placeholders when there is nothing to display:
+
+- **No credentials saved** — a *Pressable API Credentials Required* placeholder links you to the Settings tab to add a Client ID and Client Secret.
+- **Credentials saved but no sites found** — a *No Pressable Sites Found* placeholder prompts you to create a site in Pressable or reload Pressable API data to sync sites.
+
+These replace the previous empty table so the next step is always clear.
+
+## Site matching by primary URL and custom domains
+
+The extension matches Pressable sites to MainWP child sites using both the Pressable primary URL and any custom domains configured on the Pressable site. If a child site's URL matches any domain assigned to a Pressable site, it is linked automatically — no manual mapping is required when you point a child site at a custom domain instead of the default `*.mystagingwebsite.com` URL.
+
+Reload Pressable API data from the Dashboard tab to refresh the mapping after adding or changing custom domains in Pressable.
+
 ## Dashboard page of the extension
 
-This page contains all of the features or shortcuts to the features of the Pressable extension. ![Pressable Dashboard showing connected sites with CDN, State, and Environment columns](/images/add-ons/pressable-dashboard-overview.png) This table will contain all sites from the Pressable account you connected in the extension Settings that are also added to this MainWP Dashboard. Sites from the Pressable account that are not added to the MainWP Dashboard as child sites will NOT be shown here. The columns of the table that are specific to the Pressable extension are as follows:
+This page contains all of the features or shortcuts to the features of the Pressable extension. ![Pressable Dashboard showing connected sites with CDN, State, and Environment columns](/images/add-ons/pressable-dashboard-overview.png) This table will contain all sites from the Pressable account you connected in the extension Settings that are also added to this MainWP Dashboard. Sites from the Pressable account that are not added to the MainWP Dashboard as child sites will NOT be shown here.
+
+Backup and creation timestamps in the table show a human-readable elapsed time (for example, *2 days ago*) on hover, and sort by their underlying date.
+
+The columns of the table that are specific to the Pressable extension are as follows:
 
 -   **CDN**: Shows a graphical indicator of whether the Pressable CDN is enabled on the child site
 -   **State**: Displays the status of the child site, either Live or Disabled
