@@ -27,6 +27,8 @@ addonType: extension
 
 - Understanding the three code snippet types
 - Executing and saving code snippets
+- Targeting snippets to sites, tags, or clients
+- Using the code editor (folding, autocompletion, PHP syntax validation)
 - Removing snippets from child sites
 - Recovering from bad snippets
 - Useful wp-config.php snippets
@@ -74,6 +76,38 @@ The MainWP Code Snippets Extension allows you to run code in three ways:
 MainWP is not responsible for the code that you run on your sites. Use this tool with extreme care and at your own risk. Run any code on a test site before releasing it on live sites. If you execute a bad code snippet and crash your child sites, you need to remove the code snippet from your sites.
 </Warning>
 
+## Target Snippets to Sites, Tags, or Clients
+
+When you execute or save a snippet, you choose which child sites receive it by picking one of three targeting modes:
+
+- **Sites** - Pick individual child sites from your network.
+- **Tags** - Apply the snippet to every child site that carries one or more selected [tags](/sites/management/manage-child-sites).
+- **Clients** - Apply the snippet to every child site assigned to one or more selected [clients](/clients/manage-clients). Useful when you want to deploy code to all sites that belong to a specific customer.
+
+<Info>
+A snippet can only use **one** targeting mode at a time. Switching from Sites to Tags (or to Clients) clears the previous selection, and the snippet is removed from sites that no longer match the new selection on the next save or execute.
+</Info>
+
+## Code Editor
+
+The snippet editor is built on CodeMirror 6 and includes the following authoring aids:
+
+- **PHP syntax validation** runs before a snippet is saved or executed. If the snippet has a syntax error, the save is blocked and the editor highlights the issue so you can fix it before pushing the code to child sites.
+- **Code folding** lets you collapse functions and blocks. Use the gutter markers or the fold keymap to toggle regions.
+- **Autocompletion and bracket closing** suggest PHP tokens as you type and automatically close `()`, `{}`, `[]`, and quotes.
+- **Tab indentation** inserts a real tab character so your indentation is preserved on child sites.
+- A **pill-style snippet type selector** sits above the editor alongside the snippet title, description, and targeting controls, so the most-used settings are visible while you edit.
+
+## Saved Snippets Table
+
+The Saved Snippets list combines the snippet title and description into a single column for easier scanning, and uses colored labels to mark each snippet's type:
+
+- **Execute on Child Sites**
+- **Return info from Child Sites**
+- **Save to wp-config.php**
+
+Use the **Load** button on any row to open the snippet in the editor, change its targeting, and re-save or re-execute it.
+
 ## Remove a Code Snippet From a Broken Site
 
 Code snippets can be removed directly from the database. To do this:
@@ -107,8 +141,8 @@ Go to the **MainWP > Add-ons > Administrative > Code Snippets > Execute Snippet*
 </Step>
 <Step title="Select the snippet type">
 </Step>
-<Step title="Select Child Sites where you want to execute the snippet">
-[Select Child Sites](/getting-started/mainwp-user-interface) where you want to execute the snippet **NOTE:** A snippet cannot be executed on both the selection of Sites and a selection of Tags. If it is already executed to either Sites or Tags, and you choose the other selection type, it will be removed from the existing selection.
+<Step title="Choose your target: Sites, Tags, or Clients">
+Select the child sites, tags, or [clients](/clients/manage-clients) where you want to execute the snippet. **NOTE:** A snippet can only be targeted using one selection type at a time (sites, tags, or clients). If you switch the selection type, the snippet will be removed from the previous selection.
 </Step>
 <Step title="Add your Code Snippet in the code editor">
 Add your Code Snippet in the code editor ![MainWP Code Snippets > Code Editor](/images/add-ons/code-snippets-editor.jpg)
@@ -149,8 +183,8 @@ Go to the **MainWP > Add-ons > Administrative > Code Snippets > Execute Snippet*
 </Step>
 <Step title="Select the snippet type">
 </Step>
-<Step title="Select Child Sites where you plan to save the snippet">
-[Select Child Sites](/getting-started/mainwp-user-interface) where you plan to save the snippet **NOTE:** A snippet cannot be saved on both the selection of sites and a selection of tags. If it is already saved to either sites or tags, and you choose the other selection type, it will be removed from the existing selection.
+<Step title="Choose your target: Sites, Tags, or Clients">
+Select the child sites, tags, or [clients](/clients/manage-clients) where you plan to save the snippet. **NOTE:** A snippet can only be targeted using one selection type at a time (sites, tags, or clients). If you switch the selection type, the snippet will be removed from the previous selection.
 </Step>
 <Step title="Add your Code Snippet in the code editor">
 Add your Code Snippet in the code editor ![MainWP Code Snippets > Code Editor](/images/add-ons/code-snippets-editor.jpg)
