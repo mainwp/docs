@@ -160,6 +160,35 @@ Upon successful login, the MainWP Virusdie Extension will automatically get your
 
 Now, you are ready to start adding your sites to your Virusdie account.
 
+### Clear Connection Data
+
+If you need to disconnect the extension from your Virusdie account or reset stored credentials (for example, before connecting a different account or to recover from a failed sign-in), use the **Clear Connection Data** button.
+
+When to use it:
+
+-   You want to switch to a different Virusdie account
+-   The extension is stuck with stale or invalid API credentials
+-   You're following the recovery steps in [the sync file error guide](/add-ons/security/mainwp-virusdie-extension#error-unique-sync-file-could-not-be-uploaded%E2%80%9D-when-adding-a-website-to-virusdie) and need to remove existing credentials before signing in again
+
+To clear stored connection data:
+
+<Steps>
+<Step title="Login to your MainWP Dashboard">
+</Step>
+<Step title="Go to the MainWP > Add-ons > Virusdie > Settings page">
+</Step>
+<Step title="Click the Clear Connection Data button">
+The button is located in the **Create a free Virusdie account** section at the top of the Settings tab. Clicking it signs the extension out of Virusdie and removes the stored email, API key, and HMAC key from your MainWP Dashboard.
+</Step>
+<Step title="Sign up or sign in again">
+After clearing the data, you can create a new Virusdie account through the Sign-Up form or sign in to an existing account that has API access.
+</Step>
+</Steps>
+
+<Warning>
+Clearing connection data only removes credentials stored in your MainWP Dashboard. It does not delete your Virusdie account or remove any sites already connected to it.
+</Warning>
+
 ## Add Sites To Virusdie Dashboard
 
 After creating a Virusdie account and connecting the API, you can start adding your sites to your Virusdie dashboard.
@@ -218,7 +247,7 @@ If you already have a Premium Account with Virusdie created without the MainWP V
 
 ### Steps to try to resolve the problem:
 
-1.  In the Virusdie extension settings, use the Sign Out function to remove current credentials
+1.  In the Virusdie extension settings, use the Sign Out function (or the [Clear Connection Data](/add-ons/security/mainwp-virusdie-extension#clear-connection-data) button) to remove current credentials
 2.  Use the Sign Up function, but use the same email address that is already registered with Virusdie
 3.  This will trigger the One-Time Password email so that the user will get a new Password
 4.  Use Sign In form to sign in with the email address signed up in step 2 and the new password from the email (**Note**: Do  not change the password in Virusdie account)
