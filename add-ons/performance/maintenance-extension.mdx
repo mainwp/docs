@@ -12,6 +12,8 @@ addonType: extension
 - Available cleanup tasks in MainWP Maintenance
 - Running maintenance for selected sites, tags, or clients
 - Creating and managing recurring maintenance schedules
+- Pausing, resuming, and bulk-managing schedules
+- Reading schedule status and per-site failure details
 - What remains from the legacy 404 email alerts feature
 
 ## Prerequisites
@@ -30,7 +32,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-maintenance-extension/"
   data-video-url="https://www.youtube.com/watch?v=NEf40nFQ3v4"
@@ -124,7 +126,10 @@ MainWP displays a progress window while the selected tasks run on each child sit
     Go to **MainWP > Add-ons > Performance > Maintenance > Schedules**, then click **Create New Schedule**.
   </Step>
   <Step title="Configure the schedule options">
-    Enter a **Schedule title**, then choose how many times the task should run per **Day**, **Week**, **Month**, or **Year**.
+    Enter a **Schedule title**, then choose how many times the task should run per **Day**, **Week**, **Month**, or **Year**. Frequency labels use natural wording such as **Twice per day**.
+  </Step>
+  <Step title="Set the schedule status (optional)">
+    Use **Schedule status > Paused** to save a schedule without activating it. Paused schedules do not run automatically and have no next run until you resume them.
   </Step>
   <Step title="Choose the run day and hour when needed">
     Schedules use your MainWP Dashboard timezone. For weekly, monthly, and yearly schedules that run once per period, choose the run day and hour in **Schedule Options**.
@@ -142,9 +147,38 @@ MainWP displays a progress window while the selected tasks run on each child sit
 
 ## Manage Scheduled Tasks
 
-The **Schedules** table lists each task with its title, schedule, **Last Run**, and **Next Run**. The run columns are shown as relative times, and the exact timestamps appear in the tooltips.
+The **Schedules** table lists each task with its title, schedule, **Target**, **Status**, **Last Run**, and **Next Run**. The run columns are shown as relative times, and the exact timestamps appear in the tooltips.
 
 ![MainWP Maintenance schedules table showing the ellipsis action menu for running, editing, and deleting scheduled jobs](/images/add-ons/maintenance-edit-and-delete-scheduled-jobs.png)
+
+### Target Column
+
+The **Target** column summarizes how many child sites the schedule will run against. The icon reflects how the targets were selected:
+
+- **WordPress icon** - individual sites
+- **Tag icon** - sites grouped by tag
+- **Users icon** - sites grouped by client
+
+The number is the count of selected sites, tags, or clients for that schedule.
+
+### Status Column
+
+The **Status** column gives you at-a-glance visibility into each schedule. Hover the status label for the full description.
+
+| Status | Meaning |
+| --- | --- |
+| **Scheduled** | A valid next run is planned. |
+| **Due** | The next run time has passed; waiting for WP-Cron to trigger. |
+| **Delayed** | The run is overdue but still within the expected window. |
+| **Missed** | The task appears to have missed its expected run window. |
+| **Running** | A cleanup is currently in progress. |
+| **Paused** | The schedule is disabled and will not run automatically until you resume it. |
+| **Unscheduled** | No valid next run is currently set. |
+| **Failed** | The last cleanup attempt failed on one or more sites. Click the label to see which sites failed and why. |
+
+A **Failed** status persists until the next successful run, so failures stay visible after the run completes.
+
+### Row Actions
 
 <Steps>
   <Step title="Open the action menu">
@@ -153,6 +187,9 @@ The **Schedules** table lists each task with its title, schedule, **Last Run**, 
   <Step title="Run a schedule immediately">
     Choose **Run Now** to execute the saved maintenance task on demand.
   </Step>
+  <Step title="Pause or resume a schedule">
+    Choose **Pause** to stop automatic runs without losing the schedule's configuration, or **Resume** to re-enable a paused schedule. The next run is recalculated when you resume.
+  </Step>
   <Step title="Edit a schedule">
     Choose **Edit**, update the schedule or maintenance options, and click **Save Changes**.
   </Step>
@@ -160,6 +197,26 @@ The **Schedules** table lists each task with its title, schedule, **Last Run**, 
     Choose **Delete** to remove the saved maintenance task.
   </Step>
 </Steps>
+
+### Bulk Actions
+
+Use bulk actions to manage many schedules at once instead of opening each row individually.
+
+<Steps>
+  <Step title="Select schedules">
+    Use the checkboxes in the **Schedules** table to select one or more rows.
+  </Step>
+  <Step title="Choose a bulk action">
+    From the **Bulk actions** dropdown above the table, choose **Pause**, **Resume**, or **Delete**.
+  </Step>
+  <Step title="Apply the action">
+    Click **Apply**. MainWP processes the selected schedules and shows a status message with how many succeeded or failed.
+  </Step>
+</Steps>
+
+### Investigating Failed Runs
+
+When a schedule's status is **Failed**, click the status label to open a panel that lists the affected child sites and the error returned for each one. Use this to identify whether the issue is sitewide or limited to specific connections, then re-run the schedule after resolving the underlying problem.
 
 ## 404 Email Alerts (Legacy)
 
