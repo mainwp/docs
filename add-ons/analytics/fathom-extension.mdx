@@ -18,7 +18,7 @@ thirdPartyPlugin: Fathom Analytics
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0.2"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-fathom-extension/"
   data-integrates-with="Fathom Analytics"
@@ -122,6 +122,45 @@ After you connect your Fathom Analytics account and assign Fathom sites to your 
 You can disable and enable widgets in [Page Settings](/getting-started/mainwp-user-interface), and you can re-arrange them in any way you wish.
 
 ![Animation showing how to rearrange widgets on the Fathom page](/images/add-ons/fathom-widget-rearrange.gif)
+
+## Refreshing Fathom data
+
+Fathom data is cached in your MainWP Dashboard so that pages load quickly and so the Fathom Aggregation API isn't called on every page view. The cache is refreshed automatically based on the **Data refresh frequency** setting, and you can also refresh it on demand.
+
+### Data refresh frequency
+
+Set how often MainWP fetches fresh stats from your Fathom account:
+
+<Steps>
+<Step title="Go to Add-ons > Analytics > Fathom > Settings">
+</Step>
+<Step title="Choose a value for Data refresh frequency">
+Available options are **Every hour**, **Every 3 hours**, **Every 9 hours**, **Every 15 hours**, **Every 18 hours**, and **Every 24 hours**.
+</Step>
+<Step title="Click Save Settings">
+</Step>
+</Steps>
+
+<Tip>
+If you have many connected child sites or are close to your Fathom API rate limit, choose a longer interval. The default cadence is suitable for most installs.
+</Tip>
+
+### Refresh Data button
+
+Use the **Refresh Data** button to force an immediate update outside of the configured refresh frequency. It clears the Fathom stats cache and re-fetches data from Fathom for all assigned sites.
+
+- On the **Settings** tab, click the **Refresh Data** button next to **Save Settings**.
+- On the **Visitor Data** tab, click the **Refresh Data** button to reload the page with fresh stats.
+
+Use this after assigning new Fathom sites to child sites, or whenever you want to see the latest numbers without waiting for the next scheduled refresh.
+
+## Display interval
+
+The **Display interval** setting on the Settings tab controls the time range shown in Fathom widgets and on the Visitor Data page. Choose **Week** or **Month** depending on the reporting window you want to see by default.
+
+## Removing a connected Fathom account
+
+When you remove a connected Fathom account from MainWP, the extension automatically clears the Fathom site assignments from your child sites and removes the related cached stats. You don't need to manually clean up child site settings after disconnecting an account.
 
 ## Widgets
 
