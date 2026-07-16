@@ -179,9 +179,32 @@ wp mainwp-lighthouse results --all
 
 ## Lighthouse REST API
 
-All MainWP REST API calls, including full documentation, and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview).
+The extension registers v1 REST API endpoints under `wp-json/mainwp/v1/lighthouse/`:
 
-Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
+| Method | Route | Purpose |
+|---|---|---|
+| POST | `/lighthouse/audit` | Start a Lighthouse audit for one site (`site_id`) or all sites (`all=yes`) |
+| GET | `/lighthouse/results` | Read Lighthouse audit results |
+
+<Warning>
+Starting a Lighthouse audit requires an HTTP `POST` request. Sending `GET` to `/lighthouse/audit` returns a `405 Method Not Allowed` response with the message *"Starting Lighthouse audits requires a POST request."* This ensures read-only API keys cannot trigger audit work. Migrate any legacy `GET` clients to `POST`. The `/lighthouse/results` endpoint continues to accept `GET`.
+</Warning>
+
+Example — start an audit for a single site:
+
+```bash
+curl -X POST \
+  "https://your-dashboard.com/wp-json/mainwp/v1/lighthouse/audit?site_id=125&consumer_key=YOUR_KEY&consumer_secret=YOUR_SECRET"
+```
+
+Example — start audits for all sites:
+
+```bash
+curl -X POST \
+  "https://your-dashboard.com/wp-json/mainwp/v1/lighthouse/audit?all=yes&consumer_key=YOUR_KEY&consumer_secret=YOUR_SECRET"
+```
+
+All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
 ## Get the Google PageSpeed Insights API Key
 
