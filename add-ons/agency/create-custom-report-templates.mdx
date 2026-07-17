@@ -113,6 +113,79 @@ Total number of plugin installations: \[plugin.installed.count\]
 
 ---
 
+## Inject Custom Content With `mainwp_pro_reports_additional_content`
+
+All built-in Pro Reports templates fire the `mainwp_pro_reports_additional_content` hook near the end of the report body. Use it to append a custom section — for example, a per-site upsell block, a signature, a contact block, or extra site-specific data — without editing the template files themselves.
+
+Use this hook when you want the same custom block to appear in every report template you ship, or when the block depends on the site the report is being generated for.
+
+### Hook signature
+
+Every template passes four arguments:
+
+| Parameter          | Type                 | Description                                                                                                    |
+| ------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `$report_settings` | `array`              | The current report's settings (recipients, template, date range, sections, and so on).                         |
+| `$report`          | `array` \| `object`  | The report record being rendered.                                                                              |
+| `$template_file`   | `string`             | Absolute path of the template file firing the hook. Use this to target a specific template when needed.        |
+| `$website`         | `array` \| `object`  | The child site the current report is being generated for. Available since the July 2026 templates update.      |
+
+The Modern template additionally exposes `mainwp_pro_reports_additional_content` as a filter — return an HTML string to have Pro Reports wrap it in a report segment automatically. All other templates use `do_action`, so echo your markup directly.
+
+### Add a per-site content block
+
+The `$website` argument makes the callback aware of which site the current report belongs to. Use it to look up ACF fields, custom post meta, or client data on the Dashboard and print site-specific content:
+
+```php
+add_action( 'mainwp_pro_reports_additional_content', 'mycustom_pro_reports_additional_content', 10, 4 );
+function mycustom_pro_reports_additional_content( $report_settings, $report, $template_file, $website ) {
+    if ( empty( $website ) ) {
+        return;
+    }
+
+    $site_id  = is_object( $website ) ? $website->id  : ( $website['id']  ?? 0 );
+    $site_url = is_object( $website ) ? $website->url : ( $website['url'] ?? '' );
+
+    // Look up any custom content you store for this site on the Dashboard.
+    $custom_note = get_option( 'mycustom_report_note_' . (int) $site_id );
+
+    if ( empty( $custom_note ) ) {
+        return;
+    }
+
+    printf(
+        '<div class="mainwp-report-segment"><h3>Notes for %1$s</h3><p>%2$s</p></div>',
+        esc_html( $site_url ),
+        wp_kses_post( $custom_note )
+    );
+}
+```
+
+<Note>
+Before this update, the hook did not receive `$website`, so callbacks could not tell which site the report was for when generating per-site reports. If you have an existing callback registered with `10, 3`, update the accepted-args count to `4` to receive the site.
+</Note>
+
+### Target a specific template
+
+Use `$template_file` when you want the block to appear only in one template — for example, only in your custom clone of `pro-report-agency.php`:
+
+```php
+add_action( 'mainwp_pro_reports_additional_content', 'mycustom_agency_only_block', 10, 4 );
+function mycustom_agency_only_block( $report_settings, $report, $template_file, $website ) {
+    if ( 'pro-report-agency.php' !== basename( $template_file ) ) {
+        return;
+    }
+
+    echo '<div class="mainwp-report-segment"><p>Thank you for choosing our agency.</p></div>';
+}
+```
+
+### Empty-section behavior
+
+Report templates now render the additional-content wrapper only when your callback actually produces output. If your callback returns nothing (or the filter version returns an empty string), no empty container is added to the report.
+
+---
+
 ## Custom Fonts and PDF Styling
 
 The report preview uses your browser, while the generated PDF is rendered by Dompdf on the MainWP Dashboard site. Because of this, CSS that works in the preview may need PDF-specific adjustments before it works in the generated PDF.
