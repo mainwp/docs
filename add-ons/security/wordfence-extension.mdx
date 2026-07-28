@@ -132,11 +132,64 @@ Go to **MainWP > Add-ons > Security > Wordfence** and open the **Wordfence Overv
 
 ### Available Actions
 
-The row action menu includes **Overview**, **Edit**, **Open Wordfence**, and **Hide Plugin** or **Unhide Plugin**. For active installations, it also includes **Scan Site**, **Live Traffic**, **Blocking**, and **Scan Results**. **Update Plugin** appears when an update is available.
+The row action menu includes **Overview**, **Edit**, **Open Wordfence**, and **Hide Plugin** or **Unhide Plugin**.
+
+For active installations, it also includes **Scan Site**, **Live Traffic**, **Blocking**, **Scan Results**, and **Deactivate Plugin**. If Wordfence is inactive, **Activate Plugin** appears instead. **Update Plugin** appears when an update is available.
+
+### Bulk Actions
+
+Above the sites table, use the **Bulk Actions** dropdown to apply an action to multiple selected child sites at once:
+
+- **Activate** — activate Wordfence Security on the selected sites.
+- **Deactivate** — deactivate Wordfence Security on the selected sites.
+- **Update** — update Wordfence Security to the latest version on the selected sites.
+- **Hide** / **Unhide** — hide or unhide the Wordfence plugin from the WP Admin plugins list on the selected sites.
+
+Select the sites via their row checkboxes, choose an action, and click **Apply**.
 
 #### Important Notes
 
 If you know that you have the plugin installed on a child site, but the child site doesn't appear in the list, try to re-sync your sites.
+
+## General Options
+
+Open the **Options** tab on the Wordfence page (or the **Wordfence > Options** tab of an individual site) to configure how Wordfence collects visitor IPs and which top-level menu items are exposed inside the extension.
+
+### View Customization
+
+Toggle which Wordfence sub-pages appear in the extension's navigation:
+
+- **Display "All Options" menu item**
+- **Display "Blocking" menu item**
+- **Display "Live Traffic" menu item**
+- **Display "Audit Log" menu item** — show or hide the **Audit Log** entry. Turn this on when you use Wordfence Premium audit logging and want quick access from the extension navigation; leave it off to keep the menu focused on the tabs you actively use.
+
+### Visitor IP Detection
+
+- **How does Wordfence get IPs** — choose the header Wordfence uses to identify visitor IP addresses (default, `REMOTE_ADDR`, `X-Forwarded-For`, `X-Real-IP`, or Cloudflare's `CF-Connecting-IP`).
+- **Trusted Proxy Preset** — apply a curated list of trusted proxy IP ranges for a known provider so that Wordfence trusts forwarded-IP headers only from those networks. Available presets:
+  - **None** (default)
+  - **Amazon CloudFront**
+  - **Ezoic**
+  - **Quic.cloud**
+
+  Use a preset when your child sites sit behind that CDN or reverse proxy. Combine it with the matching **How does Wordfence get IPs** header (for example `X-Forwarded-For` for CloudFront) so real visitor IPs are recorded instead of the proxy's IP.
+- **Look up visitor IP locations via Wordfence servers** — enable to have Wordfence resolve visitor IPs to geolocation data via its own lookup service. Turn this on when you want country flags and location details in Live Traffic and Blocking; turn it off if you prefer not to send visitor IPs to Wordfence.
+
+## Scan Options
+
+Open the **Scan** tab on the Wordfence page (or the **Wordfence > Scan** tab of an individual site) to control what Wordfence scans for and how it recovers from interruptions.
+
+### Monitor Web Application Firewall Status
+
+- **Monitor Web Application Firewall status** — when enabled, Wordfence scans include a check that reports whether the WAF is active, in learning mode, or disabled on the child site. Turn this on to surface a scan issue whenever the WAF is not running on a site that should have it enabled.
+
+### Scan Reliability
+
+- **Use only IPv4 to start scans** — force Wordfence to use IPv4 when initiating a scan. Enable this on child sites whose hosts have broken or unreachable IPv6 connectivity and where scans fail to start.
+- **Maximum scan resume attempts** — set how many times Wordfence retries a scan that stops before completing. Choose a value from `0` (no automatic resume) to `5`. Raise this on sites where scans are cut off by short PHP execution limits or timeouts; keep it at `0` to fail fast and see errors immediately.
+
+Save the **Scan** tab after changing these values. Network-level changes propagate to child sites that are not using **Override general settings**.
 
 ## How to Scan Child Sites With the MainWP Wordfence Extension
 
