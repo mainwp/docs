@@ -148,6 +148,33 @@ Locate the Child site, open its Dashboard, and go to **SSL Monitor > Settings** 
 </Steps>
 
 
+## Check Sites via WP CLI
+
+If you prefer running SSL checks from the command line, or want to trigger them from a script or cron job outside of the MainWP Dashboard's built-in scheduler, use the WP-CLI commands the extension registers under `wp mainwp-ssl-monitor`.
+
+Both commands accept either a comma-separated list of child site IDs or the `--all` flag to target every child site.
+
+Check the SSL certificate for one or more sites:
+
+```bash
+wp mainwp-ssl-monitor check 2
+wp mainwp-ssl-monitor check 2,5
+```
+
+Check all sites:
+
+```bash
+wp mainwp-ssl-monitor check --all
+```
+
+View saved SSL certificate information for one or more sites without triggering a new check:
+
+```bash
+wp mainwp-ssl-monitor info 2
+wp mainwp-ssl-monitor info 2,5
+wp mainwp-ssl-monitor info --all
+```
+
 ## SSL Monitor REST API
 
 All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). For more details about enabling the MainWP REST API and managing keys, see [REST API Overview](/api-reference/rest-api/overview).
