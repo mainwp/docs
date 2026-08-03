@@ -16,7 +16,7 @@ info:
 
     Endpoint reference with examples: https://docs.mainwp.com/api-reference/rest-api/overview
   title: MainWP Dashboard REST API
-  version: 6.1.3
+  version: 6.1.5
 openapi: 3.1.0
 servers:
   - url: "{dashboardUrl}"
@@ -7058,7 +7058,8 @@ paths:
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
         response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
-        ability on the WordPress Abilities API; no REST route serves it.
+        ability on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key;
+        no MainWP REST API v2 route serves it.
       tags:
         - Sites
       requestBody:
@@ -7095,7 +7096,8 @@ paths:
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
         response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
-        ability on the WordPress Abilities API; no REST route serves it.
+        ability on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key;
+        no MainWP REST API v2 route serves it.
       tags:
         - Sites
       requestBody:
@@ -7132,7 +7134,8 @@ paths:
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
         response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
-        ability on the WordPress Abilities API; no REST route serves it.
+        ability on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key;
+        no MainWP REST API v2 route serves it.
       tags:
         - Sites
       requestBody:
@@ -8389,8 +8392,8 @@ paths:
       operationId: postSitesIdDomainSync
       summary: Sync one site
       description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
-        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
-        route serves it.
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API, which uses
+        WordPress authentication rather than the MainWP API key; no MainWP REST API v2 route serves it.
       tags:
         - Sites
       responses:
@@ -8419,8 +8422,8 @@ paths:
       operationId: putSitesIdDomainSync
       summary: Sync one site
       description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
-        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
-        route serves it.
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API, which uses
+        WordPress authentication rather than the MainWP API key; no MainWP REST API v2 route serves it.
       tags:
         - Sites
       responses:
@@ -8449,8 +8452,8 @@ paths:
       operationId: patchSitesIdDomainSync
       summary: Sync one site
       description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
-        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
-        route serves it.
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API, which uses
+        WordPress authentication rather than the MainWP API key; no MainWP REST API v2 route serves it.
       tags:
         - Sites
       responses:
@@ -10141,7 +10144,8 @@ paths:
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
         when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
-        on the WordPress Abilities API; no REST route serves it.
+        on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key; no MainWP
+        REST API v2 route serves it.
       tags:
         - Updates
       requestBody:
@@ -10176,7 +10180,8 @@ paths:
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
         when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
-        on the WordPress Abilities API; no REST route serves it.
+        on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key; no MainWP
+        REST API v2 route serves it.
       tags:
         - Updates
       requestBody:
@@ -10211,7 +10216,8 @@ paths:
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
         when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
-        on the WordPress Abilities API; no REST route serves it.
+        on the WordPress Abilities API, which uses WordPress authentication rather than the MainWP API key; no MainWP
+        REST API v2 route serves it.
       tags:
         - Updates
       requestBody:
@@ -12321,8 +12327,8 @@ components:
     QueuedAction:
       type: object
       description: Returned when the Dashboard queues the work instead of running it inline. Job status is exposed
-        through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST route serves
-        it.
+        through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API, which uses WordPress
+        authentication rather than the MainWP API key; no MainWP REST API v2 route serves it.
       properties:
         success:
           type: integer
@@ -12557,13 +12563,16 @@ components:
                 type: string
                 description: Error text.
         started_at:
-          type: string
-          description: Reserved. Current Dashboard versions leave this empty.
+          type:
+            - string
+            - 'null'
+          description: Reserved. Current Dashboard versions return an empty string or null.
         completed_at:
           type:
             - integer
             - string
-          description: Unix timestamp of when the job finished. An empty string while the job is still running.
+            - 'null'
+          description: Unix timestamp of when the job finished. An empty string or null while the job is still running.
     ClientBatchUpdateItem:
       type: object
       description: One client update inside a batch request. The client is looked up by `id`.
