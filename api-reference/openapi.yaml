@@ -88,11 +88,6 @@ tags:
     externalDocs:
       description: Endpoint reference with examples.
       url: https://docs.mainwp.com/api-reference/rest-api/batch
-  - name: Jobs
-    description: Status of work the Dashboard queued for background processing.
-    externalDocs:
-      description: Endpoint reference with examples.
-      url: https://docs.mainwp.com/api-reference/rest-api/overview
   - name: Comments
     description: Comment moderation across child sites.
     externalDocs:
@@ -240,13 +235,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -366,13 +356,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -492,13 +477,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -552,13 +532,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -592,13 +567,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -641,13 +611,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -689,13 +654,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -737,13 +697,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -782,13 +737,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TotalCount'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -842,13 +792,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -884,13 +829,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -917,13 +857,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -969,13 +904,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1013,13 +943,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1052,13 +977,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1091,13 +1011,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1136,13 +1051,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1173,13 +1083,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1210,13 +1115,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1249,13 +1149,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1288,13 +1183,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1327,13 +1217,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TotalCount'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1366,13 +1251,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1397,13 +1277,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1428,13 +1303,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1467,13 +1337,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1498,13 +1363,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1529,13 +1389,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1622,13 +1477,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1715,13 +1565,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1780,13 +1625,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1836,13 +1676,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1903,13 +1738,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -1955,13 +1785,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2037,13 +1862,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2076,13 +1896,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2114,13 +1929,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2152,13 +1962,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2201,13 +2006,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2249,13 +2049,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2297,13 +2092,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2330,13 +2120,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2370,13 +2155,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2422,13 +2202,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2466,13 +2241,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2510,13 +2280,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2549,13 +2314,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2589,53 +2349,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: No record matches the identifier in the path.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /wp-json/mainwp/v2/jobs/{id}:
-    parameters:
-      - name: id
-        in: path
-        description: Job ID returned by a queued sync or update response.
-        required: true
-        schema:
-          type: string
-    get:
-      operationId: getJobsId
-      summary: Get job status
-      description: Returns the state and result of a queued job. Sync and update routes return a `job_id` when the
-        Dashboard runs the work in the background.
-      tags:
-        - Jobs
-      responses:
-        '200':
-          description: Success.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Success'
-        '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2709,13 +2424,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2783,13 +2493,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2840,13 +2545,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/CountResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2911,13 +2611,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -2981,13 +2676,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3014,13 +2704,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3053,13 +2738,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3092,13 +2772,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3172,13 +2847,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3229,13 +2899,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3286,13 +2951,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/CountResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3376,13 +3036,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3458,13 +3113,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3566,13 +3216,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3669,13 +3314,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3714,13 +3354,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3759,13 +3394,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3869,13 +3499,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -3965,13 +3590,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4029,13 +3649,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4079,13 +3694,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4187,13 +3797,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4318,13 +3923,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4363,13 +3963,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4408,13 +4003,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4518,13 +4108,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4614,13 +4199,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4678,13 +4258,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4728,13 +4303,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4780,13 +4350,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiKeyCreated'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4813,13 +4378,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4869,13 +4429,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4917,13 +4472,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4967,13 +4517,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -4993,13 +4538,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5103,13 +4643,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5212,13 +4747,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5238,13 +4768,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5309,13 +4834,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5378,13 +4898,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5411,13 +4926,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5462,13 +4972,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5512,13 +5017,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5551,13 +5051,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5584,13 +5079,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5635,13 +5125,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5678,13 +5163,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5729,13 +5209,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5763,13 +5238,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5821,13 +5291,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5871,13 +5336,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5903,13 +5363,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5942,13 +5397,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -5980,13 +5430,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6006,13 +5451,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6058,13 +5498,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6108,13 +5543,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6140,13 +5570,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6312,13 +5737,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6483,13 +5903,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6509,13 +5924,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6581,13 +5991,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6652,13 +6057,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6678,13 +6078,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6705,13 +6100,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6732,13 +6122,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/DestroySessionsStarted'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6765,13 +6150,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ToolJobStatus'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6798,13 +6178,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/DisconnectAllSitesStarted'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6831,13 +6206,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ToolJobStatus'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6889,13 +6259,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6940,13 +6305,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -6967,13 +6327,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/RenewConnectionsStarted'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7000,13 +6355,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ToolJobStatus'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7032,13 +6382,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7125,13 +6470,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7159,13 +6499,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7231,13 +6566,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7280,13 +6610,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7328,13 +6653,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7376,13 +6696,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7415,13 +6730,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7453,13 +6763,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7491,13 +6796,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7543,13 +6843,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SitesCount'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7583,13 +6878,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7622,13 +6912,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7661,13 +6946,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7700,13 +6980,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7738,13 +7013,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7776,13 +7046,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BulkSiteResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7792,7 +7057,8 @@ paths:
       operationId: postSitesSync
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
-        response carries a `job_id` instead of per-site results, and you poll `GET /jobs/{id}` for the outcome.
+        response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
+        ability on the WordPress Abilities API; no REST route serves it.
       tags:
         - Sites
       requestBody:
@@ -7818,13 +7084,8 @@ paths:
                   - $ref: '#/components/schemas/BulkSiteResult'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7833,7 +7094,8 @@ paths:
       operationId: putSitesSync
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
-        response carries a `job_id` instead of per-site results, and you poll `GET /jobs/{id}` for the outcome.
+        response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
+        ability on the WordPress Abilities API; no REST route serves it.
       tags:
         - Sites
       requestBody:
@@ -7859,13 +7121,8 @@ paths:
                   - $ref: '#/components/schemas/BulkSiteResult'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7874,7 +7131,8 @@ paths:
       operationId: patchSitesSync
       summary: Sync all sites
       description: Starts a sync for every site that matches the filters. When the Dashboard queues the work the
-        response carries a `job_id` instead of per-site results, and you poll `GET /jobs/{id}` for the outcome.
+        response carries a `job_id` instead of per-site results. Job status is exposed through the `mainwp/get-batch-job-status-v1`
+        ability on the WordPress Abilities API; no REST route serves it.
       tags:
         - Sites
       requestBody:
@@ -7900,13 +7158,8 @@ paths:
                   - $ref: '#/components/schemas/BulkSiteResult'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7934,13 +7187,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SiteRecord'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -7973,13 +7221,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8004,13 +7247,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8035,13 +7273,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8082,13 +7315,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8129,13 +7357,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8176,13 +7399,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8215,13 +7433,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8254,13 +7467,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8299,13 +7507,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8336,13 +7539,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8373,13 +7571,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8459,13 +7652,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8539,13 +7727,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8587,13 +7770,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8639,13 +7817,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8683,13 +7856,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8727,13 +7895,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8779,13 +7942,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8823,13 +7981,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8867,13 +8020,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8921,13 +8069,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -8968,13 +8111,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9007,13 +8145,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9046,13 +8179,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9093,13 +8221,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9132,13 +8255,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9179,13 +8297,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9218,13 +8331,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9257,13 +8365,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9285,8 +8388,9 @@ paths:
     post:
       operationId: postSitesIdDomainSync
       summary: Sync one site
-      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work, and you poll
-        `GET /jobs/{id}` for the outcome.
+      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
+        route serves it.
       tags:
         - Sites
       responses:
@@ -9299,13 +8403,8 @@ paths:
                   - $ref: '#/components/schemas/Success'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9319,8 +8418,9 @@ paths:
     put:
       operationId: putSitesIdDomainSync
       summary: Sync one site
-      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work, and you poll
-        `GET /jobs/{id}` for the outcome.
+      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
+        route serves it.
       tags:
         - Sites
       responses:
@@ -9333,13 +8433,8 @@ paths:
                   - $ref: '#/components/schemas/Success'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9353,8 +8448,9 @@ paths:
     patch:
       operationId: patchSitesIdDomainSync
       summary: Sync one site
-      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work, and you poll
-        `GET /jobs/{id}` for the outcome.
+      description: Syncs one site. The response carries a `job_id` when the Dashboard queues the work. Job status
+        is exposed through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST
+        route serves it.
       tags:
         - Sites
       responses:
@@ -9367,13 +8463,8 @@ paths:
                   - $ref: '#/components/schemas/Success'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9438,13 +8529,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9486,13 +8572,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9537,13 +8618,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9580,13 +8656,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9623,13 +8694,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9669,13 +8735,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9716,13 +8777,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9755,13 +8811,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9794,13 +8845,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9860,13 +8906,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9892,13 +8933,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9941,13 +8977,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -9989,13 +9020,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10037,13 +9063,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BatchResult'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10070,13 +9091,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10109,13 +9125,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10154,13 +9165,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10191,13 +9197,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10228,13 +9229,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10267,13 +9263,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10306,13 +9297,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10340,13 +9326,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10367,13 +9348,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10401,13 +9377,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10435,13 +9406,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10470,13 +9436,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10511,13 +9472,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10552,13 +9508,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10593,13 +9544,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10627,13 +9573,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10662,13 +9603,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10702,13 +9638,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10736,13 +9667,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10783,13 +9709,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10821,13 +9742,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10859,13 +9775,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10900,13 +9811,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10932,13 +9838,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -10964,13 +9865,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11004,13 +9900,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11035,13 +9926,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11066,13 +9952,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11107,13 +9988,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11139,13 +10015,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11171,13 +10042,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11229,13 +10095,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11268,13 +10129,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11284,7 +10140,8 @@ paths:
       operationId: postUpdatesUpdate
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
-        when the Dashboard queues the work, and you poll `GET /jobs/{id}` for the outcome.
+        when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
+        on the WordPress Abilities API; no REST route serves it.
       tags:
         - Updates
       requestBody:
@@ -11308,13 +10165,8 @@ paths:
                   - $ref: '#/components/schemas/UpdateRunStarted'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11323,7 +10175,8 @@ paths:
       operationId: putUpdatesUpdate
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
-        when the Dashboard queues the work, and you poll `GET /jobs/{id}` for the outcome.
+        when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
+        on the WordPress Abilities API; no REST route serves it.
       tags:
         - Updates
       requestBody:
@@ -11347,13 +10200,8 @@ paths:
                   - $ref: '#/components/schemas/UpdateRunStarted'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11362,7 +10210,8 @@ paths:
       operationId: patchUpdatesUpdate
       summary: Run updates on all sites
       description: Starts the pending updates across every site. The response carries a `job_id` and `queued_count`
-        when the Dashboard queues the work, and you poll `GET /jobs/{id}` for the outcome.
+        when the Dashboard queues the work. Job status is exposed through the `mainwp/get-batch-job-status-v1` ability
+        on the WordPress Abilities API; no REST route serves it.
       tags:
         - Updates
       requestBody:
@@ -11386,13 +10235,8 @@ paths:
                   - $ref: '#/components/schemas/UpdateRunStarted'
                   - $ref: '#/components/schemas/QueuedAction'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11432,13 +10276,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11482,13 +10321,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11524,13 +10358,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11566,13 +10395,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11616,13 +10440,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11658,13 +10477,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11700,13 +10514,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11739,13 +10548,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11770,13 +10574,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11801,13 +10600,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11853,13 +10647,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11901,13 +10690,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11941,13 +10725,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -11981,13 +10760,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12031,13 +10805,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12073,13 +10842,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12115,13 +10879,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12165,13 +10924,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12207,13 +10961,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12249,13 +10998,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12298,13 +11042,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12339,13 +11078,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12380,13 +11114,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12419,13 +11148,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12450,13 +11174,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12481,13 +11200,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12552,13 +11266,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12627,13 +11336,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12671,13 +11375,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserImportReport'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12718,13 +11417,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12764,13 +11458,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12804,13 +11493,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12889,13 +11573,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12960,13 +11639,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -12994,13 +11668,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13029,13 +11698,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13070,13 +11734,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: putDomainMonitorIdDomain
+      summary: Run a domain check for one site
+      description: Looks up the domain registration for one site now and stores the result. Requires the MainWP
+        Domain Monitor extension on the Dashboard.
+      tags:
+        - Domain Monitor
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      operationId: patchDomainMonitorIdDomain
+      summary: Run a domain check for one site
+      description: Looks up the domain registration for one site now and stores the result. Requires the MainWP
+        Domain Monitor extension on the Dashboard.
+      tags:
+        - Domain Monitor
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13104,13 +11817,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+    put:
+      operationId: putLighthouseAudit
+      summary: Run Lighthouse audits for all sites
+      description: Starts a Lighthouse audit for every site the extension supports. Requires the MainWP Lighthouse
+        extension on the Dashboard.
+      tags:
+        - Lighthouse
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      operationId: patchLighthouseAudit
+      summary: Run Lighthouse audits for all sites
+      description: Starts a Lighthouse audit for every site the extension supports. Requires the MainWP Lighthouse
+        extension on the Dashboard.
+      tags:
+        - Lighthouse
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13138,13 +11888,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: putLighthouseAuditIdDomain
+      summary: Run a Lighthouse audit for one site
+      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse extension on the Dashboard.
+      tags:
+        - Lighthouse
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      operationId: patchLighthouseAuditIdDomain
+      summary: Run a Lighthouse audit for one site
+      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse extension on the Dashboard.
+      tags:
+        - Lighthouse
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13172,13 +11969,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13207,13 +11999,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13249,6 +12036,7 @@ paths:
             - comments
             - menus
             - media
+            - widgets
             - backups
             - maintenance
             - sucuri
@@ -13257,6 +12045,7 @@ paths:
             - virusdie
             - domainmonitor
             - sslmonitor
+            - pagespeed
             - woocomstatus
             - vulnerable
             - ga
@@ -13271,6 +12060,7 @@ paths:
             - abandoned
             - pending
             - misc
+            - multi-tokens
     get:
       operationId: getProReportsIdDomainReport
       summary: Get one Pro Reports data set
@@ -13281,14 +12071,16 @@ paths:
       parameters:
         - name: start_date
           in: query
-          description: Start of the range in `Y-m-d` format.
-          required: true
+          description: Start of the range in `Y-m-d` format. When either date is missing, the range defaults to
+            the last year.
+          required: false
           schema:
             type: string
         - name: end_date
           in: query
-          description: End of the range in `Y-m-d` format.
-          required: true
+          description: End of the range in `Y-m-d` format. When either date is missing, the range defaults to the
+            last year.
+          required: false
           schema:
             type: string
         - name: action
@@ -13303,6 +12095,13 @@ paths:
           required: false
           schema:
             type: string
+        - name: multi_tokens
+          in: query
+          description: Report template content whose tokens the Dashboard resolves, for example `[client.name]`.
+            Required when `report` is `multi-tokens`; ignored by every other report.
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Success.
@@ -13311,13 +12110,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13345,13 +12139,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13380,13 +12169,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Success'
         '401':
-          description: The API key is missing, malformed, or disabled.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13421,13 +12205,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessMessage'
         '401':
-          description: The API key is missing, malformed, or disabled.
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '403':
-          description: The API key does not carry the permission this method needs.
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: putSslMonitorIdDomain
+      summary: Run an SSL check for one site
+      description: Checks the certificate on one site now and stores the result. Requires the MainWP SSL Monitor
+        extension on the Dashboard.
+      tags:
+        - SSL Monitor
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No record matches the identifier in the path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      operationId: patchSslMonitorIdDomain
+      summary: Run an SSL check for one site
+      description: Checks the certificate on one site now and stores the result. Requires the MainWP SSL Monitor
+        extension on the Dashboard.
+      tags:
+        - SSL Monitor
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: The API key is missing, malformed, or disabled, or does not carry the permission this method
+            needs.
           content:
             application/json:
               schema:
@@ -13454,8 +12287,9 @@ components:
         success:
           type: integer
           enum:
+            - 0
             - 1
-          description: Set to 1 when the call succeeded.
+          description: 1 when the call succeeded. Some routes report a failed action as 0 inside an HTTP 200 response.
         message:
           type: string
           description: Human readable result, present on most write calls.
@@ -13476,8 +12310,9 @@ components:
         success:
           type: integer
           enum:
+            - 0
             - 1
-          description: Set to 1 when the call succeeded.
+          description: 1 when the call succeeded. Some routes report a failed action as 0 inside an HTTP 200 response.
         message:
           type: string
           description: Human readable result.
@@ -13485,8 +12320,9 @@ components:
         - success
     QueuedAction:
       type: object
-      description: Returned when the Dashboard queues the work instead of running it inline. Poll `GET /jobs/{id}`
-        with the returned `job_id`.
+      description: Returned when the Dashboard queues the work instead of running it inline. Job status is exposed
+        through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API; no REST route serves
+        it.
       properties:
         success:
           type: integer
@@ -13497,7 +12333,7 @@ components:
           description: Human readable result.
         job_id:
           type: string
-          description: Identifier to poll `GET /jobs/{id}` with.
+          description: Job identifier to pass to the `mainwp/get-batch-job-status-v1` ability.
         queued_count:
           type: integer
           description: Number of items placed on the queue.
@@ -13568,7 +12404,9 @@ components:
         success:
           type: integer
           enum:
+            - 0
             - 1
+          description: 1 when the count was produced, 0 when the monitor or its data could not be found.
         count:
           type: integer
           description: Number of matching records.
@@ -13710,13 +12548,22 @@ components:
           type: array
           description: Errors recorded so far.
           items:
-            type: string
+            type: object
+            properties:
+              site_id:
+                type: integer
+                description: Site the error belongs to.
+              error:
+                type: string
+                description: Error text.
         started_at:
           type: string
-          description: When the job started.
+          description: Reserved. Current Dashboard versions leave this empty.
         completed_at:
-          type: string
-          description: When the job finished.
+          type:
+            - integer
+            - string
+          description: Unix timestamp of when the job finished. An empty string while the job is still running.
     ClientBatchUpdateItem:
       type: object
       description: One client update inside a batch request. The client is looked up by `id`.

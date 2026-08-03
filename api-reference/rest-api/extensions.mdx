@@ -43,7 +43,7 @@ Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (d
 |---|---|---|---|
 | GET | `/ssl-monitor/info` | Get SSL status for all monitored sites | - |
 | GET | `/ssl-monitor/info/{id_or_domain}` | Get SSL status for one site | `id_or_domain` |
-| POST | `/ssl-monitor/{id_or_domain}` | Trigger SSL check for one site | `id_or_domain` |
+| POST, PUT, PATCH | `/ssl-monitor/{id_or_domain}` | Trigger SSL check for one site | `id_or_domain` |
 
 ### Domain Monitor
 
@@ -51,14 +51,14 @@ Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (d
 |---|---|---|---|
 | GET | `/domain-monitor/profiles` | Get domain profiles for all monitored sites | - |
 | GET | `/domain-monitor/profiles/{id_or_domain}` | Get domain profile for one site | `id_or_domain` |
-| POST | `/domain-monitor/{id_or_domain}` | Trigger domain check for one site | `id_or_domain` |
+| POST, PUT, PATCH | `/domain-monitor/{id_or_domain}` | Trigger domain check for one site | `id_or_domain` |
 
 ### Lighthouse
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| POST | `/lighthouse/audit` | Run Lighthouse audits for all supported sites | - |
-| POST | `/lighthouse/audit/{id_or_domain}` | Run Lighthouse audit for one site | `id_or_domain` |
+| POST, PUT, PATCH | `/lighthouse/audit` | Run Lighthouse audits for all supported sites | - |
+| POST, PUT, PATCH | `/lighthouse/audit/{id_or_domain}` | Run Lighthouse audit for one site | `id_or_domain` |
 | GET | `/lighthouse/results` | Get Lighthouse results for all sites | Optional filters |
 | GET | `/lighthouse/results/{id_or_domain}` | Get Lighthouse results for one site | `id_or_domain` |
 
@@ -68,10 +68,11 @@ Common query parameters for Pro Reports routes:
 
 | Name | Type | Required | Description |
 |---|---|---|---|
-| `start_date` | string | Yes | Start date in `Y-m-d` format |
-| `end_date` | string | Yes | End date in `Y-m-d` format |
+| `start_date` | string | No | Start date in `Y-m-d` format. When either date is missing, the range defaults to the last year |
+| `end_date` | string | No | End date in `Y-m-d` format. When either date is missing, the range defaults to the last year |
 | `action` | string | No | Activity action filter (route-specific) |
 | `format` | string | No | Response format |
+| `multi_tokens` | string | On `multi-tokens` only | Report template content whose tokens the Dashboard resolves, for example `[client.name]` |
 
 `{id_or_domain}` accepts either a numeric site ID or a site domain.
 
@@ -86,6 +87,7 @@ Common query parameters for Pro Reports routes:
 | GET | `/pro-reports/{id_or_domain}/comments` | Comment activity |
 | GET | `/pro-reports/{id_or_domain}/menus` | Menu activity |
 | GET | `/pro-reports/{id_or_domain}/media` | Media activity |
+| GET | `/pro-reports/{id_or_domain}/widgets` | Widget activity |
 | GET | `/pro-reports/{id_or_domain}/backups` | Backup activity |
 | GET | `/pro-reports/{id_or_domain}/maintenance` | Maintenance activity |
 | GET | `/pro-reports/{id_or_domain}/sucuri` | Sucuri scan activity |
@@ -94,6 +96,7 @@ Common query parameters for Pro Reports routes:
 | GET | `/pro-reports/{id_or_domain}/virusdie` | Virusdie activity |
 | GET | `/pro-reports/{id_or_domain}/domainmonitor` | Domain Monitor activity |
 | GET | `/pro-reports/{id_or_domain}/sslmonitor` | SSL Monitor activity |
+| GET | `/pro-reports/{id_or_domain}/pagespeed` | Page Speed activity |
 | GET | `/pro-reports/{id_or_domain}/woocomstatus` | WooCommerce Status activity |
 | GET | `/pro-reports/{id_or_domain}/vulnerable` | Vulnerability activity |
 | GET | `/pro-reports/{id_or_domain}/ga` | Google Analytics activity |
@@ -108,6 +111,7 @@ Common query parameters for Pro Reports routes:
 | GET | `/pro-reports/{id_or_domain}/abandoned` | Abandoned plugin/theme activity |
 | GET | `/pro-reports/{id_or_domain}/pending` | Pending updates activity |
 | GET | `/pro-reports/{id_or_domain}/misc` | Miscellaneous report data |
+| GET | `/pro-reports/{id_or_domain}/multi-tokens` | Resolved report tokens for a template |
 
 ### Time Tracker
 
