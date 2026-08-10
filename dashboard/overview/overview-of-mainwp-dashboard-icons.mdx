@@ -33,15 +33,13 @@ When no red badge is shown:
 - If no sync timestamp exists yet, the tooltip shows sync guidance such as **Click here to sync all sites.**
 - In single-site context with no sync timestamp yet, the tooltip can show **Get fresh data from example.com.**
 
-Click **Sync** to refresh Child Site data immediately.
+Click **Sync** to start a data synchronization.
 
 ## Available updates on the Dashboard site
 
-<img src="/images/dashboard/update-dashboard-site-label-bottom-left.png" alt="Update Dashboard Site label shown in the bottom-left area of the navigation" style={{ width: '320px', maxWidth: '100%', height: 'auto' }} /> You may occasionally see the red **Update Dashboard Site** label in the bottom-left area of your MainWP Dashboard navigation. This label appears when the WordPress installation where the MainWP Dashboard plugin is installed reports an available plugin, theme, WordPress core, or translation update. That includes updates to the MainWP Dashboard plugin itself. Click that label when it appears and perform all available updates on your Dashboard site.
+<img src="/images/dashboard/update-dashboard-site-label-bottom-left.png" alt="Update Dashboard Site label shown in the bottom-left area of the navigation" style={{ width: '320px', maxWidth: '100%', height: 'auto' }} /> You may occasionally see the red **Update Dashboard Site** label at the bottom of the left navigation and in the User menu. This label appears when WordPress reports one or more updates for the site where MainWP Dashboard is installed. Click the label to open the WordPress Updates screen for your Dashboard site.
 
-MainWP shows this label from the Dashboard site's own WordPress update data. WordPress builds that update count from update transients for plugins, themes, WordPress core, and translations. The label is not based on available updates for connected MainWP Child sites.
-
-If the Dashboard site appears fully updated but the label still appears, WordPress may still be returning stale update data from the database or from a persistent object cache. Open the Dashboard site's WordPress Updates screen, click **Check again.**, and clear any server-side or object cache used by the Dashboard site. If the label remains after a fresh update check and cache purge, review the Dashboard site's update transients or any plugins that filter WordPress update data.
+MainWP shows this label from the Dashboard site's own WordPress update count. The label is not based on available updates for connected MainWP Child sites.
 
 ## Manage Sites table
 
@@ -49,7 +47,7 @@ If the Dashboard site appears fully updated but the label still appears, WordPre
 
 - **Red icon** indicates that the site is disconnected, and you may click the icon to try to reconnect it.
 - **Yellow pause** icon indicates that the site is suspended. Learn more in [Suspend or Unsuspend a Child Site](/sites/management/manage-child-sites#suspend-or-unsuspend-a-child-site).
-- **Green icon** indicates that the site is properly connected. Clicking the icon will initialize a Synchronization with that site.
+- **Green icon** indicates that the site is properly connected. Click the icon to start a data synchronization with that site.
 
 ## Monitoring Page table
 
@@ -60,6 +58,6 @@ If the Dashboard site appears fully updated but the label still appears, WordPre
 - In the **Status** column, a **gray circle icon** means status is pending (not enough check data yet).
 - In the **Status** column, a **gray stop icon** means the monitor is disabled.
 - The **Site Health** column shows **Good** (green) or **Should be improved** (orange) when Site Health monitoring is enabled.
-- **Last 24h Status** shows hourly green/red/gray indicators and a summary such as **Up** percentage or **Pending**.
+- **Last 24h Status** shows hourly green/red/gray indicators and a summary such as **Up** percentage, **Down**, or **Pending**.
 
 More information about Site Health and monitoring settings is available [in this document](/sites/management/manage-child-sites#site-health-monitoring).
