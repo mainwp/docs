@@ -2,12 +2,12 @@
 title: Abilities API Overview
 sidebarTitle: "Abilities API Overview"
 description: >-
-  MainWP registers 62 abilities into WordPress Core's Abilities API framework for programmatic site management via AI agents and automation tools.
+  MainWP registers 62 abilities into WordPress Core's Abilities API framework, plus 7 more from the Advanced Uptime Monitor extension, for programmatic site management via AI agents and automation tools.
 ---
 
 The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
 
-MainWP Dashboard registers 62 abilities into this framework across five categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
+MainWP Dashboard registers 62 abilities into this framework across five categories, and MainWP extensions add their own on top. With the Advanced Uptime Monitor extension active, a sixth category brings the total to 69. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
 
 ## What You'll Learn
 
@@ -137,6 +137,12 @@ MainWP registers these categories:
 | `mainwp-tags` | 7 | Tag/group management |
 | `mainwp-batch` | 1 | Batch operation monitoring |
 
+Extensions register categories of their own. This one appears once the extension is installed:
+
+| Category | Abilities | Description |
+|----------|-----------|-------------|
+| `mainwp-advanced-uptime-monitor` | 7 | Uptime monitors, from the Advanced Uptime Monitor extension |
+
 <CardGroup cols={2}>
   <Card title="Sites Abilities" icon="server" href="/api-reference/abilities-api/sites">
     30 abilities for site management
@@ -149,6 +155,9 @@ MainWP registers these categories:
   </Card>
   <Card title="Tags Abilities" icon="tags" href="/api-reference/abilities-api/tags">
     7 abilities for tag management
+  </Card>
+  <Card title="Uptime Monitor Abilities" icon="heart-pulse" href="/api-reference/abilities-api/uptime-monitors">
+    7 abilities from the Advanced Uptime Monitor extension
   </Card>
 </CardGroup>
 

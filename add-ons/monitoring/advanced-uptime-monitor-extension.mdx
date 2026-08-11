@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="integration"
-  data-version="5.3.5"
+  data-version="5.4.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-advanced-uptime-monitor-extension/"
   data-owned-by="Jestart LLC"
@@ -315,6 +315,12 @@ Notes on how this works:
 - Scheduled uptime checks, WP-CLI commands, and the MainWP REST API are unaffected and continue to process every monitor regardless of the current user's role.
 
 No additional configuration is required. Assign **Allowed Child Sites** to each role in Team Control as described in the [Define Role Permissions](/add-ons/agency/team-control-extension#define-role-permissions) section, and the uptime monitor list will honor those permissions automatically.
+
+## Abilities API Support
+
+Version 5.4.0 registers 7 uptime monitoring abilities into the WordPress Abilities API, so AI agents and automation tools can list monitors and events, read live uptime percentages, create and pause monitors, delete them, and synchronize the provider inventory. The same extension access and Team Control site restrictions described above apply to every call.
+
+See [Uptime Monitor Abilities](/api-reference/abilities-api/uptime-monitors) for the parameters, responses, and error codes.
 
 ---
 
