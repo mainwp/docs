@@ -197,7 +197,6 @@
               {
                 "group": "Hosting & Performance",
                 "pages": [
-                  "dashboard/overview/how-to-install-mainwp-dashboard-app-on-cloudways-hosting",
                   "dashboard/overview/how-to-optimize-your-mainwp-dashboard-for-shared-hosting"
                 ]
               }
