@@ -52,6 +52,15 @@ The SSL Monitor extension allows you to check information about SSL certificates
 
 The extension also provides all the detailed information about the SSL certificates that you may need.
 
+## How sites are monitored
+
+SSL Monitor tracks the list of child sites it monitors automatically. You don't need to enroll sites manually.
+
+- **New sites:** When you add a child site to your MainWP Dashboard, SSL Monitor picks it up and starts tracking its certificate on the next scheduled check.
+- **HTTPS only:** Only child sites whose URL starts with `https://` are added to the monitored list. HTTP-only sites are skipped, and automated checks only run against HTTPS sites.
+- **URL changes:** If you edit a child site and change its URL, SSL Monitor refreshes the stored certificate details for that site. Switching a site from `http://` to `https://` enrolls it; switching back removes it from the monitored list.
+- **No duplicates:** Each child site appears once in the monitored list, even if the site is re-saved or updated multiple times.
+
 ## Install the SSL Monitor extension
 
 <Steps>
