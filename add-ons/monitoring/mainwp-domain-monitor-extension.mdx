@@ -85,6 +85,30 @@ Sites that have not been checked yet are highlighted in the Domain Monitor dashb
 
 Once a check completes, the row returns to its normal style and the remaining-days indicator (green, yellow, or red hourglass) appears based on how close the domain is to expiration.
 
+## Automatic Site Sync
+
+Domain Monitor keeps its records in step with your MainWP Dashboard site list without any manual bookkeeping.
+
+- **New sites are seeded automatically.** When you connect a new child site, Domain Monitor creates a monitoring record for it. The first WHOIS or RDAP lookup runs on the next scheduled check.
+- **Site URL changes are mirrored.** If you edit a child site's URL on the Dashboard, Domain Monitor updates the stored URL. A new WHOIS lookup only runs when the underlying domain actually changes, so unrelated site edits do not trigger network calls.
+- **Manual profiles keep their data.** For sites using **Manual Domain information entry**, Domain Monitor still follows the Dashboard URL but preserves the domain details you entered by hand.
+- **Existing sites are reconciled in the background.** When you enable automated checks or save Domain Monitor settings, the extension walks your existing sites in batches of 50 and seeds any that are missing a record. Reconciliation resumes from where it left off if there are more sites to process.
+
+Unknown TLDs and WHOIS connection failures are handled gracefully. The affected site is skipped for that run and retried on the next check, instead of interrupting the batch.
+
+### Adjust the reconciliation batch size
+
+Advanced users can change how many sites are reconciled per pass by hooking the `mainwp_domain_monitor_reconcile_page_size` filter. Values are clamped between 1 and 200.
+
+```php
+add_filter(
+    'mainwp_domain_monitor_reconcile_page_size',
+    function ( $page_size ) {
+        return 100;
+    }
+);
+```
+
 ## Enter Domain Info Manually
 
 If your domain is not on the list of supported TLDs, you can add information manually by following the steps below. <img src="/images/add-ons/domain-monitor-widget.png" alt="Screenshot showing Manual Domain information entry toggle in settings" />
