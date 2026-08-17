@@ -25,7 +25,7 @@ addonType: "integration"
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.1"
+  data-version="5.3.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
   data-integrates-with="Cloudflare and supported cache plugins"
@@ -98,6 +98,8 @@ Use the global settings when most of your MainWP Child sites should use the same
 
 <Note>
 When **Purge Cloudflare cache** is enabled, Cache Control verifies the Cloudflare credentials after you click **Save Settings**. If Cloudflare returns an error, the settings are saved, but MainWP Dashboard shows a warning with the Cloudflare API error so you can correct the credentials before syncing.
+
+Cloudflare credentials saved by earlier versions migrate safely to encrypted storage.
 </Note>
 
 ## Configure a Single Site
@@ -141,6 +143,8 @@ Go to **MainWP > Sites > Manage Sites**, select the sites, choose **Purge Cache 
 
 If a selected site does not have a supported cache plugin detected and does not have Cloudflare purging enabled, MainWP Dashboard shows a warning for that site instead of reporting a successful purge.
 
+Bulk purges validate every selected site and report the result for each site.
+
 ### From Widgets
 
 Cache Control widgets can appear on the Dashboard Operations page and individual site dashboard pages. Click **Clear Cache** in the widget to purge cache for the relevant site or site set. If you do not see the widget, enable it from the page settings for that screen.
@@ -150,6 +154,8 @@ Cache Control widgets can appear on the Dashboard Operations page and individual
 ## View Cache Control Status
 
 The **MainWP > Sites > Manage Sites** table can show Cache Control columns such as **Last Purged Cache** and **Cache Solution**. These columns help you confirm when cache was last purged and which supported cache plugin MainWP Child detected on each site.
+
+The MainWP Abilities API also exposes cache status and purge information for connected sites.
 
 ## View Logs
 
