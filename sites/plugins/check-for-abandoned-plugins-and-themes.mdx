@@ -2,9 +2,9 @@
 title: Check for Abandoned Plugins and Themes
 sidebarTitle: "Abandoned Plugins & Themes"
 description: >-
-  MainWP checks for abandoned plugins and themes daily by default. Manually
-  trigger checks from the Manage Sites page using Bulk Actions or from the
-  Updates page Abandoned Plugins and Abandoned Themes sections.
+  MainWP checks for abandoned plugins and themes in the background when their
+  sync data is enabled. Manually trigger checks from Manage Sites or the
+  dedicated Abandoned Plugins and Abandoned Themes pages.
 ---
 
 MainWP identifies plugins and themes that may be abandoned based on how long since their last update. Abandoned items can pose security risks and compatibility issues since they no longer receive patches or improvements.
@@ -45,7 +45,7 @@ MainWP fetches last-updated information from wordpress.org. Plugins or themes th
 
 ## Automatic Checks
 
-MainWP automatically checks for abandoned plugins and themes once per day during the scheduled sync process.
+When abandoned plugin and theme data is enabled for sync, MainWP Child schedules daily background checks and processes installed items in batches. Dashboard syncs collect the cached results and can queue a check when the cache is missing or incomplete. These background tasks rely on WordPress cron.
 
 <Note>
 These checks depend on the sync-data settings in **MainWP > Settings > Advanced Settings**. In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, MainWP does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
@@ -54,8 +54,6 @@ These checks depend on the sync-data settings in **MainWP > Settings > Advanced 
 ---
 
 ## Manual Check from Manage Sites
-
-![Manage Sites page with Bulk Actions menu for checking abandoned items](/images/dashboard/sites-plugins-f40504.png)
 
 <Steps>
 <Step title="Navigate to Manage Sites">
@@ -70,24 +68,22 @@ In the **Bulk Actions** menu, select **Check Abandoned Plugins** or **Check Aban
 <Step title="Apply">
 Click **Apply**.
 
-MainWP scans the selected sites for abandoned items.
+MainWP starts the abandoned-item check on the selected sites.
 </Step>
 </Steps>
 
 ---
 
-## Manual Check from Updates Page
+## Manual Check from Abandoned Pages
 
 ### Check Abandoned Plugins
 
 <Steps>
 <Step title="Navigate to Abandoned Plugins">
-Go to **MainWP > Updates > Abandoned Plugins**.
+Go to **MainWP > Sites > Plugins > Abandoned Plugins**.
 </Step>
 <Step title="Run check">
-Click **Check for Abandoned Plugins**.
-
-![Abandoned Plugins tab with Check for Abandoned Plugins button](/images/dashboard/sites-plugins-ccb2d0.png)
+If the action bar is displayed, click **Check for Abandoned Plugins**. This checks all connected sites shown on the page. If the button is not available, use the Manage Sites bulk action instead.
 </Step>
 </Steps>
 
@@ -95,12 +91,10 @@ Click **Check for Abandoned Plugins**.
 
 <Steps>
 <Step title="Navigate to Abandoned Themes">
-Go to **MainWP > Updates > Abandoned Themes**.
+Go to **MainWP > Sites > Themes > Abandoned Themes**.
 </Step>
 <Step title="Run check">
-Click **Check for Abandoned Themes**.
-
-![Abandoned Themes tab with Check for Abandoned Themes button](/images/dashboard/sites-plugins-56027e.png)
+If the action bar is displayed, click **Check for Abandoned Themes**. This checks all connected sites shown on the page. If the button is not available, use the Manage Sites bulk action instead.
 </Step>
 </Steps>
 
@@ -111,7 +105,7 @@ Click **Check for Abandoned Themes**.
 Change the number of days before an item is marked as abandoned:
 
 1. Go to **MainWP > Settings**
-2. Find **Updates Settings**
+2. Open **General Settings** and find **Updates Settings**
 3. Adjust **Abandoned plugins/themes tolerance** (default: 365 days)
 4. Click **Save Settings**
 
