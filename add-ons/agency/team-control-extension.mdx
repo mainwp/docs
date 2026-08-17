@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
@@ -47,6 +47,15 @@ addonType: extension
 <Step title="Assign the role to dashboard site users">
 </Step>
 </Steps>
+
+## What's New in 5.2.0
+
+- Team Control abilities support role, member, permission, and role-note management.
+- Protected authority and operation permissions are limited to authorized roles.
+- Role changes use recoverable generational transactions, and changes require confirmation before they are applied.
+- Existing installations seed an owner automatically, and users cannot grant themselves protected access.
+- User removal verifies the multisite deletion result before changing role membership.
+- Repeating a role-note request does not create duplicates, and a complete role update replaces the prior permission set.
 
 
 ![Team Control Dashboard Users tab showing role filters and the users table](/images/add-ons/team-control-dashboard-users.png)
