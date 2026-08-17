@@ -14,7 +14,7 @@ addonType: "extension"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Regression Testing" data-purchase-url="https://mainwp.com/extension/regression-testing/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.1.5" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-regression-testing-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Regression Testing" data-purchase-url="https://mainwp.com/extension/regression-testing/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.3.0" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-regression-testing-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <Info>
   **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
@@ -160,6 +160,14 @@ Displays changes in CSS and JavaScript files if tracking is enabled in the setti
 If you need to check a site immediately, you can manually trigger a scan from the **Regression Testing Dashboard** by clicking the ellipsis menu and selecting **Scan Site**.
 
 You can also initiate a scan from an individual **Child Site Overview Page** under the Regression Testing tab. Manual scans are useful when performing maintenance or troubleshooting specific issues.
+
+## Regression Testing Abilities
+
+Version 5.3.0 adds MainWP Abilities for authorized regression-testing workflows. Authorized automation tools can run scans, manage saved schedules, review paginated results and operation progress, and cancel queued work.
+
+The extension records authorized requests so retrying a request does not create duplicate work. Scans and schedules use each site's configured origin. Queued operations recover after an extension migration, while maintenance clears orphaned jobs.
+
+Compare-and-swap checks reject stale changes to saved settings and results. Regression Testing endpoints reject requests without the required authorization.
 
 ## Widgets
 
