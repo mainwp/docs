@@ -32,7 +32,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.2"
+  data-version="5.3.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-maintenance-extension/"
   data-video-url="https://www.youtube.com/watch?v=NEf40nFQ3v4"
@@ -116,6 +116,12 @@ Selecting **All Transients** shows an additional warning because some plugins ma
 </Steps>
 
 MainWP displays a progress window while the selected tasks run on each child site.
+
+## Use Maintenance Abilities
+
+Version 5.3.0 adds Maintenance abilities for authorized automation tools. They can run cleanup tasks, manage schedules, review run progress, and cancel queued work.
+
+Maintenance checks each cleanup action and revision retention value before it accepts a request. Scheduled runs recover queued work when a scheduled event is missed. You cannot update or delete a schedule while its related maintenance run is active.
 
 ## Schedule Maintenance
 
