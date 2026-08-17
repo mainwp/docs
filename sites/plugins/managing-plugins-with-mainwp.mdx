@@ -20,7 +20,7 @@ The Manage Plugins feature gives you centralized control over WordPress plugins 
 
 - MainWP Dashboard installed and activated
 - At least one child site connected to your Dashboard
-- Administrator access to your Dashboard site
+- A Dashboard user account with the required plugin management permissions
 
 ---
 
@@ -37,13 +37,13 @@ The Manage Plugins feature gives you centralized control over WordPress plugins 
 
 ## Install Plugins
 
-MainWP provides three methods for installing plugins:
+MainWP Dashboard provides two built-in methods for installing plugins. If the MainWP Favorites Extension is installed, a third option is available:
 
 | Method | Best For |
 |--------|----------|
 | WordPress.org | Free plugins from the official directory |
 | Upload ZIP | Premium plugins or custom plugins |
-| Favorites | Quick installation of commonly used plugins (requires [Favorites Extension](https://mainwp.com/extension/favorites/)) |
+| Install from Favorites | Quick installation of commonly used plugins (requires [Favorites Extension](https://mainwp.com/extension/favorites/)) |
 
 ### Install from WordPress.org
 
@@ -53,19 +53,15 @@ Go to **MainWP > Plugins > Install Plugins**.
 </Step>
 <Step title="Search for plugin">
 Under the **Install from WordPress.org** tab, use the **Search plugins** field to find the plugin.
-
-![Plugin search field on Install Plugins page](/images/dashboard/sites-plugins-529848.png)
 </Step>
 <Step title="Select plugin">
-Locate the plugin in the search results and select **Install this Plugin**.
+Locate the plugin in the search results and select **Install Plugin**.
 </Step>
 <Step title="Select sites">
 In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites where you want to install the plugin.
 </Step>
 <Step title="Set installation options">
 Configure the installation options:
-
-![Review the Installation Options](/images/dashboard/sites-plugins-71cc03.png)
 
 | Option | Description |
 |--------|-------------|
@@ -87,15 +83,13 @@ Go to **MainWP > Plugins > Install Plugins**.
 Click the **Upload .zip file** tab.
 </Step>
 <Step title="Upload file">
-Click **Upload** and select the plugin ZIP file from your computer.
+Click **Upload Now** and select the plugin ZIP file from your computer.
 </Step>
 <Step title="Select sites">
 In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites where you want to install the plugin.
 </Step>
 <Step title="Set installation options">
 Configure the installation options:
-
-![Review the Installation Options](/images/dashboard/sites-plugins-562865.png)
 
 | Option | Description |
 |--------|-------------|
@@ -108,7 +102,7 @@ Click **Complete Installation**.
 </Steps>
 
 <Note>
-Your server must allow uploads of the plugin's file size. Check **Maximum File Size** on your [Server Information](/troubleshooting/resolve-system-requirement-issues) page.
+Your server must allow uploads of the plugin's file size. Check **PHP Upload Max Filesize** and **PHP Post Max Size** on your [Server Information](/troubleshooting/resolve-system-requirement-issues) page.
 </Note>
 
 ### Install from Favorites
@@ -124,10 +118,10 @@ Select and install plugins from your saved favorites using the [MainWP Favorites
 Go to **MainWP > Plugins > Manage Plugins**.
 </Step>
 <Step title="Select view">
-From the dropdown menu, select **Per Site** or **Per Item** view.
+From the dropdown menu, select **Show Plugins per Site** or **Show Plugins per Item**.
 </Step>
 <Step title="Filter inactive plugins">
-In the Search Plugins section, set **Status** to **Inactive**. Optionally enter a plugin name.
+In the **Select Status** section, select **Inactive**. Optionally enter a plugin name under **Search Options**.
 </Step>
 <Step title="Select sites">
 In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites to search.
@@ -137,11 +131,9 @@ Click **Show Plugins**.
 </Step>
 <Step title="Select plugins to activate">
 Check the boxes next to the plugins you want to activate.
-
-![Manage Plugins table with checkboxes for site and plugin selection](/images/dashboard/sites-plugins-644473.png)
 </Step>
 <Step title="Apply action">
-In the **Bulk Actions** menu, select **Activate** and click **Confirm**.
+In the **Bulk Actions** menu, select **Activate** and click **Apply**.
 </Step>
 </Steps>
 
@@ -154,10 +146,10 @@ In the **Bulk Actions** menu, select **Activate** and click **Confirm**.
 Go to **MainWP > Plugins > Manage Plugins**.
 </Step>
 <Step title="Select view">
-From the dropdown menu, select **Per Site** or **Per Item** view.
+From the dropdown menu, select **Show Plugins per Site** or **Show Plugins per Item**.
 </Step>
 <Step title="Filter active plugins">
-In the Search Plugins section, set **Status** to **Active**. Optionally enter a plugin name.
+In the **Select Status** section, select **Active**. Optionally enter a plugin name under **Search Options**.
 </Step>
 <Step title="Select sites">
 In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites to search.
@@ -167,11 +159,9 @@ Click **Show Plugins**.
 </Step>
 <Step title="Select plugins to deactivate">
 Check the boxes next to the plugins you want to deactivate.
-
-![Manage Plugins table with active plugins selected for deactivation](/images/dashboard/sites-plugins-288761.png)
 </Step>
 <Step title="Apply action">
-In the **Bulk Actions** menu, select **Deactivate** and click **Confirm**.
+In the **Bulk Actions** menu, select **Deactivate** and click **Apply**.
 </Step>
 </Steps>
 
@@ -186,10 +176,10 @@ You can delete active and inactive plugins. If a selected plugin is active, Main
 Go to **MainWP > Plugins > Manage Plugins**.
 </Step>
 <Step title="Select view">
-From the dropdown menu, select **Per Site** or **Per Item** view.
+From the dropdown menu, select **Show Plugins per Site** or **Show Plugins per Item**.
 </Step>
 <Step title="Filter plugins by status">
-In the Search Plugins section, set **Status** to **Active**, **Inactive**, or **Active & Inactive**. Optionally enter a plugin name.
+In the **Select Status** section, select **Active**, **Inactive**, or **Active & Inactive**. Optionally enter a plugin name under **Search Options**.
 </Step>
 <Step title="Select sites">
 In the [Select Sites](/getting-started/mainwp-user-interface) box, choose the sites to search.
@@ -201,9 +191,7 @@ Click **Show Plugins**.
 Check the boxes next to the plugins you want to delete.
 </Step>
 <Step title="Apply action">
-In the **Bulk Actions** menu, select **Delete** and click **Confirm**.
-
-![In the Bulk Actions menu](/images/dashboard/sites-plugins-353eae.png)
+In the **Bulk Actions** menu, select **Delete** and click **Apply**.
 </Step>
 </Steps>
 
@@ -220,9 +208,7 @@ Synchronize your child sites before running updates to ensure all available upda
 Go to **MainWP > Updates > Plugins**.
 </Step>
 <Step title="Update all">
-Click **Update All Plugins (Update All Sites)**.
-
-![Update All Plugins button on the Updates page](/images/dashboard/sites-plugins-7aa470.png)
+Click **Update All Plugins**.
 </Step>
 <Step title="Confirm">
 Confirm the update when prompted.
@@ -233,15 +219,13 @@ Confirm the update when prompted.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **MainWP > Updates > Plugins**.
 </Step>
 <Step title="Select view">
-Set **Show updates per** to **Item**.
+Select **Show updates per Item**.
 </Step>
 <Step title="Locate plugin">
 Find the plugin you want to update.
-
-![Plugin row showing Update All button for updating across sites](/images/dashboard/sites-plugins-40e442.png)
 </Step>
 <Step title="Update">
 Click **Update All** in the plugin row.
@@ -252,18 +236,16 @@ Click **Update All** in the plugin row.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **MainWP > Updates > Plugins**.
 </Step>
 <Step title="Select view">
-Set **Show updates per** to **Site**.
+Select **Show updates per Site**.
 </Step>
 <Step title="Locate site">
 Find the child site you want to update.
-
-![Locate the Child Site that you want to update](/images/dashboard/sites-plugins-f00099.png)
 </Step>
 <Step title="Update">
-Click **Update All** in the site row.
+Click **Update** in the site row.
 </Step>
 </Steps>
 
@@ -271,18 +253,16 @@ Click **Update All** in the site row.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **MainWP > Updates > Plugins**.
 </Step>
 <Step title="Select view">
-Set **View updates per** to **Site**.
+Select **Show updates per Site**.
 </Step>
 <Step title="Locate site">
 Find the child site and expand its row.
 </Step>
 <Step title="Update plugin">
-Find the plugin and click **Update Now**.
-
-![Locate the Plugin that you want to update](/images/dashboard/sites-plugins-e5d671.png)
+Find the plugin and click **Update**.
 </Step>
 </Steps>
 
@@ -292,7 +272,7 @@ Use the **History** action to review plugin change activity by site and by day.
 
 <Steps>
 <Step title="Open a plugin row with History">
-Open plugin rows in **MainWP > Plugins > Manage Plugins**, **MainWP > Updates > Plugins Updates**, or plugin rows on an individual site Operations page.
+Open plugin rows in **MainWP > Plugins > Manage Plugins**, **MainWP > Updates > Plugins**, or plugin rows on an individual site Operations page.
 </Step>
 <Step title="Open the history modal">
 Click **History** in the plugin row.
@@ -322,13 +302,13 @@ Automatic updates require two configuration steps: enabling the feature and mark
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **MainWP > Settings > General Settings**.
 </Step>
 <Step title="Find Updates Settings">
 Locate the **Updates Settings** section.
 </Step>
 <Step title="Enable">
-Set **Plugin automatic updates** to **Install Updates**.
+Set **Plugin advanced automatic updates** to **Install Trusted Updates**.
 </Step>
 <Step title="Save">
 Click **Save Settings**.
@@ -339,33 +319,31 @@ Click **Save Settings**.
 
 <Steps>
 <Step title="Navigate to Advanced Auto Updates">
-Go to **MainWP > Sites > Plugins > Advanced Auto Updates**.
+Go to **MainWP > Plugins > Advanced Auto Updates**.
 </Step>
 <Step title="Filter plugins">
-Use the **Status**, **Trust Status**, and **Keyword** filters to find plugins.
+Use **Plugin Status to Search**, the trust-status dropdown under **Search Options**, and the **Plugin name** field to find plugins.
 </Step>
 <Step title="Search">
 Click **Show Plugins**.
 </Step>
 <Step title="Select plugins">
 Check the boxes next to the plugins you want to trust.
-
-![Once the list of Plugins appear](/images/dashboard/sites-plugins-c85c94.png)
 </Step>
 <Step title="Apply trust">
-Select **Trust** from the **Bulk Actions** menu and click **Apply**.
+Select **Mark as Trusted** from the **Bulk Actions** menu and click **Apply**.
 </Step>
 </Steps>
 
 <Note>
-Marking a plugin as Trusted means you trust this plugin and allow MainWP to update it automatically.
+Marking a plugin as Trusted allows MainWP Dashboard to update it automatically when plugin advanced automatic updates are enabled.
 </Note>
 
 ### Auto Updates Timing
 
-- Updates may take up to 24 hours after MainWP detects a new version
-- Auto updates require WP Cron to be triggered regularly
-- Consider using Uptime Robot to ping your Dashboard site for reliable cron execution
+- **Advanced automatic updates delay** controls how many days MainWP Dashboard waits before applying detected updates. The default is **1 day**, and the available values range from **Delay off** to **30 days**.
+- **Frequency of automatic updates** controls whether the process runs daily, weekly, or monthly, along with its scheduled day and time.
+- WP Cron must run for the scheduled automatic update process to start and continue.
 
 ---
 
