@@ -17,7 +17,7 @@ thirdPartyPlugin: BackWPup
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="integration"
-  data-version="5.1.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-backwpup-extension/"
   data-integrates-with="BackWPup"
@@ -41,6 +41,10 @@ thirdPartyPlugin: BackWPup
 ![Screenshot of BackWPup add-on dashboard showing child sites with backup status](/images/add-ons/backwpup-dashboard-overview.png)
 
 With the MainWP BackWPup Add-on, you can control the [BackWPup Plugin](https://wordpress.org/plugins/backwpup/) settings for all your child sites directly from your MainWP Dashboard. This includes giving you the ability to create your child site backups and even set Backup schedules directly from your MainWP Dashboard.
+
+## BackWPup Abilities
+
+MainWP Abilities can manage BackWPup site status, jobs, backups, logs, diagnostics, and plugin visibility.
 
 ## Installing the BackWPup add-on
 
@@ -143,6 +147,8 @@ The BackWPup Add-on allows you to manage the BackWPup plugin backups directly fr
     
 
 After you click **Save Changes**, the add-on syncs this global job to child sites that do not use **Override General Settings**.
+
+If a global template becomes shared with another site, you cannot change its schedule for one site only.
 
 ### Create a Backup Job on a Single Site
 
@@ -291,6 +297,8 @@ In the top right of the page, select the desired child site from the dropdown, a
 <Step title="Click the Download action">
 </Step>
 </Steps>
+
+Backup downloads use secure, temporary access links. If a protected FOLDER backup is unavailable, the same one-use access remains available for another attempt.
 
 
 ### Delete Backup Files
