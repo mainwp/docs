@@ -2,6 +2,9 @@
 .mwpdev/
 .mwpdev/**
 
+# Node-only utility scripts
+fix-quotes.js
+
 # Node modules
 node_modules/
 
