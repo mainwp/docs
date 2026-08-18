@@ -31,6 +31,7 @@ This is the default approach for most users and the main setup this article reco
 - Keep **Use WP Cron** enabled at **MainWP \> Settings \> Advanced Settings**
 - For this option, "uptime monitoring" means **external third-party services** sending requests to your Dashboard URL
 - Do not rely on MainWP's own uptime monitoring features to trigger WP Cron on the Dashboard site itself
+- WordPress's `DISABLE_WP_CRON` setting controls automatic spawning from normal page requests; it does not remove registered events or block direct requests to `wp-cron.php`
 
 <Note>
   MainWP uptime monitoring is for monitoring Child Sites. It is not a replacement for external cron-trigger requests to your Dashboard URL.
@@ -95,6 +96,24 @@ Practical notes:
 - Keep **Use WP Cron** enabled for Option 1
 - Ensure auth/firewall/security rules do not block the request
 
+### Choose the correct `DISABLE_WP_CRON` setting
+
+The correct `wp-config.php` setting depends on which URL or command triggers the cron queue:
+
+| External trigger | `DISABLE_WP_CRON` setting |
+| --- | --- |
+| Requests to the Dashboard homepage or another normal page | Leave undefined or set to `false`. This method needs normal page requests to spawn WP-Cron. |
+| Direct requests to `wp-cron.php?doing_wp_cron` | Set to `true` after verifying that the external trigger runs reliably. Direct requests to the cron endpoint continue to process due events. |
+| A server scheduler that runs `wp cron event run --due-now` through WP-CLI | Set to `true` after verifying that the scheduler runs reliably. WP-CLI processes the due registered events without relying on page visits. |
+
+For a reliable direct `wp-cron.php` or WP-CLI trigger, add:
+
+```php
+define( 'DISABLE_WP_CRON', true );
+```
+
+This prevents ordinary page visits from also spawning WP-Cron. Do not enable it when homepage or normal-page requests are the only external trigger, or when no reliable external runner is configured.
+
 ### Trigger frequency (Option 1)
 
 Set the trigger to **every minute** for both Method A and Method B.
@@ -116,6 +135,7 @@ Use this only if you want to maintain manual MainWP cron jobs yourself. For comm
 - **Use WP Cron** is enabled at **MainWP \> Settings \> Advanced Settings**
 - External monitor or server cron is active and running every minute
 - Target URL is reachable (`https://example.com/` or `https://example.com/wp-cron.php?doing_wp_cron`)
+- `DISABLE_WP_CRON` matches the trigger method: undefined or `false` for homepage requests, or `true` only with a reliable direct `wp-cron.php` or WP-CLI runner
 - No HTTP auth, firewall, CDN, or WAF rule is blocking requests
 - Cron activity is updating at **MainWP \> Info \> Cron Schedules**
 
@@ -126,6 +146,7 @@ Use this only if you want to maintain manual MainWP cron jobs yourself. For comm
 | `Last Run` does not change for long periods        | Trigger requests are not reaching WordPress         | Validate monitor/cron logs and switch to direct `wp-cron.php` URL |
 | `Next Run` looks stale or missing                  | Scheduling is disabled or misconfigured             | Re-enable **Use WP Cron**, save settings, and recheck             |
 | External monitor says "up" but cron is still stale | Homepage check is cached or not executing WordPress | Point monitor to `wp-cron.php?doing_wp_cron`                      |
+| Homepage monitor says "up" and `DISABLE_WP_CRON` is `true` | Normal page requests cannot spawn WP-Cron | Point the monitor to `wp-cron.php?doing_wp_cron`, or remove the setting |
 | `401` or `403` when calling `wp-cron.php`          | Auth, firewall, or WAF restriction                  | Allow request access for the cron endpoint                        |
 | Inconsistent or duplicate behavior                 | Mixed cron modes are configured                     | Keep Option 1 clean: external trigger + **Use WP Cron** enabled   |
 

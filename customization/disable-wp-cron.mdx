@@ -35,6 +35,7 @@ Cron event registration, cron triggering, and direct worker execution are separa
 - **MainWP Use WP Cron** controls whether MainWP Dashboard and compatible MainWP Add-ons register and retain their recurring events in WordPress's cron queue. Turning it off removes the MainWP recurring hooks that honor this setting. It does not disable WordPress WP-Cron globally.
 - **`DISABLE_WP_CRON`** is a WordPress-wide setting. `define( 'DISABLE_WP_CRON', true );` stops normal page visits from spawning WP-Cron, but it does not remove registered events.
 - **A server request to `wp-cron.php`** processes due registered events even when `DISABLE_WP_CRON` is `true`. It cannot recreate MainWP recurring hooks removed by turning **Use WP Cron** off.
+- **A server scheduler using WP-CLI** can run due registered events with `wp cron event run --due-now` even when `DISABLE_WP_CRON` is `true`. It does not rely on normal page visits.
 - **A direct MainWP worker** invokes only that worker's callback. It does not dispatch WordPress's general WP-Cron queue.
 
 WordPress documents its external scheduler pattern in [Hooking WP-Cron Into the System Task Scheduler](https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/).
@@ -46,7 +47,7 @@ WordPress documents its external scheduler pattern in [Hooking WP-Cron Into the 
 | Setup | MainWP Use WP Cron | `DISABLE_WP_CRON` | Server configuration | Coverage |
 | --- | --- | --- | --- | --- |
 | Normal traffic-dependent WP-Cron | Enabled | Not defined or `false` | No external trigger required | Page visits trigger registered events, but execution can be late on low-traffic MainWP Dashboard installations |
-| Recommended low-traffic setup | Enabled | Optional | Request `wp-cron.php` every minute | Dispatches due registered WordPress, MainWP Dashboard, and Add-on events through the general WP-Cron queue |
+| Recommended low-traffic setup | Enabled | Depends on the trigger: `false` for normal-page requests; `true` with a verified direct `wp-cron.php` or WP-CLI runner | Trigger the general WP-Cron queue every minute | Dispatches due registered WordPress, MainWP Dashboard, and Add-on events through the general WP-Cron queue |
 | Advanced direct-worker setup | Disabled | Independent setting | Configure every required direct worker at its exact cadence | Runs only explicitly invoked callbacks and is not a complete WP-Cron replacement |
 
 ### Recommended low-traffic setup
@@ -57,13 +58,13 @@ Keep **Use WP Cron** enabled and do not configure individual MainWP worker files
 * * * * * curl -fsS 'https://example.com/wp-cron.php?doing_wp_cron' > /dev/null 2>&1
 ```
 
-Using the following WordPress-wide setting is optional when a reliable external `wp-cron.php` trigger is configured:
+After verifying that the direct `wp-cron.php` trigger runs reliably, you can prevent normal page visits from also spawning WP-Cron by adding:
 
 ```php
 define( 'DISABLE_WP_CRON', true );
 ```
 
-When enabled, normal visits no longer spawn WP-Cron, but a direct server request to `wp-cron.php` continues to work. Enable it only after verifying the external trigger is reliable. If it is enabled without an external WP-Cron runner, scheduled WordPress events can stop processing. This setting is unrelated to MainWP's **Use WP Cron** toggle.
+When enabled, normal visits no longer spawn WP-Cron, but a direct server request to `wp-cron.php` or a scheduler running `wp cron event run --due-now` continues to process due registered events. If an uptime monitor requests only the Dashboard homepage or another normal page, leave `DISABLE_WP_CRON` undefined or set it to `false`. Enable it only after verifying a direct external runner is reliable. If it is enabled without one, scheduled WordPress events can stop processing. This setting is unrelated to MainWP's **Use WP Cron** toggle.
 
 <Warning>
 Avoid mixed or incomplete configurations:
@@ -71,6 +72,7 @@ Avoid mixed or incomplete configurations:
 - **Use WP Cron enabled with matching direct worker jobs:** The same work may be invoked twice.
 - **Use WP Cron disabled with only `wp-cron.php` requested:** MainWP recurring hooks removed by the setting do not exist for `wp-cron.php` to run.
 - **`DISABLE_WP_CRON` enabled without an external runner:** The ordinary WordPress cron queue can stall.
+- **`DISABLE_WP_CRON` enabled with only homepage or normal-page requests:** Those requests cannot spawn WP-Cron; target `wp-cron.php` directly or use a WP-CLI runner.
 - **Direct worker files only:** Specific handlers run, but queued follow-up events and recurring tasks without direct files may not run.
 
 If you require complete MainWP Dashboard and Add-on behavior, use the [recommended low-traffic configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
