@@ -10,7 +10,7 @@ This repository contains the source files for MainWP's documentation, built with
 
 - Getting started with MainWP
 - Dashboard and site management
-- Extensions and add-ons
+- Add-ons
 - REST API and Abilities API
 - Troubleshooting and customization
 
@@ -20,7 +20,7 @@ This repository contains the source files for MainWP's documentation, built with
 - `/dashboard/` - Dashboard features and configuration
 - `/sites/` - Site management (plugins, themes, updates, backups)
 - `/clients/` - Client management features
-- `/add-ons/` - Extension documentation (100+ extensions)
+- `/add-ons/` - Add-on documentation (100+ add-ons)
 - `/troubleshooting/` - Common issues and solutions
 - `/customization/` - Dashboard customization
 - `/advanced/` - Advanced topics, security, integrations

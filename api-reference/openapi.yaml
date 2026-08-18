@@ -6087,8 +6087,8 @@ paths:
   /wp-json/mainwp/v2/settings/tools/clear-activation-data:
     post:
       operationId: postSettingsToolsClearActivationData
-      summary: Clear extension activation data
-      description: Clears the stored extension licence activation data. You need to activate your extensions again
+      summary: Clear add-on activation data
+      description: Clears the stored add-on licence activation data. You need to activate your add-ons again
         afterwards.
       tags:
         - Settings
@@ -11811,8 +11811,8 @@ paths:
     post:
       operationId: postLighthouseAudit
       summary: Run Lighthouse audits for all sites
-      description: Starts a Lighthouse audit for every site the extension supports. Requires the MainWP Lighthouse
-        extension on the Dashboard.
+      description: Starts a Lighthouse audit for every site the integration supports. Requires the MainWP Lighthouse
+        Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11832,8 +11832,8 @@ paths:
     put:
       operationId: putLighthouseAudit
       summary: Run Lighthouse audits for all sites
-      description: Starts a Lighthouse audit for every site the extension supports. Requires the MainWP Lighthouse
-        extension on the Dashboard.
+      description: Starts a Lighthouse audit for every site the integration supports. Requires the MainWP Lighthouse
+        Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11853,8 +11853,8 @@ paths:
     patch:
       operationId: patchLighthouseAudit
       summary: Run Lighthouse audits for all sites
-      description: Starts a Lighthouse audit for every site the extension supports. Requires the MainWP Lighthouse
-        extension on the Dashboard.
+      description: Starts a Lighthouse audit for every site the integration supports. Requires the MainWP Lighthouse
+        Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11883,7 +11883,7 @@ paths:
     post:
       operationId: postLighthouseAuditIdDomain
       summary: Run a Lighthouse audit for one site
-      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse extension on the Dashboard.
+      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11909,7 +11909,7 @@ paths:
     put:
       operationId: putLighthouseAuditIdDomain
       summary: Run a Lighthouse audit for one site
-      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse extension on the Dashboard.
+      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11935,7 +11935,7 @@ paths:
     patch:
       operationId: patchLighthouseAuditIdDomain
       summary: Run a Lighthouse audit for one site
-      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse extension on the Dashboard.
+      description: Starts a Lighthouse audit for one site. Requires the MainWP Lighthouse Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11964,7 +11964,7 @@ paths:
       operationId: getLighthouseResults
       summary: List Lighthouse results for all sites
       description: Returns the stored performance, accessibility, best practice, and SEO scores for every audited
-        site. Requires the MainWP Lighthouse extension on the Dashboard.
+        site. Requires the MainWP Lighthouse Integration on the Dashboard.
       tags:
         - Lighthouse
       responses:
@@ -11993,7 +11993,7 @@ paths:
     get:
       operationId: getLighthouseResultsIdDomain
       summary: Get Lighthouse results for one site
-      description: Returns the stored Lighthouse scores for one site. Requires the MainWP Lighthouse extension on
+      description: Returns the stored Lighthouse scores for one site. Requires the MainWP Lighthouse Integration on
         the Dashboard.
       tags:
         - Lighthouse

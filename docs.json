@@ -388,7 +388,7 @@
                 ]
               },
               {
-                "group": "Extensions & Licensing",
+                "group": "Add-ons & Licensing",
                 "pages": [
                   "troubleshooting/troubleshoot-extension-licensing-issues",
                   "troubleshooting/why-is-my-extensions-page-empty",
@@ -543,7 +543,7 @@
                 ]
               },
               {
-                "group": "Third-Party Extensions",
+                "group": "Third-Party Add-ons",
                 "pages": [
                   "advanced/miscellaneous/support-for-3rd-party-extensions",
                   "advanced/miscellaneous/required-plugins-check-for-mainwp-extensions"

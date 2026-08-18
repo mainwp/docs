@@ -2,10 +2,10 @@
 title: Advanced Uptime Monitor
 sidebarTitle: "Advanced Uptime Monitor"
 description: >-
-  This Advanced Uptime Monitor for WordPress is a free MainWP extension that
+  This Advanced Uptime Monitor for WordPress is a free MainWP integration that
   extends your ability to monitor the uptime of all your connected Child Sites
   at once on one screen.
-addonType: extension
+addonType: integration
 ---
 
 ## What You'll Learn
@@ -44,16 +44,16 @@ addonType: extension
   allowFullScreen
 ></iframe>
 
-The MainWP Advanced Uptime Monitor extension allows you to monitor your websites' uptime by integrating with uptime monitoring services through their APIs. This extension enables you to create, edit, display, start, pause, or delete your monitors directly from the MainWP Dashboard.
+The MainWP Advanced Uptime Monitor Integration allows you to monitor your websites' uptime by integrating with uptime monitoring services through their APIs. This add-on enables you to create, edit, display, start, pause, or delete your monitors directly from the MainWP Dashboard.
 
-The extension currently supports these uptime monitoring services:
+The integration currently supports these uptime monitoring services:
 
 -   Uptime Robot
 -   Better Uptime
 -   NodePing
 -   Site24x7
 
-The extension itself does not check for uptime, nor does it notify in case of some event. Both of these actions are performed by third-party uptime monitoring services.
+The integration itself does not check for uptime, nor does it notify in case of some event. Both of these actions are performed by third-party uptime monitoring services.
 
 ## Create New Monitor
 
@@ -188,14 +188,14 @@ To automatically create monitors for all child sites that don't have correspondi
 </Step>
 <Step title="Click the Create Monitors for All Sites button">
 </Step>
-<Step title="The extension will create monitors for child sites without existing monitors">
+<Step title="The integration will create monitors for child sites without existing monitors">
 </Step>
 </Steps>
 
 
 ## Connect Your Uptime Robot Account
 
-To get your Uptime Robot API Key to use the [MainWP Advanced Uptime Monitor](https://mainwp.com/extension/advanced-uptime-monitor/) extension, visit the [Uptime Robot Webpage.](http://uptimerobot.com/)
+To get your Uptime Robot API Key to use the [MainWP Advanced Uptime Monitor Integration](https://mainwp.com/extension/advanced-uptime-monitor/), visit the [Uptime Robot Webpage.](http://uptimerobot.com/)
 
 <Steps>
 <Step title="Click the Sign-Up button (If you already have an account, proceed to step 4)">
@@ -238,7 +238,7 @@ Then it will show you the **Create the main API key** button, click that button
 </Steps>
 
 
-Before being able to create, display, or manage Uptime Robot monitors, you need to add your [Uptime Robot API key](/add-ons/monitoring/advanced-uptime-monitor-extension#connect-your-uptime-robot-account) to your Advanced Uptime Monitor extension.
+Before being able to create, display, or manage Uptime Robot monitors, you need to add your [Uptime Robot API key](/add-ons/monitoring/advanced-uptime-monitor-extension#connect-your-uptime-robot-account) to your Advanced Uptime Monitor Integration.
 
 <Steps>
 <Step title="Log in to your MainWP Dashboard">
@@ -271,7 +271,7 @@ The Settings tab also supports:
 
 ### API limitations of the free Uptime Robot plan
 
-Uptime Robot has recently reduced the limit to only **10 requests per minute**. Requests include creating new monitors through the MainWP extension and fetching information about existing monitors. Reaching the limit is fairly easy for a large number of sites.
+Uptime Robot has recently reduced the limit to only **10 requests per minute**. Requests include creating new monitors through the MainWP integration and fetching information about existing monitors. Reaching the limit is fairly easy for a large number of sites.
 
 This limit is most often hit when creating monitors for all sites by clicking the **"Create Monitors for All Sites"** button in the UI. You will likely be able to create 2 or 3 monitors **per attempt** and receive an error (red exclamation mark) for other sites because the API limit will be reached.
 
@@ -298,15 +298,15 @@ To get the Better Uptime API token:
 
 <Warning>
 **Important Notes:**
-- MainWP Advanced Uptime Monitor Extension does not support Monitor Specific API Keys.
-- If you cannot create your first monitor from the MainWP Advanced Uptime Monitor Extension, try creating the first monitor directly in the Uptime Robot dashboard, then create subsequent monitors from your Extension.
+- MainWP Advanced Uptime Monitor Integration does not support Monitor Specific API Keys.
+- If you cannot create your first monitor from the MainWP Advanced Uptime Monitor Integration, try creating the first monitor directly in the Uptime Robot dashboard, then create subsequent monitors from the integration.
 - If you cannot connect your account, try re-creating your Uptime Robot API key and try again.
-- If data is not loading properly from your Uptime Robot account, try resaving the Uptime Robot settings in the Advanced Uptime Monitor Extension.
+- If data is not loading properly from your Uptime Robot account, try resaving the Uptime Robot settings in the Advanced Uptime Monitor Integration.
 </Warning>
 
 ## Team Control Permissions
 
-If you use the [Team Control](/add-ons/agency/team-control-extension) extension, the Advanced Uptime Monitor respects each role's **Allowed Child Sites** configuration. Users signed in with a restricted role only see monitors that belong to the child sites they are permitted to access; monitors for sites outside their scope are hidden from the Monitors tab and from related views.
+If you use the [Team Control Extension](/add-ons/agency/team-control-extension), the Advanced Uptime Monitor respects each role's **Allowed Child Sites** configuration. Users signed in with a restricted role only see monitors that belong to the child sites they are permitted to access; monitors for sites outside their scope are hidden from the Monitors tab and from related views.
 
 Notes on how this works:
 

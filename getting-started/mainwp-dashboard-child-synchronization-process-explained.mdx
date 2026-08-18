@@ -26,9 +26,9 @@ This request executes the `stats` function after authentication. The sync reques
 Some MainWP settings require syncing after changes because the sync request sets values on child sites.
 </Note>
 
-## Extension Data in Sync Requests
+## Add-on Data in Sync Requests
 
-MainWP provides the `mainwp-sync-others-data` hook for extensions to include data in sync requests. The `othersData` parameter contains encoded data for plugins like BackWPup, BackupWordPress, BackupBuddy, Client Reports, WP Staging, WP Time Capsule, UpdraftPlus, Page Speed, and WP Rocket.
+MainWP provides the `mainwp-sync-others-data` hook for add-ons to include data in sync requests. The `othersData` parameter contains encoded data for plugins like BackWPup, BackupWordPress, BackupBuddy, Client Reports, WP Staging, WP Time Capsule, UpdraftPlus, Page Speed, and WP Rocket.
 
 ## What the Sync Process Retrieves
 
@@ -37,7 +37,7 @@ The sync request executes `get_site_stats()` in the MainWP Child plugin (via `&f
 - Available updates for plugins, themes, and WordPress core
 - Potentially abandoned plugins/themes
 - Site health data
-- Extension-specific data
+- Add-on-specific data
 
 ## Performance Considerations
 

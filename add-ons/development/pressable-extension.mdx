@@ -2,7 +2,7 @@
 title: Pressable
 sidebarTitle: "Pressable"
 description: >-
-  MainWP Pressable Extension simplifies your Pressable hosting management
+  The Pressable Integration simplifies your Pressable hosting management
   experience, such as creating, disabling, and deleting websites, enabling or
   disabling CDN, managing backups, and more without the need to log in to your
   Pressable account.
@@ -38,7 +38,7 @@ thirdPartyPlugin: Pressable
 **Integration Add-on** - This add-on extends MainWP to work with Pressable. Requires a Pressable account and Pressable-hosted sites added to your MainWP Dashboard as child sites.
 </Info>
 
-MainWP Pressable extension provides access to the most important Pressable management features. It allows you to quickly **create new Pressable sites** directly in the extension and at a glance, gives quick insight into the **State, Environment** and **Data Center** of the Pressable site and **Visitor Analytics**, and provides **Backup** and **CDN management**.
+The Pressable Integration provides access to the most important Pressable management features. It allows you to quickly **create new Pressable sites** directly in the add-on and, at a glance, gives quick insight into the **State, Environment** and **Data Center** of the Pressable site and **Visitor Analytics**, and provides **Backup** and **CDN management**.
 
 <iframe
   className="w-full aspect-video rounded-xl"
@@ -49,9 +49,9 @@ MainWP Pressable extension provides access to the most important Pressable manag
   allowFullScreen
 ></iframe>
 
-## Installing the extension
+## Install the Integration
 
-Follow these steps to install the Pressable extension.
+Follow these steps to install the Pressable Integration.
 
 <Steps>
 <Step title="Go to your MainWP Dashboard">
@@ -61,7 +61,7 @@ Follow these steps to install the Pressable extension.
 <Step title="Click the Install Add-ons button">
 Click the **Install Add-ons** button [![Install Add-ons button on the MainWP Add-ons page](/images/add-ons/install-domain-monitor.png)](/images/add-ons/install-domain-monitor.png)
 </Step>
-<Step title="Locate the Pressable extension and select it">
+<Step title="Locate the Pressable Integration and select it">
 </Step>
 <Step title="Click the Install button">
 </Step>
@@ -71,7 +71,7 @@ Once the installation process is complete, click the **Activate Add-ons** button
 </Steps>
 
 
-## Connect extension to your Pressable account
+## Connect the Integration to Your Pressable Account
 
 <Steps>
 <Step title="Navigate to your Pressable account and open the API Application page">
@@ -85,7 +85,7 @@ Navigate to your Pressable account and open the [API Application](https://my.pre
 Enter a desired name for the API Application, give the application all permissions, and click the **Save** button ![Pressable API Application form with name field and permissions options](/images/add-ons/pressable-api-permissions.png)
 </Step>
 <Step title="You will be presented with a Client ID and Client Secret">
-You will be presented with a Client ID and Client Secret. We will use these to connect the extension, so copy them somewhere or leave this browser tab open ![Pressable Client ID and Client Secret displayed after creating API application](/images/add-ons/pressable-client-credentials.png)
+You will be presented with a Client ID and Client Secret. We will use these to connect the integration, so copy them somewhere or leave this browser tab open ![Pressable Client ID and Client Secret displayed after creating API application](/images/add-ons/pressable-client-credentials.png)
 </Step>
 <Step title="Now navigate to your MainWP Dashboard > Add-ons > Administrative > Pressable page, and open the Settings tab">
 Now navigate to your **MainWP Dashboard > Add-ons > Administrative > Pressable** page, and open the Settings tab
@@ -98,10 +98,10 @@ Enter the Client ID and Client Secret and click the **Save Settings** button ![M
 
 ## Team Control compatibility
 
-The Pressable extension respects access restrictions configured by the [Team Control extension](/add-ons/agency/team-control-extension). Only team members whose role grants access to the Pressable extension will see the Pressable menu and be able to perform Pressable actions. If a user does not have permission, the extension UI and bulk actions are hidden for them.
+The Pressable Integration respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). Only team members whose role grants access to the Pressable Integration will see the Pressable menu and be able to perform Pressable actions. If a user does not have permission, the integration UI and bulk actions are hidden for them.
 ## Clearing Pressable credentials
 
-To disconnect the extension from your Pressable account, open the **Settings** tab, clear both the **Client ID** and **Client Secret** fields, and click **Save Settings**. Saving empty values removes the stored credentials and the cached access token. The Dashboard tab then shows an empty-state placeholder prompting you to add credentials again.
+To disconnect the integration from your Pressable account, open the **Settings** tab, clear both the **Client ID** and **Client Secret** fields, and click **Save Settings**. Saving empty values removes the stored credentials and the cached access token. The Dashboard tab then shows an empty-state placeholder prompting you to add credentials again.
 
 ## Empty-state placeholders
 
@@ -114,17 +114,17 @@ These replace the previous empty table so the next step is always clear.
 
 ## Site matching by primary URL and custom domains
 
-The extension matches Pressable sites to MainWP child sites using both the Pressable primary URL and any custom domains configured on the Pressable site. If a child site's URL matches any domain assigned to a Pressable site, it is linked automatically — no manual mapping is required when you point a child site at a custom domain instead of the default `*.mystagingwebsite.com` URL.
+The integration matches Pressable sites to MainWP child sites using both the Pressable primary URL and any custom domains configured on the Pressable site. If a child site's URL matches any domain assigned to a Pressable site, it is linked automatically — no manual mapping is required when you point a child site at a custom domain instead of the default `*.mystagingwebsite.com` URL.
 
 Reload Pressable API data from the Dashboard tab to refresh the mapping after adding or changing custom domains in Pressable.
 
-## Dashboard page of the extension
+## Integration Dashboard Page
 
-This page contains all of the features or shortcuts to the features of the Pressable extension. ![Pressable Dashboard showing connected sites with CDN, State, and Environment columns](/images/add-ons/pressable-dashboard-overview.png) This table will contain all sites from the Pressable account you connected in the extension Settings that are also added to this MainWP Dashboard. Sites from the Pressable account that are not added to the MainWP Dashboard as child sites will NOT be shown here.
+This page contains all of the features or shortcuts to the features of the Pressable Integration. ![Pressable Dashboard showing connected sites with CDN, State, and Environment columns](/images/add-ons/pressable-dashboard-overview.png) This table will contain all sites from the Pressable account you connected in the integration settings that are also added to this MainWP Dashboard. Sites from the Pressable account that are not added to the MainWP Dashboard as child sites will NOT be shown here.
 
 Backup and creation timestamps in the table show a human-readable elapsed time (for example, *2 days ago*) on hover, and sort by their underlying date.
 
-The columns of the table that are specific to the Pressable extension are as follows:
+The columns of the table that are specific to the Pressable Integration are as follows:
 
 -   **CDN**: Shows a graphical indicator of whether the Pressable CDN is enabled on the child site
 -   **State**: Displays the status of the child site, either Live or Disabled

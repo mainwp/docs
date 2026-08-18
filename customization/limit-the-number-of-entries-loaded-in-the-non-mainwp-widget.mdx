@@ -36,9 +36,9 @@ The default behavior loads all entries, which can cause performance issues on la
 
 <Steps>
 <Step title="Install Custom Dashboard">
-[Install](/dashboard/overview/manage-extensions#install-extensions) the [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension.
+[Install](/dashboard/overview/manage-extensions#install-add-ons) the [Custom Dashboard Extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/).
 </Step>
-<Step title="Open the extension">
+<Step title="Open the add-on">
 Navigate to **MainWP > Add-ons > Custom Dashboard**.
 </Step>
 <Step title="Add the PHP code">
@@ -51,7 +51,7 @@ function mycustom_mainwp_widget_site_actions_limit_number( $value ) {
 }
 ```
 
-![Custom Dashboard extension PHP tab with code snippet](/images/developers/limit-entries-snippet.png)
+![Custom Dashboard Extension PHP tab with code snippet](/images/developers/limit-entries-snippet.png)
 </Step>
 <Step title="Adjust the limit">
 Change `200` to your preferred maximum number of entries.
@@ -65,7 +65,7 @@ Click **Save Changes**. The widget now displays only the specified number of ent
 
 ## Method 2: Edit functions.php
 
-Use this method if you prefer not to install an extension.
+Use this method if you prefer not to install an add-on.
 
 <Warning>
 If you're not using a child theme, theme updates will overwrite your changes. Consider using a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/) instead.

@@ -3,10 +3,10 @@ title: MainWP Bridge (bridge.mainwp.com)
 sidebarTitle: "MainWP Bridge"
 description: >-
   MainWP Bridge handles secure Google authentication for the Google Analytics
-  and Google Search Console extensions.
+  Extension and Google Search Console Integration.
 ---
 
-MainWP Bridge is a secure service operated by MainWP at `bridge.mainwp.com`. It handles Google authentication for the **Google Analytics** and **Google Search Console** extensions.
+MainWP Bridge is a secure service operated by MainWP at `bridge.mainwp.com`. It handles Google authentication for the **Google Analytics Extension** and **Google Search Console Integration**.
 
 Bridge provides the **Sign in with Google** flow and manages the authorization process needed for MainWP to access reporting data from your Google account.
 
@@ -120,7 +120,7 @@ During authentication, Bridge may receive:
 
 ### Permissions
 
-Both extensions request **read-only** access. They display data in MainWP and do not change your Google Analytics or Search Console configuration.
+Both add-ons request **read-only** access. They display data in MainWP and do not change your Google Analytics or Search Console configuration.
 
 ---
 
@@ -148,8 +148,8 @@ If HTTP basic auth protects the MainWP Dashboard before it has paired with MainW
 ## Disconnect and Revoke Access
 
 <Steps>
-<Step title="Remove from extension">
-Remove the account from the Google Analytics or Google Search Console extension settings.
+<Step title="Remove from the add-on">
+Remove the account from the Google Analytics or Google Search Console add-on settings.
 </Step>
 <Step title="Revoke in Google (optional)">
 Revoke access from your [Google Account security settings](https://myaccount.google.com/permissions).
@@ -172,7 +172,7 @@ This usually happens if access was revoked in Google, tokens expired and couldn'
 
 ## Alternative: Service Account (No Bridge)
 
-If you can't use Bridge or prefer managing credentials yourself, both extensions support connecting via a **Google service account (JSON key file)**.
+If you can't use Bridge or prefer managing credentials yourself, both add-ons support connecting via a **Google service account (JSON key file)**.
 
 This method does not use Bridge but requires:
 - Manual setup in Google Cloud Console
@@ -194,5 +194,5 @@ This method does not use Bridge but requires:
 
 ## Related Resources
 
-- [Google Analytics Extension](/add-ons/analytics/mainwp-google-analytics-extension) - Extension setup
-- [Google Search Console Extension](/add-ons/analytics/google-search-console-extension) - Extension setup
+- [Google Analytics Extension](/add-ons/analytics/mainwp-google-analytics-extension) - Add-on setup
+- [Google Search Console Integration](/add-ons/analytics/google-search-console-extension) - Add-on setup

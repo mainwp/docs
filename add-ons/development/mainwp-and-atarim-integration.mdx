@@ -2,7 +2,7 @@
 title: Atarim
 sidebarTitle: "Atarim"
 description: >-
-  The Atarim Extension for MainWP expands your ability to collaborate with your
+  The Atarim Integration for MainWP expands your ability to collaborate with your
   clients through your MainWP Dashboard. Get a complete overview of tasks that
   have been created inside your websites using Atarim to keep track of all your
   client requests!
@@ -43,8 +43,8 @@ Atarim is a service for collaborating with your clients. Two-way integration off
 ## Connect Atarim to MainWP Dashboard
 
 <Steps>
-<Step title="Install Atarim Extension">
-[Install](/dashboard/overview/manage-extensions#install-extensions) Atarim [Extension](https://mainwp.com/extension/atarim/)
+<Step title="Install Atarim Integration">
+[Install](/dashboard/overview/manage-extensions#install-add-ons) the [Atarim Integration](https://mainwp.com/extension/atarim/)
 </Step>
 <Step title="Go to Atarim Dashboard > Settings > Integrations Settings page">
 </Step>
@@ -98,7 +98,7 @@ Paste the Consumer Key and Consumer Secret, and the URL of your MainWP Dashboard
 </Steps>
 
 
-After connecting with MainWP, Atarim will display the **number of available updates, a number of security issues,** and the **uptime status** of the sites. ![Site info](/images/add-ons/atarim-site-status.png) **_Learn more about the [Atarim extension](https://mainwp.com/extension/atarim/)!_**
+After connecting with MainWP, Atarim will display the **number of available updates, a number of security issues,** and the **uptime status** of the sites. ![Site info](/images/add-ons/atarim-site-status.png) **_Learn more about the [Atarim Integration](https://mainwp.com/extension/atarim/)!_**
 
 ## How to disable Atarim on the Manage Sites table
 
@@ -119,7 +119,7 @@ De-select Atarim in the **Show Columns** section ![Remove Atarim column from the
 
 ### How to unset the Atarim column
 
-Insert the following snippet using our [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension, or by inserting it in the `functions.php` file of the active theme of your MainWP Dashboard:
+Insert the following snippet using our [Custom Dashboard Extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/), or by inserting it in the `functions.php` file of the active theme of your MainWP Dashboard:
 
 ```php
 add_filter( 'mainwp_sitestable_getcolumns', 'myhook2_mainwp_sitestable_getcolumns', 20, 2 );

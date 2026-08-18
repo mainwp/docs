@@ -3,7 +3,7 @@ title: How to change the default page after logging into WordPress
 sidebarTitle: "Change Login Redirect"
 description: >-
   Change the default WordPress login redirect from wp-admin to the MainWP
-  Overview page using a filter in the Custom Dashboard extension or functions.php.
+  Overview page using a filter in the Custom Dashboard Extension or functions.php.
 ---
 
 <iframe
@@ -33,9 +33,9 @@ By default, WordPress redirects users to the standard wp-admin dashboard after l
 
 <Steps>
 <Step title="Install Custom Dashboard">
-[Install](/dashboard/overview/manage-extensions#install-extensions) the [Custom Dashboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) extension (free).
+[Install](/dashboard/overview/manage-extensions#install-add-ons) the [Custom Dashboard Extension](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) (free).
 </Step>
-<Step title="Open the extension">
+<Step title="Open the add-on">
 Navigate to **MainWP > Add-ons > Custom Dashboard**.
 </Step>
 <Step title="Add the PHP code">
@@ -49,7 +49,7 @@ function admin_default_page() {
 add_filter('login_redirect', 'admin_default_page');
 ```
 
-![Custom Dashboard extension PHP tab with login redirect code](/images/developers/default-page-result.jpg)
+![Custom Dashboard Extension PHP tab with login redirect code](/images/developers/default-page-result.jpg)
 </Step>
 <Step title="Save changes">
 Click **Save Changes**. The next time you log in, you'll be redirected to the MainWP Overview page.
@@ -60,7 +60,7 @@ Click **Save Changes**. The next time you log in, you'll be redirected to the Ma
 
 ## Method 2: Edit functions.php
 
-Use this method if you prefer not to install an extension.
+Use this method if you prefer not to install an add-on.
 
 <Warning>
 If you're not using a child theme, theme updates will overwrite your changes. Consider using a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/) instead.

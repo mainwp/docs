@@ -2,7 +2,7 @@
 title: "Domain Monitor"
 sidebarTitle: "Domain Monitor"
 description: "MainWP Domain Monitor Extension lets you keep a watchful eye on your domains. It alerts you via email when monitored domains are nearing expiration."
-addonType: "extension"
+addonType: "integration"
 ---
 
 ## What You'll Learn
@@ -14,28 +14,28 @@ addonType: "extension"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.2" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.2" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/QMziJ1BxEcE" title="Domain Monitor - Video Tutorial" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
 
 ## Supported TLDs
 
 <Info>
-  **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
+  **Integration Add-on** - This add-on connects MainWP Dashboard to domain registry data through RDAP and WHOIS. No third-party WordPress plugin is required.
 </Info>
 
 **Domain lookup may fail or return incomplete data for some TLDs due to restrictions or a lack of available information from RDAP or WHOIS services.**
 
 ### TLD lookup support
 
-Domain Monitor attempts lookups through RDAP first. If RDAP does not return usable domain data, the extension falls back to its built-in WHOIS server map for TLDs with a configured WHOIS server.
+Domain Monitor attempts lookups through RDAP first. If RDAP does not return usable domain data, the add-on falls back to its built-in WHOIS server map for TLDs with a configured WHOIS server.
 
 For current TLD lookup references, use these maintained external sources:
 
 - [IANA RDAP DNS bootstrap data](https://data.iana.org/rdap/dns.json) - Current RDAP service coverage by TLD.
 - [IANA Root Zone Database](https://www.iana.org/domains/root/db) - Current TLD registry records, including WHOIS server details where available.
 
-If the extension cannot retrieve your domain information automatically, you can enter it manually as described [**below**](#enter-domain-info-manually).
+If the add-on cannot retrieve your domain information automatically, you can enter it manually as described [**below**](#enter-domain-info-manually).
 
 ## Install and Set Domain Monitor Extension
 
@@ -47,14 +47,14 @@ If the extension cannot retrieve your domain information automatically, you can 
   <Step title="Click the Install Add-ons button">
     ![Click the Install Add-ons button](/images/add-ons/2833252556cc.png)
   </Step>
-  <Step title="Locate the Domain Monitor extension and select it">
+  <Step title="Locate the Domain Monitor Extension and select it">
   </Step>
   <Step title="Click the Install button">
   </Step>
   <Step title="Once the installation process is complete, click the Activate Add-ons button">
     Once the installation process is complete, click the **Activate Add-ons** button <img src="/images/add-ons/578da5c7dc89.png" alt="Screenshot showing Activate Add-ons button after installation" />
   </Step>
-  <Step title="After successful installation, proceed to the extension settings">
+  <Step title="After successful installation, proceed to the add-on settings">
   </Step>
   <Step title="Set your preferences, Save Settings, and you are ready to audit your sites.">
   </Step>
@@ -68,7 +68,7 @@ If the extension cannot retrieve your domain information automatically, you can 
   <Step title="Locate the Check All Sites Domains button">
     ![Locate the Check All Sites Domains button](/images/add-ons/4bff4539063a.png)
   </Step>
-  <Step title="Click it, and wait until the extension completes the process.">
+  <Step title="Click it, and wait until the add-on completes the process.">
   </Step>
 </Steps>
 
@@ -138,7 +138,7 @@ If your domain is not on the list of supported TLDs, you can add information man
 ![Screenshot of Domain Monitor settings showing notification threshold and automated check options](/images/add-ons/domain-monitor-settings.png)
 
 - **Notifications threshold** - Set the threshold for notifications. If the domain expiration is less in the set number of days, an email will be sent.
-- **Automatically check domains** - If you want the extension to automatically run checks, enable this feature.
+- **Automatically check domains** - If you want the add-on to automatically run checks, enable this feature.
 - **Automated domain checks frequency** - If automated checks are enabled, here you can set how often you want them to run.
 
 ## Check Sites via WP CLI

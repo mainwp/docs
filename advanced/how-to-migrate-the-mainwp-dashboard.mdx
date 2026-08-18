@@ -27,8 +27,8 @@ For general WordPress migration guidance, see the official documentation: [Movin
 | Item | Why It Matters |
 |------|----------------|
 | Dashboard URL | Child sites use this to communicate with the Dashboard |
-| Extension license keys | Required if reactivation is needed after migration |
-| Extension settings | Export using built-in import/export features where available |
+| Add-on license keys | Required if reactivation is needed after migration |
+| Add-on settings | Export using built-in import/export features where available |
 
 Sync all child sites before migration to ensure the database contains current information.
 
@@ -71,14 +71,14 @@ Access your MainWP Dashboard at the new location.
 <Step title="Check status">
 Navigate to **MainWP > Info > Server** to confirm the Dashboard is functioning.
 </Step>
-<Step title="Verify extensions">
-Confirm all extensions appear and are activated.
+<Step title="Verify add-ons">
+Confirm all add-ons appear and are activated.
 </Step>
 </Steps>
 
-### Reconnect Extensions
+### Reconnect Add-ons
 
-If extensions show as deactivated, go to **MainWP > Add-ons**, enter your API credentials, and reactivate any extensions that require license verification.
+If add-ons show as deactivated, go to **MainWP > Add-ons**, enter your API credentials, and reactivate any add-ons that require license verification.
 
 ### Verify Child Site Connections
 
@@ -158,9 +158,9 @@ No reconfiguration is typically needed when the domain stays the same.
 ## Self-Check Checklist
 
 - [ ] Backup created before migration
-- [ ] Extension license keys documented
+- [ ] Add-on license keys documented
 - [ ] Dashboard accessible at new location
-- [ ] Extensions activated and functioning
+- [ ] Add-ons activated and functioning
 - [ ] All child sites connected and syncing
 - [ ] Core functionality tested
 
