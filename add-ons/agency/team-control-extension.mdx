@@ -50,12 +50,12 @@ addonType: extension
 
 ## What's New in 5.2.0
 
-- Team Control abilities support role, member, permission, and role-note management.
-- Protected authority and operation permissions are limited to authorized roles.
-- Role changes use recoverable generational transactions, and changes require confirmation before they are applied.
-- Existing installations seed an owner automatically, and users cannot grant themselves protected access.
-- User removal verifies the multisite deletion result before changing role membership.
-- Repeating a role-note request does not create duplicates, and a complete role update replaces the prior permission set.
+- You can use Team Control abilities to manage roles, members, permissions, and role notes.
+- You can grant protected authority and operation permissions only through authorized roles.
+- You preview and confirm role changes before they apply. If an operation is interrupted, the extension can recover without leaving a partial role change.
+- Existing installations receive an owner automatically, and you cannot grant yourself protected access.
+- When you remove a user, the extension verifies the multisite deletion result before changing role membership.
+- Repeating a role-note request does not create duplicates, and a complete role update replaces your prior permission set.
 
 
 ![Team Control Dashboard Users tab showing role filters and the users table](/images/add-ons/team-control-dashboard-users.png)
