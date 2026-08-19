@@ -2,12 +2,12 @@
 title: Abilities API Overview
 sidebarTitle: "Abilities API Overview"
 description: >-
-  MainWP registers 62 abilities into WordPress Core's Abilities API framework, plus 7 more from the Advanced Uptime Monitor extension, for programmatic site management via AI agents and automation tools.
+  MainWP Dashboard registers 62 abilities into WordPress Core's Abilities API framework. Advanced Uptime Monitor adds 7, and other installed extensions can add more.
 ---
 
 The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
 
-MainWP Dashboard registers 62 abilities into this framework across five categories, and MainWP extensions add their own on top. With the Advanced Uptime Monitor extension active, a sixth category brings the total to 69. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
+MainWP Dashboard registers 62 abilities into this framework across five categories. With Advanced Uptime Monitor active, those two products expose 69 abilities across six categories. Other MainWP extensions can register additional categories, so 69 is not the extension-inclusive total. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
 
 ## What You'll Learn
 
@@ -137,7 +137,7 @@ MainWP registers these categories:
 | `mainwp-tags` | 7 | Tag/group management |
 | `mainwp-batch` | 1 | Batch operation monitoring |
 
-Extensions register categories of their own. This one appears once the extension is installed:
+Extensions register categories of their own. For example, this category appears once Advanced Uptime Monitor is installed:
 
 | Category | Abilities | Description |
 |----------|-----------|-------------|

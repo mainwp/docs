@@ -207,6 +207,8 @@ curl -X POST -u 'admin:xxxx' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-site-uptime-monitor-v1/run'
 ```
 
+To undo the creation, use `mainwp/delete-uptime-monitor-v1` with the returned `local_monitor_id` after confirming the exact monitor with the user.
+
 **Input Parameters:**
 
 | Name | Type | Required | Default | Description |
@@ -214,7 +216,7 @@ curl -X POST -u 'admin:xxxx' \
 | `site_id` | integer | Yes | — | MainWP Dashboard site ID |
 | `service` | string | Yes | — | Provider slug |
 
-There are no check-interval, alert-contact, or monitor-type parameters. The monitor is created with provider defaults against the site's own URL. Adjust it afterwards in the extension UI or in the provider's own dashboard.
+There are no check-interval, alert-contact, or monitor-type parameters. The monitor is created with provider defaults against the site's own URL. Adjust it afterward in the extension UI or in the provider's own dashboard.
 
 **Response:**
 
@@ -248,6 +250,8 @@ curl -X POST -u 'admin:xxxx' \
   -d '{"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12,"state":"paused"}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-uptime-monitor-state-v1/run'
 ```
+
+To roll back this change, call the same ability with the monitor's previous `state` value.
 
 **Input Parameters:**
 
@@ -285,7 +289,7 @@ Delete one monitor at the provider, then remove its Dashboard mapping and cached
 ```http
 POST /wp-json/wp-abilities/v1/abilities/mainwp/delete-uptime-monitor-v1/run HTTP/1.1
 Host: your-dashboard.com
-Authorization: Bearer YOUR_API_KEY
+Authorization: Basic BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD
 Content-Type: application/json
 
 {"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12}}
@@ -332,7 +336,7 @@ Start a run with this request outline:
 ```http
 POST /wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run HTTP/1.1
 Host: your-dashboard.com
-Authorization: Bearer YOUR_API_KEY
+Authorization: Basic BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD
 Content-Type: application/json
 
 {"input":{"service":"uptimerobot"}}
@@ -343,7 +347,7 @@ Continue with the token and cursor from the previous response:
 ```http
 POST /wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run HTTP/1.1
 Host: your-dashboard.com
-Authorization: Bearer YOUR_API_KEY
+Authorization: Basic BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD
 Content-Type: application/json
 
 {"input":{"service":"uptimerobot","sync_token":"BW1t...","cursor":50}}
