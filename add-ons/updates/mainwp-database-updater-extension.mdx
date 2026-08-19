@@ -52,6 +52,10 @@ For sites you are authorized to manage, WordPress Abilities can view available d
 
 Each request checks the site's current state before it sends work. Pending database updates remain visible until a later sync confirms that they are complete.
 
+<Warning>
+Create or verify a current backup for the child site before you confirm a database update. The extension cannot verify backup state, so the caller must make the backup-risk decision explicitly. If an update fails, restore or roll back from that backup according to your recovery procedure, then sync the site before deciding whether to retry.
+</Warning>
+
 ## Install the Database Updater Extension
 
 <Steps>

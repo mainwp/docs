@@ -282,15 +282,17 @@ Delete one monitor at the provider, then remove its Dashboard mapping and cached
 
 **Method:** POST (destructive)
 
-```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-uptime-monitor-v1/run'
+```http
+POST /wp-json/wp-abilities/v1/abilities/mainwp/delete-uptime-monitor-v1/run HTTP/1.1
+Host: your-dashboard.com
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12}}
 ```
 
 <Warning>
-This ability is registered with `destructive: true` and has no `confirm` or `dry_run` parameter. Nothing in the API asks a second time, so a client that runs abilities on behalf of a user should prompt before calling it. MCP clients read the `destructive` annotation and gate the call themselves.
+This ability is registered with `destructive: true` and has no `confirm` or `dry_run` parameter. Confirm the exact site, provider, and local monitor ID with the user before sending the request. MCP clients read the `destructive` annotation and gate the call themselves.
 </Warning>
 
 **Input Parameters:**
@@ -325,18 +327,26 @@ Pull the provider's monitor inventory into the Dashboard one page at a time and 
 
 **Method:** POST (destructive)
 
-```bash
-# Start a run
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"service":"uptimerobot"}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run'
+Start a run with this request outline:
 
-# Continue with the token and cursor from the previous response
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"service":"uptimerobot","sync_token":"BW1t...","cursor":50}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run'
+```http
+POST /wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run HTTP/1.1
+Host: your-dashboard.com
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{"input":{"service":"uptimerobot"}}
+```
+
+Continue with the token and cursor from the previous response:
+
+```http
+POST /wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run HTTP/1.1
+Host: your-dashboard.com
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{"input":{"service":"uptimerobot","sync_token":"BW1t...","cursor":50}}
 ```
 
 **Input Parameters:**
@@ -370,7 +380,7 @@ Keep calling with the returned `sync_token` and `next_cursor` until `status` is 
 `skipped_unassigned` counts provider monitors whose address does not match any child site on this Dashboard. Those monitors are left alone.
 
 <Warning>
-Stale mapping removal happens on the terminal page only. When the last page reports `"status": "complete"`, any Dashboard mapping for that provider that was not seen during the run is deleted and counted in `deleted`. Abandoning a run part way through leaves stale mappings in place rather than deleting the wrong ones.
+This ability is registered with `destructive: true`. Get explicit approval for the provider and the full synchronization run before sending the first request. Stale mapping removal happens on the terminal page only. When the last page reports `"status": "complete"`, any Dashboard mapping for that provider that was not seen during the run is deleted and counted in `deleted`. Abandoning a run part way through leaves stale mappings in place rather than deleting the wrong ones.
 </Warning>
 
 Run state lives in a transient that expires after 15 minutes. A token that has expired, or a `cursor` that does not match where the run left off, returns `mainwp_aum_sync_expired` (409). Starting a second run for the same provider while one is still open returns `mainwp_aum_operation_locked` (409).

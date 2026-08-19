@@ -50,6 +50,10 @@ The [MainWP Dashboard Lock Extension](https://mainwp.com/add-on/dashboard-lock/)
 
 Dashboard Lock 5.2.0 includes abilities that let you view the stored Dashboard Lock configuration and the application state of its extension-owned files. You can manage frontend redirects, IP restrictions, and HTTP Basic Authentication, check whether the Dashboard is ready to apply changes, and remove access locks for recovery.
 
+Calls must authenticate through the WordPress REST API. Reading the general status requires access to the Dashboard Lock extension. Reading stored configuration or changing a lock requires a WordPress user with `manage_options` and extension access. A MainWP API key must also grant the required REST permissions.
+
+The redirect, IP restriction, HTTP Basic Authentication, and lock-removal abilities are destructive. They require the matching confirmation field set to literal `true`: `confirm_redirect_risk`, `confirm_lockout_risk`, or `confirm_recovery_action`.
+
 ## Frontend Redirect Rules
 
 Make your dashboard front page inaccessible to everyone but you. Easily set a redirect URL, and all hits on Non-WP-Admin pages will be redirected to it. This will make your MainWP Dashboard site virtually invisible. Redirection is the process of forwarding one URL to a different URL. There are three main kinds of redirects: 301, 302, and meta refresh. It is a way to send both users and search engines to a different URL from the one they originally requested.
