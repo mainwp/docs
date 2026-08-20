@@ -54,12 +54,12 @@ In the **Site Health Monitoring** section, configure health monitoring behavior.
 
 ### HTTP Response Check Settings
 
-These settings appear in the same Monitoring Settings page and share status-code logic with Uptime Monitoring.
+**Check site HTTP response after update** and **Check site HTTP response method** are global-only settings. Configure them under **MainWP > Settings > Monitoring Settings**; they do not appear when editing an individual site's Uptime Monitoring settings. The status-code list is shared with Uptime Monitoring and can still be overridden per site.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | Check site HTTP response after update | Disabled | Checks site header response after update actions |
-| Check site HTTP response method | Head | Method for post-update check: `Head (default)` or `Get` |
+| Check site HTTP response method | HEAD | Method for post-update check: `HEAD (default)` or `GET` |
 | Up HTTP Codes for HTTP Response and Uptime Monitoring | `200,201,202,203,204,205,206` | Status codes treated as UP for both features |
 
 ### Uptime Monitoring Settings
@@ -169,6 +169,10 @@ You can override global settings for specific sites.
 Access per-site settings at **Child Site Dashboard > Uptime Monitoring**.
 
 Per-site options support `Use global setting` for applicable fields.
+
+<Note>
+The post-update HTTP response toggle and request method cannot be overridden per site. Configure both options in the global Monitoring Settings.
+</Note>
 
 | Option | Description |
 |--------|-------------|

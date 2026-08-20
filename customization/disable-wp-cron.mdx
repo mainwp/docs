@@ -278,9 +278,9 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 
     Create both jobs separately. Running the start worker daily does not force every domain to be checked daily. Domain Monitor still respects the configured global or per-site checking frequency. The continuation worker processes due domains in batches and then handles expiration notifications. Keep it scheduled every five minutes; one continuation run does not drain all queued work.
 
-    <Warning>
-    Newly added sites are not currently enrolled in scheduled Domain Monitor processing until their first dedicated Domain Monitor check creates the required monitor record. An ordinary MainWP Dashboard site sync does not initialize this record. To initialize newly added sites, use **Check All Sites Domains** or run `wp mainwp-domain-monitor check --all` from the MainWP Dashboard WordPress installation. After the first successful check, subsequent scheduled processing can include the site.
-    </Warning>
+    <Info>
+    Newly connected sites are enrolled in Domain Monitor automatically. The daily start worker reconciles connected sites before calculating which domains are due, and the five-minute continuation worker resumes reconciliation when more sites remain. A manual first domain check is no longer required. Domain checks still follow the configured global or per-site frequency, and existing manual or disabled per-site profiles keep their settings.
+    </Info>
 
     <Note>
     `domain_monitor_cron_alert.php` is currently unused and must not be configured as a separate cron job. Alert processing belongs to the continuation flow.
@@ -444,9 +444,9 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 
     Create both jobs separately. Running the start worker daily does not mean every certificate is checked daily. The configured automatic-check frequency still determines when each site is due. The continuation worker processes due checks in batches and handles alerts afterward. Keep it scheduled every five minutes; one continuation run does not drain all queued work.
 
-    <Warning>
-    Newly added sites are not currently enrolled in scheduled SSL Monitor processing until their first dedicated SSL Monitor check creates the required monitor record. An ordinary MainWP Dashboard site sync does not initialize this record. To initialize newly added sites, use **Check SSL Certificate on All Sites** or run `wp mainwp-ssl-monitor check --all` from the MainWP Dashboard WordPress installation. After the first successful check, subsequent scheduled processing can include the site.
-    </Warning>
+    <Info>
+    Newly connected HTTPS sites are enrolled in SSL Monitor automatically. The daily start worker reconciles connected sites before calculating which certificates are due, and the five-minute continuation worker resumes reconciliation when more sites remain. A manual first certificate check is no longer required. HTTP-only sites are skipped because SSL Monitor checks HTTPS certificates.
+    </Info>
   </Tab>
 
   <Tab title="Vulnerability Checker">
@@ -472,7 +472,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 - [ ] `DISABLE_WP_CRON` is not enabled unless a general external WP-Cron runner is working
 - [ ] Legacy Backup workers are configured if the Legacy Backup feature is enabled
 - [ ] Regression Testing uses the recommended WP-Cron setup when complete automation is required
-- [ ] Newly added sites are initialized in Domain Monitor and SSL Monitor while the current limitation remains
+- [ ] Newly connected sites appear in Domain Monitor, and eligible HTTPS sites appear in SSL Monitor, after automatic reconciliation
 - [ ] Actual saved data and feature-specific results were verified, not only command exit status
 
 ---

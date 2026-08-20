@@ -25,7 +25,7 @@ thirdPartyPlugin: WooCommerce
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-woocommerce-status-extension/"
   data-owned-by="Automattic Inc."
@@ -41,18 +41,21 @@ thirdPartyPlugin: WooCommerce
 
 On the **MainWP > Sites > Monitoring > WooCommerce Status** page, you can see all your child sites with the WooCommerce plugin installed and active. Here you can see for each child site:
 
--   Income for the current month
--   Top Seller product for the current month
+-   **Sales Last 7 Days** - Sales from today and the previous six calendar days
+-   **Sales This Month** - Sales from the beginning of the current month
+-   **Top Seller This Month** - The highest-selling product in the current month
 -   Number of orders awaiting processing
 -   Number of orders on hold
 -   Number of products low on stock
 -   Number of products out of stock
 
+The **Sales Last 7 Days** column sorts by its numeric sales value. This metric requires MainWP Child 6.1.7 or later on the connected site.
+
 By clicking the metric links in the table, the add-on opens the corresponding WooCommerce page on the child site.
 
 ## WooCommerce Status Widgets
 
-The add-on adds a WooCommerce Status widget to the MainWP Overview page and to each individual child site overview. The individual child site widget shows **Sales This Month**, **Top Seller**, **Awaiting Processing**, **On Hold**, **Low in Stock**, and **Out of Stock**, with links that open the related WooCommerce screen on that child site. ![WooCommerce Status widget showing sales, orders, and stock information](/images/add-ons/woo-status-dashboard-widget.jpg)
+The add-on adds a WooCommerce Status widget to the MainWP Overview page and to each individual child site overview. The individual child site widget shows **Sales This Month**, **Top Seller This Month**, **Awaiting Processing**, **On Hold**, **Low in Stock**, and **Out of Stock**, with links that open the related WooCommerce screen on that child site. ![WooCommerce Status widget showing sales, orders, and stock information](/images/add-ons/woo-status-dashboard-widget.jpg)
 
 The global Overview widget does not mirror the full per-site widget. It shows combined totals for **Awaiting Processing**, **On Hold**, **Low in Stock**, and **Out of Stock**, plus separate **Top Sellers** and **Sales** sections that break the data down by child site.
 
