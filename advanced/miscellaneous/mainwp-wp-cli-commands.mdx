@@ -6,19 +6,22 @@ description: >-
   handle updates, and automate WordPress management tasks from the command line.
 ---
 
-MainWP includes WP-CLI integration for managing your Dashboard and child sites from the command line. This enables automation, scripting, and advanced management workflows.
+MainWP includes WP-CLI integration for managing your MainWP Dashboard and configuring MainWP Child connection authentication from the command line. This enables automation, scripting, and advanced management workflows.
 
 ## What You'll Learn
 
 - Available WP-CLI commands for site management
 - How to sync, update, and manage sites via command line
+- How to configure MainWP Child password authentication for a WordPress user
 - Example automation scripts
 
 ## Prerequisites
 
 - MainWP Dashboard v4.1.3 or later
-- WP-CLI installed on your Dashboard server
-- Child sites connected to your MainWP Dashboard
+- WP-CLI installed on your MainWP Dashboard server for `wp mainwp` commands
+- WP-CLI available on the server hosting the child site for `wp mainwp-child` commands
+- MainWP Child activated on the child site
+- Child sites connected to your MainWP Dashboard for Dashboard-side management commands
 
 For more information about WP-CLI, visit the [official WP-CLI documentation](https://wp-cli.org/).
 
@@ -271,6 +274,36 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
 
     Reverses a site-specific update ignore.
   </Tab>
+
+  <Tab title="MainWP Child">
+    ## MainWP Child Connection Authentication
+
+    Run these commands from the child site's WordPress installation. The `settings` subcommand changes whether a specific WordPress user requires password authentication during the initial MainWP connection.
+
+    The `settings` subcommand does not display current settings. Running `wp mainwp-child settings` without its required option returns an invalid arguments error.
+
+    ### Disable Password Authentication
+
+    ```bash
+    wp mainwp-child settings --disable-pwd-auth <username> 1
+    ```
+
+    Replace `<username>` with an existing WordPress username.
+
+    <Warning>
+    Configure a [Unique Security ID](/advanced/miscellaneous/mainwp-connection-security#unique-security-id) at **WordPress Admin > Settings > MainWP Child > Settings** before disabling password authentication. The CLI command changes only the selected user's password-authentication setting; it does not generate a Unique Security ID.
+    </Warning>
+
+    ### Enable Password Authentication
+
+    ```bash
+    wp mainwp-child settings --disable-pwd-auth <username> 0
+    ```
+
+    <Note>
+    The username is required. A final value of `1` disables password authentication, while `0` enables it. Omitting the final value defaults to disabling password authentication, so use an explicit value in scripts.
+    </Note>
+  </Tab>
 </Tabs>
 
 ---
@@ -314,10 +347,12 @@ Replace site IDs with your actual child site IDs. You can find site IDs by runni
 
 ## Self-Check Checklist
 
-- [ ] WP-CLI installed on Dashboard server
+- [ ] WP-CLI installed on the MainWP Dashboard server
 - [ ] MainWP Dashboard v4.1.3 or later
 - [ ] Test basic command: `wp mainwp sites --all-sites`
 - [ ] Site IDs identified for site-specific commands
+- [ ] WP-CLI available on the server hosting the child site before using `wp mainwp-child`
+- [ ] Unique Security ID configured before disabling password authentication
 
 ---
 
