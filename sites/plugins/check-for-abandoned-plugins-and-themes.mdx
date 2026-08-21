@@ -26,10 +26,10 @@ MainWP identifies plugins and themes that may be abandoned based on how long sin
 
 ## What Does "Abandoned" Mean?
 
-MainWP marks a plugin or theme as "possibly abandoned" when its author has not released an update for the period set in your Dashboard settings. The default threshold is 365 days.
+MainWP marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
 
 <Note>
-MainWP fetches last-updated information from wordpress.org. Plugins or themes that are delisted from wordpress.org cannot be detected as abandoned.
+MainWP can evaluate only plugins and themes with usable WordPress.org metadata. Delisted items and premium, private, or custom plugins and themes that are absent from WordPress.org cannot be evaluated for abandonment.
 </Note>
 
 ### Why Abandoned Items Matter
@@ -83,7 +83,7 @@ MainWP starts the abandoned-item check on the selected sites.
 Go to **MainWP > Sites > Plugins > Abandoned Plugins**.
 </Step>
 <Step title="Run check">
-If the action bar is displayed, click **Check for Abandoned Plugins**. This checks all connected sites shown on the page. If the button is not available, use the Manage Sites bulk action instead.
+If the action bar is displayed, click **Check for Abandoned Plugins**. This checks all accessible sites without sync errors in the current scope, including sites that may not appear in the abandoned results table. If the button is not available, use the Manage Sites bulk action instead.
 </Step>
 </Steps>
 
@@ -94,7 +94,7 @@ If the action bar is displayed, click **Check for Abandoned Plugins**. This chec
 Go to **MainWP > Sites > Themes > Abandoned Themes**.
 </Step>
 <Step title="Run check">
-If the action bar is displayed, click **Check for Abandoned Themes**. This checks all connected sites shown on the page. If the button is not available, use the Manage Sites bulk action instead.
+If the action bar is displayed, click **Check for Abandoned Themes**. This checks all accessible sites without sync errors in the current scope, including sites that may not appear in the abandoned results table. If the button is not available, use the Manage Sites bulk action instead.
 </Step>
 </Steps>
 
@@ -108,6 +108,7 @@ Change the number of days before an item is marked as abandoned:
 2. Open **General Settings** and find **Updates Settings**
 3. Adjust **Abandoned plugins/themes tolerance** (default: 365 days)
 4. Click **Save Settings**
+5. Sync the affected sites before running another abandoned check. MainWP Child receives the new tolerance during site sync; without this sync, it may still use the previous value
 
 ---
 
