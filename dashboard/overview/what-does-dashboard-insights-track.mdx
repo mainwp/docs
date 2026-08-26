@@ -18,6 +18,10 @@ Dashboard Insights provides analytics data about your MainWP Dashboard and child
 Dashboard Insights only includes events recorded by Network Activity. In **MainWP > Settings > Network Activity Settings**, turn on **Enable Network Activity logging** and use **Select events to log** to choose which event types generate new entries. Unchecked event types do not generate new log entries.
 </Info>
 
+Network Activity uses available context to show recognizable object titles, including plugin and theme names for synchronized updates and affected table names for database changes. It also uses child-site activity context to identify the responsible user when possible. Theme updates performed directly in child site WP Admin are included as **Theme Updated** events.
+
+To reduce noisy logs, **Opened a post in editor**, **Viewed a post**, and **Opened the profile page of a user** are disabled by default. Enable any of these events under **Select events to log** if you need them.
+
 ---
 
 ## Events from MainWP Dashboard

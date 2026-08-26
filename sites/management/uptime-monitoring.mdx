@@ -73,7 +73,10 @@ In the **Site Health Monitoring** section, configure health monitoring behavior.
 | Monitor Interval (minutes) | 60m | Slider from `5m`, `10m`, `15m`, `30m`, `45m`, then `1h` through `24h` |
 | Timeout (seconds) | 60s | Slider values: `30s`, `45s`, `60s`, `90s`, `2-10min`, `15min`, `30min`, `45min`, `60min`, `90min`, `No limit` |
 | Down Confirmation Check | Enabled | Confirms downtime before creating alerts |
+| Attempt to bypass page cache | Disabled | Adds cache-control headers and a unique cache-busting value to each uptime request as a best-effort attempt to reach the origin server |
 | Monitoring Data Retention | 180 days | Keeps history for selected duration before automatic cleanup |
+
+Enable **Attempt to bypass page cache** when a caching layer may return a stored response instead of the current site response. Cache bypass is best effort and does not guarantee that a CDN, proxy, or page cache will forward the request to the origin server.
 
 Monitoring Data Retention options:
 
@@ -183,6 +186,7 @@ The post-update HTTP response toggle and request method cannot be overridden per
 | Monitor Interval (minutes) | Site-specific interval slider or global value |
 | Timeout (seconds) | Site-specific timeout slider or global value |
 | Down Confirmation Check | `Use global setting`, `Enable`, or `Disable` |
+| Attempt to bypass page cache | `Use global setting`, `Enable`, or `Disable`; available for the primary site monitor, not sub-monitors |
 | Up HTTP Codes for HTTP Response and Uptime Monitoring | Site-specific code list or global value |
 | Sub-Monitors | Add extra monitored paths with **Create Sub-Monitor** |
 | Monitor actions | Disable the monitor or delete a sub-monitor |

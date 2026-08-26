@@ -135,6 +135,18 @@ If you use the Premium version of the UpdraftPlus Plugin, make sure the Use Prem
   <img src="/images/add-ons/updraftplus-premium-toggle.jpg" alt="Screenshot of UpdraftPlus Extension settings with Use Premium Version toggle" />
 </Frame>
 
+### Connect UpdraftPlus Premium
+
+When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Premium state instead of treating an account connection alone as a completed activation. Depending on the TeamUpdraft account and child site, you may see one of these outcomes:
+
+- The account is connected and Premium is fully active.
+- The account is connected, but a Premium purchase must be claimed or assigned to the site.
+- A purchase is assigned, but UpdraftPlus or its Premium add-ons must be updated or activated.
+- No active Premium purchase is available for the site.
+- UpdraftPlus could not verify the TeamUpdraft account connection.
+
+When MainWP reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
+
 ### UpdraftPlus Settings per Child Site
 
 All UpdraftPlus Settings can be set separately for different child sites. To do this, go to the MainWP > Sites page, and in the sites table, under the child site URL, you can find the UpdraftPlus Backup/Restore link. This link will open Individual site UpdraftPlus Options. The Settings tab will show you all plugin options to set custom settings for the child site. To override global options, set the **Override General Settings** to **YES** and click the Save button.
