@@ -10,6 +10,7 @@ addonType: "integration"
 - Checking domain expiration dates across all sites
 - Entering domain info manually for unsupported TLDs
 - Scheduling automated domain checks
+- How failed checks are retried and kept out of alerts
 - Using Pro Reports tokens for domain data
 
 ---
@@ -132,6 +133,24 @@ If your domain is not on the list of supported TLDs, you can add information man
   <Step title="Click Save Settings">
   </Step>
 </Steps>
+
+### Failed Checks and Retries
+
+Domain Monitor records whether the latest check for each domain succeeded or failed. This status controls alerts and automated retries:
+
+- Expiration alert emails are sent only for domains whose latest check completed successfully. Stale expiry data from a failed lookup cannot trigger a false expiration alert.
+- If an automated check fails, Domain Monitor keeps the last known domain data and marks the domain as failed.
+- Automated checks retry failed domains after one hour instead of waiting for the next scheduled run.
+
+Developers can adjust the retry delay with the `mainwp_domain_monitor_cron_retry_delay` filter. The filter receives the delay in seconds, the site ID, and the lookup result:
+
+```php
+add_filter( 'mainwp_domain_monitor_cron_retry_delay', function ( $delay, $site_id, $result ) {
+    return 2 * HOUR_IN_SECONDS; // Retry failed domains after two hours.
+}, 10, 3 );
+```
+
+Running a successful manual check, from the Domain Monitor dashboard or via WP CLI, clears the failed status for that domain.
 
 ## Domain Monitor Settings
 
