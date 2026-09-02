@@ -2,8 +2,8 @@
 title: MainWP Dashboard Settings
 description: >-
   Configure MainWP Dashboard settings including sync frequency, auto-updates,
-  uptime and site health monitoring, backup options, email notifications,
-  cost tracking, network activity logging, API backup providers, and tools.
+  uptime and site health monitoring, backup options, email notifications, cost
+  tracking, network activity logging, API backup providers, and tools.
 ---
 
 The MainWP Dashboard Settings page controls how your Dashboard communicates with child sites, when automatic syncs and updates occur, how notifications are sent, and various performance optimizations. Understanding these settings helps you configure MainWP for your specific hosting environment and workflow requirements.
@@ -28,7 +28,7 @@ The MainWP Dashboard Settings page controls how your Dashboard communicates with
 
 ## Access Dashboard Settings
 
-From any Dashboard page, click the ellipsis menu in the top right corner and select **Settings**.
+Select **Settings** in the MainWP Dashboard navigation. You can also open the user or avatar menu in the top right corner and select **MainWP Settings**.
 
 <video className="w-full rounded-xl" autoPlay loop muted playsInline src="/images/dashboard/mainwp-settings.mp4" />
 
@@ -62,21 +62,21 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Time format**: Controls how times are displayed across the dashboard interface.
     - **Sidebar position** (Default: Right): Moves the sidebar or tag menu layout to the right or left side.
     - **Hide the Update Everything button**: Hides the `Update Everything` action from the Updates Overview widget.
-    - **Show widgets**: Lets you choose which Operations page widgets are visible.
+    - **Show widgets**: Lets you choose which widgets are visible on Operations and individual site Operations pages.
 
     ### Updates Settings Section
 
     - **Plugin advanced automatic updates** (Default: Disabled): Enables automatic updates for trusted plugins.
     - **Theme advanced automatic updates** (Default: Disabled): Enables automatic updates for trusted themes.
     - **Translation advanced automatic updates** (Default: Disabled): Enables automatic updates for translation packages.
-    - **WP Core advanced automatic updates** (Default: Disabled): Enables automatic updates for trusted WordPress core updates.
+    - **WP Core advanced automatic updates** (Default: Disabled): Enables automatic WordPress core updates.
     - **Frequency of automatic updates** (Default: Daily): Sets whether automatic update runs execute daily, weekly, or monthly.
     - **Select day** (shown for `Weekly` or `Monthly`): Chooses the weekday or month day used by the automatic update schedule.
     - **Select time** (Default: `00:00`): Sets the time of day when automatic update runs begin.
     - **Advanced automatic updates delay** (Default: 1 day): Delays new updates for the selected number of days before auto-installing.
     - **Show WordPress language updates** (Default: Enabled): Shows translation updates in update management views.
     - **Update confirmations** (`Enable`, `Disable`, `Disable for single updates`): Controls confirmation prompts before update actions.
-    - **Require a backup before an update** (Default: Disabled; legacy backup flow only): Blocks updates when a full backup is older than the allowed tolerance.
+    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Blocks updates when a full backup is older than the allowed tolerance.
     - **Days without of a full backup tolerance** (Default: 7): Defines how old the last full backup can be when backup-before-update is enabled.
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
 
@@ -86,6 +86,9 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
 
     - **Select primary backup system**: Chooses the main backup method (native or an integrated backup method) used by MainWP Dashboard.
     - **Enable legacy backup feature** (Default: Disabled): Enables the legacy native backup settings and related controls.
+
+    The remaining fields in this section appear when the legacy backup feature is enabled.
+
     - **Backups on server**: Sets how many backup archives are retained locally on child sites.
     - **Backups on remote storage**: Sets how many backup archives are retained on external storage destinations.
     - **Archive format**: Selects backup archive type (`zip`, `tar`, `tar.gz`, or `tar.bz2`).
@@ -103,8 +106,6 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     Configure request, concurrency, caching, and connection settings to tune MainWP Dashboard performance and stability.
 
     MainWP syncs multiple child sites in parallel to speed up the process. The Maximum Simultaneous Sync Requests setting controls how many sites sync at once. Adjusting this value helps balance sync speed against server resources.
-
-    When bulk updates fail to complete on some or all child sites, the cause is typically insufficient server resources, plugin conflicts, or settings that don't match your hosting environment.
 
     ### Rate Limiting and Concurrency Controls
 
@@ -132,9 +133,10 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
 
     ### Miscellaneous Settings
 
-    - **Optimize data loading** (Default: Enabled): Caches update-related dashboard data for faster page loading.
+    - **Optimize data loading** (Default: Enabled): Uses synchronized plugin, theme, and user data for searches instead of fetching that data from child sites during each search.
+    - **Auto-correct site URLs** (Default: Enabled): Safely updates a stored child site URL when the site reports a verified `www` variant or an HTTP-to-HTTPS change. URLs that are locked on the site edit screen are not changed.
     - **Browser cache expiration time** (Default: 10 minutes): Sets how long browser-cached MainWP pages remain valid before refresh.
-    - **Use WP Cron** (Default: Enabled): Keeps WordPress scheduled events active for automation tasks; disabling it stops WP-Cron scheduling.
+    - **Use WP Cron** (Default: Enabled): Controls whether MainWP registers and uses its WP-Cron jobs. Disable it only when those scheduled jobs will be triggered another way.
     - **Verify SSL certificate** (Default: Enabled): Verifies child site SSL certificates during connection attempts.
     - **Verify connection method** (Default: OpenSSL): Chooses between OpenSSL and PHPSecLib for connection verification.
     - **OpenSSL signature algorithm** (Default: `OPENSSL_ALGO_SHA256`): Selects the signing algorithm used with OpenSSL verification.
@@ -155,10 +157,12 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Enable Uptime Monitoring** (Default: Disabled): Enables or disables global uptime checks for child sites.
     - **Monitor Type** (`HTTP(s)`, `Ping`, `Keyword Monitoring`): Selects the uptime check method used for global monitors.
     - **Method** (HTTP-based monitoring): Chooses request method used when monitor type relies on HTTP checks.
+    - **Keyword to look for** (Keyword Monitoring only): Sets the text that must be found in the response.
     - **Monitor Interval** (Default: 60 minutes): Sets how often uptime checks run.
     - **Timeout** (Default: 60 seconds): Sets maximum response time before a check is treated as failed.
     - **Down Confirmation Check** (Default: Enabled): Requires additional confirmation before flagging a site as down.
     - **Up HTTP Codes for HTTP Response and Uptime Monitoring**: Defines which status codes are treated as healthy.
+    - **Attempt to bypass page cache** (Default: Disabled): Adds a best-effort cache-bypass request but does not guarantee that the check reaches the origin server.
     - **Monitoring Data Retention** (Default: 180 days): Controls automatic cleanup window for stored monitoring history.
 
     ### HTTP Response Check
@@ -200,7 +204,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     ### Currency and Format
 
     - **Currency** (Default: `USD`): Sets the base currency used for tracked costs.
-    - **Currency symbol position** (Default: `Left`): Controls symbol placement before or after the amount.
+    - **Currency symbol position** (Default: `Left`): Controls whether the symbol appears on the left or right, with or without a space.
     - **Thousand separator** (Default: `,`): Sets the character used for thousands grouping.
     - **Decimal separator** (Default: `.`): Sets the character used to separate decimal values.
     - **Decimal places** (Default: `2`): Defines numeric precision used when displaying cost amounts.
@@ -222,6 +226,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Enable Network Activity logging** (Default: Enabled): Turns Network Activity and Dashboard Insights data collection on or off.
     - **Automatically archive logs**: Moves older log entries out of active logs into archived storage automatically.
     - **Data retention period** (Default: 3 years when archiving is used): Defines how long active logs are kept before auto-archiving.
+    - **Retention period for Network Activity Logs on child sites** (Default: 7 days): Controls child-site cleanup separately from Dashboard log retention.
     - **Select events to log**: Lets you choose which dashboard and non-MainWP child-site events should produce log entries.
 
     <Note>
@@ -239,13 +244,13 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Cloudways, GridPane, Vultr, Akamai (Linode), DigitalOcean, cPanel (WP Toolkit), Plesk (WP Toolkit), Kinsta**: Each tab enables API integration for that host/provider.
     - **Enable Provider API** toggles: Activates or deactivates each provider integration without removing saved credentials.
     - **Provider credentials**: Stores provider-specific authentication values such as API keys, account email/ID, URL, username/password, and site path fields where required.
-    - **Enable WP Toolkit API**: Controls WP Toolkit integrations used for cPanel/Plesk backup automation flows.
-    - **Overwrite Global Settings** options (provider-specific): Allows per-site provider overrides instead of shared global credentials where supported.
 
-    ### Backup API Provider Settings
+    ### Per-Site Backup API Provider Settings
 
     - **Provider selection**: Defines which provider a child site backup mapping uses.
     - **Instance/environment selection**: Stores provider instance identifiers required to target the correct site/server context.
+    - **Enable WP Toolkit API** (cPanel only): Activates the WP Toolkit API for the selected child site.
+    - **Overwrite Global Settings** options (cPanel, Plesk, and Kinsta): Allows per-site credentials and connection details instead of shared global settings.
   </Accordion>
 
   <Accordion title="Tools" icon="wrench">
@@ -256,10 +261,10 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     ### Available Tools
 
     - **Select MainWP Dashboard theme**: Chooses the dashboard UI theme. Light and Dark are always available. With default Light/Dark and no custom theme files, the header uses direct sun/moon quick switching; otherwise the header opens the theme selection modal. Legacy options appear when currently selected, and custom `.css` files uploaded to the MainWP themes uploads directory are listed.
-    - **Re-establish connections**: Forces MainWP Dashboard to reconnect with child sites and rebuild active sessions.
+    - **Re-establish connections**: Forces MainWP Dashboard to reconnect with child sites. This destroys all sessions for the current MainWP connection user on each child site, so that account must sign in again.
     - **Reset OpenSSL key pair**: Generates a new OpenSSL key pair for child site communication.
-    - **Start Quick Setup Wizard**: Launches the MainWP onboarding wizard again.
-    - **Export child sites**: Downloads connected child site data as a CSV file.
+    - **Start Quick Setup Wizard** (when available): Launches the MainWP onboarding wizard again.
+    - **Export child sites**: Downloads accessible, non-staging child site data as a CSV file.
     - **Import child sites**: Opens the child-site import workflow.
     - **Disconnect all child sites**: Breaks all child connections while leaving MainWP Child active on those sites.
     - **Delete Add-ons API activation data**: Removes Add-ons activation metadata without deleting add-on settings.
@@ -268,27 +273,6 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Privacy and third-party service permissions**: Controls optional integrations for Usetiful guided tours, Chatbase support chat, and YouTube tutorial embeds.
   </Accordion>
 </AccordionGroup>
-
----
-
-## Common Configurations
-
-### Shared Hosting Optimization
-
-For Dashboards on shared hosting or larger site networks:
-
-1. Keep **Optimize data loading** enabled
-2. Reduce **Global request limit** to 2-3
-3. Increase **Minimum delay between requests in milliseconds** to 500ms
-4. Run a sync cycle to refresh cached data before large bulk actions
-
-### High-Performance Setup
-
-For dedicated servers or VPS with strong resources:
-
-1. Increase **Maximum simultaneous sync requests** to 15-20
-2. Increase **Maximum simultaneous install and update requests** to 5-8
-3. Reduce delays between requests
 
 ---
 
