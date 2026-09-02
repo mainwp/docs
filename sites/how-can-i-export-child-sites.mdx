@@ -1,30 +1,30 @@
 ---
 title: Export Sites
 description: >-
-  Export your connected child sites to a CSV file for backup, migration to another MainWP Dashboard, or record-keeping purposes.
+  Export child site details to a CSV file for inventory, record-keeping, or use when moving sites to another MainWP Dashboard.
 ---
 
-The Export Sites feature creates a CSV file containing all your connected child sites with their connection details. Use this export for migrating sites to another Dashboard, creating a backup record, or analyzing your site inventory.
+The Export Child Sites tool creates a CSV file containing the non-staging child sites available to your MainWP Dashboard user. The file includes site details, tags, connection settings, and any saved HTTP Basic Auth credentials. It does not include the OpenSSL keys for the active Dashboard-to-Child connection or stored administrator passwords.
 
 ## What You'll Accomplish
 
-- Export all connected child sites to a CSV file
-- Create a backup of your site connection data
-- Prepare for migration to another MainWP Dashboard
+- Export your available non-staging child sites to a CSV file
+- Create an offline inventory of site and connection settings
+- Prepare an import file for moving sites to another MainWP Dashboard
 
 ## Prerequisites
 
 - MainWP Dashboard installed and activated
-- At least one child site connected to your Dashboard
-- Administrator access to your Dashboard site
+- At least one non-staging child site available to your Dashboard user
+- Permission to manage MainWP Dashboard settings
 
 ---
 
 ## Export Child Sites
 
 <Steps>
-<Step title="Navigate to MainWP Tools">
-Go to **MainWP > Settings > MainWP Tools**.
+<Step title="Open Tools">
+Go to **MainWP > Settings > Tools**.
 </Step>
 <Step title="Locate export option">
 Find the **Export child sites to CSV file** section.
@@ -32,7 +32,7 @@ Find the **Export child sites to CSV file** section.
 <Step title="Export">
 Click **Export Child Sites**.
 
-Your browser downloads a CSV file containing all connected sites.
+Your browser downloads `export-sites.csv`.
 </Step>
 </Steps>
 
@@ -42,16 +42,22 @@ Your browser downloads a CSV file containing all connected sites.
 
 The exported CSV includes the following fields for each site:
 
-| Field | Description |
+| CSV header | Contents |
 |-------|-------------|
-| Site Name | Display name in your Dashboard |
-| Site URL | Full URL of the child site |
-| Administrator Username | Connected admin account |
-| Admin Password | Import-compatible column for administrator password, if populated |
-| Tags | Assigned tags (if any) |
-| Unique Security ID | Security ID (if configured) |
-| HTTP Authentication | HTTP Basic Auth credentials (if configured) |
-| SSL Settings | SSL verification preferences |
+| Site Name | Display name in MainWP Dashboard |
+| URL | Full URL of the child site |
+| Admin Name | Connected administrator username |
+| Admin Password | Empty import-compatible column; MainWP Dashboard does not store the administrator password |
+| Tag | Assigned tag names, separated by commas when a site has multiple tags |
+| Security ID | Unique Security ID, if configured |
+| HTTP Username | HTTP Basic Auth username, decrypted for the export |
+| HTTP Password | HTTP Basic Auth password, decrypted for the export |
+| Verify Certificate | Saved SSL certificate verification value |
+| SSL Version | Saved SSL/TLS version preference |
+
+<Note>
+The current CSV import flow does not apply the exported SSL Version value when it adds a site. After importing, review the SSL Version for any site that uses a non-default value.
+</Note>
 
 ---
 
@@ -59,13 +65,16 @@ The exported CSV includes the following fields for each site:
 
 ### Migrate to Another Dashboard
 
-1. Export sites from your current Dashboard
-2. Install and configure a new MainWP Dashboard
-3. Import the CSV file at **MainWP > Sites > Add New > Import Sites**
+The CSV is a starting point for a transfer; it does not move the active connection keys.
+
+1. Export sites from your current Dashboard.
+2. Follow [Move Child Sites](/advanced/move-child-sites-to-another-mainwp-dashboard) to disconnect the sites from the current Dashboard and prepare them for the new connection.
+3. Confirm that each CSV row contains the administrator password, Security ID, or both, as required by that site's MainWP Child connection settings. The exported Admin Password column is blank.
+4. Import the CSV file in the new Dashboard at **MainWP > Sites > Add New > Import Sites**.
 
 ### Create a Backup Record
 
-Export regularly to maintain an offline record of your site inventory. Store the CSV securely since it contains connection credentials.
+Export regularly to maintain an offline record of your site inventory. This file is not a backup of the active Dashboard-to-Child connection.
 
 ### Audit Your Network
 
@@ -77,9 +86,10 @@ Open the CSV in a spreadsheet application to review, sort, and filter your sites
 
 The exported CSV may contain sensitive information including:
 - Administrator usernames
-- Any populated admin password column values
 - Unique Security IDs
-- HTTP authentication credentials
+- HTTP Basic Auth usernames and passwords in plaintext
+
+The file does not contain child site administrator passwords or the OpenSSL keys used for the active connection.
 
 Store exported files securely and delete them when no longer needed.
 
