@@ -85,12 +85,14 @@ After removing a site from the Virusdie, you need to **MANUALLY** delete your un
 ## Scan Child Sites With Virusdie
 
 <Note>
-The on-demand scan feature requires a paid Virusdie plan. By default, Virusdie scans your sites automatically once per week on the free plan. If any problem is found, you will get a notification from the Virusdie service. If you wish to scan sites more frequently or on demand, an upgrade to a paid Virusdie plan is required.
+On-demand scans require a paid Virusdie plan. When Virusdie identifies the connected account as free, the Add-on hides the **Scan Site** action. Free accounts continue to receive automated weekly scans and email notifications.
 
-If the Add-on shows `Not available for this site` for an on-demand scan, this reflects plan availability and does not by itself mean that synchronization failed.
+The paid-plan requirement also applies to scans requested through WP-CLI and the REST API.
+
+Virusdie can assign plan availability per site, but its API does not provide a read-only per-site check before a scan request. For accounts containing both free and paid sites, **Scan Site** may therefore appear for a site that is not eligible. If Virusdie responds with `Not available for this site`, on-demand scanning is unavailable for that site; this does not mean synchronization failed.
 </Note>
 
-To request the Scan process manually:
+With a paid Virusdie plan, request a scan manually:
 
 <Steps>
 <Step title="Login to your MainWP Dashboard">
