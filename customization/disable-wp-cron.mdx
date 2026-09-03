@@ -243,6 +243,22 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     ```
   </Tab>
 
+  <Tab title="Advanced Uptime Monitor">
+    #### Refresh Uptime Robot Data
+
+    **Frequency:** *every hour (crontab schedule: 0 * * * *)*
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/advanced-uptime-monitor-extension/cron/advanced-uptime-monitor-uptimerobot-hourly-refresh.php > /dev/null 2>&1
+    ```
+
+    Refreshes stored 24-hour uptime ratios for a small batch of Uptime Robot monitors per run and synchronizes recent incidents. The worker rotates through all monitors across successive runs, so every monitor is refreshed over time.
+
+    <Note>
+    This worker processes Uptime Robot monitors only and runs only from the command line. HTTP requests to the file return `403`, so the `curl` variant cannot be used for this job.
+    </Note>
+  </Tab>
+
   <Tab title="Cost Tracker Assistant">
     #### Send Cost Tracker Alerts
 

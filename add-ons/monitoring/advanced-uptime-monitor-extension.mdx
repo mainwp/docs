@@ -261,6 +261,27 @@ Before being able to create, display, or manage Uptime Robot monitors, you need 
 
 After you connect your account, you can set the default alert contact.
 
+The integration validates the API key when you click **Save Settings**. If Uptime Robot rejects the key, the integration keeps your previous key and shows the validation error. When you save a different API key, the integration clears stored uptime data and synchronizes monitors from the new account.
+
+### Uptime Robot API key permissions
+
+The integration connects to the Uptime Robot REST API v3 and detects the permission level of your API key:
+
+- A key with **write access** allows all monitor actions from the MainWP Dashboard.
+- A **read-only** key lets you view monitors and uptime statistics only. The Settings tab shows a **Connected — read-only** notice, and the Create New Monitor, Edit, Delete, Start/Pause, and bulk action controls are disabled.
+- If Uptime Robot rejects the key entirely, the Settings tab shows **Authentication failed — the API key must be replaced**. Create a new API key in your Uptime Robot account and save it in the Settings tab.
+
+### Uptime ratio refresh
+
+The integration stores uptime ratios for each Uptime Robot monitor and refreshes them in the background:
+
+- The monitor list shows the all-time uptime ratio. If the all-time ratio is not available yet, the last 24-hour ratio displays instead.
+- When monitors are missing their 24-hour ratio, opening the Monitors tab starts a synchronization dialog. The dialog refreshes each monitor and reports progress as it goes. If Uptime Robot rate limits the requests, the dialog shows a retry countdown and continues automatically after the wait period.
+- A scheduled job named **MainWP AUM UptimeRobot refresh** runs once hourly. Each run refreshes the 24-hour ratio for a small batch of monitors, rotating through all monitors across successive runs, and synchronizes recent incidents from your Uptime Robot account.
+- To reload monitor data from Uptime Robot on demand, click the **Reload Uptime Robot data** button on the Monitors tab.
+
+If you run your MainWP Dashboard with WP-Cron disabled, schedule the direct worker file for the hourly refresh as described in [Disable WP-Cron](/customization/disable-wp-cron).
+
 ## Connect Other Monitoring Services
 
 The Settings tab also supports:
@@ -274,6 +295,8 @@ The Settings tab also supports:
 Uptime Robot has recently reduced the limit to only **10 requests per minute**. Requests include creating new monitors through the MainWP integration and fetching information about existing monitors. Reaching the limit is fairly easy for a large number of sites.
 
 This limit is most often hit when creating monitors for all sites by clicking the **"Create Monitors for All Sites"** button in the UI. You will likely be able to create 2 or 3 monitors **per attempt** and receive an error (red exclamation mark) for other sites because the API limit will be reached.
+
+When Uptime Robot returns a rate-limit response, the integration pauses further requests for the wait period reported by the API and retries automatically. During uptime ratio synchronization, the progress dialog shows a countdown until the next retry.
 
 <Frame>
   <img src="/images/add-ons/22a002fdb75f.png" alt="Screenshot showing API rate limit error when creating monitors for all sites" />
