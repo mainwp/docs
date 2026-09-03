@@ -12,6 +12,7 @@ addonType: "integration"
 - Supported cache plugins and services
 - Automatically purging cache after updates
 - Manually purging cache from MainWP Dashboard
+- Controlling bulk purge speed with concurrent requests and request delay
 - Configuring global and site-specific Cloudflare credentials
 - Reading Cache Control logs and Cloudflare status indicators
 
@@ -86,6 +87,12 @@ Use the global settings when most of your MainWP Child sites should use the same
   <Step title="Optional: enable Cloudflare cache purging">
     Turn on **Purge Cloudflare cache** if you want Cache Control to purge Cloudflare cache for sites that use the global Cloudflare account.
   </Step>
+  <Step title="Set the maximum concurrent requests">
+    For **Maximum concurrent requests**, choose how many cache purge requests Cache Control sends at the same time during a bulk purge, from **1** to **10**. The default is **3**.
+  </Step>
+  <Step title="Set the delay between requests">
+    For **Delay between requests**, choose how many seconds Cache Control waits before starting the next purge request during a bulk purge, from **0 seconds** to **10 seconds**. The default is **0 seconds**.
+  </Step>
   <Step title="Choose a Cloudflare authentication method">
     Under **Cloudflare API Credentials**, select **Email & API key** or **API Token**, then enter the matching Cloudflare credentials.
   </Step>
@@ -132,6 +139,8 @@ Site-specific Cloudflare credentials are verified on save when **Yes (use site-s
 ## Manually Purge Cache
 
 Cache Control can purge cache automatically after updates, but you can also start a manual purge from MainWP Dashboard.
+
+Bulk purges follow the **Maximum concurrent requests** and **Delay between requests** values from the global settings. Lower the concurrent requests or add a delay if bulk purges overload your server or trigger rate limits on your hosting or Cloudflare account. Raise the concurrent requests to finish bulk purges faster across many sites.
 
 ### From Manage Sites
 
