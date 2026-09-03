@@ -8,13 +8,15 @@ addonType: "integration"
 ## What You'll Learn
 
 - Checking domain expiration dates across all sites
+- Reading expiration status in the dashboard and Overview widgets
 - Entering domain info manually for unsupported TLDs
 - Scheduling automated domain checks
+- Overriding general settings for individual sites
 - Using Pro Reports tokens for domain data
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.2" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.4" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/QMziJ1BxEcE" title="Domain Monitor - Video Tutorial" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
 
@@ -85,6 +87,24 @@ Sites that have not been checked yet are highlighted in the Domain Monitor dashb
 
 Once a check completes, the row returns to its normal style and the remaining-days indicator (green, yellow, or red hourglass) appears based on how close the domain is to expiration.
 
+### Expiration Status
+
+Domain Monitor uses hourglass icons and short status messages to show how close each domain is to expiration:
+
+- **Green hourglass** - The domain expires in 30 or more days.
+- **Yellow hourglass** - The domain expires in fewer than 30 days.
+- **Red hourglass** - The domain expires today or has already expired.
+- **Grey hourglass** - No expiration data is available for the domain.
+
+The Overview widgets pair the icons with a relative status message: **Expires in X days**, **Expires today**, **Expired today**, or **Expired X days ago**. Domains without expiration data show **Expiration information unavailable**.
+
+## Overview Widgets
+
+Domain Monitor adds widgets to your MainWP Dashboard Overview pages:
+
+- The main **Overview** page widget lists all monitored domains with their expiration dates and status icons.
+- The individual site **Overview** page widget shows the site's domain, its expiration status, and the saved domain profile. If no domain data is saved yet, the widget prompts you to recheck the domain or add the data manually.
+
 ## Enter Domain Info Manually
 
 If your domain is not on the list of supported TLDs, you can add information manually by following the steps below. <img src="/images/add-ons/domain-monitor-widget.png" alt="Screenshot showing Manual Domain information entry toggle in settings" />
@@ -140,6 +160,26 @@ If your domain is not on the list of supported TLDs, you can add information man
 - **Notifications threshold** - Set the threshold for notifications. If the domain expiration is less in the set number of days, an email will be sent.
 - **Automatically check domains** - If you want the add-on to automatically run checks, enable this feature.
 - **Automated domain checks frequency** - If automated checks are enabled, here you can set how often you want them to run.
+
+### Individual Site Settings
+
+You can override the general settings for a specific child site:
+
+<Steps>
+  <Step title="Go to Add-ons > Monitoring > Domain Monitor > Dashboard">
+  </Step>
+  <Step title="Choose Domain Info from the site's Actions menu">
+  </Step>
+  <Step title="Open the Settings tab">
+  </Step>
+  <Step title="Enable the Overwrite general settings option">
+    Once enabled, the **Notifications threshold**, **Automatically check domains**, and **Automated domain checks frequency** options appear for this site only.
+  </Step>
+  <Step title="Set your preferences and click Save Settings">
+  </Step>
+</Steps>
+
+The same tab also contains the **Manual domain information entry** toggle described [**above**](#enter-domain-info-manually).
 
 ## Check Sites via WP CLI
 
