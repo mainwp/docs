@@ -206,6 +206,53 @@ If you use **MainWP Pro Reports**, you can include Google Search Console data in
 
 ## Troubleshooting
 
+### Cannot update `wp-config.php` automatically
+
+If you see either of these messages:
+
+> MainWP Google Search Console could not update wp-config.php automatically.
+
+> MainWP Google Search Console could not add its encryption key to wp-config.php.
+
+The add-on could not safely write its encryption key to the MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
+
+Add the key manually:
+
+<Steps>
+  <Step title="Back up wp-config.php.">
+    Create a current backup before editing the file.
+  </Step>
+  <Step title="Generate a secure key.">
+    Run this command in your server terminal:
+
+    ```bash
+    openssl rand -hex 32
+    ```
+
+    The command returns a 64-character hexadecimal key. Do not use an online key generator.
+  </Step>
+  <Step title="Add the encryption-key definition.">
+    Edit the active `wp-config.php` file and add the following line before the line that loads `wp-settings.php`:
+
+    ```php
+    define( 'MAINWP_GSC_ENCRYPTION_KEY', 'PASTE_THE_64_CHARACTER_KEY_HERE' );
+    ```
+
+    Replace `PASTE_THE_64_CHARACTER_KEY_HERE` with the key generated in the previous step.
+  </Step>
+  <Step title="Save the file and reload MainWP Dashboard.">
+    The warning should clear after the add-on detects the valid key. Do not change or remove the key after it is in use, because existing encrypted credentials may become unavailable.
+  </Step>
+</Steps>
+
+<Warning>
+Do not make `wp-config.php` world-writable or grant PHP permission to change file ownership. If you cannot edit the file safely through your hosting control panel or server account, ask your hosting provider or server administrator to add the definition.
+</Warning>
+
+A file ending in `.mainwp-lock` may be created while the add-on coordinates an automatic update. It is a lock file, not the cause of the warning and not a replacement for `wp-config.php`. Add the definition to the active `wp-config.php` file.
+
+If Google Analytics shows a similar warning, follow the instructions in the [Google Analytics troubleshooting section](/add-ons/analytics/mainwp-google-analytics-extension#cannot-add-the-encryption-key-to-wp-configphp) and generate a separate key for its constant.
+
 **"Google OAuth requires the WordPress REST API to be enabled and reachable"**
 
 - The add-on checks whether `/wp-json/` on your MainWP Dashboard returns the expected REST API metadata. When the check fails, the add-on shows a red notice on the **Add Property**, **Manage Properties**, and **Overview** screens, and disables the OAuth buttons (**Sign in with Google**, **Continue**, **Confirm**, **Verify Now**, **Reset Now**, and **Reconnect Property**). The **Import JSON File** flow is unaffected and can still be used.
