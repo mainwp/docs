@@ -1,0 +1,121 @@
+---
+title: Premium Updates
+description: >-
+  Manage built-in update compatibility for premium plugins and themes, review
+  detected products, and add custom identifiers in MainWP Dashboard.
+---
+
+MainWP Dashboard 6.2 includes built-in update compatibility for many premium plugins and themes. Supported products receive extra update checks automatically. If a premium product needs additional compatibility, add its identifier from **MainWP > Settings > Premium Updates** without writing a code snippet.
+
+This page configures compatibility. Continue installing available updates from your usual [Updates screens](/sites/updates/manage-updates).
+
+## What You'll Learn
+
+- Review detected plugins and themes
+- Add a custom identifier using search or manual entry
+- Check licensing and activity when updates are missing
+- Keep existing compatibility snippets working
+
+## Prerequisites
+
+- MainWP Dashboard 6.2 or later and current MainWP Child versions
+- Administrator access to MainWP Dashboard
+- Child sites synced so their installed plugin and theme information is available
+- The vendor's required license, account connection, or registration on each child site
+
+## Open Premium Updates
+
+Go to **MainWP > Settings > Premium Updates** (`admin.php?page=PremiumUpdates`). Built-in compatibility is automatic; there is no switch to enable first.
+
+![Premium Updates settings with the licensing notice and inline Custom Identifiers form in dark mode](/images/dashboard/premium-updates-overview-dark.svg)
+
+<Note>
+MainWP does not provide premium licenses or bypass vendor requirements. An update can appear in your Dashboard while the vendor still refuses its download because the child site's license or account connection is inactive.
+</Note>
+
+## Review Detected Products
+
+Expand **Detected Plugins** or **Detected Themes** to see products from your synced child sites that match built-in compatibility rules or custom identifiers.
+
+| Column or Notice | Meaning |
+| --- | --- |
+| Name | The matching plugin, theme, or product family |
+| Identifier | The plugin file, theme folder, or supported family pattern |
+| Installed on | Number of child sites where a match was found |
+| Inactive notice | Sites where the product is installed but inactive, which can prevent its updater from running |
+
+![Detected Plugins showing the product identifier, site count, and an inactive-plugin notice](/images/dashboard/premium-updates-detected-plugins-dark.svg)
+
+These tables show compatibility matches, not pending updates or verified licenses. Some free and premium editions share the same identifier, so a listed product is not proof that its premium edition is installed. The tables also do not list every premium product available from vendors.
+
+For themes, extra update detection applies to the active theme and its parent theme. Installing an inactive premium theme alone does not make its updater run.
+
+If information looks outdated, sync the affected child site and reload this page. Detected-product tables can take up to 10 minutes to refresh.
+
+## Add a Custom Identifier
+
+Use **Custom Identifiers** when a premium product needs compatibility that is not already built in, or when a theme's installed folder has been renamed. An identifier tells MainWP which installed product to match across your child sites.
+
+<Steps>
+<Step title="Sync the affected child sites">
+Go to **MainWP > Sites > Manage Sites** and sync the sites that have the product installed. Then return to **Settings > Premium Updates**.
+</Step>
+<Step title="Choose Plugin or Theme">
+In **Custom Identifiers**, select the appropriate **Type**.
+</Step>
+<Step title="Find or enter the identifier">
+Start typing at least two characters from the product name or identifier. Select the matching result to fill in its identifier, or enter it manually using the format below.
+
+| Type | Identifier Format | Example |
+| --- | --- | --- |
+| Plugin | Plugin folder and main PHP file | `example-pro/example-pro.php` |
+| Theme | Installed theme folder | `example-theme` |
+
+Use the actual installed identifier, not the product's display name, website URL, or license key. For plugins, a folder name alone is not enough. Ask the vendor for the plugin's main file if you are unsure.
+
+![Plugin identifier field highlighted with a green arrow in the Custom Identifiers form](/images/dashboard/premium-updates-plugin-identifier-dark.svg)
+
+Search includes non-premium products too. Only select the premium product you intend to add. Products already covered by built-in rules or saved custom identifiers are omitted from suggestions.
+</Step>
+<Step title="Add the identifier">
+Click **Add New**. Confirm that the identifier appears in the custom table below the form. Each custom entry applies to both update detection and update requests for that product across your Dashboard.
+</Step>
+<Step title="Sync and check updates">
+Sync the affected sites again, then check the **Updates** screens. Adding an identifier does not install or update the product by itself.
+</Step>
+</Steps>
+
+### Theme Folders and Renamed Themes
+
+Select **Theme** and use the installed folder under `wp-content/themes/`. If the folder was renamed, enter the renamed folder instead of the vendor's original name. For a premium parent theme used by an active child theme, use the parent theme's installed folder.
+
+![Theme selected in Custom Identifiers with a green arrow pointing to the theme identifier field](/images/dashboard/premium-updates-theme-identifier-dark.svg)
+
+## Remove a Custom Identifier
+
+In the custom table, click the **trash icon** beside the entry and confirm removal. To correct an identifier, remove the old entry and add the correct one.
+
+Removal deletes only that custom compatibility entry. It does not uninstall the product, stop normal updates, remove a built-in rule, or change a PHP snippet. Use [Ignore Updates](/sites/updates/manage-updates#ignore-plugin-updates) to stop tracking particular plugin updates, or the [theme equivalent](/sites/updates/manage-updates#ignore-theme-updates).
+
+## Existing Compatibility Snippets
+
+The existing plugin and theme compatibility filters still work in MainWP Dashboard 6.2. You do not need to migrate a working snippet just because the settings page is available.
+
+The filters receive built-in identifiers and your saved custom identifiers. Append to that array to preserve them. Identifiers added only by PHP filters are not automatically imported into the settings tables.
+
+See the advanced examples in [Premium Plugin Updates Not Detected](/troubleshooting/premium-plugin-updates-not-detected#advanced-compatibility-filters) and [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected#advanced-compatibility-filters).
+
+## If Updates Still Fail
+
+1. Check whether the update appears in **Dashboard > Updates** on the child site itself.
+2. Verify the vendor's licensing or account requirements on that child site and check whether the product is active.
+3. Confirm the identifier, sync again, and try updating the affected item separately.
+
+Compatibility settings cannot guarantee support for every vendor's custom updater or supply missing changelog content. If the child site cannot retrieve or install the update, contact the vendor. If it works on the child site but fails through MainWP, [contact MainWP Support](https://mainwp.com/my-account/get-support/) with the product, versions, and exact error.
+
+## Related Resources
+
+- [Manage Updates](/sites/updates/manage-updates)
+- [Premium Plugin Updates Not Detected](/troubleshooting/premium-plugin-updates-not-detected)
+- [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected)
+- [Missing Premium Plugin Changelogs](/troubleshooting/why-does-my-premium-plugin-not-show-a-changelog-on-mainwp-dashboard)

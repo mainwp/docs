@@ -244,8 +244,20 @@ Locate the site, open the actions menu, and click **Sync Data**.
 </Steps>
 
 <Note>
-MainWP automatically syncs sites once daily via WP Cron. For reliable cron execution, consider using Uptime Robot to ping your Dashboard regularly.
+MainWP automatically syncs sites once daily via WP Cron. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Note>
+
+### Child Site Cron Warnings
+
+An individual site's **Overview** can show **Child site scheduled tasks have not run recently.** This means the child site reported an overdue scheduled monitoring check. It concerns scheduling on that child site, and the Dashboard displays the report received during the last sync.
+
+![Child-site cron warning above the Overview widgets, with the recorded delay and Learn more link, in MainWP Dashboard dark mode](/images/dashboard/child-site-cron-warning-dark.svg)
+
+1. Open **MainWP > Sites > Manage Sites**, find the site, and select **Overview** from its actions menu to read the warning. You can also check **Settings > MainWP Child > Server Information** in the child site's WordPress admin area.
+2. Check the affected child's cron configuration or ask its host to verify scheduled execution. If WordPress's page-triggered cron is disabled, confirm that the child's external cron job is working.
+3. After scheduling recovers and the child's monitoring check runs again, use **Sync Data** to refresh its report in the Dashboard.
+
+Child-site warnings have no dismiss control. See [Understand Cron Warnings](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard#understand-cron-warnings) for warning meanings and troubleshooting guidance.
 
 ---
 
@@ -263,7 +275,8 @@ Go to **MainWP > Sites > Manage Sites**, locate the site, and click **Settings**
 
 | Setting | Description |
 |---------|-------------|
-| Site URL | Change between HTTP and HTTPS if SSL certificate changes |
+| Site URL | Adjust the HTTP/HTTPS protocol and www prefix to match the site's address |
+| Lock site URL | Keep MainWP from automatically correcting this site's URL or adjusting the address used for Jump to WP Admin |
 | Administrator Username | Update the connected user |
 | Site Title | Update friendly name |
 | Unique Security ID | Update if changed on the site |
@@ -277,6 +290,40 @@ Go to **MainWP > Sites > Manage Sites**, locate the site, and click **Settings**
 <Note>
 Per-site settings provide translation ignore control. Configure automatic translation updates globally in [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings#settings-reference).
 </Note>
+
+### Site URL and Detected Address
+
+Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **MainWP > Settings > Advanced Settings**, under **Miscellaneous Settings**.
+
+When the stored address differs from the reported address only by protocol or `www`, the site's settings show **The child site reports its address as:** and a **Use detected** button. The hint is not shown for a different domain or port, or for a path-only difference.
+
+<Steps>
+<Step title="Review the reported address">
+Check that the reported address is the one you intend to use. If the site's address recently changed, sync the site and reopen its settings to refresh the reported information.
+</Step>
+<Step title="Choose Use detected">
+Click **Use detected** to fill the protocol and **www** selectors. You can also adjust these selectors manually. The button does not save the change or turn off an existing URL lock.
+</Step>
+<Step title="Save the settings">
+Review the selected address and **Lock site URL** state, then click **Save Settings**.
+</Step>
+</Steps>
+
+### Lock Site URL
+
+**Lock site URL** is disabled by default. Enable it when you deliberately need MainWP to keep using a particular address, such as an alternate address required by your hosting setup.
+
+![Site URL protocol and www selectors with a green arrow pointing to the disabled Lock site URL toggle in MainWP Dashboard dark mode](/images/dashboard/site-url-lock-dark.svg)
+
+When locked, MainWP keeps the stored URL and uses it unchanged for **Jump to WP Admin**, even if the child site reports a different protocol or `www` variant. You can still change the URL manually.
+
+If you manually change the URL to differ from the address reported by the child site, MainWP enables the lock automatically when you save. Saving an unrelated setting does not enable it. To allow automatic URL handling again, turn off **Lock site URL** and click **Save Settings**.
+
+<Note>
+Turning off the global **Auto-correct site URLs** setting stops background changes to stored URLs. Jump to WP Admin can still use the reported address for supported mismatches. Use the per-site lock when you also want Jump to WP Admin to keep using the stored address.
+</Note>
+
+See [Jump to WP Admin troubleshooting](/troubleshooting/troubleshooting-issues-with-jump-to-the-site-wp-admin-functionality) if opening the site's admin area still fails.
 
 ### Advanced Options
 
