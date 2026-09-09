@@ -2,8 +2,8 @@
 title: Resolve system requirement issues
 description: >-
   Fix common system requirement issues affecting your MainWP Dashboard
-  performance. Covers WordPress version, PHP settings, MySQL, SSL, cURL, and
-  directory permissions.
+  performance. Covers WordPress version, PHP settings, MySQL, database health,
+  SSL, cURL, and directory permissions.
 ---
 
 MainWP requires specific server configurations to function properly. This guide covers how to identify and fix common system requirement issues shown on the Server Information page.
@@ -11,6 +11,7 @@ MainWP requires specific server configurations to function properly. This guide 
 ## What You'll Learn
 
 - Check your current system requirements status
+- Investigate database table, column, and privilege issues
 - Fix PHP configuration issues
 - Enable required extensions
 - Resolve directory permission problems
@@ -76,6 +77,23 @@ See [WordPress Memory Limit documentation](http://codex.wordpress.org/Editing_wp
 | Recommended | 5.7 or newer |
 
 **How to fix:** Contact your hosting support to update MySQL. Database upgrades typically require host assistance.
+
+---
+
+## Database Issues
+
+In MainWP Dashboard 6.2 or later, open **MainWP > Info > Server** (`admin.php?page=ServerInformation`) and scroll to **Database**. This section checks MainWP tables on your Dashboard site, including supported Add-on tables, and reports missing tables, missing columns, incorrect column definitions, and missing database privileges.
+
+![Database health results in dark mode showing MainWP table details and green check marks](/images/dashboard/database-health-table-results-dark.svg)
+
+A green check mark means the checks performed for that row passed. For a red cross, read the accompanying message:
+
+- **Missing database privileges:** Ask your host to check the database user's permissions and provide the listed missing privileges.
+- **Missing tables or column issues:** Send the exact table and column details, along with a system report, to MainWP Support.
+
+Clear **Search system report** before downloading a report so all rows are included. The check reports issues without repairing tables or restoring data. Reload the page after an issue has been addressed to check again.
+
+See [MainWP Database Health Check](/dashboard/overview/mainwp-database-health-check) for result explanations and instructions for sharing a report.
 
 ---
 

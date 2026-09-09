@@ -2,26 +2,65 @@
 title: Troubleshoot Jump to WP Admin issues
 sidebarTitle: "Jump to WP Admin Issues"
 description: >-
-  Troubleshoot Jump to WP Admin issues caused by security plugins, WWW prefix
-  mismatches, or HTTP/HTTPS protocol differences. Adjust security plugin
-  settings and verify Site URL matches the actual URL.
+  Troubleshoot Jump to WP Admin issues with MainWP Dashboard URL detection,
+  per-site URL locks, manual URL settings, and security plugin checks.
 ---
 
 Jump to WP Admin lets you open a child site's WordPress admin area directly from your MainWP Dashboard, automatically logged in as the administrator account used during connection. When this feature doesn't work, security plugins or URL mismatches are typically the cause.
 
-![Jump to WP Admin button in the MainWP Dashboard interface](/images/troubleshooting/4d35411a7e7e.png)
-
 ## What You'll Learn
 
 - Identify why Jump to WP Admin fails
+- Check automatic URL handling and per-site locks
+- Correct remaining www or HTTP/HTTPS mismatches
 - Resolve security plugin conflicts
-- Fix WWW prefix mismatches
-- Correct HTTP/HTTPS protocol issues
 
 ## Prerequisites
 
 - MainWP Dashboard with connected child sites
+- MainWP Dashboard 6.2 or later for **Use detected** and **Lock site URL**
 - Admin access to child sites (for security plugin adjustments)
+
+---
+
+## Automatic URL Handling
+
+Starting with MainWP Dashboard 6.2, Jump to WP Admin can use the address last reported by the child site when the difference is a `www` variant or an HTTP-to-HTTPS change. A mismatch no longer necessarily means the jump will fail. A site can also sync successfully while its Jump to WP Admin login fails.
+
+The **Auto-correct site URLs** setting in **MainWP > Settings > Advanced Settings > Miscellaneous Settings** is enabled by default. It also allows MainWP to verify and update stored addresses in the background. Automatic handling does not switch HTTPS to HTTP or change the domain, port, or path.
+
+A site's **Lock site URL** setting prevents both automatic changes to its stored URL and automatic address adjustment for Jump to WP Admin. Disabling the global setting alone stops background URL changes but still allows Jump to WP Admin to use a supported detected address.
+
+## Check and Correct the Site URL
+
+<Steps>
+<Step title="Sync the child site">
+Go to **MainWP > Sites > Manage Sites**, open the site's actions menu, and click **Sync Data**. Then try Jump to WP Admin again. Syncing refreshes the reported address if the site recently changed its protocol or www prefix.
+</Step>
+<Step title="Open the site's settings">
+If the jump still fails, open the site's actions menu and click **Settings**. Under **General Settings**, review **Site URL** and **Lock site URL**.
+
+![Child site settings showing the Site URL selectors and a green arrow pointing to Lock site URL in MainWP Dashboard dark mode](/images/dashboard/site-url-lock-dark.svg)
+
+If the lock is enabled unintentionally, turn it off. Keep it enabled if your hosting setup requires MainWP to use the stored address. See [Lock Site URL](/sites/management/manage-child-sites#lock-site-url) for details.
+</Step>
+<Step title="Review the detected address or adjust the selectors">
+For a protocol or www mismatch, MainWP shows **The child site reports its address as:** and a **Use detected** button. If the reported address is correct, click **Use detected** to fill the protocol and www selectors.
+
+If this hint is absent, or you need a different address, adjust the selectors manually using the guidance below. **Use detected** does not save the settings or turn off an existing lock.
+</Step>
+<Step title="Save and retry Jump to WP Admin">
+Click **Save Settings**, then try Jump to WP Admin again. Manually changing the URL to differ from the child-reported address automatically enables the URL lock, so review that setting if you later want automatic handling again.
+</Step>
+</Steps>
+
+### WWW Prefix Mismatch
+
+In **Site URL**, choose **www** if the site's address uses that prefix, or the crossed-out **www** option if it does not. Save the settings after making a manual adjustment.
+
+### HTTP/HTTPS Protocol Mismatch
+
+In **Site URL**, select **https://** or **http://** to match the site's working address. Use HTTPS when the site supports it. MainWP does not automatically change an HTTPS address to HTTP; review such a difference before applying it manually.
 
 ---
 
@@ -58,88 +97,20 @@ Adjust these settings to allow MainWP's login process.
 
 ---
 
-## WWW Prefix Mismatch
-
-The site URL in MainWP must exactly match the actual URL of the child site, including whether it uses the WWW prefix.
-
-| Site Actual URL | MainWP Site URL | Result |
-|-----------------|-----------------|--------|
-| example.com | example.com | Works |
-| www.example.com | www.example.com | Works |
-| example.com | www.example.com | **Fails** |
-| www.example.com | example.com | **Fails** |
-
-### Fix WWW Settings
-
-<Steps>
-<Step title="Navigate to site settings">
-Go to **MainWP > Sites > Manage Sites**, find the child site, and click **Edit**.
-</Step>
-<Step title="Adjust WWW setting">
-Locate the **www** dropdown and select the appropriate option:
-- **Use if required** - Adds www if the site uses it
-- **Do not use** - Removes www
-
-![Child Site Edit page showing the www dropdown selector](/images/troubleshooting/jump-to-admin-fix1.png)
-</Step>
-<Step title="Save settings">
-Click **Save Settings** at the bottom of the page.
-</Step>
-<Step title="Test Jump to WP Admin">
-Try the Jump to WP Admin feature again.
-</Step>
-</Steps>
-
----
-
-## HTTP/HTTPS Protocol Mismatch
-
-The site URL must match the protocol (HTTP or HTTPS) the site actually uses.
-
-| Site Uses | MainWP Site URL | Result |
-|-----------|-----------------|--------|
-| HTTPS | https://example.com | Works |
-| HTTP | http://example.com | Works |
-| HTTPS | http://example.com | **Fails** |
-| HTTP | https://example.com | **Fails** |
-
-### Fix Protocol Settings
-
-<Steps>
-<Step title="Navigate to site settings">
-Go to **MainWP > Sites > Manage Sites**, find the child site, and click **Edit**.
-</Step>
-<Step title="Adjust protocol setting">
-Locate the **https://** dropdown and select the appropriate protocol for your site.
-
-![Child Site Edit page showing the HTTPS protocol dropdown selector](/images/troubleshooting/jump-to-admin-fix2.png)
-</Step>
-<Step title="Save settings">
-Click **Save Settings** at the bottom of the page.
-</Step>
-<Step title="Test Jump to WP Admin">
-Try the Jump to WP Admin feature again.
-</Step>
-</Steps>
-
-<Note>
-If your site has an SSL certificate, always use HTTPS. Most modern sites should use HTTPS.
-</Note>
-
----
-
 ## Self-Check Checklist
 
-- [ ] Security plugins temporarily disabled for testing
-- [ ] WWW setting matches actual site URL
-- [ ] Protocol (HTTP/HTTPS) matches actual site
+- [ ] Child site synced to refresh its reported address
+- [ ] Site URL protocol and www prefix reviewed
+- [ ] Lock site URL enabled only when the stored address is intentional
 - [ ] Settings saved after adjustments
+- [ ] Security plugin or custom login settings checked if the issue persists
 - [ ] Jump to WP Admin works correctly
 
 ---
 
 ## Related Resources
 
+- [Manage Child Site Settings](/sites/management/manage-child-sites#edit-child-site-settings) - Detected addresses and per-site URL locks
 - [Use Jump to WP Admin with HTTP Basic Auth](/troubleshooting/use-of-jump-to-wp-admin-with-child-sites-protected-by-http-basic-authentication) - Special configuration for protected sites
 - [Change WP Admin URL](/troubleshooting/am-i-allowed-to-change-wp-admin-and-wp-login-php-url) - Custom admin URL considerations
 - [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - General connection issues

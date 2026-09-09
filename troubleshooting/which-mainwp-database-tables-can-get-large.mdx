@@ -25,7 +25,17 @@ Examples below use the `wp_` table prefix. If your site uses a different prefix,
 
 ## Check the Largest MainWP Tables First
 
-Before changing any settings, confirm which tables are actually using the space. In phpMyAdmin, Adminer, or a similar database tool, you can sort tables by size or run:
+Before changing any settings, confirm which tables are actually using the space.
+
+In MainWP Dashboard 6.2 or later, go to **MainWP > Info > Server** (`admin.php?page=ServerInformation`) and scroll to **Database**. Each MainWP table lists its **Data** and **Index** sizes in MB. Add these two values to compare the space used by each table.
+
+Use **Search system report** to find a table or related group, such as `mainwp_wp_logs` for Network Activity tables. Clear the search to restore all results.
+
+![MainWP Database section in dark mode with data and index details outlined in green for Network Activity tables](/images/dashboard/database-health-table-sizes-dark.svg)
+
+These figures cover MainWP tables stored on the Dashboard site. The check also reports database structure and privilege issues; see [MainWP Database Health Check](/dashboard/overview/mainwp-database-health-check) for details.
+
+To sort tables by their combined size, or inspect a Child Site database, use phpMyAdmin, Adminer, or a similar database tool. You can sort tables by size or run:
 
 ```sql
 SELECT

@@ -42,10 +42,11 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
 2. Advanced Settings
 3. Monitoring Settings (Uptime Monitoring, Site Health Monitoring, and HTTP response checks)
 4. Email Settings
-5. Cost Tracker Settings
-6. Network Activity Settings
-7. API Backups Settings
-8. Tools
+5. Premium Updates
+6. Cost Tracker Settings
+7. Network Activity Settings
+8. API Backups Settings
+9. Tools
 
 <AccordionGroup>
   <Accordion title="General Settings" icon="gear" defaultOpen>
@@ -134,7 +135,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     ### Miscellaneous Settings
 
     - **Optimize data loading** (Default: Enabled): Uses synchronized plugin, theme, and user data for searches instead of fetching that data from child sites during each search.
-    - **Auto-correct site URLs** (Default: Enabled): Safely updates a stored child site URL when the site reports a verified `www` variant or an HTTP-to-HTTPS change. URLs that are locked on the site edit screen are not changed.
+    - **Auto-correct site URLs** (Default: Enabled): Automatically updates stored child site URLs for `www` differences and HTTP-to-HTTPS changes after verifying the corrected address. It does not automatically switch HTTPS to HTTP or change the domain, port, or path. Sites with **Lock site URL** enabled are not changed.
     - **Browser cache expiration time** (Default: 10 minutes): Sets how long browser-cached MainWP pages remain valid before refresh.
     - **Use WP Cron** (Default: Enabled): Controls whether MainWP registers and uses its WP-Cron jobs. Disable it only when those scheduled jobs will be triggered another way.
     - **Verify SSL certificate** (Default: Enabled): Verifies child site SSL certificates during connection attempts.
@@ -143,6 +144,8 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Force IPv4** (Default: Disabled): Forces IPv4 for child site connections on hosts where IPv6 causes issues.
     - **Select data to sync**: Chooses which data sets are included in synchronization from MainWP Child sites.
     - **OpenSSL.cnf location** (conditional field): Lets you manually set OpenSSL config path when auto-detection is incorrect.
+
+    Disabling **Auto-correct site URLs** stops background changes to stored addresses. Jump to WP Admin can still use the child-reported address for supported mismatches. To keep a particular site's stored address for both operations, enable [Lock site URL in that site's settings](/sites/management/manage-child-sites#lock-site-url).
   </Accordion>
 
   <Accordion title="Monitoring Settings" icon="heart-pulse">
@@ -194,6 +197,16 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     ![Email notification settings form with recipient, subject, and template options](/images/dashboard/sites-management-7de353.png)
 
     Per-site overrides are available in child site edit screens under **Email Settings**, so site-specific recipients and behavior can differ from global defaults.
+  </Accordion>
+
+  <Accordion title="Premium Updates" icon="arrows-rotate">
+    **Page:** **MainWP > Settings > Premium Updates** (`admin.php?page=PremiumUpdates`)
+
+    MainWP Dashboard 6.2 automatically provides update compatibility for supported premium plugins and themes. Review **Detected Plugins** and **Detected Themes**, or use **Custom Identifiers** to add a product that needs additional compatibility or a renamed theme folder.
+
+    Search installed products or enter a plugin's full `folder/main-file.php` identifier or a theme's installed folder, then click **Add New**. Existing compatibility filters still work. Vendor licensing requirements still apply on each child site.
+
+    See [Premium Updates](/sites/updates/premium-updates) for the complete workflow, identifier formats, and detected-table details.
   </Accordion>
 
   <Accordion title="Cost Tracker Settings" icon="money-bill-wave">

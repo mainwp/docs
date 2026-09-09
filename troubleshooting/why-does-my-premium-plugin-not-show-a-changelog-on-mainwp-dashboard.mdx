@@ -1,9 +1,8 @@
 ---
 title: Premium plugin not showing the changelog on MainWP Dashboard
 description: >-
-  MainWP Dashboard 4.4.1+ displays changelogs for premium plugins, but only if
-  the plugin uses WordPress standards. Contact the plugin author for changelog
-  location if the info is not visible on MainWP.
+  Troubleshoot missing premium plugin changelogs and understand why update
+  compatibility does not guarantee vendor-provided release notes.
 ---
 
 Since version 4.4.1, MainWP Dashboard displays changelogs and plugin information for premium plugins when viewing available updates.
@@ -12,7 +11,7 @@ Since version 4.4.1, MainWP Dashboard displays changelogs and plugin information
   <img src="/images/troubleshooting/premium-plugin-changelog.gif" alt="Animation showing premium plugin changelog display in MainWP Dashboard" />
 </Frame>
 
-If a premium plugin's changelog doesn't appear in MainWP, the plugin likely doesn't follow WordPress standards for providing update information.
+If a premium plugin's changelog does not appear, its vendor information may be missing or could not be retrieved. An available update does not guarantee that changelog content is available too.
 
 ## What You'll Learn
 
@@ -31,9 +30,15 @@ If a premium plugin's changelog doesn't appear in MainWP, the plugin likely does
 
 ## Why Some Premium Plugins Don't Show Changelogs
 
-Premium plugins distribute updates outside the WordPress.org repository. To make changelogs available, plugin authors must implement specific WordPress hooks that provide update and changelog information to the WordPress update system.
+Premium plugin vendors supply their own update and changelog information. MainWP can show changelog sections received during sync or request plugin information from the child site. Missing vendor content or a failed request can leave the changelog unavailable.
 
-Not all premium plugin authors implement these hooks. When they're missing, WordPress (and therefore MainWP) cannot retrieve the changelog data.
+### Premium Updates Settings Do Not Supply Changelogs
+
+MainWP Dashboard 6.2's **Settings > Premium Updates** page improves update compatibility and lets you add custom identifiers. It does not create release notes or guarantee that a vendor supplies changelog content.
+
+![Premium Updates settings for update compatibility and custom identifiers](/images/dashboard/premium-updates-overview-dark.svg)
+
+Use [Premium Updates](/sites/updates/premium-updates) when an update needs compatibility support. If only the changelog is missing, continue with the checks below.
 
 ---
 
@@ -41,7 +46,7 @@ Not all premium plugin authors implement these hooks. When they're missing, Word
 
 <Steps>
 <Step title="Verify Dashboard version">
-Go to **MainWP > Status** and confirm you're running version 4.4.1 or later. Earlier versions don't support premium plugin changelogs.
+Go to **MainWP > Info** and check your MainWP Dashboard version. Keep MainWP Dashboard and MainWP Child current; premium plugin changelog support requires Dashboard 4.4.1 or later.
 </Step>
 <Step title="Sync the child site">
 Force a fresh sync from **MainWP > Sites > Manage Sites** to ensure MainWP has the latest plugin information.
@@ -50,7 +55,7 @@ Force a fresh sync from **MainWP > Sites > Manage Sites** to ensure MainWP has t
 Some plugins display changelog information in their own settings pages. Use Jump to WP Admin to access the child site and navigate to the plugin's settings.
 </Step>
 <Step title="Contact the plugin author">
-If the changelog still doesn't appear, the plugin doesn't implement WordPress standards. Contact the vendor and ask:
+If the changelog still does not appear, contact the vendor and ask:
 - Where to find the changelog for each version
 - Whether they plan to add WordPress-standard changelog support
 </Step>
@@ -75,29 +80,13 @@ Bookmark these pages for quick reference before running updates.
 
 ## For Plugin Developers
 
-To make your plugin's changelog visible in MainWP and WordPress update screens, implement the `pre_site_transient_update_plugins` filter.
+MainWP first uses available `sections` from the child's synced plugin update data. When those sections are unavailable, it asks the child site for `plugin_information` through WordPress's `plugins_api()` function.
 
-When MainWP Child runs `get_plugin_updates()`, it retrieves whatever information WordPress has about available updates—including changelogs—and synchronizes that data to the Dashboard.
+Provide changelog content in the relevant `sections['changelog']` response and verify both the update data and plugin-information response on a child site. Adding a download URL or new version alone does not supply a changelog, and implementing a single update-transient filter does not guarantee that every information request succeeds.
 
-### Required Implementation
+WordPress's [`get_plugin_updates()`](https://developer.wordpress.org/reference/functions/get_plugin_updates/) reads available update data. Vendors can provide a custom plugin-information response through the [`plugins_api` filter](https://developer.wordpress.org/reference/hooks/plugins_api/); the `plugin_information` action expects an object.
 
-Your update server response should include:
-
-| Field | Description |
-|-------|-------------|
-| `new_version` | The version number available |
-| `package` | URL to download the update |
-| `url` | URL to the plugin information page |
-| `sections` | Array containing `changelog`, `description`, etc. |
-
-### WordPress References
-
-- [`get_plugin_updates()`](https://developer.wordpress.org/reference/functions/get_plugin_updates/) - Retrieves plugin update information
-- [`pre_site_transient_{$transient}`](https://developer.wordpress.org/reference/hooks/pre_site_transient_transient/) - Filter hook for injecting update data
-
-For themes, use `pre_site_transient_update_themes` instead.
-
-Properly implementing these standards ensures your plugin's changelog appears in MainWP, WordPress dashboard, and any other management tool that uses WordPress's update APIs.
+The premium compatibility identifier filters control which products receive extra update handling. They do not replace the vendor's changelog response.
 
 ---
 
@@ -113,6 +102,6 @@ Properly implementing these standards ensures your plugin's changelog appears in
 
 ## Related Resources
 
-- [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected) - Update detection issues
+- [Premium Plugin Updates Not Detected](/troubleshooting/premium-plugin-updates-not-detected) - Update detection issues
 - [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected) - Theme-specific issues
 - [Manage Updates](/sites/updates/manage-updates) - Update management overview

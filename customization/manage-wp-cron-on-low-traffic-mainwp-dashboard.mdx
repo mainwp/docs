@@ -1,7 +1,7 @@
 ---
 title: "Manage WP Cron on a Low-Traffic MainWP Dashboard"
 sidebarTitle: "WP Cron on Dashboard"
-description: "Learn why scheduled MainWP Dashboard tasks can stall on low-traffic sites and how to keep WP Cron reliable with external triggers or server cron jobs."
+description: "Understand MainWP cron warnings and keep scheduled tasks reliable on low-traffic sites with external triggers or server cron jobs."
 ---
 
 MainWP Dashboard sites are often private and receive little traffic. Since WP Cron depends on incoming requests, scheduled actions can be delayed unless you trigger cron regularly.
@@ -9,6 +9,7 @@ MainWP Dashboard sites are often private and receive little traffic. Since WP Cr
 ## What You'll Learn
 
 - Why low traffic affects scheduled MainWP tasks
+- How to interpret Dashboard and child-site cron warnings
 - How to set up Option 1 with external uptime monitoring or server cron requests
 - How to troubleshoot cron-triggering issues from one page
 
@@ -19,6 +20,48 @@ MainWP Dashboard sites are often private and receive little traffic. Since WP Cr
 [WP Cron](https://developer.wordpress.org/plugins/cron/) runs when requests hit the site. On low-traffic Dashboard sites, scheduled hooks may run late or not run at all.
 
 MainWP includes minute-level, hourly, and daily schedules. If cron is not triggered often enough, update checks, sync-related processing, uptime checks, and scheduled emails can be delayed.
+
+---
+
+## Understand Cron Warnings
+
+Starting with MainWP Dashboard 6.2, cron monitoring runs automatically. You do not need to enable Custom Event Monitor. Keep MainWP Dashboard and MainWP Child updated to receive child-site reports.
+
+An overdue warning can appear when the scheduled monitoring check has not run for more than **15 minutes**. It signals that scheduled work may be delayed; it does not check whether every individual task completed successfully.
+
+| Notice | Meaning and location |
+| --- | --- |
+| **Scheduled tasks have not run recently.** | The Dashboard's scheduled monitoring check is overdue. The notice appears above the widgets on **Operations**. |
+| **Child site scheduled tasks have not run recently.** | A child site reported an overdue check. The notice appears above the widgets on that site's **Overview** and is updated when you sync the site. |
+| **The "Use WP-Cron" setting is disabled.** | MainWP's **Use WP Cron** setting is off. This is a reminder on **Operations** to configure external jobs, not evidence that those jobs have failed. |
+
+This example shows a warning about a child site:
+
+![Child-site Overview displaying an overdue scheduled-tasks warning and Learn more link in MainWP Dashboard dark mode](/images/dashboard/child-site-cron-warning-dark.svg)
+
+### Respond to an Overdue Warning
+
+<Steps>
+  <Step title="Identify which site needs attention">
+    A warning on **Operations** concerns the Dashboard site. A warning that names child-site scheduled tasks concerns the child site whose **Overview** you are viewing. Check scheduling on the affected site's host.
+  </Step>
+  <Step title="Check the cron trigger">
+    If the message says WP-Cron is disabled, verify that the site's external cron job is running. Disabling WordPress's page-triggered cron is valid when a reliable external runner is configured.
+
+    Otherwise, check whether low traffic, a failed external trigger, or an access restriction is preventing cron execution. For the Dashboard, use the setup instructions below and the [troubleshooting checklist](#troubleshooting-option-1).
+  </Step>
+  <Step title="Verify recovery">
+    After correcting the trigger, allow scheduled monitoring to run again and refresh the page. Check the Dashboard's task activity at **MainWP > Info > Cron Schedules**.
+
+    For a child site, sync it again after its monitoring check has recovered so the Dashboard receives the updated report. See [Child Site Cron Warnings](/sites/management/manage-child-sites#child-site-cron-warnings) for the site-specific steps.
+  </Step>
+</Steps>
+
+### Dismissal and the Disabled-Cron Reminder
+
+You can dismiss a Dashboard notice with its close icon. This hides the current incident for your user account; it does not fix scheduling. After MainWP detects recovery, a later occurrence can show a new notice. Child-site warnings have no dismiss control and clear from the Dashboard when a subsequent sync reports recovery.
+
+If **Use WP Cron** is intentionally disabled for [direct-worker mode](/customization/disable-wp-cron), verify that all required server jobs are configured. MainWP skips the Dashboard's overdue WP-Cron check in this mode and shows the disabled-setting reminder instead. The reminder does not verify the individual external jobs. For the recommended setup below, keep **Use WP Cron** enabled.
 
 ---
 

@@ -43,6 +43,14 @@
   },
   "redirects": [
     {
+      "source": "/advanced/miscellaneous/premium-plugin-updates-not-detected",
+      "destination": "/troubleshooting/premium-plugin-updates-not-detected"
+    },
+    {
+      "source": "/customization/delayed-wp-cron",
+      "destination": "/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard"
+    },
+    {
       "source": "/advanced/miscellaneous/getting-started-with-the-free-extension-bundle",
       "destination": "/advanced/miscellaneous/getting-started-with-mainwp-essentials"
     },
@@ -190,6 +198,8 @@
             "icon": "gauge-high",
             "pages": [
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
+              "dashboard/overview/mainwp-command-palette",
+              "dashboard/overview/mainwp-database-health-check",
               "dashboard/overview/manage-extensions",
               "dashboard/overview/choose-list-or-grid-view-for-manage-sites-table",
               "dashboard/overview/dashboard-insights",
@@ -234,6 +244,7 @@
             "icon": "arrows-rotate",
             "pages": [
               "sites/updates/manage-updates",
+              "sites/updates/premium-updates",
               "sites/updates/does-mainwp-have-safe-updates",
               "sites/updates/how-to-change-daily-update-and-sync-frequency",
               "sites/updates/how-to-change-the-number-of-simultaneous-update-requests",
@@ -368,6 +379,7 @@
                   "troubleshooting/my-plugin-got-deleted-deactivated-corrupted-after-updating-it-via-the-mainwp-dashboard",
                   "troubleshooting/plugin-installation-fails-with-error-message-upload-failed",
                   "troubleshooting/why-does-my-premium-plugin-not-show-a-changelog-on-mainwp-dashboard",
+                  "troubleshooting/premium-plugin-updates-not-detected",
                   "troubleshooting/premium-theme-updates-not-detected",
                   "troubleshooting/deleting-plugins-and-themes-not-working-on-the-wp-engine-hosted-child-sites-wp-engine-hosting"
                 ]
@@ -522,7 +534,6 @@
                   "advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed",
                   "advanced/miscellaneous/how-to-install-a-plugin-on-sites-that-already-have-a-certain-plugin-installed",
                   "advanced/miscellaneous/ensuring-correct-language-for-plugins-after-bulk-installation",
-                  "advanced/miscellaneous/premium-plugin-updates-not-detected",
                   "advanced/miscellaneous/limited-access-to-wordpress-org-resources-and-its-impact-on-mainwp-users"
                 ]
               },

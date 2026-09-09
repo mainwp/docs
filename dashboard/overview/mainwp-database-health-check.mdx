@@ -1,0 +1,94 @@
+---
+title: MainWP Database Health Check
+sidebarTitle: Database Health Check
+description: >-
+  Check MainWP Dashboard database tables, column definitions, and database
+  privileges. Understand the results and gather details for support.
+---
+
+MainWP Dashboard 6.2 includes database checks on the Server Information page. Use them when troubleshooting missing data, unexpected errors, or a request from MainWP Support to check your Dashboard database.
+
+## What You'll Learn
+
+- Open the Database section and refresh its results
+- Understand table, column, and database privilege checks
+- Read table sizes and prepare a system report for support
+
+## Prerequisites
+
+- MainWP Dashboard 6.2 or later
+- Access to **MainWP > Info > Server** on your Dashboard site
+
+## Check Your Database
+
+<Steps>
+<Step title="Open Server Information">
+Go to **MainWP > Info > Server** (`admin.php?page=ServerInformation`).
+</Step>
+<Step title="Find the Database section">
+Scroll to **Database** to see the summary and table results. Checks run when the page loads. Reload the page to run them again after an issue has been addressed.
+</Step>
+<Step title="Find a specific table">
+Use **Search system report** at the top of the page to filter the results by a table name. For example, search for `mainwp_wp_logs` to find Network Activity tables. Clear the search to show all results again.
+</Step>
+</Steps>
+
+![Database section in dark mode showing Network Activity tables, data and index sizes, storage engines, and green check marks](/images/dashboard/database-health-table-results-dark.svg)
+
+The checks cover MainWP tables stored on your Dashboard site. Add-on table and column checks depend on the information supplied by each installed, active Add-on. This page does not check databases on your Child Sites.
+
+## Understand the Results
+
+A **green check mark** means the checks performed for that row passed. A **red cross** identifies a failure; the detected value explains what was found. Summary rows such as database size may have no status icon.
+
+| Result | Meaning | Next Step |
+|--------|---------|-----------|
+| Missing core table | A required MainWP Dashboard table was not found. | Send the table name and a system report to MainWP Support. |
+| Missing extension table | An Add-on reported a required table that was not found. | Include the Add-on name, table name, and system report in your support request. |
+| Missing columns | A table is missing one or more expected fields. | Include the table and column names shown in the result. |
+| Incorrect column definitions found | A field's definition differs from what MainWP or the Add-on expects. | Include the expected and actual definitions shown in the result. |
+| Missing database privileges | The check could not confirm all required database permissions. | Ask your hosting provider to check the database user's permissions and provide the listed missing privileges. |
+
+Add-on schema checks depend on the Add-on version and its support for this feature. A table may appear with size information even when the Add-on does not provide column definitions for validation.
+
+<Note>
+The Database Health Check reports problems. It does not repair tables, restore missing data, or optimize the database.
+</Note>
+
+## Read Database Sizes and Details
+
+The summary shows the MainWP database version, your table prefix, and database size figures. These size figures cover the MainWP tables on the Dashboard site.
+
+| Detail | What It Shows |
+|--------|---------------|
+| MainWP database version | The database structure version recorded by MainWP. |
+| Database prefix | The prefix used by this WordPress installation, such as `wp_`. |
+| Total Database Size | The combined data and index size reported for MainWP tables. |
+| Database Data Size | Space used by table data. |
+| Database Index Size | Space used by indexes, which help the database find records. |
+| Data / Index / Engine | Each table's reported data size, index size, and storage engine, such as InnoDB. |
+
+Sizes are displayed in MB. A large table does not automatically indicate a failed health check. For cleanup options, see [Which MainWP database tables usually take the most space?](/troubleshooting/which-mainwp-database-tables-can-get-large).
+
+## Share Results with Support
+
+<Steps>
+<Step title="Note the failed checks">
+Keep the exact table names, column names, and messages shown in the Database section. Include what you were doing when the original problem occurred.
+</Step>
+<Step title="Download a system report">
+Clear **Search system report**, then click **Download Full System Report** at the top of the page. Clearing the search ensures the download includes all report rows.
+
+![System report download buttons in dark mode with a green arrow pointing to Download Full System Report](/images/dashboard/database-health-system-report-dark.svg)
+</Step>
+<Step title="Send the report with your support request">
+Attach the report to your private [MainWP Support request](https://mainwp.com/support/). For a public community discussion, use **Download Community System Report**, which omits or masks selected details. Review the report before posting it publicly.
+</Step>
+</Steps>
+
+After your host or support team addresses the issue, reload **Info > Server** and check the Database results again.
+
+## Related Resources
+
+- [Resolve system requirement issues](/troubleshooting/resolve-system-requirement-issues) - Other checks on the Server Information page
+- [Large MainWP database tables](/troubleshooting/which-mainwp-database-tables-can-get-large) - Identify size drivers and review cleanup options

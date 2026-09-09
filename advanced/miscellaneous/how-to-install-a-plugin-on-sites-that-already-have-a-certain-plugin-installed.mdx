@@ -24,6 +24,16 @@ This workflow helps you install (or re-install) a plugin on child sites that alr
 
 ---
 
+## Before Using a ZIP for Premium Updates
+
+If a premium update is missing, first check **MainWP > Settings > Premium Updates** in MainWP Dashboard 6.2. Built-in compatibility covers many products, and **Custom Identifiers** lets you add others without a code snippet. Verify the license on the child site and sync again before deciding whether a manual installation is needed.
+
+![Premium Updates settings with the custom identifier form](/images/dashboard/premium-updates-overview-dark.svg)
+
+See [Premium Updates](/sites/updates/premium-updates) for setup. Use the workflow below when you need to install a vendor-provided ZIP or a specific version on selected sites.
+
+---
+
 ## Find Sites with the Plugin Installed
 
 <Steps>
@@ -80,7 +90,7 @@ You're taken to **Plugins > Install Plugins** with the selected child sites pre-
 
 | Scenario | How This Helps |
 |----------|----------------|
-| Premium plugin updates | Install new version ZIP on sites with the plugin |
+| Manual premium plugin updates | Install a vendor-provided version ZIP on sites with the plugin |
 | Downgrade plugin | Install specific older version |
 | License-based plugins | Re-install after license renewal |
 | Consistent versions | Ensure all sites run the same version |
@@ -102,4 +112,4 @@ You're taken to **Plugins > Install Plugins** with the selected child sites pre-
 
 - [Find Sites Missing a Plugin](/advanced/miscellaneous/how-to-find-sites-that-dont-have-a-certain-plugin-or-theme-installed) - Sites without a plugin
 - [Managing Plugins](/sites/plugins/managing-plugins-with-mainwp) - Plugin management overview
-- [Premium Plugin Updates Not Detected](/advanced/miscellaneous/premium-plugin-updates-not-detected) - Update detection issues
+- [Premium Plugin Updates Not Detected](/troubleshooting/premium-plugin-updates-not-detected) - Update detection issues

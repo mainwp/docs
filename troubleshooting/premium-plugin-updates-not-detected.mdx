@@ -1,0 +1,94 @@
+---
+title: Premium Plugin Updates Not Detected
+sidebarTitle: "Premium Plugin Updates"
+description: >-
+  Troubleshoot missing premium plugin updates, add custom identifiers in
+  MainWP Dashboard, and use existing compatibility filters when needed.
+---
+
+MainWP Dashboard 6.2 includes built-in compatibility for many premium plugins. If an update is missing, check the child site first, then use **Settings > Premium Updates** to add compatibility when needed. Existing PHP filters still work.
+
+## What You'll Learn
+
+- Check whether WordPress detects the update on the child site
+- Add a plugin's identifier through Premium Updates settings
+- Keep or extend existing compatibility snippets
+
+## Troubleshooting
+
+<Steps>
+<Step title="Check the child site and license">
+Log in to the affected child site and open **Dashboard > Updates**. Use **Check again** if needed. Confirm that the vendor's license, account connection, or registration is active for this site.
+
+If the update never appears there, check the plugin's own settings and contact its author. MainWP compatibility cannot bypass the vendor's update or licensing requirements.
+</Step>
+<Step title="Check whether the plugin is active">
+Some premium updaters only load while the plugin is active. Check the affected child's Plugins screen and any inactive notice under **MainWP > Settings > Premium Updates > Detected Plugins**.
+</Step>
+<Step title="Sync the child site">
+Go to **MainWP > Sites > Manage Sites**, sync the affected site, and check its plugin updates again.
+</Step>
+<Step title="Add compatibility if the update is still missing">
+Open **MainWP > Settings > Premium Updates**. Under **Custom Identifiers**, select **Plugin** and search by product name or identifier. Select the correct premium product, or manually enter its full plugin identifier, then click **Add New**.
+
+![Plugin identifier field highlighted in the Premium Updates settings form](/images/dashboard/premium-updates-plugin-identifier-dark.svg)
+
+Use the plugin folder and main PHP file, such as `example-pro/example-pro.php`. A display name or folder alone is not the full identifier. Search results also include non-premium plugins; do not add one simply because it appears in the results.
+
+Built-in and already-added identifiers are omitted from suggestions. Check **Detected Plugins** and the custom table before attempting to add the same product again.
+</Step>
+<Step title="Sync and retry">
+Sync again after adding the identifier. If the update appears but fails to install, check licensing on the child site and try that plugin separately. See [failed update troubleshooting](/troubleshooting/mainwp-fails-to-update-all-items-on-child-sites) for further checks.
+</Step>
+</Steps>
+
+For the complete settings workflow, see [Premium Updates](/sites/updates/premium-updates).
+
+## Advanced Compatibility Filters
+
+These filters remain supported in MainWP Dashboard 6.2. A working snippet does not need to be replaced with a settings entry. For a new entry, the settings page is usually simpler and applies both behaviors automatically.
+
+| Filter | Purpose |
+| --- | --- |
+| `mainwp_detect_premium_plugins_update` | Adds identifiers for extra update detection |
+| `mainwp_request_update_premium_plugins` | Adds identifiers for premium update requests |
+
+<Accordion title="Add compatibility with a PHP snippet">
+
+Add this code on the **MainWP Dashboard site**, for example in the PHP section of the [MainWP Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension) or an existing custom plugin.
+
+Replace `example-pro/example-pro.php` in both callbacks with the installed plugin's full identifier. Ask the plugin author if you do not know its main PHP file.
+
+```php
+add_filter( 'mainwp_detect_premium_plugins_update', 'hook_mainwp_detect_premium_plugins_update' );
+function hook_mainwp_detect_premium_plugins_update( $premiums = array() ) {
+    $premiums[] = 'example-pro/example-pro.php';
+    return $premiums;
+}
+
+add_filter( 'mainwp_request_update_premium_plugins', 'hook_mainwp_request_update_premium_plugins' );
+function hook_mainwp_request_update_premium_plugins( $premiums = array() ) {
+    $premiums[] = 'example-pro/example-pro.php';
+    return $premiums;
+}
+```
+
+For multiple plugins, add another `$premiums[] = 'folder/main-file.php';` line in each callback. If these function names already exist in your snippet, edit that snippet instead of adding duplicate function definitions.
+
+Append to the supplied array as shown. Returning a replacement array removes built-in and UI-added exact identifiers from that filter. Filter-only additions are not automatically listed in the Premium Updates settings tables.
+
+Save the snippet and sync the affected sites. If you use a theme's `functions.php` instead, remember that switching themes stops that code from running and updating a parent theme can overwrite it.
+
+</Accordion>
+
+## When to Contact Support
+
+- Contact the vendor if the update does not appear or install on the child site itself, or you need the correct identifier.
+- [Contact MainWP Support](https://mainwp.com/my-account/get-support/) if it works directly on the child site but still fails through MainWP after these checks. Include the plugin name, versions, and error message.
+- Use a vendor-provided ZIP for a [manual update](/advanced/miscellaneous/how-to-install-a-plugin-on-sites-that-already-have-a-certain-plugin-installed) if necessary.
+
+## Related Resources
+
+- [Premium Updates](/sites/updates/premium-updates)
+- [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected)
+- [Manage Updates](/sites/updates/manage-updates)
