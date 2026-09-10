@@ -64,12 +64,11 @@ curl -u 'admin:xxxx' \
 
 Get detailed information about a single site.
 
-**Method:** POST (requires input)
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"include_stats":true}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"include_stats":true}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-v1/run'
 ```
 
@@ -422,12 +421,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get list of plugins installed on a child site.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"status":"active"}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"status":"active"}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-plugins-v1/run'
 ```
 
@@ -561,12 +559,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get list of themes installed on a child site.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-themes-v1/run'
 ```
 
@@ -743,12 +740,11 @@ curl -u 'admin:xxxx' \
 
 Get security information about a site.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-security-v1/run'
 ```
 
@@ -784,12 +780,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get change/activity log for a site. Requires the Logs module to be active.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"page":1,"per_page":50}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"page":1,"per_page":50}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-changes-v1/run'
 ```
 
@@ -829,12 +824,11 @@ This ability requires the Logs module. If inactive, returns `mainwp_module_not_a
 
 Get the client associated with a site.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-client-v1/run'
 ```
 
@@ -864,12 +858,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get cost tracking data for a site. Requires the Cost Tracker module to be active.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-costs-v1/run'
 ```
 

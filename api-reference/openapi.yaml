@@ -123,8 +123,10 @@ paths:
     post:
       operationId: postBatch
       summary: Run grouped actions across controllers
-      description: Runs grouped actions against the sites, clients, updates, costs, and tags controllers in one
-        request. The response mirrors the request structure. The default limit is 100 items across all groups.
+      description: Runs grouped actions against the sites, clients, and tags controllers in one
+        request. Unsupported groups, including updates and costs, return a group-level rest_batch_group_not_supported
+        error. Malformed groups or unsupported actions return rest_invalid_param. Valid groups can still execute.
+        Inspect group and per-item errors even when HTTP 200 is returned. The default limit is 100 items across all groups.
       tags:
         - Batch
       requestBody:
@@ -201,14 +203,6 @@ paths:
                       description: Clients to create. Same fields as `POST /clients/add`.
                       items:
                         $ref: '#/components/schemas/ClientCreateInput'
-                costs:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: Cost records to create. Same fields as `POST /costs/add`.
-                      items:
-                        $ref: '#/components/schemas/CostInput'
                 tags:
                   type: object
                   properties:
@@ -217,16 +211,6 @@ paths:
                       description: Tags to create. Same fields as `POST /tags/add`.
                       items:
                         $ref: '#/components/schemas/TagCreateInput'
-                updates:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: 'Accepted by the route but not implemented: the updates controller has no create
-                        handler, so every item comes back as an `invalid-method` error. Use the routes under `/updates`
-                        instead.'
-                      items:
-                        type: object
       responses:
         '200':
           description: Per-item results, grouped the same way as the request.
@@ -244,8 +228,10 @@ paths:
     put:
       operationId: putBatch
       summary: Run grouped actions across controllers
-      description: Runs grouped actions against the sites, clients, updates, costs, and tags controllers in one
-        request. The response mirrors the request structure. The default limit is 100 items across all groups.
+      description: Runs grouped actions against the sites, clients, and tags controllers in one
+        request. Unsupported groups, including updates and costs, return a group-level rest_batch_group_not_supported
+        error. Malformed groups or unsupported actions return rest_invalid_param. Valid groups can still execute.
+        Inspect group and per-item errors even when HTTP 200 is returned. The default limit is 100 items across all groups.
       tags:
         - Batch
       requestBody:
@@ -322,14 +308,6 @@ paths:
                       description: Clients to create. Same fields as `POST /clients/add`.
                       items:
                         $ref: '#/components/schemas/ClientCreateInput'
-                costs:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: Cost records to create. Same fields as `POST /costs/add`.
-                      items:
-                        $ref: '#/components/schemas/CostInput'
                 tags:
                   type: object
                   properties:
@@ -338,16 +316,6 @@ paths:
                       description: Tags to create. Same fields as `POST /tags/add`.
                       items:
                         $ref: '#/components/schemas/TagCreateInput'
-                updates:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: 'Accepted by the route but not implemented: the updates controller has no create
-                        handler, so every item comes back as an `invalid-method` error. Use the routes under `/updates`
-                        instead.'
-                      items:
-                        type: object
       responses:
         '200':
           description: Per-item results, grouped the same way as the request.
@@ -365,8 +333,10 @@ paths:
     patch:
       operationId: patchBatch
       summary: Run grouped actions across controllers
-      description: Runs grouped actions against the sites, clients, updates, costs, and tags controllers in one
-        request. The response mirrors the request structure. The default limit is 100 items across all groups.
+      description: Runs grouped actions against the sites, clients, and tags controllers in one
+        request. Unsupported groups, including updates and costs, return a group-level rest_batch_group_not_supported
+        error. Malformed groups or unsupported actions return rest_invalid_param. Valid groups can still execute.
+        Inspect group and per-item errors even when HTTP 200 is returned. The default limit is 100 items across all groups.
       tags:
         - Batch
       requestBody:
@@ -443,14 +413,6 @@ paths:
                       description: Clients to create. Same fields as `POST /clients/add`.
                       items:
                         $ref: '#/components/schemas/ClientCreateInput'
-                costs:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: Cost records to create. Same fields as `POST /costs/add`.
-                      items:
-                        $ref: '#/components/schemas/CostInput'
                 tags:
                   type: object
                   properties:
@@ -459,16 +421,6 @@ paths:
                       description: Tags to create. Same fields as `POST /tags/add`.
                       items:
                         $ref: '#/components/schemas/TagCreateInput'
-                updates:
-                  type: object
-                  properties:
-                    create:
-                      type: array
-                      description: 'Accepted by the route but not implemented: the updates controller has no create
-                        handler, so every item comes back as an `invalid-method` error. Use the routes under `/updates`
-                        instead.'
-                      items:
-                        type: object
       responses:
         '200':
           description: Per-item results, grouped the same way as the request.
@@ -12937,8 +12889,14 @@ components:
           type: string
           description: SSL version to force for requests to this site.
         force_use_ipv4:
-          type: boolean
-          description: Force IPv4 for requests to this site.
+          oneOf:
+            - type: boolean
+            - type: integer
+              enum:
+                - 0
+                - 1
+                - 2
+          description: Use 0 (or false) to disable, 1 (or true) to force IPv4, or 2 to use the global setting.
         disablehealthchecking:
           type: integer
           enum:
@@ -13018,8 +12976,14 @@ components:
           type: boolean
           description: Verify the SSL certificate of the child site.
         force_use_ipv4:
-          type: boolean
-          description: Force IPv4 for requests to this site.
+          oneOf:
+            - type: boolean
+            - type: integer
+              enum:
+                - 0
+                - 1
+                - 2
+          description: Use 0 (or false) to disable, 1 (or true) to force IPv4, or 2 to use the global setting.
         http_user:
           type: string
           writeOnly: true
@@ -13066,8 +13030,14 @@ components:
           type: string
           description: SSL version to force for requests to this site.
         force_use_ipv4:
-          type: boolean
-          description: Force IPv4 for requests to this site.
+          oneOf:
+            - type: boolean
+            - type: integer
+              enum:
+                - 0
+                - 1
+                - 2
+          description: Use 0 (or false) to disable, 1 (or true) to force IPv4, or 2 to use the global setting.
         disablehealthchecking:
           type: integer
           enum:

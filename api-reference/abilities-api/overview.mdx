@@ -159,33 +159,54 @@ MainWP registers these categories:
 ### Endpoint
 
 ```http
-GET|POST /wp-json/wp-abilities/v1/abilities/{name}/run
+GET|POST|DELETE /wp-json/wp-abilities/v1/abilities/{name}/run
 ```
 
 ### HTTP Methods
 
-Each ability specifies whether it reads or modifies data:
+Choose the method from the ability's `meta.annotations`:
 
-- **GET** — Read-only abilities (marked `readonly: true`)
-- **POST** — Abilities that create, update, or delete data
+- **GET** - Read-only abilities (`readonly: true`), including those that require input.
+- **DELETE** - Non-read-only abilities with both `destructive: true` and `idempotent: true`.
+- **POST** - All other write abilities, including destructive abilities marked `idempotent: false`.
+
+For example, `mainwp/delete-tag-v1` uses DELETE, while `mainwp/delete-site-v1` and `mainwp/delete-client-v1` use POST. These methods follow [WordPress Abilities method validation](https://developer.wordpress.org/reference/classes/wp_rest_abilities_v1_run_controller/validate_request_method/); using the wrong method returns `rest_ability_invalid_method` with HTTP 405.
 
 ### Input Handling
 
-**GET requests**: Omit the `input` parameter to use schema defaults. URL-encoded JSON in query strings does not work reliably.
+MainWP Dashboard 6.2 supports the following input formats for `mainwp/*` ability run routes.
+
+**GET requests**: Omit input only when the ability's schema supplies suitable defaults. To provide filters or required values, send the input object as JSON in the `input_json` query parameter. Use `--data-urlencode` with `curl -G` to encode it correctly:
 
 ```bash
-curl -u "admin:xxxx" \
-  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-sites-v1/run"
+curl -G -u "admin:xxxx" \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"include_stats":true}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-v1/run"
 ```
 
-**POST requests**: Pass input in the JSON body:
+`input_json` preserves JSON types such as booleans, arrays, and `null` for schema validation. The JSON value must be an object and must not exceed 8 KiB (8,192 bytes). Do not send both `input` and `input_json`. Legacy bracket-style query parameters remain supported, but a JSON string in the plain `input` parameter is not decoded by this adapter. Keep credentials out of query strings.
+
+**POST requests**: Pass an `input` object in the JSON body:
 
 ```bash
 curl -X POST -u "admin:xxxx" \
   -H "Content-Type: application/json" \
-  -d '{"input":{"site_id_or_domain":1}}' \
-  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-v1/run"
+  -d '{"input":{"site_ids_or_domains":[1]}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-sites-v1/run"
 ```
+
+**DELETE requests**: Use an `application/json` body containing only an `input` object. This keeps operation inputs out of the URL. For example, preview a tag deletion:
+
+```bash
+curl -X DELETE -u "admin:xxxx" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"tag_id":1,"dry_run":true}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-tag-v1/run"
+```
+
+After reviewing the preview, execute with `confirm: true` and `dry_run: false`. The DELETE body must not exceed 1 MiB (1,048,576 bytes). Do not combine a body with `input` or `input_json` query parameters. Existing bracket-style `input` query parameters remain supported when no body is sent, but the JSON body is preferred. `input_json` is a GET-only parameter.
+
+Malformed JSON, conflicting input sources, unsupported DELETE body formats, and input exceeding the transport limits return `mainwp_abilities_invalid_input_transport` with HTTP 400. Valid transport still has to pass the individual ability's input schema and permission checks.
 
 ---
 
@@ -259,6 +280,7 @@ These annotations help AI agents make informed decisions about which abilities t
 
 | Code | HTTP | Description |
 |------|------|-------------|
+| `mainwp_abilities_invalid_input_transport` | 400 | Invalid JSON input format, conflicting input sources, or transport size limit exceeded |
 | `mainwp_site_not_found` | 404 | Site ID or domain not found |
 | `mainwp_client_not_found` | 404 | Client ID or email not found |
 | `mainwp_tag_not_found` | 404 | Tag ID not found |

@@ -71,6 +71,19 @@ When creating a site through REST API, the site URL and administrator username a
 
 ## Representative Requests
 
+### Connection Input Types
+
+When adding or editing sites, use the expected JSON types instead of relying on automatic conversion:
+
+| Field | Applies To | Accepted Values |
+|---|---|---|
+| `force_use_ipv4` | Add and edit | `0` to disable, `1` to force IPv4, or `2` to use the global setting; JSON `false` and `true` are also accepted for `0` and `1` |
+| `ssl_verify` | Add | JSON `true` or `false`; `null` is rejected |
+| `uniqueid` | Add and edit | String containing the child's Unique Security ID; `uniqueId` is accepted as a fallback alias |
+| `groupids` | Add and edit | Comma-separated tag IDs in a string, such as `"3,7"` |
+
+Omitting `force_use_ipv4` when adding a site uses the global setting for the connection attempt. Invalid values, such as `3` for `force_use_ipv4` or `null` for `ssl_verify`, return HTTP 400. Check the error response for the affected parameter and correct it before retrying. Site creation inside `/sites/batch` and global `/batch` uses the same connection input validation.
+
 ### List sites
 
 ```bash

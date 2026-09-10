@@ -21,7 +21,7 @@ Cost endpoints require the built-in [Cost Tracker](/clients/cost-tracker) module
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
 | GET | `/costs` | List costs | `page`, `per_page`, `search`, `include`, `exclude`, `status`, `category`, `type` |
-| POST, PUT, PATCH | `/costs/add` | Create a cost | `name`, `price`, `payment_type`, `product_type`, `renewal_type`, one of `sites`/`groups`/`clients` |
+| POST, PUT, PATCH | `/costs/add` | Create a cost | `name`, `price`, `payment_type`, `product_type`, `renewal_type`, at least one of `sites`/`groups`/`clients` |
 | GET | `/costs/{id}` | Get one cost | `id` |
 | POST, PUT, PATCH | `/costs/{id}/edit` | Edit a cost | Same fields as add |
 | DELETE | `/costs/{id}/remove` | Remove a cost | `id` |
@@ -38,9 +38,21 @@ Common write fields (create/edit):
 - `name`, `price`, `payment_type`, `license_type`, `product_type`, `product_slug`
 - `renewal_type`, `last_renewal`, `payment_method`, `cost_tracker_status`
 - `url`, `note`, visual fields like `product_color`, `icon_hidden`
-- Relationship selectors: `sites[]`, `groups[]`, or `clients[]`
+- Relationship selectors: `sites`, `groups` (tag IDs), and `clients`, each as a JSON array of integer IDs
 
-At least one target set (`sites`, `groups`, or `clients`) is required.
+At least one non-empty target set is required. You can combine `sites`, `groups`, and `clients` in the same request; all supplied selectors are saved and their linked sites are combined.
+
+```json
+{
+  "sites": [12],
+  "groups": [3, 7],
+  "clients": [4]
+}
+```
+
+The example above shows only the relationship fields; include the other required cost fields when creating a cost. Use arrays, not comma-separated strings, for these selectors.
+
+For `/costs/{id}` routes, the URL identifies the cost. A conflicting `id` in the body or query string does not redirect the operation to another cost. `/costs/add` always creates a new cost rather than updating a body-supplied `id`; batch updates identify their target through each item's `id`.
 
 ---
 

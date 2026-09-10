@@ -93,12 +93,11 @@ curl -u 'admin:xxxx' \
 
 Get detailed information about a single client.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"client_id_or_email":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"client_id_or_email":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-v1/run'
 ```
 
@@ -247,12 +246,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get sites associated with a client.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"client_id_or_email":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"client_id_or_email":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-sites-v1/run'
 ```
 
@@ -290,12 +288,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Count sites associated with a client.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"client_id_or_email":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"client_id_or_email":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/count-client-sites-v1/run'
 ```
 
@@ -321,12 +318,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get cost tracker entries for a client. Requires the Cost Tracker module to be active.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"client_id_or_email":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"client_id_or_email":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-client-costs-v1/run'
 ```
 

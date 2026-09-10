@@ -161,6 +161,8 @@ If your domain is not on the list of supported TLDs, you can add information man
 - **Automatically check domains** - If you want the add-on to automatically run checks, enable this feature.
 - **Automated domain checks frequency** - If automated checks are enabled, here you can set how often you want them to run.
 
+Expiration notifications require a successful latest check and a valid expiration date. If the latest automatic lookup fails, Domain Monitor does not send an expiration alert based on previously saved data. Eligible failed lookups are normally retried after one hour, subject to the Dashboard's background job processing.
+
 ### Individual Site Settings
 
 You can override the general settings for a specific child site:

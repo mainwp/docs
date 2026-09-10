@@ -16,15 +16,19 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| POST, PUT, PATCH | `/batch` | Execute grouped batch operations across multiple controllers | Controller payload objects (`sites`, `clients`, `updates`, `costs`, `tags`) |
+| POST, PUT, PATCH | `/batch` | Execute grouped batch operations across multiple controllers | Controller payload objects (`sites`, `clients`, `tags`) |
 
 ## Global Batch Behavior
 
 The global `/batch` controller is orchestration-focused:
 
-- Supports grouped `create` requests for controllers in scope (`sites`, `clients`, `updates`, `costs`, `tags`)
+- Supports grouped `create` requests for `sites`, `clients`, and `tags`
 - Supports additional site action arrays under `sites` such as `sync`, `reconnect`, `disconnect`, `suspend`, `check`, `remove`, `security`, `plugins`, `themes`, `non-mainwp-changes`
 - Enforces a request item limit (`mainwp_rest_batch_items_limit`, default `100`)
+
+Each group must be an object containing supported action arrays. Use objects for `create` items and positive site IDs for the additional site actions. A malformed group or unsupported action returns a group-level `rest_invalid_param` error, and that group is not executed.
+
+The global endpoint rejects `updates`, `costs`, and unknown groups with `rest_batch_group_not_supported`. Use [Updates Endpoints](/api-reference/rest-api/updates) for updates and `/costs/batch` for cost operations. Inspect the returned groups and per-item errors even when the overall request returns HTTP 200; valid groups can still run alongside a rejected group.
 
 ---
 

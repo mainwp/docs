@@ -42,7 +42,9 @@ It does not log credential values, tool arguments (which may contain sensitive d
 WordPress separately logs Application Password usage, so your Dashboard's admin shows which application authenticated and when.
 
 <Note>
-**Web server logs see deletion parameters.** Destructive operations are sent as DELETE requests with their inputs in the URL query string (a WordPress Abilities API requirement), so parameters like `site_id=123` appear in your Dashboard web server's access logs. Credentials never do (authentication travels in headers). If your compliance requirements are strict, restrict access-log visibility and set retention accordingly.
+**Web server logs can contain operation inputs.** The current MCP server sends inputs for read-only GET requests and destructive, idempotent DELETE requests in the URL query string. Other write operations use a POST JSON body. Query-string inputs can appear in your Dashboard web server's access logs; authentication credentials travel in headers. Restrict access-log visibility and set retention accordingly.
+
+MainWP Dashboard also supports a JSON body for DELETE requests through its [Abilities input handling](/api-reference/abilities-api/overview#input-handling). Direct integrations can use that option to keep DELETE inputs out of URLs, but this Dashboard capability does not change the current MCP server's query-string behavior.
 </Note>
 
 ## Destructive-operation classification

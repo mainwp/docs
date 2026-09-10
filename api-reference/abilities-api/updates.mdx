@@ -126,12 +126,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get available updates for a single site.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-updates-v1/run'
 ```
 

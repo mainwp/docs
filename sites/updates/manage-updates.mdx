@@ -603,6 +603,19 @@ Per-site translation control is available through **Ignore translation updates**
 
 ---
 
+## Automatic Update Summary Emails
+
+After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates Email** summarizing successful updates, grouped by child site. The email is processed in the background, so it may arrive after the updates finish.
+
+- The summary includes successful updates only. It is not a complete report of failed or skipped updates.
+- No summary is sent when the run has no successful updates to report.
+
+Auto Updates Email is separate from Daily Digest and does not wait for the next digest.
+
+See [Email Settings](/sites/management/mainwp-dashboard-settings#manage-email-notifications) for general notification configuration.
+
+---
+
 ## Safe Updates / Rollback
 
 MainWP 5.1 introduced a rollback feature that integrates with the WordPress core rollback feature from WordPress 6.3.

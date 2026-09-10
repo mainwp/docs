@@ -60,12 +60,11 @@ curl -u 'admin:xxxx' \
 
 Get detailed information about a single tag.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"tag_id":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"tag_id":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-v1/run'
 ```
 
@@ -155,17 +154,17 @@ Returns the updated tag object.
 
 Delete a tag. This is a destructive operation that requires confirmation.
 
-**Method:** POST
+**Method:** DELETE
 
 ```bash
 # Dry run to preview
-curl -X POST -u 'admin:xxxx' \
+curl -X DELETE -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
   -d '{"input":{"tag_id":1,"dry_run":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-tag-v1/run'
 
 # Actual deletion
-curl -X POST -u 'admin:xxxx' \
+curl -X DELETE -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
   -d '{"input":{"tag_id":1,"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-tag-v1/run'
@@ -206,12 +205,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get sites associated with a tag.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"tag_id":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"tag_id":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-sites-v1/run'
 ```
 
@@ -255,12 +253,11 @@ curl -X POST -u 'admin:xxxx' \
 
 Get clients associated with a tag (clients whose sites have this tag).
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"tag_id":1}}' \
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"tag_id":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-tag-clients-v1/run'
 ```
 

@@ -70,12 +70,11 @@ These abilities support batch queuing:
 
 Retrieves the current status of a queued batch operation.
 
-**Method:** POST
+**Method:** GET (readonly)
 
 ```bash
-curl -X POST -u "admin:xxxx" \
-  -H "Content-Type: application/json" \
-  -d '{"input":{"job_id":"sync_abc123def456"}}' \
+curl -G -u "admin:xxxx" \
+  --data-urlencode 'input_json={"job_id":"sync_abc123def456"}' \
   "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run"
 ```
 
@@ -138,9 +137,8 @@ if [ "$QUEUED" = "true" ] && [ -n "$JOB_ID" ]; then
 
   # 3. Poll for status
   while true; do
-    STATUS=$(curl -s -X POST -u "admin:xxxx" \
-      -H "Content-Type: application/json" \
-      -d "{\"input\":{\"job_id\":\"$JOB_ID\"}}" \
+    STATUS=$(curl -s -G -u "admin:xxxx" \
+      --data-urlencode "input_json=$(jq -cn --arg job_id "$JOB_ID" '{job_id: $job_id}')" \
       "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run")
 
     PROGRESS=$(echo $STATUS | jq -r '.progress')
