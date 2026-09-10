@@ -87,7 +87,12 @@ After removing a site from the Virusdie, you need to **MANUALLY** delete your un
 <Note>
 On-demand scans require a paid Virusdie plan. When Virusdie identifies the connected account as free, the Add-on hides the **Scan Site** action. Free accounts continue to receive automated weekly scans and email notifications.
 
-The paid-plan requirement also applies to scans requested through WP-CLI and the REST API.
+The paid-plan requirement also applies to scans requested through WP-CLI and the REST API. When a scan is requested from any of these entry points on a free account, the Add-on rechecks the Virusdie account plan first and returns:
+
+- `On-demand scanning requires a paid Virusdie plan.` if the account is on the free tier.
+- `Unable to verify Virusdie scan availability. Please try again later.` if Virusdie did not return a valid account response (for example, a temporary API error or invalid credentials).
+
+The Add-on also refreshes the account plan each time you open the Virusdie dashboard tab, so plan upgrades or downgrades on your Virusdie account take effect on your next visit without needing to sign out and back in.
 
 Virusdie can assign plan availability per site, but its API does not provide a read-only per-site check before a scan request. For accounts containing both free and paid sites, **Scan Site** may therefore appear for a site that is not eligible. If Virusdie responds with `Not available for this site`, on-demand scanning is unavailable for that site; this does not mean synchronization failed.
 </Note>
@@ -116,6 +121,8 @@ wp mainwp-virusdie scan <siteid>
 
 Replace `<siteid>` with the actual child site ID.
 
+If the connected Virusdie account is on the free tier, or Virusdie did not return a valid account response, the command exits with one of the errors described above (`On-demand scanning requires a paid Virusdie plan.` or `Unable to verify Virusdie scan availability. Please try again later.`).
+
 ### Scan via REST API
 
 **URI**
@@ -133,6 +140,16 @@ GET
 **Example Request**
 
 https://example.com/wp-json/mainwp/v1/virusdie/scan?site_id=25&consumer_key=ck_b587c54fa39976a2ad47b8faf260de84beb70f5d&consumer_secret=cs_75f7a905fa7ae1243570425ede6be026f4731f9c
+
+**Example Response (free account)**
+
+```json
+{
+  "error": "On-demand scanning requires a paid Virusdie plan."
+}
+```
+
+The endpoint responds with HTTP 200 and an `error` field in the body when the site cannot be scanned. Check for the `error` key before treating the response as a successful scan request.
 
 ## Set Up the Virusdie Integration
 
