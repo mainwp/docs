@@ -144,6 +144,10 @@ The BackWPup Add-on allows you to manage the BackWPup plugin backups directly fr
 
 After you click **Save Changes**, the add-on syncs this global job to child sites that do not use **Override General Settings**.
 
+<Note>
+When you run a global job with the **Backup now** action, the add-on checks every eligible child site for the job. If a site does not yet have the job mapped (for example, a site that was added after the job was created), the add-on creates the job on that child site first, then starts the backup. The mapping is only saved after the child site confirms a valid job ID, and any partial mapping is cleaned up if the child site does not respond correctly.
+</Note>
+
 ### Create a Backup Job on a Single Site
 
 <Steps>
