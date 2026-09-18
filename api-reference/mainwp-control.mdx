@@ -83,6 +83,53 @@ helps when you manage separate staging and production Dashboards. Output can be
 returned as JSON, making it practical for shell scripts, monitoring, and CI/CD
 jobs.
 
+## Login, Timeouts, and Output
+
+### Login Without the CLI Password Prompt
+
+`mainwpcontrol login` uses `MAINWP_APP_PASSWORD` instead of prompting for a
+password when that environment variable is set. Also set
+`MAINWP_DASHBOARD_URL` to the Dashboard the password belongs to, and provide
+the matching URL and username with `--url` and `--username`.
+
+See the [environment-variable authentication guide](https://github.com/mainwp/mainwp-control/blob/main/docs/configuration.md#environment-variable-auth)
+for setup instructions. If login reports that credentials were not saved to
+the system keychain, keep both variables available for subsequent commands.
+
+### Adjust the HTTP Request Timeout
+
+The default HTTP request timeout is 30 seconds. If a request times out, you can
+increase the `timeout` value in `settings.json`. The value is in milliseconds;
+for example, 120000 allows up to 120 seconds per request:
+
+```json
+{
+  "timeout": 120000
+}
+```
+
+Add or update this property without removing other settings. The default file
+location is `.config/mainwpcontrol/settings.json` under your home directory.
+If `XDG_CONFIG_HOME` is set, the file is in `mainwpcontrol/settings.json` under
+that directory instead. Run `mainwpcontrol config show` to inspect the active
+settings. See the [settings file reference](https://github.com/mainwp/mainwp-control/blob/main/docs/configuration.md#settings-file)
+for details.
+
+### Read Update Results
+
+`--json` produces structured output for scripts and other tools to process.
+Omitting `--json` from `abilities run` still displays the result as JSON; it does
+not convert update results into a table.
+
+When building a report with `list-updates-v1`, retrieve every page using `page`
+and `per_page`. The `total` field counts all matching updates, so it can be
+larger than the number of entries in the current page's `updates` array. Check
+any returned `errors` before treating a report as complete.
+
+Use `mainwpcontrol abilities info list-updates-v1` to inspect the input schema
+available on your Dashboard. The update list reflects information already
+stored in the Dashboard; listing updates does not perform a fresh site sync.
+
 ## MainWP Control vs MCP Server
 
 Use MainWP Control when you want:
