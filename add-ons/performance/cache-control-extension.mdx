@@ -15,6 +15,7 @@ addonType: "integration"
 - Controlling bulk purge speed with concurrent requests and request delay
 - Configuring global and site-specific Cloudflare credentials
 - Reading Cache Control logs and Cloudflare status indicators
+- Managing Cache Control from the WordPress Abilities API and MCP
 
 ---
 
@@ -26,7 +27,7 @@ addonType: "integration"
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2"
+  data-version="5.3"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
   data-integrates-with="Cloudflare and supported cache plugins"
@@ -200,6 +201,108 @@ The **Cloudflare** column uses three status colors:
 
 Use **Last Purged** and the **Log** messages to review a purge operation. A green Cloudflare icon alone does not confirm that a purge has run successfully.
 
+## Manage Cache Control from the Abilities API
+
+Cache Control 5.3 registers a `mainwp-cache-control` category with the WordPress [Abilities API](/api-reference/abilities-api/overview). AI agents, the [MainWP MCP Server](/mcp-server/overview), and other automation tools can then read Cache Control status and change policy without visiting the Dashboard UI. Each ability follows the same authentication, transport, and error rules as MainWP's built-in abilities.
+
+Cache Control registers eight abilities in the `mainwp` namespace:
+
+| Ability | Type | Purpose |
+| --- | --- | --- |
+| `mainwp/get-site-cache-control-status-v1` | Read | Return Dashboard policy and the last cached Child observation (detected cache solution, last reported purge) for one site. |
+| `mainwp/list-site-cache-control-statuses-v1` | Read | Paginate the same status payload across sites the caller can see. |
+| `mainwp/get-global-cache-control-configuration-v1` | Read | Return the non-secret global policy and a Cloudflare credential readiness classification. |
+| `mainwp/set-global-cache-control-policy-v1` | Write | Set the global auto-purge and Cloudflare enablement flags. Does not change credentials or sync sites. |
+| `mainwp/set-site-cache-control-policy-v1` | Write | Set one site's auto-purge and Cloudflare source modes. Does not change credentials or sync the Child. |
+| `mainwp/validate-cloudflare-credentials-v1` | Read | Validate the effective stored Cloudflare credentials for one site and return a bounded classification. |
+| `mainwp/purge-site-cache-v1` | Write (destructive) | Request a cache purge on one Child and return per-layer confirmation. |
+| `mainwp/get-site-cache-purge-outcome-v1` | Read | Return the last structured purge outcome cached from one Child. |
+
+Read abilities never contact the Child site or the cache provider. They report what the Dashboard has stored, so a `get` result reflects the last sync rather than live provider state.
+
+### Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site, so the Abilities API is available.
+- MainWP Dashboard 6.0 or later with an API key that carries the `mainwp-cache-control-extension` extension capability and the Dashboard capability required by each ability.
+- Cache Control 5.3 or later installed and activated on the Dashboard.
+
+If the Abilities API is not available on the Dashboard, Cache Control skips registration and the endpoints below return `rest_ability_not_found`.
+
+### Discover the abilities
+
+List the Cache Control category through the standard Abilities API discovery endpoint:
+
+```bash
+curl -u "admin:APPLICATION_PASSWORD" \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-cache-control"
+```
+
+Each entry includes the full input and output schemas, plus the `readonly`, `destructive`, and `idempotent` annotations that decide the HTTP method. For the transport rules and full error reference, see the [Abilities API Overview](/api-reference/abilities-api/overview).
+
+### Read one site's status
+
+`mainwp/get-site-cache-control-status-v1` is read-only, so it is called with GET and `input_json`:
+
+```bash
+curl -G -u "admin:APPLICATION_PASSWORD" \
+  --data-urlencode 'input_json={"site_id":42}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-cache-control-status-v1/run"
+```
+
+The response separates the current Dashboard configuration from the last Child observation:
+
+```json
+{
+  "site_id": 42,
+  "live": false,
+  "current_configuration": {
+    "source": "dashboard_current_configuration",
+    "auto_purge_mode": 2,
+    "configured_auto_purge_enabled": true,
+    "cloudflare_mode": 0,
+    "configured_cloudflare_enabled": true,
+    "child_application_status": "unknown"
+  },
+  "cached_child_observation": {
+    "source": "dashboard_cached_child_observation",
+    "cache_solution": "WP Rocket",
+    "last_reported_purge_at": 1758556800
+  }
+}
+```
+
+`auto_purge_mode` uses `0` disabled, `1` enabled, `2` inherit global. `cloudflare_mode` uses `0` use global, `1` site-specific configuration, `2` disabled. Sync the Child site to refresh `cached_child_observation`.
+
+### Change the global policy
+
+`mainwp/set-global-cache-control-policy-v1` is a write ability, so it is called with POST:
+
+```bash
+curl -X POST -u "admin:APPLICATION_PASSWORD" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"auto_purge_enabled":true,"cloudflare_enabled":false}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-global-cache-control-policy-v1/run"
+```
+
+The response includes both the previous and current values, a `changed` flag, and `sync_status: "not_requested"` to make clear that Child sites are not resynced by this call.
+
+### Purge one site
+
+`mainwp/purge-site-cache-v1` is destructive and non-idempotent, so it is called with POST:
+
+```bash
+curl -X POST -u "admin:APPLICATION_PASSWORD" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"site_id":42}}' \
+  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/purge-site-cache-v1/run"
+```
+
+Follow up with `mainwp/get-site-cache-purge-outcome-v1` to read the last structured purge outcome cached from that Child.
+
+### Use with the MainWP MCP Server
+
+When the MCP server is connected to a Dashboard running Cache Control 5.3, these abilities appear as MCP tools with the primary-namespace naming rules, for example `get_site_cache_control_status_v1` and `purge_site_cache_v1`. Confirmation gating from the [safety model](/mcp-server/safety) applies to `set-*` and `purge-*` because they are not read-only.
+
 ---
 
 ## Related Resources
@@ -207,3 +310,5 @@ Use **Last Purged** and the **Log** messages to review a purge operation. A gree
 - [Performance Add-ons](/add-ons/performance) - Browse all performance tools
 - [WP Rocket Integration](/add-ons/performance/rocket-extension) - Advanced WP Rocket management
 - [Manage Updates](/sites/updates/manage-updates) - Update management guide
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Discovery, transport, and error reference for MainWP abilities
+- [MainWP MCP Server](/mcp-server/overview) - Expose these abilities as tools to AI assistants
