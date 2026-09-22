@@ -42,6 +42,12 @@ addonType: "integration"
 
 MainWP Cache Control can automatically purge cache after MainWP Dashboard updates WordPress core, themes, or plugins on your MainWP Child sites. You can also manually purge cache for one site, selected sites, or all connected sites.
 
+## Prerequisites
+
+- Activate and configure a supported caching plugin or service on each MainWP Child site you want to purge, or configure Cloudflare purging for that site. Cache Control sends purge requests to the existing cache; it does not set up the caching solution.
+- For **WP-Optimize**, enable **page caching** in the plugin's settings. Activating the plugin alone is not enough for Cache Control to detect it.
+- Sync the sites after configuring their caching solution so MainWP Dashboard receives the detected cache information.
+
 ## Supported Cache Systems
 
 Cache Control supports Cloudflare and the following cache plugins or cache services:
@@ -73,6 +79,15 @@ Cache Control supports Cloudflare and the following cache plugins or cache servi
 
 If a MainWP Child site has both Cloudflare and a supported cache plugin enabled, Cache Control can purge both during the same operation. When the Rocket.net CDN Cache Plugin is detected, Cloudflare purging is skipped to avoid double-purging the same Cloudflare-backed cache layer.
 
+### Cloudflare API Token Permissions
+
+For **API Token** authentication, [create a Cloudflare API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with both of these zone permissions:
+
+- **Zone - Read**, which allows MainWP Child to [find the site's zone](https://developers.cloudflare.com/api/resources/zones/methods/list/).
+- **Cache Purge**, which allows MainWP Child to [purge the zone's cache](https://developers.cloudflare.com/api/resources/cache/methods/purge/).
+
+Scope the token to the zones you want to manage. A token saved in the global settings must cover the zones of all sites using that configuration. The same permission requirements apply to site-specific tokens.
+
 ## Configure Global Settings
 
 Use the global settings when most of your MainWP Child sites should use the same cache behavior.
@@ -93,8 +108,8 @@ Use the global settings when most of your MainWP Child sites should use the same
   <Step title="Set the delay between requests">
     For **Delay between requests**, choose how many seconds Cache Control waits before starting the next purge request during a bulk purge, from **0 seconds** to **10 seconds**. The default is **0 seconds**.
   </Step>
-  <Step title="Choose a Cloudflare authentication method">
-    Under **Cloudflare API Credentials**, select **Email & API key** or **API Token**, then enter the matching Cloudflare credentials.
+  <Step title="Optional: enter Cloudflare credentials">
+    If you enabled **Purge Cloudflare cache**, the **Cloudflare API Credentials** section appears. Select **Email & API key** or **API Token**, then enter the matching Cloudflare credentials. For a token, use the [permissions described above](#cloudflare-api-token-permissions).
   </Step>
   <Step title="Save and sync">
     Click **Save Settings**, then sync your MainWP Dashboard with your MainWP Child sites so the new settings are sent to the sites.
@@ -104,7 +119,9 @@ Use the global settings when most of your MainWP Child sites should use the same
 ![Cache Control global settings with Automatically purge cache and Purge Cloudflare cache toggles](/images/add-ons/cache-control-global-settings.png)
 
 <Note>
-When **Purge Cloudflare cache** is enabled, Cache Control verifies the Cloudflare credentials after you click **Save Settings**. If Cloudflare returns an error, the settings are saved, but MainWP Dashboard shows a warning with the Cloudflare API error so you can correct the credentials before syncing.
+When **Purge Cloudflare cache** is enabled and the required credential fields are filled in, Cache Control checks the credentials after you click **Save Settings**. If Cloudflare returns an error, the settings are saved, but MainWP Dashboard shows a warning with the Cloudflare API error so you can correct the credentials before syncing.
+
+This checks credential validity, not permission to find or purge a particular site's zone. Empty credentials are not validated. After saving and syncing, run a manual purge and review its result to check the site's Cloudflare setup.
 </Note>
 
 ## Configure a Single Site
@@ -125,7 +142,7 @@ Use single-site settings when one MainWP Child site needs different cache behavi
     For **Purge Cloudflare cache**, choose **Use global setting**, **Yes (use site-specific credentials)**, or **No (disabled for this site)**.
   </Step>
   <Step title="Optional: enter site-specific Cloudflare credentials">
-    If you choose **Yes (use site-specific credentials)**, select **Email & API key** or **API Token**, then enter the Cloudflare credentials for that site.
+    If you choose **Yes (use site-specific credentials)**, select **Email & API key** or **API Token**, then enter the Cloudflare credentials for that site. Site-specific tokens need the [same zone permissions](#cloudflare-api-token-permissions).
   </Step>
   <Step title="Save and sync">
     Click **Save Settings**, then sync the MainWP Child site.
@@ -133,7 +150,7 @@ Use single-site settings when one MainWP Child site needs different cache behavi
 </Steps>
 
 <Note>
-Site-specific Cloudflare credentials are verified on save when **Yes (use site-specific credentials)** is selected. If Cloudflare returns an error, MainWP Dashboard shows the returned API error in a warning notice.
+Site-specific Cloudflare credentials are checked on save when **Yes (use site-specific credentials)** is selected and the required fields are filled in. If Cloudflare returns an error, MainWP Dashboard shows the returned API error in a warning notice. As with global credentials, this check does not test a purge of the site's zone.
 </Note>
 
 ## Manually Purge Cache
@@ -152,7 +169,7 @@ If a selected site does not have a supported cache plugin detected and does not 
 
 ### From Widgets
 
-Cache Control widgets can appear on the Dashboard Operations page and individual site dashboard pages. Click **Clear Cache** in the widget to purge cache for the relevant site or site set. If you do not see the widget, enable it from the page settings for that screen.
+The **Updates Overview** widget includes **Clear Cache** on the **Operations** page and an individual site's **Overview** page. Use it on Operations to purge all connected sites, or on an individual site's Overview to purge only that site. If the widget is hidden, enable **Updates Overview** from **Page Settings** for that screen.
 
 ![Updates Overview widget showing the Clear Cache button and View Cache Control Logs button](/images/add-ons/cache-control-widget-purge.png)
 
@@ -162,7 +179,7 @@ The **MainWP > Sites > Manage Sites** table can show Cache Control columns such 
 
 ## View Logs
 
-Go to **MainWP > Add-ons > Cache Control > Logs** to review the Cache Control log table.
+After a manual purge finishes, sync the affected MainWP Child sites to refresh the purge information stored in MainWP Dashboard. Then go to **MainWP > Add-ons > Cache Control > Logs** to review the log table. Reloading Logs without syncing can leave the previous purge result and timestamp displayed.
 
 The log table includes:
 
@@ -177,9 +194,11 @@ The **Cloudflare** column uses three status colors:
 
 | Color | Meaning |
 | --- | --- |
-| Green | Cloudflare cache purging is enabled and the latest result did not return an error. |
+| Green | Cloudflare cache purging is enabled with no recorded error. This can also appear before the first purge result is recorded. |
 | Yellow | Cloudflare cache purging is enabled, but the latest Cloudflare result returned an error. Check the **Log** column for details. |
 | Grey | Cloudflare cache purging is disabled for the site. |
+
+Use **Last Purged** and the **Log** messages to review a purge operation. A green Cloudflare icon alone does not confirm that a purge has run successfully.
 
 ---
 
