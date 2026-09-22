@@ -2,12 +2,12 @@
 title: Abilities API Overview
 sidebarTitle: "Abilities API Overview"
 description: >-
-  MainWP registers 62 abilities into WordPress Core's Abilities API framework for programmatic site management via AI agents and automation tools.
+  MainWP registers 62 abilities into WordPress Core's Abilities API framework for programmatic site management via AI agents and automation tools. The Cache Control extension adds 8 more.
 ---
 
 The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
 
-MainWP Dashboard registers 62 abilities into this framework across five categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
+MainWP Dashboard registers 62 abilities into this framework across five categories. Individual MainWP extensions can register additional categories: the [Cache Control extension](/add-ons/performance/cache-control-extension) adds 8 abilities under `mainwp-cache-control`. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
 
 ## What You'll Learn
 
@@ -136,6 +136,7 @@ MainWP registers these categories:
 | `mainwp-clients` | 11 | Client management |
 | `mainwp-tags` | 7 | Tag/group management |
 | `mainwp-batch` | 1 | Batch operation monitoring |
+| `mainwp-cache-control` | 8 | Cache Control extension (requires Cache Control 5.3.0+) |
 
 <CardGroup cols={2}>
   <Card title="Sites Abilities" icon="server" href="/api-reference/abilities-api/sites">
@@ -149,6 +150,9 @@ MainWP registers these categories:
   </Card>
   <Card title="Tags Abilities" icon="tags" href="/api-reference/abilities-api/tags">
     7 abilities for tag management
+  </Card>
+  <Card title="Cache Control Abilities" icon="bolt" href="/api-reference/abilities-api/cache-control">
+    8 abilities from the Cache Control extension
   </Card>
 </CardGroup>
 

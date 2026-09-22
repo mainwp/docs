@@ -26,7 +26,7 @@ addonType: "integration"
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2"
+  data-version="5.3"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
   data-integrates-with="Cloudflare and supported cache plugins"
@@ -159,6 +159,8 @@ Cache Control can purge cache automatically after updates, but you can also star
 
 Bulk purges follow the **Maximum concurrent requests** and **Delay between requests** values from the global settings. Lower the concurrent requests or add a delay if bulk purges overload your server or trigger rate limits on your hosting or Cloudflare account. Raise the concurrent requests to finish bulk purges faster across many sites.
 
+Each site in a bulk purge reports its own result. If some sites fail while others succeed, MainWP Dashboard keeps the per-site outcomes separate and leaves the **Retry** control available so you can re-run only the failed sites. Sites that are suspended, disconnected, or not owned by the current user are filtered out before any purge request is sent and are never dispatched to a MainWP Child.
+
 ### From Manage Sites
 
 Go to **MainWP > Sites > Manage Sites**, select the sites, choose **Purge Cache (Cache Control)** from the bulk actions menu, and click **Apply**.
@@ -200,6 +202,12 @@ The **Cloudflare** column uses three status colors:
 
 Use **Last Purged** and the **Log** messages to review a purge operation. A green Cloudflare icon alone does not confirm that a purge has run successfully.
 
+## Automate with the Abilities API
+
+Cache Control registers a `mainwp-cache-control` category in the [MainWP Abilities API](/api-reference/abilities-api/overview) so AI agents and automation tools can read cache configuration, change policy flags, validate Cloudflare credentials, and trigger purges through the same authorization chain as MainWP Dashboard.
+
+See [Cache Control Abilities](/api-reference/abilities-api/cache-control) for the full list of abilities, their input and output schemas, and example requests.
+
 ---
 
 ## Related Resources
@@ -207,3 +215,4 @@ Use **Last Purged** and the **Log** messages to review a purge operation. A gree
 - [Performance Add-ons](/add-ons/performance) - Browse all performance tools
 - [WP Rocket Integration](/add-ons/performance/rocket-extension) - Advanced WP Rocket management
 - [Manage Updates](/sites/updates/manage-updates) - Update management guide
+- [Cache Control Abilities](/api-reference/abilities-api/cache-control) - Programmatic control via the Abilities API
