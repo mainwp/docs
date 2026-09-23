@@ -1,0 +1,271 @@
+---
+title: Custom Dashboard Abilities
+sidebarTitle: "Custom Dashboard Abilities"
+description: >-
+  4 abilities for managing MainWP Custom Dashboard snippets — inspect status, validate PHP, and preview or apply revision-bound replacements and clears.
+---
+
+The [MainWP Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) registers 4 abilities into the WordPress Abilities API framework under the `mainwp-custom-dashboard` category. They let AI agents and automation tools inspect snippet state, validate PHP without running it, and replace or clear the PHP, CSS, and JavaScript snippets that render on the MainWP Dashboard site.
+
+## What You'll Learn
+
+- Inspecting whether a snippet is configured without reading its source
+- Validating tagless PHP for syntax before writing it
+- Previewing and applying snippet replacements with revision protection
+- Clearing snippets with a two-step confirmation flow
+
+---
+
+## Prerequisites
+
+- WordPress 6.9 or later
+- MainWP Custom Dashboard Extension 5.2.0 or later, activated on the MainWP Dashboard site
+- WordPress user with `manage_options` capability who also passes the MainWP extension access check
+
+Every ability re-checks these prerequisites on both the permission callback and the execute callback. When authentication is missing the response is `mainwp_custom_dashboard_authentication_required` (401); when the caller lacks the extension permission or the extension is disabled the response is `mainwp_custom_dashboard_forbidden` (403).
+
+---
+
+## Snippet types and revisions
+
+Every ability targets exactly one snippet at a time. `type` must be one of:
+
+- `php`
+- `css`
+- `js`
+
+Writes and clears are bound to an `expected_revision`, a 64-character lowercase hex HMAC returned by `mainwp/get-custom-dashboard-snippet-metadata-v1`. Read the metadata immediately before a write, and pass the returned `revision` back as `expected_revision`. If the stored snippet has changed since you read it, the write is rejected with `mainwp_custom_dashboard_snippet_conflict` (409) and no bytes are written.
+
+Destructive abilities (`replace` and `clear`) require both flags together:
+
+- `dry_run: true` alone previews the change and never writes.
+- `dry_run: false` with `confirm: true` executes the change.
+- Any other combination returns `mainwp_custom_dashboard_invalid_input` (400).
+
+---
+
+## mainwp/get-custom-dashboard-snippet-metadata-v1
+
+Report whether one snippet type is configured, along with its revision hash and execution scope. Returns no snippet source, hash, size, storage format, or runtime output.
+
+**Method:** GET (readonly, idempotent)
+
+```bash
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"type":"php"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-custom-dashboard-snippet-metadata-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | Yes | Snippet type to inspect. One of `php`, `css`, `js`. |
+
+**Response:**
+
+```json
+{
+  "type": "php",
+  "configured": true,
+  "revision": "5b8e9c1f2a3d4b6e7f8091a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2",
+  "execution_scope": "all_wordpress_requests",
+  "observed_at": "2026-09-23T12:00:00Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | Snippet type observed. |
+| `configured` | boolean | `true` if the canonical snippet is nonempty. |
+| `revision` | string | Opaque 64-character hex revision. Pass this as `expected_revision` on a subsequent replace or clear. |
+| `execution_scope` | string | `all_wordpress_requests` for PHP; `mainwp_admin_except_child_tabs` for CSS and JS. |
+| `observed_at` | string | UTC timestamp of the read. |
+
+---
+
+## mainwp/validate-custom-dashboard-php-v1
+
+Parse tagless PHP and return whether it would pass the extension's pre-save validation. Nothing is stored, executed, or logged.
+
+**Method:** POST
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"code":"add_action( \"admin_footer\", function () { echo \"hi\"; } );"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/validate-custom-dashboard-php-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `code` | string | Yes | Tagless PHP up to 100,000 characters (262,144 bytes). Never logged or echoed. |
+
+**Response:**
+
+```json
+{
+  "valid": true,
+  "issue": "none",
+  "code_bytes": 63,
+  "syntax_only": true,
+  "observed_at": "2026-09-23T12:00:00Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `valid` | boolean | Whether the code passes tag, file-scope, and syntax checks. |
+| `issue` | string | Classification: `none`, `php_tags`, `file_scope_directive`, or `syntax_error`. |
+| `code_bytes` | integer | Byte count of the submitted value. |
+| `syntax_only` | boolean | Always `true`. Passing validation is not a runtime safety guarantee. |
+| `observed_at` | string | UTC timestamp of the validation. |
+
+---
+
+## mainwp/replace-custom-dashboard-snippet-v1
+
+Preview or replace one snippet. Uses a compare-and-swap update bound to `expected_revision`, so two callers cannot silently overwrite each other.
+
+**Method:** POST (destructive, not idempotent)
+
+```bash
+# Read the current revision first
+curl -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"type":"css"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-custom-dashboard-snippet-metadata-v1/run'
+
+# Preview the replacement
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"type":"css","code":".mainwp-header { background: #111; }","expected_revision":"5b8e9c1f...","dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-custom-dashboard-snippet-v1/run'
+
+# Apply the replacement
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"type":"css","code":".mainwp-header { background: #111; }","expected_revision":"5b8e9c1f...","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-custom-dashboard-snippet-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | Yes | Snippet type. One of `php`, `css`, `js`. |
+| `code` | string | Yes | Replacement code, 1 to 100,000 characters (max 262,144 bytes). For `php`, tagless. Never logged or echoed. |
+| `expected_revision` | string | Yes | 64-character hex revision from the metadata ability. |
+| `dry_run` | boolean | Yes | `true` to preview only; `false` to execute. |
+| `confirm` | boolean | Conditional | Required and must be `true` when `dry_run` is `false`. Must be omitted or `false` when `dry_run` is `true`. |
+
+**Response:**
+
+```json
+{
+  "status": "applied",
+  "preview": {
+    "type": "css",
+    "ready": true,
+    "validation_issue": "none",
+    "changed": true,
+    "result_configured": true,
+    "code_bytes": 38
+  },
+  "previous_revision": "5b8e9c1f...",
+  "revision": "9f0a1b2c...",
+  "observed_at": "2026-09-23T12:00:00Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | `preview`, `applied`, or `unchanged`. |
+| `preview.ready` | boolean | Whether bounds and type-specific validation permit execution. |
+| `preview.validation_issue` | string | `none`, `php_tags`, `file_scope_directive`, or `syntax_error`. |
+| `preview.changed` | boolean | On preview, whether code would change; on execute, whether bytes were written. |
+| `preview.result_configured` | boolean | Whether the resulting snippet is nonempty. Always `true` on valid replace output. |
+| `preview.code_bytes` | integer | Byte count of the submitted replacement. |
+| `previous_revision` | string | The `expected_revision` value that was reverified. |
+| `revision` | string | Current revision after the preview or write. Use this as `expected_revision` on the next call. |
+
+---
+
+## mainwp/clear-custom-dashboard-snippet-v1
+
+Preview or clear one snippet. Compare-and-swap is bound to `expected_revision`, matching the replace flow.
+
+**Method:** DELETE (destructive, idempotent)
+
+Because DELETE bodies are ignored by WordPress core for this route, send the input as `input_json` on the query string.
+
+```bash
+# Preview the clear
+curl -X DELETE -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"type":"js","expected_revision":"5b8e9c1f...","dry_run":true}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/clear-custom-dashboard-snippet-v1/run'
+
+# Execute the clear
+curl -X DELETE -G -u 'admin:xxxx' \
+  --data-urlencode 'input_json={"type":"js","expected_revision":"5b8e9c1f...","dry_run":false,"confirm":true}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/clear-custom-dashboard-snippet-v1/run'
+```
+
+**Input Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `type` | string | Yes | Snippet type to clear. One of `php`, `css`, `js`. |
+| `expected_revision` | string | Yes | 64-character hex revision from the metadata ability. |
+| `dry_run` | boolean | Yes | `true` to preview only; `false` to execute. |
+| `confirm` | boolean | Conditional | Required and must be `true` when `dry_run` is `false`. Must be omitted or `false` when `dry_run` is `true`. |
+
+**Response:**
+
+```json
+{
+  "status": "cleared",
+  "preview": {
+    "type": "js",
+    "changed": true,
+    "result_configured": false
+  },
+  "previous_revision": "5b8e9c1f...",
+  "revision": "2c3d4e5f...",
+  "observed_at": "2026-09-23T12:00:00Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | `preview`, `cleared`, or `unchanged`. |
+| `preview.changed` | boolean | On preview, whether content would clear; on execute, whether a clear committed. |
+| `preview.result_configured` | boolean | Always `false` on valid clear output. |
+| `previous_revision` | string | The `expected_revision` value that was reverified. |
+| `revision` | string | Current revision after the preview or clear. |
+
+---
+
+## Error Reference
+
+All errors follow the WordPress REST API error shape. Custom Dashboard abilities return the following codes:
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `mainwp_custom_dashboard_invalid_input` | 400 | Input missing a required key, includes an unknown key, or violates the type, length, or `dry_run`/`confirm` rules. |
+| `mainwp_custom_dashboard_validation_failed` | 400 | The submitted PHP failed tag, file-scope, or syntax validation. |
+| `mainwp_custom_dashboard_authentication_required` | 401 | The request has no authenticated user. |
+| `mainwp_custom_dashboard_forbidden` | 403 | Caller lacks `manage_options`, the MainWP extension access check, or the extension is not active. |
+| `mainwp_custom_dashboard_snippet_conflict` | 409 | The stored snippet changed since `expected_revision` was read. Re-read the metadata and retry. |
+| `mainwp_custom_dashboard_read_failed` | 500 | The stored snippet state could not be verified. |
+| `mainwp_custom_dashboard_write_failed` | 500 | The write did not commit. |
+| `mainwp_custom_dashboard_result_unknown` | 500 | The write outcome could not be confirmed. Re-read the metadata before retrying. |
+
+---
+
+## Related Resources
+
+- [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Editor UI, code storage, and runtime error handling
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Discovery, authentication, and transport formats
+- [MCP Server](/mcp-server/overview) - Connect AI assistants to MainWP abilities

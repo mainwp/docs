@@ -14,6 +14,8 @@ addonType: extension
 - Using the built-in code editor (CodeMirror 6) with autocompletion, code folding, and the One Dark theme
 - Validating PHP snippets before saving with the built-in syntax check
 - Handling PHP errors safely
+- Protecting against concurrent snippet saves
+- Managing snippets programmatically through the WordPress Abilities API
 - Accessing example code snippets
 
 ---
@@ -26,7 +28,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-custom-dashboard-extension/"
   data-owned-by="Jestart LLC"
@@ -119,6 +121,27 @@ If a saved PHP snippet still produces a parse or compile fatal error at runtime,
 ![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
 
 Other runtime exceptions (`Throwable`s) thrown by a snippet are caught and logged instead of taking down the page.
+
+### Concurrent-save protection
+
+If someone else saves the same snippet while you're editing, your save is rejected with a conflict message and your draft stays in the editor until you reload. This prevents two people from silently overwriting each other's changes.
+
+If the canonical read of a snippet fails (for example, the stored option is corrupt), the editor renders a red error in place of the textarea and disables the **Save** button. Fix the underlying option or reload to try again.
+
+---
+
+## Programmatic access with the Abilities API
+
+Starting in 5.2.0, the extension registers four abilities in the WordPress Abilities API under the `mainwp-custom-dashboard` category:
+
+- `mainwp/get-custom-dashboard-snippet-metadata-v1` — reports whether a snippet is configured and returns its revision hash. It never returns snippet source.
+- `mainwp/validate-custom-dashboard-php-v1` — checks tagless PHP for syntax and disallowed constructs without storing or running it.
+- `mainwp/replace-custom-dashboard-snippet-v1` — previews or writes a snippet, guarded by an expected revision.
+- `mainwp/clear-custom-dashboard-snippet-v1` — previews or clears a snippet, guarded by an expected revision.
+
+Destructive abilities require `dry_run: false` and `confirm: true` together, and every write is bound to the revision returned by the metadata ability so concurrent changes are rejected with `mainwp_custom_dashboard_snippet_conflict`.
+
+See [Custom Dashboard Abilities](/api-reference/abilities-api/custom-dashboard) for endpoint details, input and output schemas, and full examples.
 
 ---
 
