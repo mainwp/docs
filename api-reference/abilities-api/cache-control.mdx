@@ -1,0 +1,331 @@
+---
+title: Cache Control Abilities
+sidebarTitle: "Cache Control Abilities"
+description: >-
+  Read cache status, manage purge settings, validate Cloudflare credentials, and purge site caches with the MainWP Cache Control Abilities API.
+---
+
+MainWP Cache Control 5.3 registers eight abilities in the `mainwp-cache-control` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- Read cached site status and global cache settings
+- Set global and site-specific purge policies
+- Check stored Cloudflare credentials
+- Purge one site's cache and interpret the result for each cache layer
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- Cache Control 5.3 or later, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options`, access to Cache Control, and access to the target sites
+- A configured cache plugin or Cloudflare integration on each site you want to purge
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Team Control permissions also apply. Status and purge-outcome reads require `see_server_information`; global settings and credential validation require `manage_dashboard_settings`; site policy changes and purges require `edit_sites`. Site-specific calls also check access to that site, and the status list omits sites the user cannot access.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-site-cache-control-status-v1` | GET | Read one site's current Dashboard settings and cached Child observations |
+| `mainwp/list-site-cache-control-statuses-v1` | GET | Read site statuses with cursor pagination |
+| `mainwp/get-global-cache-control-configuration-v1` | GET | Read global settings and credential storage state |
+| `mainwp/set-global-cache-control-policy-v1` | POST | Set global auto-purge and Cloudflare enablement |
+| `mainwp/set-site-cache-control-policy-v1` | POST | Set one site's auto-purge and Cloudflare modes |
+| `mainwp/validate-cloudflare-credentials-v1` | GET | Validate the stored Cloudflare credentials selected for one site |
+| `mainwp/purge-site-cache-v1` | POST | Request a cache purge for one site |
+| `mainwp/get-site-cache-purge-outcome-v1` | GET | Read the last stored structured purge outcome |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-cache-control'
+```
+
+All site-specific calls require `site_id`: a positive integer such as `1`, or its decimal string form such as `"1"`. Domains, URLs, zero, and strings with leading zeros are not accepted. These abilities reject extra input properties.
+
+---
+
+## Read One Site's Cache Status
+
+**Ability:** `mainwp/get-site-cache-control-status-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-cache-control-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "live": false,
+  "current_configuration": {
+    "source": "dashboard_current_configuration",
+    "auto_purge_mode": 2,
+    "configured_auto_purge_enabled": true,
+    "cloudflare_mode": 0,
+    "configured_cloudflare_enabled": false,
+    "child_application_status": "unknown"
+  },
+  "cached_child_observation": {
+    "source": "dashboard_cached_child_observation",
+    "cache_solution": "WP Rocket",
+    "last_reported_purge_at": 1790150400
+  }
+}
+```
+
+`current_configuration` reflects settings stored in MainWP Dashboard, including global inheritance. The [policy modes](#set-site-cache-policy) determine the two `configured_*_enabled` values.
+
+`cached_child_observation` contains the cache solution and purge timestamp last reported by MainWP Child. `cache_solution` is an empty string when unavailable, and `last_reported_purge_at` is a Unix timestamp or `0` when unavailable.
+
+<Note>
+This read does not contact MainWP Child or Cloudflare, trigger a purge, or refresh observations. `live` is always `false`, and `child_application_status` is always `unknown`. A configured setting does not prove it has reached the Child site. Sync the site separately to refresh its cached observations; a reported purge timestamp alone does not confirm provider success.
+</Note>
+
+## List Site Cache Statuses
+
+**Ability:** `mainwp/list-site-cache-control-statuses-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"cursor":0,"limit":25}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-site-cache-control-statuses-v1/run'
+```
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `cursor` | integer | No | `0` | Start after this site ID |
+| `limit` | integer | No | `25` | Maximum number of candidate sites per page, from `1` to `100` |
+
+The response contains `items`, `next_cursor`, and `has_more`. Each item has the same structure as the single-site status response above. Sites are processed in ascending ID order.
+
+While `has_more` is `true`, pass the returned `next_cursor` as the next request's `cursor`. Do not stop because a page has fewer than `limit` items or is empty: permission checks can omit sites from that page. When pagination is complete, `has_more` is `false` and `next_cursor` is `null`.
+
+## Read Global Cache Configuration
+
+**Ability:** `mainwp/get-global-cache-control-configuration-v1`<br />
+**Method:** GET
+
+This ability accepts no input properties.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-global-cache-control-configuration-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "auto_purge_enabled": true,
+  "cloudflare_enabled": false,
+  "cloudflare_auth_method": "token",
+  "credential_state": "stored_unverified"
+}
+```
+
+`cloudflare_auth_method` is `token` or `email_key`. `credential_state` describes storage for the selected method:
+
+| Value | Meaning |
+|-------|---------|
+| `missing` | No credential is stored for the selected method |
+| `stored_unverified` | An encrypted credential record is present in the expected format; decryption and Cloudflare acceptance have not been tested |
+| `legacy_pending` | An older global API key awaits migration to encrypted storage |
+| `malformed` | The stored credential record has an unexpected format |
+
+This read does not decrypt, migrate, or validate credentials. It returns no API key, token, or email address. With no saved enablement settings, both enablement flags are `false`.
+
+---
+
+## Set Global Cache Policy
+
+**Ability:** `mainwp/set-global-cache-control-policy-v1`<br />
+**Method:** POST
+
+Set both required boolean fields. This example enables automatic cache purging and disables global Cloudflare purging:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"auto_purge_enabled":true,"cloudflare_enabled":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-global-cache-control-policy-v1/run'
+```
+
+The response contains `previous` and `current` objects with both flags, a `changed` boolean, and `sync_status: "not_requested"`. Calling it with the existing values returns `changed: false`.
+
+This changes only the two global enablement settings. It does not change credentials, authentication method, bulk request limits, or request delay. Site-specific overrides continue to apply.
+
+## Set Site Cache Policy
+
+**Ability:** `mainwp/set-site-cache-control-policy-v1`<br />
+**Method:** POST
+
+All three input fields are required: `site_id`, `auto_purge_mode`, and `cloudflare_mode`. The two mode fields must be integers and use different mappings:
+
+| Value | `auto_purge_mode` | `cloudflare_mode` |
+|-------|-------------------|-------------------|
+| `0` | Disable automatic purging | Use global Cloudflare settings |
+| `1` | Enable automatic purging | Use site-specific Cloudflare credentials |
+| `2` | Inherit the global auto-purge setting | Disable Cloudflare purging for this site |
+
+This example makes site `1` inherit both global settings:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"auto_purge_mode":2,"cloudflare_mode":0}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-site-cache-control-policy-v1/run'
+```
+
+The response contains `site_id`, `previous` and `current` objects with both modes, a `changed` boolean, and `sync_status: "not_requested"`. Credentials are unchanged.
+
+<Note>
+Neither policy ability syncs or purges sites. Sync the affected sites separately after changing settings. A successful save confirms the Dashboard settings were stored; it does not confirm their application on MainWP Child. Configure credentials through the [Cache Control settings](/add-ons/performance/cache-control-extension) before enabling Cloudflare purging.
+</Note>
+
+---
+
+## Validate Cloudflare Credentials
+
+**Ability:** `mainwp/validate-cloudflare-credentials-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/validate-cloudflare-credentials-v1/run'
+```
+
+This checks the stored credentials selected by the site's Cloudflare mode. It can contact Cloudflare, but does not save or replace credentials, sync the site, or purge cache. No credential values are returned.
+
+| Response field | Values or meaning |
+|----------------|-------------------|
+| `site_id` | The requested site ID |
+| `resolved_scope` | `global`, `site`, or `disabled` |
+| `auth_method` | `token`, `email_key`, or `none` |
+| `credential_status` | `valid`, `invalid`, `network_error`, `missing`, `malformed`, or `disabled` |
+| `provider_request_performed` | Whether the operation attempted the Cloudflare validation request |
+| `checked_at` | Unix timestamp of the check |
+
+Selecting **No (disabled for this site)** skips validation and returns `disabled`. When the site inherits global credentials, the diagnostic can still validate them even if global Cloudflare purging is switched off.
+
+`valid` confirms the credentials passed Cloudflare's credential check. It does not confirm access to the site's zone or permission to purge it. See [Cloudflare API token permissions](/add-ons/performance/cache-control-extension#cloudflare-api-token-permissions).
+
+Legacy credentials awaiting migration can return `malformed` here. Review and save the credentials in Cache Control settings before checking again; this diagnostic does not perform migration.
+
+## Purge One Site's Cache
+
+**Ability:** `mainwp/purge-site-cache-v1`<br />
+**Method:** POST
+
+This requests a purge using the configuration already applied on MainWP Child. It does not first sync newly saved Dashboard settings.
+
+<Warning>
+This call starts a real cache purge immediately. It accepts only `site_id`; there is no `dry_run` or `confirm` parameter. Although marked destructive, it uses POST because it is not marked idempotent.
+</Warning>
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/purge-site-cache-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "overall": "dispatched_unverified",
+  "plugin_cache": {
+    "attempted": true,
+    "result_basis": "dispatched_unverified"
+  },
+  "cloudflare": {
+    "attempted": true,
+    "result_basis": "provider_confirmed"
+  },
+  "last_purged_at": 1790150400
+}
+```
+
+Inspect `overall` even when the HTTP request succeeds:
+
+| `overall` | Meaning |
+|-----------|---------|
+| `confirmed` | At least one cache layer was attempted, with no reported failure or unverified dispatch |
+| `dispatched_unverified` | No failure was reported, but at least one layer was dispatched without provider confirmation |
+| `failed` | At least one layer reported an error, even if another succeeded |
+| `not_attempted` | Neither layer was attempted |
+| `unknown` | No known outcome; also used when a cached outcome is unavailable |
+
+Both `plugin_cache` and `cloudflare` contain `attempted` and `result_basis`:
+
+| `result_basis` | Meaning |
+|----------------|---------|
+| `provider_confirmed` | The provider returned a recognized response; use `overall` and the logs to determine success or failure |
+| `dispatched_unverified` | The purge was dispatched without confirmation that the provider completed it |
+| `provider_missing` | The cache provider or required purge function was unavailable |
+| `not_attempted` | No purge was attempted for this layer |
+| `preflight_failed` | A prerequisite failed before the purge request, such as missing credentials or zone lookup failure |
+| `attempt_failed` | The purge was attempted but failed or returned an unusable response |
+
+`last_purged_at` is the most recent plugin or Cloudflare purge timestamp in the Child response, or `0` when unavailable. It may be an earlier timestamp and does not override `overall`.
+
+Keep MainWP Child up to date. This ability requires structured purge results, including `result_basis`. A Child response without those fields returns `mainwp_cache_control_purge_result_invalid`; the cache may still have been purged, so check the site's logs before retrying.
+
+## Read the Last Purge Outcome
+
+**Ability:** `mainwp/get-site-cache-purge-outcome-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-cache-purge-outcome-v1/run'
+```
+
+The response contains `site_id`, `available`, `observed_at`, `overall`, `plugin_cache`, and `cloudflare`. The outcome and layer fields use the values described above. `observed_at` is the stored outcome's observation time, not the provider's purge timestamp.
+
+This reads the structured outcome stored on MainWP Dashboard without contacting the Child site. If no valid structured outcome is stored, it returns `available: false`, `observed_at: 0`, `overall: "unknown"`, and both layers as unattempted. This does not mean the site has never been purged: older logs or a last-purged timestamp may exist without a structured outcome.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Cache Control can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_cache_control_invalid_input` | 400 | Invalid site ID, mode, value type, or input fields |
+| `mainwp_cache_control_access_denied` | 403 | Cache Control, Dashboard capability, or site access was denied |
+| `mainwp_cache_control_site_not_found` | 404 | The requested site could not be resolved |
+| `mainwp_cache_control_purge_in_progress` | 409 | Another purge is in progress for this site |
+| `mainwp_cache_control_site_unavailable` | 409 | The site is unavailable for purging, including when suspended |
+| `mainwp_cache_control_global_policy_write_failed` | 500 | The global policy could not be saved |
+| `mainwp_cache_control_site_policy_write_failed` | 500 | The site policy could not be saved |
+| `mainwp_cache_control_status_list_failed` | 500 | Site statuses could not be read |
+| `mainwp_cache_control_credential_read_failed` | 500 | Stored credential state could not be read |
+| `mainwp_cache_control_purge_outcome_storage_failed` | 500 | The purge returned a result, but its structured outcome could not be stored |
+| `mainwp_cache_control_child_unavailable` | 502 | The Cache Control Child integration is unavailable |
+| `mainwp_cache_control_purge_transport_unknown` | 502 | The purge result could not be confirmed |
+| `mainwp_cache_control_purge_result_invalid` | 502 | The Child returned an invalid or unsupported purge result |
+
+Policy write errors include `data.rollback_failed`. If it is `true`, read the current settings and resolve the save failure before syncing. After a purge transport, result, or storage error, inspect the site and logs before retrying because a purge may already have occurred.
+
+## Related Resources
+
+- [Cache Control](/add-ons/performance/cache-control-extension) - Configure caching, Cloudflare, and manual purge workflows
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs and sync sites after changing settings

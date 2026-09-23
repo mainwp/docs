@@ -15,6 +15,7 @@ addonType: "integration"
 - Controlling bulk purge speed with concurrent requests and request delay
 - Configuring global and site-specific Cloudflare credentials
 - Reading Cache Control logs and Cloudflare status indicators
+- Using the Cache Control Abilities API for automation
 
 ---
 
@@ -26,7 +27,7 @@ addonType: "integration"
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2"
+  data-version="5.3"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
   data-integrates-with="Cloudflare and supported cache plugins"
@@ -124,6 +125,10 @@ When **Purge Cloudflare cache** is enabled and the required credential fields ar
 This checks credential validity, not permission to find or purge a particular site's zone. Empty credentials are not validated. After saving and syncing, run a manual purge and review its result to check the site's Cloudflare setup.
 </Note>
 
+Cloudflare purging is disabled when no applicable setting enables it. A site using the global setting follows the global **Purge Cloudflare cache** toggle; a site using **Yes (use site-specific credentials)** uses its own configuration.
+
+Cache Control stores Cloudflare API keys and tokens using encrypted storage. Version 5.3 preserves older API keys during migration, keeps API key and token reads separate, and retains the existing encryption key file if a credential save or delete fails. If a save fails, review the settings and save again before syncing.
+
 ## Configure a Single Site
 
 Use single-site settings when one MainWP Child site needs different cache behavior or different Cloudflare credentials from the global settings.
@@ -173,6 +178,12 @@ The **Updates Overview** widget includes **Clear Cache** on the **Operations** p
 
 ![Updates Overview widget showing the Clear Cache button and View Cache Control Logs button](/images/add-ons/cache-control-widget-purge.png)
 
+### Review Results and Retry
+
+Review each site's result after a bulk purge. If the cache plugin succeeds but Cloudflare fails, or the reverse, Cache Control reports a partial result. The bulk completion message also indicates whether any sites returned warnings or failures.
+
+Sites with warnings or failures remain available for retry. Sync the affected sites, review **Cache Control > Logs**, and correct the reported issue. Then select the sites that need another attempt and run **Purge Cache (Cache Control)** again.
+
 ## View Cache Control Status
 
 The **MainWP > Sites > Manage Sites** table can show Cache Control columns such as **Last Purged Cache** and **Cache Solution**. These columns help you confirm when cache was last purged and which supported cache plugin MainWP Child detected on each site.
@@ -199,6 +210,12 @@ The **Cloudflare** column uses three status colors:
 | Grey | Cloudflare cache purging is disabled for the site. |
 
 Use **Last Purged** and the **Log** messages to review a purge operation. A green Cloudflare icon alone does not confirm that a purge has run successfully.
+
+## Abilities API
+
+Cache Control 5.3 adds eight abilities for reading cache status, managing purge settings, validating stored Cloudflare credentials, and purging an individual site's cache. Status reads return the configuration and Child observations stored in MainWP Dashboard; they do not contact the site or refresh its status.
+
+See [Cache Control Abilities](/api-reference/abilities-api/cache-control) for authentication, parameters, examples, and how to interpret purge results.
 
 ---
 
