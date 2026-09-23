@@ -347,8 +347,14 @@
                   "api-reference/abilities-api/updates",
                   "api-reference/abilities-api/clients",
                   "api-reference/abilities-api/tags",
-                  "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/batch-operations"
+                ]
+              },
+              {
+                "group": "Add-on Abilities",
+                "pages": [
+                  "api-reference/abilities-api/cache-control",
+                  "api-reference/abilities-api/google-search-console"
                 ]
               },
               "api-reference/mainwp-control"

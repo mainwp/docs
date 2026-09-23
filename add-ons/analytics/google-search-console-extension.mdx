@@ -17,7 +17,7 @@ thirdPartyPlugin: Google Search Console
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="6.0"
+  data-version="6.3"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-google-search-console-extension/"
   data-integrates-with="Google Search Console"
@@ -38,6 +38,7 @@ thirdPartyPlugin: Google Search Console
 - Connecting Google Search Console via OAuth or Service Account
 - Assigning GSC properties to child sites
 - Viewing search performance and sitemap data
+- Managing automatic refreshes and using AI Assistant actions
 - Troubleshooting common connection issues
 
 ---
@@ -167,7 +168,11 @@ You can also manually assign a property to a child site by doing the following:
 
 <Info>
 If you use the [Team Control](/add-ons/agency/team-control-extension) add-on, the Google Search Console property selection is only shown on a site's Settings page to users whose role grants access to the Google Search Console add-on. Users without that permission won't see the property selector and can't change the assigned property.
+
+Site selectors, site-specific data views, and Dashboard widgets also respect each user's permitted site access.
 </Info>
+
+Refreshing a connection reconciles its available properties with existing site assignments. If an assigned property is no longer available, the mapping becomes stale and its cached data is invalidated. Restore access to the property or select an available property in the site's settings.
 
 ## Where to View Data
 
@@ -196,9 +201,21 @@ Go to **MainWP > Add-ons > Analytics > Google Search Console** and use these tab
 
 ## Settings & Data Refresh
 
--   **Graphs display interval**: Pick **Week** or **Month**
--   **Fetch Google Search Console data automatically**: Enable scheduling and choose how often MainWP should pull fresh data.
--   **Refresh Data**: Click to fetch the latest stats immediately (Data is cached to reduce API calls; refreshing clears and updates the cache.)
+- **Graphs display interval**: Select **Week** or **Month** for the reporting period.
+- **Fetch Google Search Console data automatically**: Enable automatic data refreshes.
+- **Auto fetch GSC data frequency**: Choose every **1**, **3**, **9**, **15**, **18**, or **24 hours**. The default is **9 hours**.
+- **Save Settings**: Apply the reporting period and refresh settings. Changes can invalidate cached reports so they can be regenerated with the new settings.
+- **Refresh Data**: Request an on-demand refresh. Check the reported outcome; a failed request does not mean fresh data was stored.
+
+Scheduled refreshes skip overlapping runs. The last successful scheduled refresh time advances only when at least one refresh succeeds; it does not mean every site's data was refreshed. Automatic refreshes also depend on the MainWP Dashboard's configured cron system running.
+
+## AI Assistant and Abilities API
+
+Version 6.3 adds ten abilities for MainWP AI Assistant and API clients to inspect connections and properties, manage site assignments and refresh settings, read cached performance summaries, and request refreshes.
+
+For example, ask the AI Assistant to show a site's Google Search Console mapping or cached search performance, review automatic refresh settings, or request a site refresh. Mapping changes, refresh-setting changes, and connection catalog refreshes support a preview before confirmation. Refresh requests run in the background and return a job ID for checking completion.
+
+See [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) for requirements, permissions, request examples, and job-status handling. The ability that reads performance data returns aggregate metrics; it does not include search queries or individual page URLs.
 
 ## GSC data in Pro Reports
 
@@ -290,6 +307,7 @@ If Google Analytics shows a similar warning, follow the instructions in the [Goo
 
 ## Related Resources
 
+- [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) - Automate mappings, settings, and refreshes
 - [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include GSC data in reports
 - [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Google Search Console tokens
