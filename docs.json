@@ -421,6 +421,7 @@
                   "dashboard/overview/how-can-i-initiate-the-quick-setup-wizard",
                   "troubleshooting/how-to-enable-error-logging",
                   "troubleshooting/which-mainwp-database-tables-can-get-large",
+                  "troubleshooting/slow-updates-pages-large-networks",
                   "troubleshooting/resolve-system-requirement-issues",
                   "troubleshooting/does-mainwp-child-plugin-affect-my-child-site-loading-time",
                   "troubleshooting/why-was-the-htaccess-file-removed-from-mainwp-child",

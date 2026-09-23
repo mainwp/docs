@@ -1,0 +1,218 @@
+---
+title: Slow Updates Pages on Large Site Networks
+sidebarTitle: Slow Updates Pages
+description: >-
+  Use an optional pagination snippet when you manage hundreds of child sites
+  and the Updates pages become slow or unresponsive.
+---
+
+This guide is for administrators managing **hundreds of child sites who are already experiencing slow or unresponsive Updates pages**. If your Updates pages load and respond normally, keep the default behavior. A large site count alone is not a reason to add this snippet.
+
+The Updates lists can contain many plugin, theme, and site rows, including rows inside collapsed sections. Rendering those rows can put substantial load on the browser. This workaround limits the sites loaded into each Updates list and adds page controls so you can work through smaller batches.
+
+<Note>
+Built-in pagination for the Updates pages is planned, but there is no ETA. The snippet below is an optional temporary workaround.
+</Note>
+
+## What You'll Learn
+
+- Decide whether this workaround fits the problem you are seeing
+- Add the complete pagination snippet through the Custom Dashboard Add-on
+- Choose a site count per page and understand the scope of update actions
+- Remove the workaround when you no longer need it
+
+## Prerequisites
+
+- A MainWP Dashboard managing hundreds of connected child sites
+- Noticeable slowness or browser unresponsiveness on the Updates pages
+- Administrator access and permission to edit custom PHP on the Dashboard site
+- The [Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension) installed and activated on the Dashboard site
+
+## When This Workaround Helps
+
+Consider this workaround if an Updates page takes a long time to load, becomes difficult to interact with, or causes high browser CPU usage while displaying a large update list.
+
+It reduces how many sites contribute rows to the current list. It does not diagnose every cause of a slow Dashboard or guarantee a particular loading time. Server errors, connection problems, and data loading in other Add-ons need separate troubleshooting.
+
+The page size counts **sites, not plugins, themes, or update rows**. With 100 sites per page, one page can still contain hundreds of individual updates. Sites without available updates also count toward the batch.
+
+## Add the Pagination Snippet
+
+<Steps>
+<Step title="Open the Custom Dashboard PHP editor">
+Go to **Add-ons > Administrative > Custom Dashboard > PHP**.
+
+Direct Dashboard path: `/wp-admin/admin.php?page=Extensions-Mainwp-Custom-Dashboard-Extension&tab=php`.
+
+Keep a copy of any existing PHP before editing it.
+</Step>
+
+<Step title="Paste the complete snippet">
+Copy the entire code block below into the PHP editor. It is ready to paste without opening or closing PHP tags.
+
+Keep unrelated snippets already in the editor. Add this pagination snippet only once; replace an earlier version of the same snippet instead of adding a second copy. All of the code is needed for this implementation, including the navigation controls.
+
+```php
+// MainWP Updates: load sites in pages. Paste WITHOUT an opening PHP tag.
+// Start with 100 sites/page; reduce to 50 if needed. Use a positive whole number.
+( static function () {
+    $per_page = 100;
+    if ( ! is_admin() || wp_doing_ajax() ||
+        'updatesmanage' !== ( isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '' ) ) {
+        return;
+    }
+
+    $tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'plugins-updates';
+    if ( ! in_array( $tab, array( 'plugins-updates', 'themes-updates', 'wordpress-updates', 'translations-updates' ), true ) ) {
+        return;
+    }
+
+    $state = null;
+    $get_state = static function () use ( &$state, $per_page ) {
+        if ( null !== $state ) {
+            return $state;
+        }
+        $db = \MainWP\Dashboard\MainWP_DB::instance();
+        $is_staging = 'no';
+        if ( ( is_plugin_active( 'mainwp-staging-extension/mainwp-staging-extension.php' ) ||
+            is_plugin_active( 'mainwp-timecapsule-extension/mainwp-timecapsule-extension.php' ) ) &&
+            'staging' === \MainWP\Dashboard\MainWP_System_Utility::get_select_staging_view_sites() ) {
+            $is_staging = 'yes';
+        }
+        // Count the connected, accessible sites without fetching update JSON.
+        $params = array( 'connected' => 'yes', 'is_staging' => $is_staging, 'count_sql' => true, 'others_fields' => array() );
+        if ( \MainWP\Dashboard\MainWP_System::instance()->is_multi_user() ) {
+            $params['where'] = 'wp.userid = ' . (int) get_current_user_id();
+        }
+        $total = (int) $db->get_var_field( $db->get_sql_websites_for_current_user_by_params( $params ) );
+        $pages = max( 1, (int) ceil( $total / $per_page ) );
+        $current = 1;
+        if ( isset( $_GET['current_page'], $_GET['_opennonce'] ) &&
+            wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_opennonce'] ) ), 'mainwp-admin-nonce' ) ) {
+            $current = max( 1, (int) $_GET['current_page'] );
+        }
+        $state = array( 'total' => $total, 'pages' => $pages, 'current' => min( $current, $pages ) );
+        return $state;
+    };
+
+    add_filter( 'mainwp_manage_updates_limit_loading', static function ( $limit, $context ) use ( $per_page ) {
+        return 'updates' === $context ? $per_page : $limit;
+    }, 10, 2 );
+
+    // Keep this request's page stable even if another admin opens a different page.
+    add_filter( 'mainwp_get_sql_websites', static function ( $params ) use ( $per_page, $get_state ) {
+        if ( ! empty( $params['limit_sites'] ) && isset( $params['connected'] ) && 'yes' === $params['connected'] ) {
+            $state = $get_state();
+            $params['per_page'] = $per_page;
+            $params['page'] = $state['current'];
+        }
+        return $params;
+    }, 100 );
+
+    add_action( 'mainwp_updates_after_nav_tabs', static function () use ( $per_page, $get_state, $tab ) {
+        $state = $get_state();
+        $first = $state['total'] ? ( $state['current'] - 1 ) * $per_page + 1 : 0;
+        $last = min( $state['total'], $state['current'] * $per_page );
+        echo '<div id="bk-updates-site-pages" class="ui segment" style="margin:1em 0">';
+        echo '<strong>' . esc_html( sprintf( 'Sites %d-%d of %d | Page %d of %d', $first, $last, $state['total'], $state['current'], $state['pages'] ) ) . '</strong>';
+        if ( $state['pages'] > 1 ) {
+            $base = add_query_arg( array(
+                'page' => 'UpdatesManage', 'tab' => $tab,
+                'current_page' => 999999999, '_opennonce' => wp_create_nonce( 'mainwp-admin-nonce' ),
+            ), admin_url( 'admin.php' ) );
+            $links = paginate_links( array(
+                'base' => str_replace( '999999999', '%#%', $base ), 'format' => '',
+                'current' => $state['current'], 'total' => $state['pages'],
+                'type' => 'array', 'prev_text' => 'Previous', 'next_text' => 'Next',
+                'add_args' => false,
+            ) );
+            echo '<nav aria-label="Updates site pages" style="display:flex;flex-wrap:wrap;gap:.5em">';
+            foreach ( $links as $link ) {
+                echo '<span class="ui small basic label">' . wp_kses_post( $link ) . '</span>';
+            }
+            echo '</nav>';
+        }
+        echo '</div>';
+    } );
+} )();
+```
+
+</Step>
+<Step title="Save the snippet">
+Click **Save Changes**. If the editor reports a syntax error, check that you copied the complete block without adding PHP tags or Markdown code fences.
+</Step>
+
+<Step title="Open the Updates list">
+Go to **Updates > Plugins**.
+
+Direct Dashboard path: `/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`.
+
+The site range and page number appear above the list. Use the numbered pages, **Previous**, or **Next** to move between batches. The snippet also applies to the Themes, WordPress, and Translation Updates pages when those pages are available.
+</Step>
+</Steps>
+
+![Updates page showing the site range, current page, and numbered pagination controls above the plugin list](/images/troubleshooting/updates-site-pagination.jpg)
+
+*This example uses five sites per page to make the controls visible on a small demonstration Dashboard. The snippet above starts at 100 sites per page.*
+
+## Choose the Number of Sites per Page
+
+Start with the default line near the top of the snippet:
+
+```php
+$per_page = 100;
+```
+
+If the list still feels heavy, change that line to:
+
+```php
+$per_page = 50;
+```
+
+Save the snippet and reopen **Updates > Plugins** at `/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates` to start from the first page.
+
+Use a positive whole number. Smaller batches reduce the rows loaded at once but require more page changes. The best value depends on how many updates each site has and how responsive the list feels.
+
+## Understand the Limitations
+
+| Item | Behavior with the snippet |
+| --- | --- |
+| Update list and its counts | Include updates from the sites on the current page. |
+| Bulk update actions in the list | Apply to the loaded page of sites. Work through each page to cover the network. |
+| Sidebar update totals | Continue to show totals across the network and can be higher than the current list's counts. |
+| Global ignore actions | Still apply globally. Pagination does not narrow their scope. |
+| Item, Site, and Tag views | Group the updates from the currently loaded batch. Changing the grouping does not load the rest of the network. |
+| Automatic updates and sync schedules | Are not configured or changed by this snippet. |
+| Other Dashboard pages and Add-ons | Do not receive pagination from this snippet. It does not address Lighthouse report data loading. |
+
+The snippet adds custom PHP through existing MainWP hooks. It does not edit MainWP plugin files. Those hooks and the surrounding page behavior can change in future releases; remove the workaround when you adopt built-in pagination.
+
+## Troubleshoot the Page Controls
+
+### No Next or Previous Link
+
+The controls appear only when the eligible connected sites span more than one page. If all eligible sites fit within the configured limit, the site range still appears, but there is no second page to open.
+
+### A Page Has No Available Updates
+
+A batch can contain sites that have no updates in the selected category. Use the page controls to continue. An empty batch does not mean the whole network is up to date.
+
+### An Old Page Link Returns to the First Page
+
+Pagination links include a time-limited WordPress nonce. Reopen **Updates > Plugins** at `/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates` and use the fresh page controls instead of a saved pagination URL.
+
+### The Page Is Still Slow
+
+Reduce the site count per page and compare responsiveness. If there is little improvement, remove the snippet using the steps below and contact MainWP Support with the affected Updates tab, approximate site count, and whether the delay occurs while loading the page or interacting with the list.
+
+## Remove the Workaround
+
+1. Open **Add-ons > Administrative > Custom Dashboard > PHP** at `/wp-admin/admin.php?page=Extensions-Mainwp-Custom-Dashboard-Extension&tab=php`.
+2. Remove only this pagination snippet and click **Save Changes**. Keep any unrelated PHP.
+3. Reload **Updates > Plugins** at `/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`. MainWP returns to its normal full-list loading.
+
+## Related Resources
+
+- [Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension) - Manage custom PHP on your Dashboard
+- [Manage Updates](/sites/updates/manage-updates) - Update actions, ignored updates, and automatic updates
+- [Simultaneous Update Requests](/sites/updates/how-to-change-the-number-of-simultaneous-update-requests) - Control concurrent update operations, a separate setting from list pagination
