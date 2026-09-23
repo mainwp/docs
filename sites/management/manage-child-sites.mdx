@@ -49,14 +49,14 @@ After installing the MainWP Child plugin on your website, add it to your Dashboa
 Log in to your Dashboard site and go to **MainWP > Sites > Add New**.
 </Step>
 <Step title="Enter site details">
-In the **Add a Single Site** section:
+On the **Single Site** tab:
 
 ![Add single child site UI](/images/dashboard/sites-management-4eb5cc.png)
 
 | Field | Description |
 |-------|-------------|
-| URL | Your website URL |
-| Verify Child plugin | Toggle on to reveal additional fields |
+| Site URL | Your website URL |
+| Confirm the MainWP Child plugin is active on this site | Toggle on to reveal additional fields |
 | Administrator Username | Admin username on the child site |
 </Step>
 <Step title="Configure authentication">
@@ -74,6 +74,8 @@ Find both options at: `your-child-site.com/wp-admin/options-general.php?page=mai
 ![MainWP Child settings with Unique Security ID](/images/getting-started/1950ef01c5b2.png)
 </Step>
 <Step title="Configure optional settings">
+Click **Show Optional Settings**.
+
 ![Optional Settings section](/images/getting-started/3fb27ff0bbbd.png)
 
 | Option | Description |
@@ -83,21 +85,21 @@ Find both options at: `your-child-site.com/wp-admin/options-general.php?page=mai
 | Tags | Add to existing tags or create new ones |
 | Client | Associate with a client |
 | Verify SSL certificate | Enable for sites with valid SSL. Disable for self-signed or outdated certificates |
-| SSL version | Leave default if no SSL certificate |
+| SSL version | Leave **Auto detect** unless the site requires a specific version |
 | HTTP username/password | Required if site uses HTTP Basic Authentication |
 </Step>
 <Step title="Add the site">
-Click **Add New Site**.
+Click **Add Site**.
 </Step>
 </Steps>
 
 #### Add-on Settings Synchronization
 
-When using [MainWP Add-ons](https://mainwp.com/mainwp-add-ons/) that require third-party plugins:
+For installed [MainWP Add-ons](https://mainwp.com/mainwp-add-ons/) that support settings synchronization, the available options depend on the add-on:
 
 | Add-on Type | What Happens |
 |----------------|--------------|
-| Requires third-party plugin | Option to install plugin and sync default settings |
+| Requires third-party plugin | Option to install the plugin and, where supported, apply its settings |
 | Standalone add-on | Option to sync add-on default settings only |
 
 <Note>
@@ -129,18 +131,20 @@ Navigate to **MainWP > Sites > Add New > Multiple Sites**.
 | Field | Required | Description |
 |-------|----------|-------------|
 | Site URL | Yes | Full URL of each site |
-| Admin Username | Yes | Administrator username for each site |
+| Admin Name | Yes | Administrator username for each site |
+| Site Name | Yes | Display name, initially filled from the URL |
 | Admin Password | If Password Authentication is enabled | Administrator password for each site |
 </Step>
 <Step title="Configure optional fields">
+Click the eye icon at the end of a row to show the additional fields.
+
 | Field | Description |
 |-------|-------------|
-| Site Title | Auto-filled from URL, customize for dashboard display |
 | Tag | Assign tag for organization |
 | Unique Security ID | Required if enabled on the site; required when Password Authentication is disabled |
 | HTTP Username/Password | For sites with HTTP Basic Authentication |
 | Verify SSL | 1 = enabled, 0 = disabled |
-| SSL Version | Auto for most configurations |
+| SSL Version | Leave `auto`; the bulk connection does not apply a custom value. Set a specific version in the site settings after connecting if needed |
 </Step>
 <Step title="Add rows and connect">
 Click **Add New Row** for additional sites. When ready, click **Add Sites**.
@@ -170,23 +174,23 @@ Install and activate MainWP Child Plugin on all sites you want to import.
 Go to **MainWP > Sites > Add New > Import Sites** and download the Sample CSV file.
 </Step>
 <Step title="Edit the CSV">
-Open in a text editor and replace demo values (lines 9-13) with your site details.
+Open in a text editor and replace the example site rows below the header with your site details.
 </Step>
 <Step title="Format entries">
 Use comma-separated values in this order:
 
 | Position | Field | Notes |
 |----------|-------|-------|
-| 1 | Site Name | Display name |
-| 2 | Site URL | Full URL |
+| 1 | Site Name | Required display name |
+| 2 | Site URL | Required full URL |
 | 3 | Administrator Username | Required |
 | 4 | Admin Password | Required if Password Authentication is enabled |
 | 5 | Tag name | Optional |
 | 6 | Unique Security ID | Required if enabled; required when Password Authentication is disabled |
 | 7 | HTTP Username | If using Basic Auth |
 | 8 | HTTP Password | If using Basic Auth |
-| 9 | Verify Certificate | T = true, F = false |
-| 10 | SSL Version | auto, 1.x, 1, 2, 1.1, 1.2, 1.3 |
+| 9 | Verify Certificate | Use `1` to enable verification or `0` to disable it |
+| 10 | SSL Version | Keep `auto`; custom values are read from the CSV but are not applied when connecting. Change the site settings after import if needed |
 
 For each imported site, include the credential required by that site's MainWP Child settings. Use Admin Password when Password Authentication is enabled, Unique Security ID when Unique Security ID is enabled, or both when both methods are enabled.
 
@@ -227,7 +231,7 @@ Regular synchronization keeps your Dashboard current with child site data.
 
 ### Global Synchronization
 
-Click the **Sync Dashboard with Child Sites** button in the header.
+Open **MainWP > Sites > Manage Sites** and click **Sync** in the header. On an individual site page, this button syncs only that site.
 
 ![Sync button in header](/images/dashboard/sites-management-b05cf8.png)
 
@@ -244,7 +248,7 @@ Locate the site, open the actions menu, and click **Sync Data**.
 </Steps>
 
 <Note>
-MainWP automatically syncs sites once daily via WP Cron. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **MainWP > Settings > General Settings**. The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Note>
 
 ### Child Site Cron Warnings
@@ -281,11 +285,11 @@ Go to **MainWP > Sites > Manage Sites**, locate the site, and click **Settings**
 | Site Title | Update friendly name |
 | Unique Security ID | Update if changed on the site |
 | Tags | Add or remove tags |
-| Auto Update Core | Enable automatic WordPress core updates |
-| Ignore Core Update | Ignore WordPress core updates for this site |
-| Ignore all Plugin Updates | Mark all plugin updates as ignored |
-| Ignore all Theme Updates | Mark all theme updates as ignored |
-| Ignore Translation Updates | Ignore translation updates for this site |
+| Auto update WP Core | Enable automatic WordPress core updates |
+| Ignore core updates | Ignore WordPress core updates for this site |
+| Ignore plugin updates | Mark all plugin updates as ignored |
+| Ignore theme updates | Mark all theme updates as ignored |
+| Ignore translation updates | Ignore translation updates for this site |
 
 <Note>
 Per-site settings provide translation ignore control. Configure automatic translation updates globally in [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings#settings-reference).
@@ -351,7 +355,7 @@ When a site is suspended, it stays connected in MainWP Dashboard, but MainWP pau
 Go to **MainWP > Sites > Manage Sites**, locate the site, and click **Settings** in the actions menu.
 </Step>
 <Step title="Change the suspension status">
-In **Site Status**, enable **Suspend Site** to suspend the site or disable it to unsuspend the site.
+In **Site Status**, enable **Suspend Site** to suspend the site or disable it to unsuspend the site. Click **Save Settings**.
 </Step>
 </Steps>
 
@@ -392,7 +396,7 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Issue | Description | Fix Action |
 |-------|-------------|------------|
 | WordPress Version | Checks whether WordPress core is up to date | **Update WordPress** |
-| PHP Version | Checks whether PHP meets current security support expectations | No direct action in this table |
+| PHP Version | Checks whether PHP is version 8.0 or later; this is a fixed check, not a live support-status lookup | No direct action in this table |
 | PHP Error Reporting | Checks whether PHP error reporting is disabled | **Disable PHP Error Reporting** / **Reenable PHP Error Reporting** |
 | Database Error Reporting | Checks whether database error reporting is disabled | **Disable DB Error Reporting** / **Reenable DB Error Reporting** |
 | SSL Protocol | Checks whether SSL is enabled | No direct action in this table |
@@ -485,7 +489,7 @@ Select **Remove** from Bulk Actions and click **Apply**.
 </Steps>
 
 <Note>
-When deleting a properly connected site, MainWP automatically deactivates the Child plugin. For disconnected sites, manually deactivate the Child plugin on the site.
+Removing a site removes its record from MainWP Dashboard, not the WordPress website. MainWP attempts to deactivate MainWP Child on a connected live site; it skips deactivation for staging sites. If deactivation fails or the site is disconnected, manually deactivate MainWP Child on the site.
 </Note>
 
 ---
@@ -499,7 +503,7 @@ When deleting a properly connected site, MainWP automatically deactivates the Ch
 Go to **MainWP > Sites > Manage Sites** and click the Note icon for the site.
 </Step>
 <Step title="Add note">
-Click **Edit**, add content, and click **Save note**.
+Click **Edit Note**, add content, and click **Save Note**.
 ![Add note](/images/dashboard/sites-management-15feb3.gif)
 </Step>
 </Steps>
@@ -534,7 +538,7 @@ Use the filter row on **Manage Sites** to narrow results by tags, statuses, and 
 | Is / Is not | Include matches or invert selected criteria |
 | Tags | Filter by one or more tags, including **No Tags** |
 | Tag logic | Choose **Match any (OR)** or **Match all (AND)** when multiple tags are selected |
-| Status | Filter by **Connected**, **Disconnected**, **Available update**, **Site Health needs improvement**, **PHP Ver < 7.0**, **PHP Ver < 8.0**, or **Suspended** |
+| Status | Filter by **Connected**, **Disconnected**, **Available update**, **Site Health needs improvement**, **PHP < 8.0**, **PHP < 8.1**, **PHP < 8.2**, **PHP < 8.3**, **PHP < 8.4**, or **Suspended** |
 | Clients | Filter by one or more clients, including **No Client** |
 
 <Steps>
@@ -553,7 +557,7 @@ Click **Filter** to apply the criteria, or click **Reset** to return to default 
 
 <Steps>
 <Step title="Open Tags page">
-Go to **MainWP > Sites > Tags** and click **New Tag**.
+Go to **MainWP > Sites > Tags > Manage Tags** and click **Create Tag**.
 ![New Tag button](/images/dashboard/sites-management-fdc6d7.png)
 </Step>
 <Step title="Name the tag">
@@ -568,11 +572,11 @@ Click the tag name, select sites, and click **Save Selection**.
 
 ### Edit a Tag
 
-Go to **MainWP > Sites > Tags**, click the tag name, add or remove sites, and click **Save Selection**.
+Go to **MainWP > Sites > Tags > Manage Tags**, click the tag name, add or remove sites, and click **Save Selection**.
 
 ### Delete a Tag
 
-Go to **MainWP > Sites > Tags** and click the **Trash** icon next to the tag name.
+Go to **MainWP > Sites > Tags > Manage Tags**, select the tag, and click the **Trash** icon below the tag list.
 
 ![Delete tag](/images/dashboard/sites-management-e3d6c9.png)
 
@@ -594,10 +598,10 @@ Monitoring configuration now lives in the dedicated [Uptime Monitoring](/sites/m
 |---------|--------------|-----|
 | Site won't connect | MainWP Child plugin not activated | Verify the Child plugin is installed and activated on the site |
 | Connection fails with SSL error | Invalid or self-signed SSL certificate | Disable **Verify SSL certificate** in the site's connection settings |
-| Site shows as disconnected | Changed admin credentials or site URL | Use **Reconnect** from the actions menu and update credentials |
+| Site shows as disconnected | Connection settings changed or the connected administrator account is unavailable | Check the site URL and administrator username in **Settings**, then use **Reconnect**. Changing only the administrator password does not break an established connection |
 | Sync fails for a site | Firewall or security plugin blocking requests | Whitelist your Dashboard IP in the site's firewall settings |
 | Security scan shows issues already fixed | Another plugin fixed the issue | MainWP detects the fix; no action needed |
-| CSV import fails | Wrong file format or missing required fields | Ensure the file is CSV format and includes URL, administrator username, and the required authentication credential for each site |
+| CSV import fails | Wrong file format or missing required fields | Ensure the file is CSV format and includes site name, URL, administrator username, and the required authentication credential for each site |
 
 ---
 
