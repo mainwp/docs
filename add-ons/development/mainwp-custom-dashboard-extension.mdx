@@ -14,6 +14,8 @@ addonType: extension
 - Using the built-in code editor (CodeMirror 6) with autocompletion, code folding, and the One Dark theme
 - Validating PHP snippets before saving with the built-in syntax check
 - Handling PHP errors safely
+- Recovering when someone else edits the same snippet at the same time
+- Managing snippets programmatically through the WordPress Abilities API
 - Accessing example code snippets
 
 ---
@@ -26,7 +28,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-custom-dashboard-extension/"
   data-owned-by="Jestart LLC"
@@ -112,6 +114,14 @@ Before a PHP snippet is saved, the extension runs a syntax check on the code. If
 
 This catches the most common cause of a broken dashboard — a typo in a snippet — without you having to reload the page to find out.
 
+The same validation also rejects file-scope-only directives that cannot run inside an executed snippet:
+
+- Top-level `namespace` statements
+- Top-level `declare` statements (for example `declare(strict_types=1);`)
+- Top-level `use` statements
+
+Snippets run as raw PHP inside a wrapper, not as standalone files, so these directives raise an error at save time with the message *"PHP snippets cannot include top-level namespace, declare, or use statements."* Remove the directive or move the affected code into a function or class body.
+
 ### Runtime error handling
 
 If a saved PHP snippet still produces a parse or compile fatal error at runtime, the extension catches it and shows a safe error message with a link back to the PHP editor. Snippet execution is disabled until you fix the code:
@@ -119,6 +129,85 @@ If a saved PHP snippet still produces a parse or compile fatal error at runtime,
 ![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
 
 Other runtime exceptions (`Throwable`s) thrown by a snippet are caught and logged instead of taking down the page.
+
+## Concurrent edit protection
+
+Each snippet the editor loads is tagged with a revision hash that identifies the exact stored code. When you save, the extension compares that hash to what is currently stored:
+
+- If the hash still matches, your change is written and the page reloads.
+- If the hash no longer matches, someone else has saved a different version since you opened the editor. The save is rejected with a conflict message and your unsaved code stays in the editor so you don't lose it.
+
+To recover from a conflict, copy your draft somewhere safe, reload the editor to pull in the newer version, then reapply your changes on top and save again.
+
+## Managing snippets through the Abilities API
+
+Custom Dashboard registers a set of MainWP abilities with the WordPress [Abilities API](https://make.wordpress.org/core/2025/09/25/introducing-the-abilities-api/). This lets AI agents and other automation observe and change PHP, CSS, and JavaScript snippets over REST without editing PHP files by hand.
+
+The abilities are registered in the `mainwp-custom-dashboard` category and require the Abilities API to be available on the site. Each ability requires:
+
+- An authenticated user with the `manage_options` capability
+- The Custom Dashboard Extension activated and enabled
+- The extension permission filter (`mainwp_currentusercan`) to allow access
+
+### Available abilities
+
+| Ability | Purpose | Behavior |
+| --- | --- | --- |
+| `mainwp/get-custom-dashboard-snippet-metadata-v1` | Read snippet state without exposing the code | Read-only. Returns `configured`, `revision`, `execution_scope`, and `observed_at`. |
+| `mainwp/validate-custom-dashboard-php-v1` | Check a PHP snippet's syntax in memory | Never stores or runs the code. Returns `valid`, an `issue` classification, and `code_bytes`. |
+| `mainwp/replace-custom-dashboard-snippet-v1` | Preview or replace a snippet with revision protection | Destructive when `dry_run` is `false`. Requires `expected_revision` and `confirm: true` to write. |
+| `mainwp/clear-custom-dashboard-snippet-v1` | Preview or clear a snippet with revision protection | Destructive when `dry_run` is `false`. Requires `expected_revision` and `confirm: true` to write. |
+
+### Snippet types and limits
+
+- `type` must be one of `php`, `css`, or `js`.
+- `code` is UTF-8, must not contain null bytes, and is capped at 100,000 characters (262,144 bytes).
+- `expected_revision` is a 64-character lowercase hex hash returned by the metadata ability.
+- Snippet source is `writeOnly` in the schema and is never echoed back or logged.
+
+### Preview then apply
+
+Every destructive call must be run in two steps. First preview the change with `dry_run: true`, then apply it with `dry_run: false` and `confirm: true`. Reuse the same `expected_revision` for both calls.
+
+```json
+// Step 1 — preview a PHP replacement
+{
+  "type": "php",
+  "code": "add_action( 'admin_footer', function () { echo '<!-- v2 -->'; } );",
+  "expected_revision": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "dry_run": true
+}
+```
+
+```json
+// Step 2 — apply the same replacement
+{
+  "type": "php",
+  "code": "add_action( 'admin_footer', function () { echo '<!-- v2 -->'; } );",
+  "expected_revision": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "dry_run": false,
+  "confirm": true
+}
+```
+
+If the stored snippet changed between the preview and the apply, the write is rejected with a `snippet_conflict` error. Read the metadata again, use the new revision, and retry.
+
+### Error responses
+
+Errors are returned as `WP_Error` values with stable codes and HTTP statuses:
+
+| Code | HTTP status | Meaning |
+| --- | --- | --- |
+| `mainwp_custom_dashboard_invalid_input` | 400 | Input shape or values violate the schema. |
+| `mainwp_custom_dashboard_validation_failed` | 400 | Replacement code failed bounded validation (for example, PHP tags or file-scope directives). |
+| `mainwp_custom_dashboard_authentication_required` | 401 | No authenticated user. |
+| `mainwp_custom_dashboard_forbidden` | 403 | User lacks `manage_options` or the extension is not enabled. |
+| `mainwp_custom_dashboard_snippet_conflict` | 409 | `expected_revision` no longer matches the stored snippet. |
+| `mainwp_custom_dashboard_read_failed` | 500 | Snippet state could not be verified. |
+| `mainwp_custom_dashboard_write_failed` | 500 | Snippet change did not commit. |
+| `mainwp_custom_dashboard_result_unknown` | 500 | Write outcome is undetermined. Read metadata before continuing. |
+
+Do not retry a destructive call after a `result_unknown` response. Fetch the metadata again first so you use the current revision.
 
 ---
 
