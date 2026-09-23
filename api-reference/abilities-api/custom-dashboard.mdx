@@ -1,0 +1,212 @@
+---
+title: Custom Dashboard Abilities
+sidebarTitle: "Custom Dashboard Abilities"
+description: >-
+  Read snippet metadata, validate PHP without running it, and preview or confirm PHP, CSS, and JavaScript changes with the MainWP Custom Dashboard Abilities API.
+---
+
+MainWP Custom Dashboard 5.2 registers four abilities in the `mainwp-custom-dashboard` category. All use the `mainwp/` namespace and manage snippets on the MainWP Dashboard site, not Child sites.
+
+## What You'll Learn
+
+- Read snippet status and its current revision without retrieving saved code
+- Validate proposed PHP without storing or executing it
+- Preview and confirm snippet replacements or removals
+- Handle conflicts and uncertain write outcomes
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
+- Custom Dashboard 5.2 or later, active and enabled in MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Custom Dashboard Add-on
+
+Team Control restrictions apply. All four abilities require these permissions, including metadata reads and PHP validation. Authenticate with an [Application Password](/api-reference/rest-api/application-passwords) or another method described in the [Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-custom-dashboard-snippet-metadata-v1` | GET | Read one snippet's status, revision, and execution scope |
+| `mainwp/validate-custom-dashboard-php-v1` | POST | Check proposed PHP without saving or running it |
+| `mainwp/replace-custom-dashboard-snippet-v1` | POST | Preview or replace one snippet |
+| `mainwp/clear-custom-dashboard-snippet-v1` | DELETE | Preview or clear one snippet |
+
+Discover their complete input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-custom-dashboard'
+```
+
+PHP validation uses **POST** so code is submitted in the request body. Clearing uses **DELETE**, including for previews, because it is marked destructive and idempotent. Replacement uses **POST** and is not marked idempotent.
+
+## Inputs and Execution Scope
+
+The `type` field accepts exactly `php`, `css`, or `js`. There is one stored snippet per type. These abilities reject unknown input fields; they do not accept a Child site ID or a snippet collection.
+
+Code must be a valid UTF-8 string without null bytes. The input limit is 100,000 characters and 262,144 bytes. On servers without `mb_strlen`, the character check uses byte length, so the effective limit is 100,000 bytes. Replacement requires a nonempty string; use the clear ability to remove a snippet. PHP validation accepts an empty string.
+
+| Type | Metadata `execution_scope` | Scope after saving |
+|------|----------------------------|--------------------|
+| `php` | `all_wordpress_requests` | Runs during WordPress initialization on the MainWP Dashboard site, including requests outside MainWP admin pages |
+| `css`, `js` | `mainwp_admin_except_child_tabs` | Added inline on MainWP admin pages except Child site tabs |
+
+Validation and previews do not execute the submitted code. After a confirmed write, saved code participates in the normal runtime described above. Syntax acceptance does not prove that PHP is safe or that its runtime behavior is correct. CSS and JavaScript previews check input bounds and revisions, but do not lint the code or test its behavior in a browser.
+
+## Read Snippet Metadata
+
+**Ability:** `mainwp/get-custom-dashboard-snippet-metadata-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"type":"css"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-custom-dashboard-snippet-metadata-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "type": "css",
+  "configured": false,
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "execution_scope": "mainwp_admin_except_child_tabs",
+  "observed_at": "2026-09-23T09:00:00Z"
+}
+```
+
+`configured` means the stored snippet is nonempty, not that it has executed successfully. `observed_at` is the UTC observation time. The response does not include saved source, source size, runtime output, or error details.
+
+`revision` is an opaque 64-character lowercase hexadecimal value bound to the snippet type and current stored state. Use it as `expected_revision` for previews and changes. Do not compute it yourself or substitute the editor's internal revision. The repeated `a` value in these examples is fictional; replace it with the value returned by your metadata read.
+
+## Validate PHP
+
+**Ability:** `mainwp/validate-custom-dashboard-php-v1`<br />
+**Method:** POST
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"code":"return;"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/validate-custom-dashboard-php-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "valid": true,
+  "issue": "none",
+  "code_bytes": 7,
+  "syntax_only": true,
+  "observed_at": "2026-09-23T09:00:00Z"
+}
+```
+
+`code` is the only input. Supply tagless PHP, without opening or closing PHP tags. The validator parses it without executing or storing it. Responses classify the result without echoing code or parser error text.
+
+| `issue` | Meaning |
+|---------|---------|
+| `none` | The input passed the syntax checks |
+| `php_tags` | Remove opening or closing PHP tags |
+| `file_scope_directive` | Remove top-level `namespace`, `declare`, or `use` import statements |
+| `syntax_error` | Correct malformed PHP syntax |
+
+A closure's `use (...)` clause is allowed. A syntax rejection returns `valid: false` with the issue category; it is not a runtime execution result. Invalid input types, encoding, or size limits are rejected as request errors.
+
+## Preview and Confirm Changes
+
+Both replacement and clearing require a current `expected_revision` and an explicit boolean `dry_run`:
+
+| Intent | `dry_run` | `confirm` |
+|--------|-----------|-----------|
+| Preview | `true` | Omit or set to `false` |
+| Apply | `false` | Must be `true` |
+
+Read metadata for the selected type, send a preview, and review its result. To apply the change, resend the same target, revision, and proposed code with `dry_run: false` and `confirm: true`. For clearing, omit code. A preview does not reserve the revision, so another edit can still cause the confirmed request to fail with a conflict.
+
+The preview response's `revision` remains the current revision. A successful change returns the verified revision after the write. There is no request ID or idempotency-token field for these abilities.
+
+## Replace a Snippet
+
+**Ability:** `mainwp/replace-custom-dashboard-snippet-v1`<br />
+**Method:** POST
+
+Preview a CSS replacement:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"type":"css","code":"h2 { color: #8dc63f; }","expected_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dry_run":true,"confirm":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-custom-dashboard-snippet-v1/run'
+```
+
+Required fields are `type`, `code`, `expected_revision`, and `dry_run`. Apply with `confirm: true` as described in [Preview and Confirm Changes](#preview-and-confirm-changes). This replaces the entire stored snippet for that type; it does not append or merge code.
+
+**Example response for a preview that would change the CSS:**
+
+```json
+{
+  "status": "preview",
+  "preview": {
+    "type": "css",
+    "ready": true,
+    "validation_issue": "none",
+    "changed": true,
+    "result_configured": true,
+    "code_bytes": 22
+  },
+  "previous_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "observed_at": "2026-09-23T09:00:00Z"
+}
+```
+
+The same shape is returned after confirmation, with `status` set to `applied` when the write commits or `unchanged` when the supplied code already matches. In preview mode, `preview.changed` reports whether the code would differ; after execution it reports whether a write committed.
+
+For PHP, inspect `preview.ready` and `preview.validation_issue`. Invalid PHP can produce a successful preview response with `ready: false`; a confirmed replacement is then rejected with `validation_failed`. The submitted source is not returned. Keep your proposed code and review the complete replacement before confirming.
+
+## Clear a Snippet
+
+**Ability:** `mainwp/clear-custom-dashboard-snippet-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"type":"css","expected_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dry_run":true,"confirm":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/clear-custom-dashboard-snippet-v1/run'
+```
+
+Required fields are `type`, `expected_revision`, and `dry_run`. Do not send a `code` field. After reviewing the preview, set `dry_run: false` and `confirm: true` to clear that type's saved source.
+
+The response contains `status`, `preview`, `previous_revision`, `revision`, and `observed_at`. Its nested `preview` contains `type`, `changed`, and `result_configured`, which is always `false`. Status is `preview`, `cleared`, or `unchanged` if the snippet is already empty. Other snippet types are unaffected.
+
+Clearing prevents the saved snippet from being used on subsequent requests. It does not undo effects that code already produced, such as database changes made by PHP. Keep a copy of any source you may need before clearing it; these abilities do not provide source retrieval or a rollback history.
+
+## Conflicts and Errors
+
+Error codes use the `mainwp_custom_dashboard_` prefix:
+
+| Suffix | HTTP status | Next step |
+|--------|-------------|-----------|
+| `invalid_input` | 400 | Check required fields, types, size limits, revision format, and confirmation flags |
+| `validation_failed` | 400 | Correct the PHP before requesting a replacement |
+| `authentication_required` | 401 | Authenticate the request |
+| `forbidden` | 403 | Check administrator permission, Add-on access, and activation |
+| `snippet_conflict` | 409 | Read metadata again and review the latest saved snippet before proposing another change |
+| `read_failed` | 500 | Resolve the storage-read problem before proceeding |
+| `write_failed` | 500 | The change did not commit; inspect current state before making another request |
+| `result_unknown` | 500 | The final stored result could not be verified; inspect current state before continuing |
+
+After a conflict, preserve your proposed code and use the Custom Dashboard editor to compare it with the latest saved source. Reading a newer revision and immediately overwriting it can discard someone else's work.
+
+Do not automatically retry a replacement after a lost response or unknown result. First read metadata and inspect the editor if needed. A metadata revision change alone does not prove your specific replacement succeeded, because metadata does not return source. Clearing is marked idempotent, but its revision check still applies; an old revision can conflict after a successful clear.
+
+## Related Resources
+
+- [Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension) - Editor workflow and PHP recovery
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, discovery, and request formats
+- [Code Snippets Add-on](/add-ons/development/code-snippets-extension) - Deploy code to Child sites
