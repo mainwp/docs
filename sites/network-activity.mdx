@@ -23,7 +23,7 @@ Dashboard Insights uses this same data source to provide analytics summaries, wh
 ## Prerequisites
 
 - MainWP Dashboard with connected child sites
-- MainWP Child Reports enabled on child sites for direct WP Admin activity tracking
+- MainWP Child active on connected child sites for direct WP Admin activity tracking
 - Network Activity logging enabled in settings
 
 ---
@@ -122,11 +122,13 @@ Click **Filter** to show only Non-MainWP Changes.
 
 Network Activity supports three dismissal actions:
 
-- **Dismiss** on an individual row
-- **Dismiss Selected Changes** for checked rows
-- **Dismiss All Changes** for the full filtered set
+- **Dismiss** archives the event on that row.
+- **Dismiss Selected Changes** archives only the rows you select using their checkboxes.
+- **Dismiss All Changes** archives all active Network Activity logs across your Dashboard, including logs excluded by the current filters or not displayed on the current page.
 
-All dismiss actions require confirmation before execution.
+To dismiss only specific logs, select their checkboxes and use **Dismiss Selected Changes**. Filters do not limit **Dismiss All Changes**.
+
+Dismissal removes logs from the active activity list; it does not undo the original changes on your sites. All dismiss actions require confirmation before execution.
 
 <Info>
 Bulk dismissal is available on the Network Activity page and in the Network Activity widget shown on Operations and individual child site Operations pages.
