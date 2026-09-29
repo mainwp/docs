@@ -31,17 +31,18 @@ thirdPartyPlugin: WP Staging
 - Creating staging sites from child sites
 - Updating and deleting staging sites
 - Running updates on staging sites first
+- Publishing staging changes through WP Staging Pro
 
 ---
 
 <Info>
-**Integration Add-on** - This add-on requires the WP Staging plugin on Child Sites.
+**Integration Add-on** - This add-on requires WP Staging Free or Pro on your Child Sites. It does not provide a push-to-production action.
 </Info>
 
 **Staging Sites** are sites that duplicate your **Production Sites** _(same hardware, same software, same settings)_ so that any change can be tested and evaluated before being placed into production.
 In other words, it's a complete but independent copy of your production site, including the database.
 The MainWP Staging Extension allows you to create and manage staging sites without hassle.
-The MainWP Staging Extension requires the [WP Staging](https://wordpress.org/plugins/wp-staging/) or WP Staging Pro plugin on your Child Sites.
+The MainWP Staging Extension integrates with [WP Staging Free](https://wordpress.org/plugins/wp-staging/) and WP Staging Pro for creating, updating, and deleting staging sites. Publishing staging changes to production is handled separately through WP Staging; see [Push Staging Changes to Production](#push-staging-changes-to-production).
 
 ## How it works
 
@@ -58,7 +59,7 @@ MainWP Staging Extension is extensively tested by the MainWP team. If you find a
 Installation of the MainWP Staging Extension requires two important steps:
 
 -   Installing the Extension itself on your MainWP Dashboard site
--   Installing the [WP Staging](https://wordpress.org/plugins/wp-staging/) plugin on Child Sites
+-   Installing WP Staging Free or Pro on Child Sites
 
 ### Installing the Extension
 
@@ -66,7 +67,9 @@ The MainWP Staging Extension needs to be installed only on your MainWP Dashboard
 
 ### Installing the Plugin
 
-For the proper use of the MainWP Staging Extension, you need to install and activate the WP Staging plugin on your child sites. The add-on also detects WP Staging Pro when it is installed and active.
+Install and activate WP Staging Free or Pro on your production Child Sites. Both editions are recognized by the MainWP Staging Add-on.
+
+The plugin-search instructions below install **WP Staging Free** from WordPress.org. For Pro, use the separate ZIP package from your WP STAGING account and follow the [WP Staging Pro installation guide](https://wp-staging.com/docs/install-wp-staging/).
 
 ### Install from MainWP Dashboard
 
@@ -143,7 +146,7 @@ Enter the **Staging Site Name**
 
 ## Update a Staging Site
 
-Updating a staging site will copy the database and files from the live site to the staging site again. To do that,
+Updating a staging site copies the selected database tables and files from the live site to staging again. This can overwrite changes on staging; it does not publish staging changes to production. To refresh the staging copy,
 
 <Steps>
 <Step title="Login to your MainWP Dashboard">
@@ -161,6 +164,33 @@ Click the **Manage Staging Sites** action (you will be redirected to the page wh
 </Step>
 </Steps>
 
+
+## Push Staging Changes to Production
+
+The MainWP Staging Add-on does not provide a push-to-production action, including when WP Staging Pro is installed. Publishing takes place in WP Staging on the **production Child Site**.
+
+WP Staging Free does not include the built-in push feature. To use it, install WP Staging Pro with a plan that includes **Push to Live**. Check [WP STAGING's current plan comparison](https://wp-staging.com/pro-features/) for availability.
+
+These steps apply to a staging copy listed in WP Staging on the production site. Create and verify a fresh production backup before starting.
+
+<Steps>
+<Step title="Open the production site's WordPress admin">
+You can also go to **MainWP > Add-ons > Administrative > Staging** (`/wp-admin/admin.php?page=Extensions-Mainwp-Staging-Extension`) and choose **Go to WP Staging** from the production site's action menu.
+</Step>
+<Step title="Select the staging copy in WP Staging">
+Open **WP STAGING > Start / STAGING**, locate the staging copy, and select **Push Changes**.
+</Step>
+<Step title="Review what will be published">
+Choose the files and database tables to copy. Selected tables replace their production counterparts, so protect any newer live orders, comments, or other content.
+</Step>
+<Step title="Start the push and verify production">
+Confirm the selection, start the push, and check the live site when it finishes. Follow [WP STAGING's illustrated push guide](https://wp-staging.com/docs/copy-staging-site-to-live-site/) for the full procedure.
+</Step>
+</Steps>
+
+<Note>
+If the staging copy is on a separate server or was created with another tool, the standard push workflow may not apply. Review [WP STAGING's migration guidance](https://wp-staging.com/docs/category/migration/) for that setup. Connecting both sites to MainWP does not create a publishing connection between them.
+</Note>
 
 ## Delete a Staging Site
 
