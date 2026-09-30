@@ -50,11 +50,13 @@ Start here if the server won't connect or a tool call fails. Each entry names th
 
 <AccordionGroup>
   <Accordion title="401 Unauthorized">
-    The username must match exactly (it is case-sensitive) and must be the user that owns the Application Password. If in doubt, regenerate the password; it works with or without the display spaces. Some security plugins (Wordfence, iThemes Security) disable Application Passwords, and some 2FA plugins interfere even though Application Passwords normally bypass 2FA.
+    Use the WordPress login name or email address of the user who owns the Application Password, not the display name. Use that user's Application Password, not the account login password; it works with or without the display spaces. Some security plugins disable Application Passwords.
+
+    If setup reports `credentials_rejected`, `mainwp_get_setup_status` shows the rejected user and configuration sources without retrying. Correct the effective source and restart the client. See [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials).
   </Accordion>
 
   <Accordion title="403 Forbidden">
-    Authentication worked but the WordPress user lacks the capabilities for that operation. Give the user the administrator role, or at minimum the capabilities the operations need.
+    Check the response details. The user may lack a required WordPress capability, or a security plugin, firewall, or proxy may be blocking the request. A 403 with a recognized WordPress credential-rejection code can also mean Application Password authentication failed. See [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials); a bare 403 does not prove the credentials are wrong.
   </Accordion>
 
   <Accordion title="Bearer token not working">
@@ -113,6 +115,10 @@ Start here if the server won't connect or a tool call fails. Each entry names th
     A single response crossed `maxResponseSize`. Raise the limit or reduce the response with filters (status filters, lower `per_page`).
   </Accordion>
 
+  <Accordion title="Input exceeds maximum length or request URL is too long">
+    Check the parameter and effective limit in the error. Strings default to 10,000 characters unless the tool's input schema declares a valid `maxLength`; GET and DELETE requests also have an 8,000-character limit for the complete encoded URL. Reduce the input or split the operation where the tool supports it. Raising response-size settings does not change these limits. See [Input limits](/mcp-server/reference/configuration#input-limits) for the schema ceiling, nesting limits, and stdio constraints.
+  </Accordion>
+
   <Accordion title="Rate limit exceeded">
     Too many API calls in one minute. Wait and retry, or raise `rateLimit`. Setting it to `0` disables limiting and is not recommended in production.
   </Accordion>
@@ -132,7 +138,7 @@ Start here if the server won't connect or a tool call fails. Each entry names th
   <Accordion title="Your AI tool doesn't show the MainWP tools">
     First: validate the config file's JSON and restart the host; most cases end there. Client-specific checks: for Claude Desktop, confirm the config file path for your OS; for Claude Code, check `~/.claude.json`; for VS Code, you need version 1.101+, an open workspace (not a lone file), and Agent Mode enabled. Config locations for every client are on [Connect Your AI Client](/mcp-server/clients).
 
-    If you only see `mainwp_get_setup_status` and `mainwp_configure`, the server started without a Dashboard URL or credentials and is in setup mode. See [First-run setup](/mcp-server/reference/configuration#first-run-setup).
+    If you only see `mainwp_get_setup_status` and `mainwp_configure`, call `mainwp_get_setup_status` to identify the state. It may be `unconfigured` (missing connection details), `degraded` (the connection check failed), or `credentials_rejected` (the Dashboard rejected the loaded credentials). See [First-run setup](/mcp-server/reference/configuration#first-run-setup) and [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials).
   </Accordion>
 
   <Accordion title="The assistant says setup will not replace my credentials">
@@ -144,10 +150,10 @@ Start here if the server won't connect or a tool call fails. Each entry names th
 
     **The Dashboard was down, restarting, or briefly unreachable.** Ask your assistant to check the connection again, which calls `mainwp_get_setup_status`. That retries with the credentials the server already has and connects as soon as the Dashboard answers. Nothing else is needed.
 
-    **The stored password is wrong, most often because you rotated it.** Retrying will not help here, because it reuses the same password the Dashboard is already refusing. Update it yourself:
+    **The stored password is wrong, most often because you rotated it.** Once the state is `credentials_rejected`, the server does not resend it. Use `mainwp_get_setup_status` to identify the configuration source, then update it yourself:
 
     1. In WordPress, go to your profile page and create an Application Password, or copy the new one you already created.
-    2. Put it wherever this server reads its credentials from. That is either the `env` block of the server's entry in your MCP client config, or `~/.config/mainwp-mcp/settings.json`. If both exist, the environment wins.
+    2. Update the source shown in `connectionSources`: `env` or `settings.json`. For file-based values, the working-directory `settings.json` is loaded before `~/.config/mainwp-mcp/settings.json`. Check `overriddenSettingsKeys` before editing a file; environment values take precedence. See [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials).
     3. Restart your MCP client so the server picks it up.
 
     **You want to point the server at a different Dashboard.** Same as above: edit the URL and credentials where they are configured, then restart the client.

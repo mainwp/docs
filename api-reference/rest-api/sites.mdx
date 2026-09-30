@@ -84,6 +84,43 @@ When adding or editing sites, use the expected JSON types instead of relying on 
 
 Omitting `force_use_ipv4` when adding a site uses the global setting for the connection attempt. Invalid values, such as `3` for `force_use_ipv4` or `null` for `ssl_verify`, return HTTP 400. Check the error response for the affected parameter and correct it before retrying. Site creation inside `/sites/batch` and global `/batch` uses the same connection input validation.
 
+### Update Site Tags
+
+Use `groupids` when updating tags through `/sites/{id_or_domain}/edit`. It replaces the site's tag assignments rather than adding to them.
+
+| Request | Result |
+|---|---|
+| `"groupids": "3,7"` | Assigns tags 3 and 7 and removes other tag assignments |
+| `"groupids": ""` | Removes all tag assignments from the site |
+| Omit `groupids` | Keeps the site's current tag assignments |
+
+Each ID must be a positive integer identifying an existing tag accessible to the authenticated API user. Duplicate IDs are removed, and spaces around IDs are allowed. Tag names, zero, negative IDs, nonexistent or inaccessible IDs, and empty entries such as `"3,,7"` are rejected. The endpoint does not create tags.
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"groupids":"3,7"}' \
+  "https://your-dashboard.com/wp-json/mainwp/v2/sites/12/edit"
+```
+
+Sending `tags`, even with an empty value, or sending `groupids` as an array or another non-string type returns HTTP 400 with `rest_invalid_param`. Invalid tag IDs are checked before any site fields are saved and return `success: 0`, `group_updated: false`, and `group_message` explaining the failure.
+
+Check the response body even when the HTTP status is 200. A successful tag update includes `success: 1`, `group_updated: true`, and `group_message: "Tags updated successfully."`.
+
+If valid IDs pass validation but saving the tag assignments fails, other requested site fields may already have been saved. That response is:
+
+```json
+{
+  "success": 0,
+  "group_updated": false,
+  "group_message": "Failed to update tags or invalid tag IDs.",
+  "message": "Group associations could not be updated, but the other requested fields were saved."
+}
+```
+
+Read the site's current values before retrying; `success: 0` does not guarantee that the entire edit was rolled back.
+
 ### List sites
 
 ```bash

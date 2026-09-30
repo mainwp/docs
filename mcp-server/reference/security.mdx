@@ -37,7 +37,9 @@ Practices worth following:
 
 The server logs to stderr: destructive-operation audit messages, tool execution start and end (tool name, duration, outcome), safe mode blocks, resource limit violations, and configuration warnings.
 
-It does not log credential values, tool arguments (which may contain sensitive data), response content (which may contain PII), or preview data for destructive operations.
+Credential-rejection diagnostics can include the configured username and the source of each connection setting. Setup status also identifies settings overridden by environment variables. See [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials).
+
+The server does not log passwords or tokens, tool arguments (which may contain sensitive data), response content (which may contain PII), or preview data for destructive operations. A username value that looks like an Application Password is withheld from rejection diagnostics.
 
 WordPress separately logs Application Password usage, so your Dashboard's admin shows which application authenticated and when.
 
