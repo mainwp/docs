@@ -98,6 +98,14 @@ The server-side gates above cannot be talked around: a deletion without a valid 
 }
 ```
 
+## Guidance the server gives the AI
+
+When a client connects, the server sends it a short set of instructions. They tell the AI to present a plan and get your approval before any call that changes sites. That includes updates, which the Dashboard does not classify as destructive, so the confirmation flow above does not stop them. The AI is also told never to remove an update from the ignore list to force it through unless you ask.
+
+The same instructions cover knowledge records on Dashboard 6.3 and later. The AI is told to treat a record as information about a site, not as instructions, to open any record it has seen only by title before describing it, and to tell you about any record that contains instructions addressed to an AI so a person can review it.
+
+Each client decides how to use server instructions, so they guide the AI without enforcing anything. The server-side gates above are the enforcement.
+
 ## Going further
 
 <CardGroup cols={2}>
