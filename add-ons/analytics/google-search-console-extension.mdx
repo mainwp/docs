@@ -223,6 +223,20 @@ If you use **MainWP Pro Reports**, you can include Google Search Console data in
 
 ## Troubleshooting
 
+### JSON connection fails after updating to 6.3
+
+If **Refresh Data** shows "Data refresh connection fail." or previously assigned properties disappear from the selector after updating to 6.3, check the stored Service Account JSON file's permissions.
+
+Version 6.3 rejects JSON credential files with permissions for group or other users, including `644` and `755`. Earlier versions did not enforce this check. New uploads are saved with `600` permissions, but upgrading to 6.3 does not change the permissions on existing JSON files.
+
+1. Locate the JSON credential file in your MainWP Dashboard installation, normally under `wp-content/uploads/mainwp/google-search-console/`.
+2. Set that file's permissions to `600` (owner read and write). Apply this to the JSON file, not its containing directory. PHP must still be able to read the file; if it cannot, check that the file ownership matches the PHP process user.
+3. Open **MainWP > Add-ons > Analytics > Google Search Console > Manage Properties** (`/wp-admin/admin.php?page=Extensions-Mainwp-Google-Search-Console-Extension&tab=accounts`) and click **Refresh Data** for the JSON connection. Confirm that the refresh succeeds and the properties are available again.
+
+If the property selector is empty, avoid saving a blank property selection while resolving the connection problem. Previously cached charts can remain visible even when a refresh fails.
+
+This permission check applies to Service Account JSON connections. It does not apply to **Sign in with Google** (OAuth) connections.
+
 ### Cannot update `wp-config.php` automatically
 
 If you see either of these messages:
