@@ -10,7 +10,7 @@ The MCP server assumes the AI will sometimes get things wrong. The guardrails ar
 
 The AI operates with the permissions of the WordPress user whose Application Password you configured, and only through the tools the server exposes.
 
-With default configuration it **can**: read site, plugin, theme, update, client, and tag data; run updates; activate and deactivate plugins and themes; sync and reconnect sites; and delete sites, clients, tags, plugins, or themes, but only after you confirm.
+With default configuration it **can**: read site, plugin, theme, update, client, and tag data; run updates, which on Dashboard 6.3 and later need your confirmation; activate and deactivate plugins and themes; sync and reconnect sites; and delete sites, clients, tags, plugins, or themes, but only after you confirm.
 
 It **cannot**: log into WordPress admin, bypass WordPress permissions, run arbitrary code on your sites, or touch anything MainWP itself does not expose.
 
@@ -46,9 +46,11 @@ sequenceDiagram
 
 The gate is strict. A destructive call with no confirmation parameters is rejected outright; the server never executes a bare destructive request. Operations that cannot produce a preview still go through the same token gate, and the AI must describe what will happen and get your explicit approval first.
 
-This applies to every tool the server classifies as destructive, including `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. An ability that does not explicitly declare itself non-destructive is treated as destructive and gated the same way.
+This applies to every tool the server classifies as destructive, including `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. On Dashboard 6.3 and later it also covers the update tools and `unignore_site_updates_v1`. Update confirmation is coming in MainWP 6.3 but available now in the [Early Release program](https://mainwp.com/add-on/early-access/). An ability that does not explicitly declare itself non-destructive is treated as destructive and gated the same way.
 
-For unattended automation where you have already verified the targets, the flow can be disabled with `requireUserConfirmation: false`. See [Configuration Reference](/mcp-server/reference/configuration).
+When one request needs several previews, for example update calls for different items on different sites, previews shown together can be approved in one explicit reply. Each still runs with its own token, and approval never covers anything you were not shown.
+
+For unattended automation, set `MAINWP_REQUIRE_USER_CONFIRMATION=false` together with an allow list (`MAINWP_ALLOWED_TOOLS`). An allow list filters by tool name and does not see site arguments, so leave `update_all_v1` off the list and have the automation name its sites on every call. With confirmation off, the caller must send `confirm: true` itself: Dashboard 6.3 rejects an update call with neither `confirm` nor `dry_run`, and the server reports that as `mainwp_confirmation_required` in `error.data.upstream_code`. See [Configuration Reference](/mcp-server/reference/configuration).
 
 ## Safe mode: block deletions entirely
 
@@ -63,7 +65,7 @@ If you want destructive operations off the table completely, enable safe mode:
 Destructive calls then fail with `SAFE_MODE_BLOCKED` without ever reaching your Dashboard. We recommend running your first sessions in safe mode: you can verify the connection and learn how the AI behaves while the dangerous tool classes stay blocked.
 
 <Warning>
-Safe mode is not read-only. Updates, plugin and theme activation, and site syncing still work, and a bad update can break a site. For genuinely read-only access, expose only read tools with `allowedTools`. The [Restrict Available Tools](/mcp-server/guides/restrict-tools) guide has a ready-made read-only configuration.
+Safe mode is not read-only. Plugin and theme activation and site syncing still work. On Dashboards before 6.3, updates do too, and a bad update can break a site. For genuinely read-only access, expose only read tools with `allowedTools`. The [Restrict Available Tools](/mcp-server/guides/restrict-tools) guide has a ready-made read-only configuration.
 </Warning>
 
 | | Safe mode | Confirmation flow |
@@ -71,6 +73,7 @@ Safe mode is not read-only. Updates, plugin and theme activation, and site synci
 | Purpose | Block all destructive operations | Allow them with your approval |
 | Good for | Testing, demos, training, first-time setup | Day-to-day production use |
 | Deletions | Blocked | Allowed after preview and confirmation |
+| Updates (Dashboard 6.3 and later) | Blocked | Allowed after preview and confirmation |
 | You experience | AI says "I can't do that" | AI shows a preview and asks |
 | Default | Off | On |
 
@@ -102,7 +105,7 @@ The server-side gates above cannot be talked around: a deletion without a valid 
 
 When a client connects, the server sends it a short set of instructions. They tell the AI to present a plan and get your approval before any call that changes sites. That includes updates, which the Dashboard does not classify as destructive, so the confirmation flow above does not stop them. The AI is also told never to remove an update from the ignore list to force it through unless you ask.
 
-The same instructions cover knowledge records on Dashboard 6.3 and later. The AI is told to treat a record as information about a site, not as instructions, to open any record it has seen only by title before describing it, and to tell you about any record that contains instructions addressed to an AI so a person can review it.
+The same instructions cover knowledge records on Dashboard 6.3 and later. Knowledge is coming in MainWP 6.3 but available now in the [Early Release program](https://mainwp.com/add-on/early-access/). The AI is told to treat a record as information about a site, not as instructions, to open any record it has seen only by title before describing it, and to tell you about any record that contains instructions addressed to an AI so a person can review it.
 
 Each client decides how to use server instructions, so they guide the AI without enforcing anything. The server-side gates above are the enforcement.
 
