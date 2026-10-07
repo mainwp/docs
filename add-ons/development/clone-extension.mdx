@@ -62,6 +62,12 @@ This method allows you to clone one child site to another, simply by uploading a
 
 To clone a site, the connection between two child sites (Source and Destination) needs to be established without issues. If the Quick Clone feature fails for you, it is more than likely due to insufficient server resources. Be sure to review [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) and [resolve any of the potential issues](/troubleshooting/resolve-system-requirement-issues).
 
+### Plugin and Theme Settings Compatibility
+
+Starting with MainWP Child 6.2.2, Clone/Restore leaves a database value unchanged during URL replacement if its serialized data contains PHP objects, cannot be safely decoded, or exceeds processing limits. Source-site URLs inside those values are not replaced with destination-site URLs. This applies to both Quick Clone and Clone from Backup.
+
+After cloning, check plugin and theme settings on the destination site for references to the source site. If a setting still uses the source URL, update it through the plugin or theme's settings, or follow its developer's migration instructions.
+
 ## Clone WordPress Site (Quick Clone)
 
 Quick Clone feature enables you to clone one child site to another child site. This means that both child sites need to be connected to your MainWP Dashboard.
