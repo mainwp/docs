@@ -2,7 +2,7 @@
 title: MainWP Early Access Extension
 sidebarTitle: "Early Access"
 description: >-
-  Test pre-release versions of MainWP Dashboard and Child plugins before they
+  Test Early Access versions of MainWP Dashboard and MainWP Child before they
   are officially released on WordPress.org.
 ---
 
@@ -15,19 +15,19 @@ description: >-
   allowFullScreen
 ></iframe>
 
-The MainWP Early Access Extension lets you opt into pre-release versions of both the MainWP Dashboard plugin and the MainWP Child plugin. This allows you to test upcoming features, help evaluate changes before they reach WordPress.org, or prepare workflows for new versions still in development.
+The MainWP Early Access Extension lets you opt into Early Access versions of both the MainWP Dashboard plugin and the MainWP Child plugin. This allows you to test upcoming features, help evaluate changes before they reach WordPress.org, or prepare workflows for new versions still in development.
 
 ## What You'll Learn
 
 - How to install and configure the Early Access Extension
-- How to enable pre-release updates globally or per-site
+- How to enable Early Access updates globally or per-site
 - How to create a GitHub Personal Access Token for higher rate limits
 - How to roll back to stable versions
 
 ## Prerequisites
 
 - Active MainWP license with Early Access Extension access
-- Staging or testing environment (pre-release builds should not be used in production)
+- Staging or testing environment (Early Access builds should not be used in production)
 
 <Warning>
 Early Access builds are best used on staging or testing environments, not production sites.
@@ -79,7 +79,7 @@ The add-on provides two settings locations:
 
 ### Enable Early Access for MainWP Dashboard
 
-Toggle this option to receive pre-release updates for your Dashboard plugin. When enabled, update checks include GitHub releases marked as prereleases.
+Toggle this option to receive Early Access updates for your Dashboard plugin. When enabled, update checks include GitHub releases marked as prereleases.
 
 ### GitHub Personal Access Token (PAT)
 
@@ -121,8 +121,8 @@ The PAT key is securely encrypted by the Dashboard.
 This reinstalls the current stable version of the MainWP Dashboard plugin from WordPress.org.
 
 Use this option if:
-- You no longer want to stay on prerelease builds
-- A prerelease build causes compatibility issues
+- You no longer want to stay on Early Access builds
+- An Early Access build causes compatibility issues
 
 ---
 
@@ -142,7 +142,7 @@ Runs a bulk update across all eligible sites. A modal window displays progress a
 
 ### Check for Updates
 
-If a new prerelease version is available, this link forces a fresh update check.
+If a new Early Access version is available, this link forces a fresh update check.
 
 ### Roll Back Child Plugins on Sites to Latest Stable Release
 
@@ -163,7 +163,7 @@ A dropdown lets you choose:
 
 ### Update MainWP Child Plugin on Site to Pre-Release Version
 
-Runs the same action as the global updater but affects only that single site. A **Check for updates** link refreshes prerelease availability for that site.
+Runs the same action as the global updater but affects only that single site. A **Check for updates** link refreshes Early Access update availability for that site.
 
 ### Roll Back Child Plugin on Site to Latest Stable Release
 
@@ -174,7 +174,7 @@ Reverts the site back to the stable MainWP Child plugin from WordPress.org.
 ## What to Expect During Updates
 
 - Manual **Check for updates** links are available on both global and per-site pages
-- If a prerelease child version is available and Early Access is enabled, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
+- If an Early Access version of MainWP Child is available and Early Access is enabled, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
 - When the Early Access Extension license is active, plugin row meta will include a **Check for updates now** link
 
 ---
@@ -183,7 +183,7 @@ Reverts the site back to the stable MainWP Child plugin from WordPress.org.
 
 - Test Early Access builds on staging sites before rolling into production
 - Per-site overrides always take priority over global settings
-- If a prerelease update fails, check the site's connection status and retry from the modal
+- If an Early Access update fails, check the site's connection status and retry from the modal
 - Rollback operations always use the stable version provided by WordPress.org
 
 ---
