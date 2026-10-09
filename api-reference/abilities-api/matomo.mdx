@@ -1,0 +1,369 @@
+---
+title: Matomo Abilities
+sidebarTitle: "Matomo Abilities"
+description: >-
+  Manage the Matomo connection, list properties, assign properties to sites, read cached analytics, and run background refreshes with the MainWP Abilities API.
+---
+
+MainWP Matomo 5.2 registers 12 abilities in the `mainwp-matomo` category. All use the `mainwp/` namespace on your MainWP Dashboard and are available to MainWP AI Assistant and authenticated API clients.
+
+## What You'll Learn
+
+- Read or replace the Matomo connection
+- List Matomo properties and manage site assignments
+- Read cached analytics totals and daily trends
+- Request background refreshes, check their status, and cancel them
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
+- [MainWP Matomo](/add-ons/analytics/matomo-extension) 5.2 or later, active on MainWP Dashboard
+- An authenticated WordPress user with access to the Matomo Add-on
+- After updating to 5.2, an administrator must open wp-admin once so the extension can move the saved connection to secure storage
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Connection, property list, and property refresh abilities also require `manage_options`. Site abilities require `edit_sites`, access to the selected site, and a connected Child site. Team Control restrictions apply. Operation abilities only return operations that the current user requested.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-matomo-connection-v1` | GET | Read the redacted connection state and reporting settings |
+| `mainwp/replace-matomo-connection-v1` | DELETE | Preview or replace the connection, settings, and API token |
+| `mainwp/list-matomo-properties-v1` | GET | List cached Matomo properties |
+| `mainwp/get-site-matomo-assignment-v1` | GET | Read a site's property assignment |
+| `mainwp/preview-site-matomo-assignment-v1` | GET | Preview an assignment change and get a preview token |
+| `mainwp/replace-site-matomo-assignment-v1` | DELETE | Assign, change, or remove a site's property |
+| `mainwp/get-site-matomo-observation-v1` | GET | Read cached analytics totals for a site |
+| `mainwp/get-site-matomo-trend-v1` | GET | Read a daily series for one metric |
+| `mainwp/request-matomo-property-refresh-v1` | DELETE | Preview or queue a property list refresh |
+| `mainwp/request-site-matomo-refresh-v1` | DELETE | Preview or queue a site analytics refresh |
+| `mainwp/get-matomo-operation-v1` | GET | Read the status of a queued refresh |
+| `mainwp/cancel-matomo-operation-v1` | DELETE | Preview or request cancellation of a refresh |
+
+Discover the abilities and their complete input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-matomo'
+```
+
+The write abilities are marked destructive and idempotent, so the Abilities API routes them to **DELETE**, including for previews. The extension also accepts **POST** for these abilities when the body is `application/json` and contains an `input` object. They change MainWP settings and cached data. They never delete anything in Matomo.
+
+## Inputs, Revisions, and Confirmation
+
+Site calls use `site_id_or_domain`, which accepts a site ID or domain. The examples use site ID `1`. These abilities reject unknown input fields.
+
+Account references, property references, snapshot references, and revisions are opaque 64-character hexadecimal strings. Read them from the API. The repeated `a`, `b`, and `c` values below are fictional examples. Replace example UUIDs with a new UUID for each logical request.
+
+`if_match` is the current revision of the resource you change:
+
+| Operation | Read the revision from |
+|-----------|------------------------|
+| Replace the connection | Get Connection |
+| Preview or replace a site assignment | Get Site Assignment |
+
+Write abilities require exactly one of `dry_run` and `confirm` to be `true`. Start with `dry_run: true, confirm: false`, inspect the result, then send the same request with `dry_run: false, confirm: true`. Sending both as `false` returns `mainwp_matomo_confirmation_required` with HTTP 409.
+
+`request_ref` identifies one logical request. To retry the exact request after a lost response, reuse its UUID and payload. If anything changes, use a new UUID.
+
+---
+
+## Get Connection
+
+**Ability:** `mainwp/get-matomo-connection-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-matomo-connection-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "connection_state": "configured",
+  "account_ref": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "origin_class": "public_https",
+  "range_days": 30,
+  "refresh_hours": 24,
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+```
+
+| `connection_state` | Meaning |
+|--------------------|---------|
+| `missing` | No connection is saved |
+| `configured` | A connection is saved and usable |
+| `invalid` | The saved connection cannot be used |
+| `migration_required` | The saved connection uses `http://` or a subfolder and must be saved again with an `https://` root URL |
+
+The response never includes the Matomo URL or API token. `origin_class` is `public_https`, `private_allowlisted`, or `unset`. `account_ref` changes when the Matomo server, token, or trust profile changes.
+
+## Replace Connection
+
+**Ability:** `mainwp/replace-matomo-connection-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"origin_url":"https://matomo.example.com/","api_token":null,"trust_profile":"public","timeout_seconds":10,"range_days":30,"refresh_hours":24,"if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","request_ref":"11111111-1111-4111-8111-111111111111","dry_run":true,"confirm":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-matomo-connection-v1/run'
+```
+
+Supply every field, plus the [confirmation flags](#inputs-revisions-and-confirmation):
+
+| Field | Description |
+|-------|-------------|
+| `origin_url` | The `https://` root URL of your Matomo. Subfolders are not supported. |
+| `api_token` | A new API token, or `null` to keep the saved one. A token has 16 to 512 characters, or is `anonymous`. |
+| `trust_profile` | `public` or `private_allowlisted` |
+| `timeout_seconds` | `1` to `30` |
+| `range_days` | Default reporting range, `1` to `366` |
+| `refresh_hours` | Refresh interval, `1` to `720` |
+| `if_match` | `revision` from Get Connection |
+| `request_ref` | UUID for this request |
+
+`api_token: null` only works when `origin_url` and `trust_profile` stay the same. To move to a different server, send the token again. Otherwise the call returns `mainwp_matomo_invalid_input` with HTTP 400.
+
+Both the preview and the confirmed call contact Matomo to check the URL and token. The response includes `mode` (`preview` or `completed`), `request_id`, `changed`, `credential_action` (`retained` or `rotated`), `property_count`, `rebind_count`, and `revision`. A new server, token, or trust profile starts a new account. `rebind_count` is the number of site assignments that then need a new property.
+
+<Note>
+`private_allowlisted` lets MainWP connect to a Matomo on a private network address. Your MainWP Dashboard must allow the address with the `mainwp_matomo_private_origin_allowed` filter. You can supply a custom CA bundle with the `mainwp_matomo_trust_profile_ca_bundle` filter.
+
+```php
+add_filter( 'mainwp_matomo_private_origin_allowed', function ( $allowed, $host, $address ) {
+    return 'matomo.internal.example.com' === $host;
+}, 10, 3 );
+```
+</Note>
+
+## List Properties
+
+**Ability:** `mainwp/list-matomo-properties-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"limit":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-matomo-properties-v1/run'
+```
+
+| Optional parameter | Default | Description |
+|--------------------|---------|-------------|
+| `after_property_ref` | `null` | Cursor returned by the previous page |
+| `limit` | `25` | Page size from `1` to `100` |
+
+The response contains `catalog_ref`, `state` (`fresh` or `stale`), `properties`, `next_after_property_ref`, and `truncated`. Each property includes `property_ref`, `display_name`, and `assignment_state` (`assigned` or `unassigned`).
+
+While `truncated` is `true`, pass `next_after_property_ref` as `after_property_ref` to read the next page. This reads the cached list. Use a [property refresh](#request-a-property-refresh) to update it from Matomo.
+
+## Get Site Assignment
+
+**Ability:** `mainwp/get-site-matomo-assignment-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-matomo-assignment-v1/run'
+```
+
+The response includes `site_id`, `assignment_state`, `property_ref`, `property_name`, and `revision`. `assignment_state` is `unassigned`, `assigned`, or `rebind_required`. `rebind_required` means the connection moved to a new account and the site needs a property from the new list.
+
+## Preview Site Assignment
+
+**Ability:** `mainwp/preview-site-matomo-assignment-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"property_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/preview-site-matomo-assignment-v1/run'
+```
+
+All three fields are required. Set `property_ref` to `null` to preview removing the assignment.
+
+The response includes `site_id`, `desired_state`, `would_change`, `cache_effect` (`none` or `mark_stale`), `conflict_state`, `preview_token`, and `expires_at`. `conflict_state` is `property_already_assigned` when another site already uses the property. Each property can report for one site. The `preview_token` is valid for five minutes.
+
+## Replace Site Assignment
+
+**Ability:** `mainwp/replace-site-matomo-assignment-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"property_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","preview_token":"PREVIEW_TOKEN","request_ref":"22222222-2222-4222-8222-222222222222","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-site-matomo-assignment-v1/run'
+```
+
+Send the same `site_id_or_domain`, `property_ref`, and `if_match` that you previewed, plus the `preview_token` from Preview Site Assignment, a `request_ref`, and the confirmation flags. A `dry_run` call revalidates the preview without changing anything. An expired or mismatched preview returns `mainwp_matomo_stale_preview` with HTTP 409.
+
+The response includes `mode` (`preview` or `completed`), `request_id`, `site_id`, `assignment_state`, `changed`, and `revision`. Changing the assignment marks the site's cached analytics as stale. Request a [site refresh](#request-a-site-refresh) to load new data.
+
+## Get Site Observation
+
+**Ability:** `mainwp/get-site-matomo-observation-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-matomo-observation-v1/run'
+```
+
+`site_id_or_domain` is required. `snapshot_ref` is optional. Omit it or pass `null` to read the latest snapshot.
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "snapshot_ref": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "state": "fresh",
+  "start_date": "2026-09-09",
+  "end_date": "2026-10-08",
+  "observed_at": "2026-10-09T06:00:00Z",
+  "current": {
+    "visits": 1250,
+    "unique_visitors": null,
+    "users": null,
+    "actions": 3410,
+    "average_engagement_seconds": 94,
+    "bounce_rate": 48.5
+  },
+  "previous": {
+    "visits": 1102,
+    "unique_visitors": null,
+    "users": null,
+    "actions": 2980,
+    "average_engagement_seconds": 88,
+    "bounce_rate": 51.2
+  }
+}
+```
+
+`state` is `fresh`, `stale`, or `unavailable`. A snapshot becomes stale after the connection's `refresh_hours`. `previous` covers the period of the same length before `start_date`. A period with no visits reads as zero.
+
+`unique_visitors` and `users` are `null` when Matomo does not calculate them for the range. Out of the box, Matomo does not calculate them for custom date ranges. See [How to enable Unique Visitors](/add-ons/analytics/matomo-extension#how-to-enable-unique-visitors-in-the-extension).
+
+A site without a property returns `mainwp_matomo_assignment_required` with HTTP 422. A site without stored data returns `mainwp_matomo_snapshot_not_found` with HTTP 404. Request a site refresh first.
+
+## Get Site Trend
+
+**Ability:** `mainwp/get-site-matomo-trend-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"snapshot_ref":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","metric":"visits"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-matomo-trend-v1/run'
+```
+
+All three fields are required. Use the `snapshot_ref` from Get Site Observation. `metric` is `visits`, `unique_visitors`, `users`, or `actions`.
+
+The response includes `site_id`, `snapshot_ref`, `metric`, `timezone`, and `points`. Each point has a `date` and a `value`. Values for `unique_visitors` and `users` can be `null`.
+
+## Request a Property Refresh
+
+**Ability:** `mainwp/request-matomo-property-refresh-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"request_ref":"33333333-3333-4333-8333-333333333333","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/request-matomo-property-refresh-v1/run'
+```
+
+Provide a `request_ref` and the confirmation flags. A `dry_run` call checks that a refresh can be queued without queuing it.
+
+The response includes `mode` (`preview` or `accepted`), `operation_id`, `status`, `account_ref`, and `accepted_at`. Save `operation_id` and [check the operation](#get-operation). If Matomo briefly returns no sites, MainWP keeps the existing property list and assignments.
+
+## Request a Site Refresh
+
+**Ability:** `mainwp/request-site-matomo-refresh-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"start_date":"2026-09-09","end_date":"2026-10-08","request_ref":"44444444-4444-4444-8444-444444444444","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/request-site-matomo-refresh-v1/run'
+```
+
+Provide `site_id_or_domain`, `start_date`, `end_date` (inclusive, `YYYY-MM-DD`, at most 366 days), a `request_ref`, and the confirmation flags. The site must have an assigned property.
+
+The response includes `mode` (`preview` or `accepted`), `operation_id`, `site_id`, `status`, `range_days`, and `accepted_at`. After the operation succeeds, read the site observation again.
+
+## Get Operation
+
+**Ability:** `mainwp/get-matomo-operation-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"operation_ref":"55555555-5555-4555-8555-555555555555"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-matomo-operation-v1/run'
+```
+
+Pass the returned `operation_id` as `operation_ref`. The response includes `operation_id`, `kind` (`property_refresh` or `site_refresh`), `site_id`, `status`, `retryable`, `error_code`, `accepted_at`, and `finished_at`.
+
+| Status | Meaning |
+|--------|---------|
+| `queued` | Waiting to run |
+| `running` | Work is in progress |
+| `succeeded` | The refresh completed; read the updated properties or observation |
+| `failed` | The refresh failed; inspect `error_code` |
+| `unknown` | The final outcome could not be established; check current state before requesting more work |
+| `cancel_requested` | Cancellation was requested and applies at the next safe point |
+| `cancelled` | The refresh was cancelled |
+| `skipped_access_lost` | The requesting user lost access, or the connection moved to a different account, before the refresh ran |
+
+Refreshes run in the background through WordPress cron. If an operation stays `queued`, check that WordPress cron runs on the MainWP Dashboard site.
+
+## Cancel Operation
+
+**Ability:** `mainwp/cancel-matomo-operation-v1`<br />
+**Method:** DELETE
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"operation_ref":"55555555-5555-4555-8555-555555555555","request_ref":"66666666-6666-4666-8666-666666666666","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/cancel-matomo-operation-v1/run'
+```
+
+The response includes `mode` (`preview` or `completed`), `request_id`, `operation_id`, `previous_status`, `status` (`cancelled` or `cancel_requested`), and `quiescence`. `quiescence` is `before_dispatch` when the refresh stopped before contacting Matomo, or `at_call_boundary` when it stops before its next Matomo request.
+
+## Handling Errors
+
+Ability errors use the `mainwp_matomo_` prefix and include `status` and `retryable` in the error data.
+
+| Code | HTTP | What to do |
+|------|------|------------|
+| `authentication_required` | 401 | Authenticate the request |
+| `access_denied` | 403 | Use a user with access to the Add-on and the site |
+| `invalid_input` | 400 | Fix the input. Send the API token when changing the server |
+| `stale_revision` | 409 | Read the resource again and review the change |
+| `lock_busy` | 409 | Another Matomo configuration change is running. Try again in a moment |
+| `property_conflict` | 409 | Another site already uses the property |
+| `connection_policy_denied` | 422 | The Matomo URL is not an allowed `https://` address |
+| `credential_migration_required` | 422 | Save the connection again in the Matomo settings with an `https://` root URL |
+| `assignment_required` | 422 | Assign a property to the site first |
+| `provider_auth_failed` | 401 | Matomo refused the API token. Save a current token |
+| `provider_rate_limited` | 429 | Wait and try again |
+| `provider_unavailable` | 502 | MainWP could not reach Matomo |
+| `storage_unavailable` | 503 | Storage is not ready. After a failed upgrade check, this can last up to 15 minutes. The next wp-admin page load after that retries the upgrade |
+
+## Related Resources
+
+- [Matomo Add-on](/add-ons/analytics/matomo-extension) - Connect Matomo and use the Dashboard interface
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, discovery, and HTTP methods
+- [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) - Search performance automation
