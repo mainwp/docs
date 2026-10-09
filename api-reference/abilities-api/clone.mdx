@@ -1,0 +1,169 @@
+---
+title: Clone Abilities
+sidebarTitle: "Clone Abilities"
+description: >-
+  Read and manage the MainWP Clone policy for your Dashboard and individual sites with the MainWP Clone Abilities API.
+---
+
+MainWP Clone 5.1 registers three abilities in the `mainwp-clone` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities to automate the Clone policy you set on the **MainWP Dashboard > Sites > Clone** page: whether the Clone feature is enabled, and which sites are allowed to receive Clone choices. They do not start a clone, restore a backup, or sync sites.
+
+## What You'll Learn
+
+- Read one site's Clone policy status
+- Enable or disable the Clone feature for your Dashboard
+- Allow or disallow one site in the Clone policy
+- Apply policy changes to your Child sites
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- Clone 5.1.0 or later, active on MainWP Dashboard
+- An authenticated WordPress user with access to the Clone Extension and to the target site
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Clone checks permissions on every call. Each request runs the Dashboard REST API permission check, confirms the Clone Extension is ready, and applies Team Control permissions for the Clone Extension. Site-specific calls also check access to the requested site.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-site-clone-policy-status-v1` | GET | Read the Dashboard Clone policy for one site |
+| `mainwp/set-clone-enabled-v1` | POST | Enable or disable the Clone feature Dashboard-wide |
+| `mainwp/set-site-clone-participation-v1` | POST | Allow or disallow one site in the Clone policy |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-clone'
+```
+
+Site-specific calls require `site_id`: a positive integer such as `1`, or its decimal string form such as `"1"`. Domains, URLs, zero, and strings with leading zeros are not accepted. These abilities reject extra input properties.
+
+---
+
+## Read a Site's Clone Policy
+
+**Ability:** `mainwp/get-site-clone-policy-status-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-clone-policy-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "source": "dashboard_stored_clone_policy",
+  "global_enabled": true,
+  "destination_disallowed": false,
+  "destination_eligible": true,
+  "child_application_status": "unknown"
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `site_id` | The requested site ID |
+| `source` | Always `dashboard_stored_clone_policy`. Values come from the policy stored on MainWP Dashboard. |
+| `global_enabled` | Whether the Clone feature is enabled for the Dashboard |
+| `destination_disallowed` | Whether the policy excludes this site |
+| `destination_eligible` | `true` when the Clone feature is enabled and the site is not disallowed |
+| `child_application_status` | Always `unknown` |
+
+<Note>
+This read does not contact MainWP Child. `destination_eligible` shows what the Dashboard policy permits after the next successful sync. It does not confirm that the Child site has received the policy or is ready to clone.
+</Note>
+
+---
+
+## Enable or Disable the Clone Feature
+
+**Ability:** `mainwp/set-clone-enabled-v1`<br />
+**Method:** POST
+
+`enabled` is required and must be a JSON boolean. This example enables the Clone feature:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"enabled":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-clone-enabled-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "result": "changed",
+  "source": "dashboard_stored_clone_policy",
+  "global_enabled": true,
+  "child_application_status": "unknown"
+}
+```
+
+`result` is `changed` when the stored policy changed, or `unchanged` when it already had the requested value. This matches the **Enable the Clone feature** setting on the **Sites > Clone** page.
+
+## Allow or Disallow One Site
+
+**Ability:** `mainwp/set-site-clone-participation-v1`<br />
+**Method:** POST
+
+Both `site_id` and `allowed` are required. Set `allowed` to `true` to allow the site, or `false` to disallow it. This example disallows site `5`:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":5,"allowed":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-site-clone-participation-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "result": "changed",
+  "site_id": 5,
+  "source": "dashboard_stored_clone_policy",
+  "global_enabled": true,
+  "destination_disallowed": true,
+  "destination_eligible": false,
+  "child_application_status": "unknown"
+}
+```
+
+The response includes `result` plus the same fields as the [policy read](#read-a-sites-clone-policy). This changes only the requested site. Other sites keep their current selection.
+
+<Note>
+Neither write syncs your sites. MainWP Child receives the new policy only on its next successful sync. Sync the affected sites after changing the policy, for example with the [Sites Abilities](/api-reference/abilities-api/sites).
+</Note>
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Clone can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_clone_invalid_input` | 400 | Invalid site ID, non-boolean `enabled` or `allowed`, or extra input fields |
+| `mainwp_clone_access_denied` | 403 | The Clone Extension is not ready, or Team Control or site access was denied |
+| `mainwp_clone_site_not_found` | 404 | The requested site could not be resolved |
+| `mainwp_clone_policy_conflict` | 409 | The Clone policy changed during the request. Retry the request. |
+| `mainwp_clone_persist_failed` | 500 | The Clone policy could not be saved |
+
+The abilities remain listed in discovery even when the Clone Extension is not ready. In that case, every call returns `mainwp_clone_access_denied`.
+
+## Related Resources
+
+- [Clone](/add-ons/development/clone-extension) - Clone sites and enable the Clone feature
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs and sync sites after changing the policy
