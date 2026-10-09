@@ -355,7 +355,8 @@
                 "pages": [
                   "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/custom-dashboard",
-                  "api-reference/abilities-api/google-search-console"
+                  "api-reference/abilities-api/google-search-console",
+                  "api-reference/abilities-api/matomo"
                 ]
               },
               "api-reference/mainwp-control"

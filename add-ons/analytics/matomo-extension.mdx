@@ -17,7 +17,7 @@ thirdPartyPlugin: Matomo
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-matomo-piwik-extension/"
   data-integrates-with="Matomo"
@@ -31,6 +31,8 @@ thirdPartyPlugin: Matomo
 - Configuring API authentication and settings
 - Assigning Matomo sites to child sites
 - Enabling Unique Visitors for custom date ranges
+- Upgrading to version 5.2 and resolving connection notices
+- Managing Matomo with MainWP Abilities
 
 ---
 
@@ -71,17 +73,27 @@ Matomo (formerly Piwik) Extension configuration requires two important steps:
 </Step>
 <Step title="Go to the MainWP > Add-ons > Matomo > Settings page">
 </Step>
-<Step title="Locate the Connect Matomo (formerly Piwik) Dashboard section">
-Locate the **Connect Matomo (formerly Piwik) Dashboard** section ![Connect Matomo Dashboard section with URL, API token, and settings fields](/images/add-ons/matomo-connect-dashboard.png)
-    1.  Enter your **Piwik Site (Dashboard) URL**
-    2.  Enter your **API Authentication Token** _(The API Authentication Token looks like this: c26364b7sfbb743f1xadea17f73c4132 (this is a sample number DO NOT use it in your installation). You can find your auth token in your Piwik Dashboard on the **Personal > Settings > API Authentication Token** page)_
-    3.  Set the **Connection Timeout Limit** _(We suggest 5-10 seconds)_
-    4.  Set the **Time Interval** _(Controls the visual time span of the Widget graph. You can view your sites for the past week or month)_
-    5.  Set the **Refresh Rate** _(Set how often you want to grab data from your MainWP Dashboard to update your reports)_
+<Step title="Locate the Matomo Connection section">
+Locate the **Matomo Connection** section ![Connect Matomo Dashboard section with URL, API token, and settings fields](/images/add-ons/matomo-connect-dashboard.png)
+    1.  Enter your **Matomo URL**. It must start with `https://` and point to the root of your Matomo installation, for example `https://analytics.example.com/`. Subfolder installs such as `https://example.com/matomo/` are not supported.
+    2.  Enter your **API token** _(The API Authentication Token looks like this: c26364b7sfbb743f1xadea17f73c4132 (this is a sample number DO NOT use it in your installation). You can find your auth token in your Matomo Dashboard on the **Personal > Settings > API Authentication Token** page)_. A token has at least 16 characters. You can also enter `anonymous` for anonymous access.
+    3.  Set the **Reporting period** _(Controls the visual time span of the Widget graph. You can view your sites for the past week or month)_
+    4.  Set the **Sync frequency** _(Set how often you want to grab data from your MainWP Dashboard to update your reports)_
+    5.  Set the **Connection timeout (in seconds)** _(Enter a value from 1 to 30. We suggest 5-10 seconds)_
     6.  Click the **Save Settings** button
 </Step>
 </Steps>
 
+
+MainWP stores the API token in secure storage, not in the plain settings row. After you save, the **API token** field stays blank. Leave it blank on later saves to keep the saved token. Paste a new token only when you want to replace it.
+
+MainWP verifies the connection before saving. If the check fails, nothing changes and the saved token is kept. The error notice names the field to fix, for example a URL that does not use `https://`, a URL with a subfolder, a private or local network address, a firewall that blocks the request, or a token that Matomo refuses.
+
+<Note>
+MainWP always verifies the Matomo TLS certificate. If your MainWP Dashboard reaches the internet through a proxy defined in `wp-config.php`, the extension connects to Matomo through that proxy.
+</Note>
+
+To disconnect Matomo, clear the **Matomo URL** field, leave the **API token** field blank, and click **Save Settings**. MainWP removes the saved token and the Matomo data of the old account, so a reconnect starts clean.
 
 ### 2\. Assigning sites from your Piwik Site to Child Sites in your MainWP Dashboard
 
@@ -103,6 +115,8 @@ Locate the **Site from your Piwik account** option and select the corresponding
 </Steps>
 
 
+Each Matomo property can report for one child site. If you select a property that another site already uses, MainWP keeps the previous selection and shows a notice that names the site using it. Properties that are already in use show **Already assigned** in the dropdown.
+
 ## Team Control permissions
 
 If you use the [Team Control Extension](/add-ons/agency/team-control-extension), the Matomo property selection on the **Manage Sites > Edit Site** page is gated by the `mainwp-piwik-extension` permission.
@@ -111,6 +125,52 @@ If you use the [Team Control Extension](/add-ons/agency/team-control-extension),
 - Team Control users **without** access to the Matomo add-on do not see the Matomo property selection on the edit site page and cannot change or save it.
 
 This prevents unauthorized team members from viewing or modifying which Matomo property is mapped to a child site. To grant a role access, enable the Matomo extension permission when editing the role in **MainWP > Add-ons > Agency > Team Control**.
+
+## Upgrading to version 5.2
+
+Version 5.2 requires WordPress 6.2 or later and PHP 7.4 or later.
+
+After you update, the first wp-admin page load by an administrator moves the saved Matomo connection to secure storage. Until then, Matomo requests made outside wp-admin, such as Abilities calls, cannot use the new storage. If your saved **Matomo URL** uses `https://` at the root of the domain, no action is needed.
+
+If the saved URL uses `http://` or a subfolder, MainWP pauses analytics and shows this notice: _MainWP Matomo paused analytics because the saved Matomo connection could not be moved to secure storage._ To restore analytics:
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > Matomo > Settings page">
+</Step>
+<Step title="Enter the https:// root URL of your Matomo">
+Enter a **Matomo URL** that starts with `https://` and has no subfolder, for example `https://matomo.example.com/`.
+</Step>
+<Step title="Decide whether to enter the API token">
+If Matomo is still on the same server, leave the **API token** field blank. MainWP keeps the saved token, the site mappings, and the automatic assignment setting. If the new URL points to a different server, paste the API token. MainWP never sends the saved token to a different server.
+</Step>
+<Step title="Click the Save Settings button">
+</Step>
+</Steps>
+
+### Notices you may see
+
+| Notice | What to do |
+|--------|------------|
+| The saved Matomo connection could not be verified after the WordPress security keys changed | Paste the API token into the **API token** field and click **Save Settings**. |
+| Matomo answered with no sites for the saved API token, so MainWP kept the last list of properties | If the token lost access to your Matomo sites, paste a current token and click **Save Settings**. |
+| MainWP could not import the saved Matomo site list and site mappings after the update | Click **Save Settings** to load the site list from Matomo again. |
+| Another change to the Matomo settings is being saved | Nothing was changed. Click **Save Settings** again. |
+| Duplicate rows in the old Matomo tables need to be resolved | MainWP merges identical duplicates automatically. It never deletes rows that differ. Follow the notice to keep one row from each group and delete the others. |
+
+## Manage Matomo with MainWP Abilities
+
+Starting with version 5.2, the extension registers 12 abilities in the `mainwp-matomo` category of the [MainWP Abilities API](/api-reference/abilities-api/overview). Use them to automate Matomo tasks from MainWP AI Assistant or an authenticated API client:
+
+- Read or replace the Matomo connection
+- List Matomo properties and read or change each site's property assignment
+- Read cached analytics totals and daily trends for a site
+- Request background refreshes of the property list or a site's analytics, and check or cancel them
+
+See [Matomo Abilities](/api-reference/abilities-api/matomo) for requirements, permissions, and request examples.
+
+## Removing the extension
+
+Deleting the extension from the WordPress **Plugins** screen removes the saved Matomo connection and the extension's own tables, options, and scheduled tasks. It does not touch your MainWP sites or any other MainWP data. When you delete a child site from your MainWP Dashboard, MainWP also removes that site's Matomo data.
 
 ## How to enable Unique Visitors in the extension
 
@@ -123,3 +183,4 @@ This prevents unauthorized team members from viewing or modifying which Matomo p
 - [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include analytics data in reports
 - [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Matomo tokens
+- [Matomo Abilities](/api-reference/abilities-api/matomo) - Automate connections, assignments, and refreshes
