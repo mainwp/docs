@@ -269,6 +269,40 @@ To be sure you see the fresh data, select wanted sites, and click the Reload Dat
 
 ---
 
+## Check the Extension Database Table
+
+The UpdraftPlus Extension stores its per-site settings in one table on your Dashboard site. This table is `{prefix}mainwp_updraftplus`, such as `wp_mainwp_updraftplus`. The Extension reports this table and its expected columns to the MainWP [Database Health Check](/dashboard/overview/mainwp-database-health-check). Use the check when UpdraftPlus settings fail to save, sites are missing from the Extension, or MainWP Support asks you to verify your database.
+
+<Steps>
+<Step title="Open Server Information">
+Go to **MainWP > Info > Server** on your Dashboard site.
+</Step>
+<Step title="Find the UpdraftPlus table">
+Type `mainwp_updraftplus` in **Search system report** to filter the **Database** section.
+</Step>
+<Step title="Review the result">
+A green check mark means the table exists and its columns match what the Extension expects. A red cross shows a missing table, missing columns, or incorrect column definitions. Download the full system report and include it in your [MainWP Support request](https://mainwp.com/support/).
+</Step>
+</Steps>
+
+The check validates these columns:
+
+| Column | Expected definition |
+|--------|---------------------|
+| `id` | `int(11) NOT NULL AUTO_INCREMENT` |
+| `site_id` | `int(11) NOT NULL` |
+| `is_premium` | `tinyint(1) NOT NULL DEFAULT 0` |
+| `isHidden` | `tinyint(1) NOT NULL DEFAULT 0` |
+| `lastbackup_gmttime` | `int(11) NOT NULL` |
+| `settings` | `longtext NOT NULL DEFAULT ""` |
+| `override` | `tinyint(1) NOT NULL DEFAULT 0` |
+
+<Note>
+The Extension must be installed and active for its table to appear in the check. The check reports problems but does not repair the table.
+</Note>
+
+---
+
 ## Related Resources
 
 - [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
