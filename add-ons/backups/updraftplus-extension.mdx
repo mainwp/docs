@@ -157,6 +157,22 @@ When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Pre
 
 When MainWP reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
 
+#### UpdraftPlus account credentials
+
+With **Use Premium Version** set to **YES**, the **Connect with UpdraftPlus account** section stores the **UpdraftPlus Email & Password** used for Premium. You can save the account in the general settings or for an individual child site.
+
+MainWP stores the password encrypted and never prints it into the page. The **Password** field is always empty when the form loads, even when a password is saved.
+
+- **Keep the saved password** - leave **Password** empty, keep the same email, and click **Connect**.
+- **Change the password** - enter the new password and click **Connect**.
+- **Change the account** - enter the new email and its password. MainWP does not reuse the saved password for a different email.
+
+If you saved the password with an older version of the extension, MainWP encrypts it the next time you save the account.
+
+If MainWP cannot encrypt the password, the save stops with the message **Could not save UpdraftPlus account credentials.** MainWP keeps the previously stored credentials and never falls back to storing the password as plain text.
+
+Child sites whose settings were copied from the general settings keep a working password when you change or clear the general account. Saving an account for one child site does not affect other sites. A child site sync does not overwrite the stored account.
+
 ### UpdraftPlus Settings per Child Site
 
 All UpdraftPlus Settings can be set separately for different child sites. To do this, go to the MainWP > Sites page, and in the sites table, under the child site URL, you can find the UpdraftPlus Backup/Restore link. This link will open Individual site UpdraftPlus Options. The Settings tab will show you all plugin options to set custom settings for the child site. To override global options, set the **Override General Settings** to **YES** and click the Save button.
