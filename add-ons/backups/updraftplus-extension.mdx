@@ -147,13 +147,23 @@ After setup, use [Backup Now options](#backup-now-options) to send a backup to t
 
 ### Connect UpdraftPlus Premium
 
-When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Premium state instead of treating an account connection alone as a completed activation. Depending on the TeamUpdraft account and child site, you may see one of these outcomes:
+When you connect UpdraftPlus Premium, MainWP verifies the final Premium state instead of treating an account connection alone as a completed activation. This applies to Bulk Connect from the extension settings and to connecting a single site from its individual UpdraftPlus settings. Depending on the TeamUpdraft account and child site, you may see one of these outcomes:
 
 - The account is connected and Premium is fully active.
 - The account is connected, but a Premium purchase must be claimed or assigned to the site.
 - A purchase is assigned, but UpdraftPlus or its Premium add-ons must be updated or activated.
 - No active Premium purchase is available for the site.
 - UpdraftPlus could not verify the TeamUpdraft account connection.
+
+MainWP shows the result next to each site in a color that reflects the state:
+
+| Color | Meaning |
+| --- | --- |
+| Blue | Premium is fully active on the child site. |
+| Amber | The account is connected, but Premium activation is incomplete or could not be verified. |
+| Red | The connection failed. For example, no Premium version is available or the child site returned an error. |
+
+If the request to the child site fails entirely, MainWP shows **Unable to connect.** For bulk connections, MainWP still moves on to the remaining sites in the queue. Check that the child site is reachable and synced, then retry the connection for that site.
 
 When MainWP reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
 
