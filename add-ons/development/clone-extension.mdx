@@ -18,7 +18,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.0.1"
+  data-version="5.1.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-clone-extension/"
   data-owned-by="Jestart LLC"
@@ -32,6 +32,7 @@ addonType: extension
 - Cloning sites up to 256MB with Quick Clone
 - Cloning larger sites using backup files
 - Troubleshooting common cloning issues
+- Using the Clone Abilities API for automation
 
 ---
 
@@ -205,10 +206,17 @@ Once the Clone process is successfully completed, you will be asked to re-login 
 
 If after the cloning process, your destination site is redirecting you back to the source site, it is more than likely that the process failed to update the **siteurl** and the **home** values in the wp_options table inside the database. In this case, please check this [help document](https://developer.wordpress.org/advanced-administration/upgrade/migrating/) to see how to update it manually. Before trying to clone a website, make sure that the backup file is not corrupted by trying to open it on your local computer. Also, verify that there are no files missing.
 
+## Abilities API
+
+Clone 5.1.0 adds three abilities for reading a site's Clone policy, enabling or disabling the Clone feature, and allowing or disallowing individual sites. They change the same settings as the **MainWP Dashboard > Sites > Clone** page. They do not start a clone or sync sites, so sync the affected sites after a change.
+
+See [Clone Abilities](/api-reference/abilities-api/clone) for authentication, parameters, examples, and errors.
+
 ---
 
 ## Related Resources
 
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Staging Extension](/add-ons/development/staging-extension) - Create staging environments
+- [Clone Abilities](/api-reference/abilities-api/clone) - Manage Clone policy with the Abilities API
 - [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Verify server requirements
