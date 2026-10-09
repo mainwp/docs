@@ -68,6 +68,15 @@ Starting with MainWP Child 6.2.2, Clone/Restore leaves a database value unchange
 
 After cloning, check plugin and theme settings on the destination site for references to the source site. If a setting still uses the source URL, update it through the plugin or theme's settings, or follow its developer's migration instructions.
 
+## Team Control permissions
+
+If you use the [Team Control Extension](/add-ons/agency/team-control-extension), access to the Clone extension follows the **Allowed Add-ons** setting of each role.
+
+- Team members whose role includes the Clone extension in **Allowed Add-ons** can open and use the Clone extension.
+- Team members whose role does not include the Clone extension cannot load the Clone extension in the MainWP Dashboard.
+
+To grant a role access, go to the **MainWP > Add-ons > Agency > Team Control** page, edit the role, and select the Clone extension under **Allowed Add-ons**.
+
 ## Clone WordPress Site (Quick Clone)
 
 Quick Clone feature enables you to clone one child site to another child site. This means that both child sites need to be connected to your MainWP Dashboard.
