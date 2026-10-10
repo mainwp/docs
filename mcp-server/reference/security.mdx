@@ -20,7 +20,7 @@ This page is for the person deciding whether to trust the MainWP MCP Server with
 
 The AI assistant has the same access as the WordPress user whose credentials you configure. Every tool call executes with that user's capabilities. The server itself is a passthrough: it stores nothing, caches responses only briefly, and holds credentials only in memory during execution.
 
-WordPress capabilities are the real permission boundary. A dedicated user with a limited role limits what the AI can ever do, regardless of what it asks for.
+The Dashboard enforces the permission boundary, whatever the AI asks for. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A limited WordPress role therefore does not work as a restriction. To limit which child sites the AI can reach, restrict that user to a subset of sites with [Team Control](/add-ons/agency/team-control-extension); the Dashboard's core site, client, tag, and update abilities respect that restriction, and some abilities refuse restricted accounts entirely. To limit which operations it can run, use [tool filtering](/mcp-server/guides/restrict-tools) and [safe mode](/mcp-server/safety#safe-mode-block-deletions-entirely).
 
 ## Credential management
 
@@ -63,7 +63,7 @@ Certificates are verified by default and plain HTTP is refused. The `skipSslVeri
 
 - [ ] Created a dedicated WordPress user for API access
 - [ ] Generated a unique Application Password for this integration
-- [ ] Restricted the WordPress user's capabilities to the minimum required
+- [ ] Confirmed the WordPress user has `manage_options`, and restricted it to the sites it needs with [Team Control](/add-ons/agency/team-control-extension) if it should not reach every site
 - [ ] Configured [tool filtering](/mcp-server/guides/restrict-tools) to expose only needed operations
 - [ ] Set appropriate [resource limits](/mcp-server/reference/configuration#resource-limits)
 - [ ] Verified SSL certificates are valid (no `skipSslVerify`)
