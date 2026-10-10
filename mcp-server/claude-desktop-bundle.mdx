@@ -12,7 +12,7 @@ The MainWP MCP server is also packaged as an MCP Bundle, a single `mainwp-mcp.mc
 You need:
 
 - A MainWP Dashboard reachable over HTTPS from the computer that runs Claude Desktop. The server refuses `http://` Dashboard URLs, and the bundle has no setting to allow them. The Dashboard version requirements are the same as for any other setup; see the [Quickstart](/mcp-server/quickstart#before-you-start).
-- An Application Password for the WordPress user the server should act as. Create one on your Dashboard under **Access → Application Passwords** (the **API Access** page) with **Add Application Password**, or in the WordPress profile of that user under **Users → Profile**. WordPress shows the password once, so copy it before you close the dialog. [Application Passwords](/api-reference/rest-api/application-passwords) has the full steps.
+- An Application Password for the WordPress user the server should act as. That user needs the `manage_options` capability, which administrators have. Create the password on your Dashboard under **Access → Application Passwords** (the **API Access** page) with **Add Application Password**, or in the WordPress profile of that user under **Users → Profile**. WordPress shows the password once, so copy it before you close the dialog. [Application Passwords](/api-reference/rest-api/application-passwords) has the full steps.
 - [Claude Desktop](https://claude.ai/download) for macOS or Windows.
 
 The bundle declares Node.js 20.19 or later. By default the extension runs on Claude Desktop's built-in Node.js, and Claude Desktop reports **All requirements met** for it, so you don't need to install Node.js separately.
@@ -88,12 +88,14 @@ shasum -a 256 -c mainwp-mcp.mcpb.sha256
 
 It prints `mainwp-mcp.mcpb: OK` when the file matches.
 
-On Windows, run this in PowerShell from that folder, and check that the two hashes it prints are the same:
+On Windows, run this in PowerShell from that folder:
 
 ```powershell
-(Get-FileHash .\mainwp-mcp.mcpb -Algorithm SHA256).Hash.ToLower()
-(Get-Content .\mainwp-mcp.mcpb.sha256).Split(' ')[0]
+$expected = ((Get-Content .\mainwp-mcp.mcpb.sha256 -Raw).Trim() -split '\s+')[0]
+if ((Get-FileHash .\mainwp-mcp.mcpb -Algorithm SHA256).Hash -eq $expected) { 'OK' } else { 'MISMATCH' }
 ```
+
+It prints `OK` when the file matches and `MISMATCH` when it does not.
 
 A checksum catches a damaged or incomplete download. It comes from the same release page as the bundle, so it does not prove who built the file. The attestation does.
 
@@ -121,7 +123,7 @@ The command fails if the file was changed after the build or was not built in th
 | **WordPress username** | The login name or email address of the WordPress user that owns the Application Password. The display name does not work. |
 | **WordPress Application Password** | The Application Password you created for this connection, not the user's login password. Spaces between the groups are fine. Claude Desktop marks this field as sensitive and stores it in the operating system's secure storage: Keychain on macOS, Credential Manager on Windows. |
 
-The server acts with that user's WordPress permissions. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
+The server acts with that user's WordPress permissions. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
 
 The bundle passes these values to the server as `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD`. The bundle has no fields for other options. To turn on safe mode or filter tools, put those settings in `~/.config/mainwp-mcp/settings.json`; the connection values from the bundle take precedence over any connection values in that file. See the [Configuration Reference](/mcp-server/reference/configuration#configuration-file).
 
