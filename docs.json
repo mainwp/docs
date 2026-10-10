@@ -291,6 +291,7 @@
             "pages": [
               "mcp-server/overview",
               "mcp-server/quickstart",
+              "mcp-server/claude-desktop-bundle",
               "mcp-server/clients",
               "mcp-server/claude-code-plugin",
               "mcp-server/safety",

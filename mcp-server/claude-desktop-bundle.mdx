@@ -1,0 +1,184 @@
+---
+title: Install in Claude Desktop with the MCP Bundle
+sidebarTitle: "Claude Desktop Bundle"
+description: >-
+  Install the MainWP MCP server in Claude Desktop from the mainwp-mcp.mcpb bundle, without editing a config file.
+---
+
+The MainWP MCP server is also packaged as an MCP Bundle, a single `mainwp-mcp.mcpb` file that Claude Desktop installs as an extension. Claude Desktop asks for your Dashboard URL, username, and Application Password during installation, so you don't edit `claude_desktop_config.json`. The server it installs is the same `@mainwp/mcp` server described in the [Quickstart](/mcp-server/quickstart).
+
+## Before you start
+
+You need:
+
+- A MainWP Dashboard reachable over HTTPS from the computer that runs Claude Desktop. The server refuses `http://` Dashboard URLs, and the bundle has no setting to allow them. The Dashboard version requirements are the same as for any other setup; see the [Quickstart](/mcp-server/quickstart#before-you-start).
+- An Application Password for the WordPress user the server should act as. That user needs the `manage_options` capability, which administrators have. Create the password on your Dashboard under **Access → Application Passwords** (the **API Access** page) with **Add Application Password**, or in the WordPress profile of that user under **Users → Profile**. WordPress shows the password once, so copy it before you close the dialog. [Application Passwords](/api-reference/rest-api/application-passwords) has the full steps.
+- [Claude Desktop](https://claude.ai/download) for macOS or Windows.
+
+The bundle declares Node.js 20.19 or later. By default the extension runs on Claude Desktop's built-in Node.js, and Claude Desktop reports **All requirements met** for it, so you don't need to install Node.js separately.
+
+## Install the bundle
+
+<Steps>
+  <Step title="Download mainwp-mcp.mcpb">
+    Download [mainwp-mcp.mcpb](https://github.com/mainwp/mainwp-mcp/releases/latest/download/mainwp-mcp.mcpb) from the latest release on GitHub. Download it only from there; the same file is listed under **Assets** on the [mainwp-mcp releases page](https://github.com/mainwp/mainwp-mcp/releases).
+  </Step>
+
+  <Step title="Check the download">
+    This step is optional. [Check the download](#check-the-download) below shows how to confirm that the file arrived intact and that MainWP's release workflow built it.
+  </Step>
+
+  <Step title="Open it in Claude Desktop">
+    Do one of the following:
+
+    - Double-click `mainwp-mcp.mcpb`.
+    - Drag the file into the Claude Desktop window.
+    - In Claude Desktop, go to **Settings → Extensions → Advanced settings**, click **Install extension**, and select the file.
+
+    Claude Desktop opens an install dialog for the **MainWP** extension, with a warning above its description. [About the install warning](#about-the-install-warning) explains it.
+  </Step>
+
+  <Step title="Fill in the three fields">
+    The dialog labels them as follows. See [What each field means](#what-each-field-means) below.
+
+    - **Dashboard URL (required)**
+    - **WordPress username (required)**
+    - **WordPress Application Password (required)**
+  </Step>
+
+  <Step title="Finish the installation and test it">
+    Complete the install dialog, then start a new chat and ask:
+
+    > List all my sites
+
+    A working setup returns your child sites by name and URL.
+  </Step>
+</Steps>
+
+After installation, the extension is listed as **MainWP** under **Installed on your computer** in **Settings → Extensions**. Its **Configure** button is where you edit the three values later, and its **⋯** menu has **Details** and **Uninstall**.
+
+If you set up the server earlier by adding a `mainwp` entry to `claude_desktop_config.json`, remove that entry and restart Claude Desktop. If you leave it, the old server and the bundle run side by side, each with its own set of MainWP tools.
+
+## About the install warning
+
+The install dialog shows this warning:
+
+> Installing will grant this extension access to everything on your computer. Any developer information shown has not been verified by Anthropic. Ensure you trust the source of this extension before installation.
+
+Claude Desktop shows this warning for extensions installed from a file, outside Anthropic's directory, so you see it for MainWP as you would for any other extension installed this way. It does not mean Claude Desktop found a problem with the file. It says two things:
+
+- **Access to your computer.** The extension runs as a program on your computer with the same permissions as your user account, like any application you install. The MainWP server uses that access to connect to your Dashboard. Its source code is public in the [mainwp-mcp repository](https://github.com/mainwp/mainwp-mcp).
+- **Not verified by Anthropic.** The name, author, and links in the dialog come from the bundle file. Anthropic has not reviewed them, so the dialog cannot prove that MainWP made the file.
+
+Because the dialog cannot prove where the file came from, download it only from the MainWP releases page, and use the checks below if you want to confirm it yourself.
+
+## Check the download
+
+Each release publishes two ways to check `mainwp-mcp.mcpb` before you install it.
+
+### Compare the checksum
+
+The release includes a [mainwp-mcp.mcpb.sha256](https://github.com/mainwp/mainwp-mcp/releases/latest/download/mainwp-mcp.mcpb.sha256) file with the SHA-256 hash of the bundle. Download it into the same folder as the bundle. If your browser renamed the bundle, for example to `mainwp-mcp (1).mcpb`, rename it back to `mainwp-mcp.mcpb` first.
+
+On macOS, run this in Terminal from that folder:
+
+```bash
+shasum -a 256 -c mainwp-mcp.mcpb.sha256
+```
+
+It prints `mainwp-mcp.mcpb: OK` when the file matches.
+
+On Windows, run this in PowerShell from that folder:
+
+```powershell
+$expected = ((Get-Content .\mainwp-mcp.mcpb.sha256 -Raw).Trim() -split '\s+')[0]
+if ((Get-FileHash .\mainwp-mcp.mcpb -Algorithm SHA256).Hash -eq $expected) { 'OK' } else { 'MISMATCH' }
+```
+
+It prints `OK` when the file matches and `MISMATCH` when it does not.
+
+A checksum catches a damaged or incomplete download. It comes from the same release page as the bundle, so it does not prove who built the file. The attestation does.
+
+### Verify the build attestation
+
+Each bundle also has a build attestation: a signed record, created by the release workflow on GitHub when it builds the file, that ties the file to the `mainwp/mainwp-mcp` repository and the workflow run that produced it. To check it, install the [GitHub CLI](https://cli.github.com/), sign in with `gh auth login`, and run this from the folder that holds the bundle:
+
+```bash
+gh attestation verify mainwp-mcp.mcpb --repo mainwp/mainwp-mcp
+```
+
+The command fails if the file was changed after the build or was not built in the `mainwp/mainwp-mcp` repository.
+
+## Change the connection values
+
+1. In **Settings → Extensions**, find **MainWP** under **Installed on your computer** and click **Configure**.
+2. Change the Dashboard URL, username, or Application Password.
+3. Turn the extension off and on again so the server restarts with the new values.
+
+## What each field means
+
+| Field | What to enter |
+| --- | --- |
+| **Dashboard URL** | The HTTPS address of your MainWP Dashboard, for example `https://your-dashboard.com`. If WordPress is installed in a subdirectory, include the path, for example `https://your-dashboard.com/wp`. A trailing slash is fine. |
+| **WordPress username** | The login name or email address of the WordPress user that owns the Application Password. The display name does not work. |
+| **WordPress Application Password** | The Application Password you created for this connection, not the user's login password. Spaces between the groups are fine. Claude Desktop marks this field as sensitive and stores it in the operating system's secure storage: Keychain on macOS, Credential Manager on Windows. |
+
+The server acts with that user's WordPress permissions. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
+
+The bundle passes these values to the server as `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD`. The bundle has no fields for other options. To turn on safe mode or filter tools, put those settings in `~/.config/mainwp-mcp/settings.json`; the connection values from the bundle take precedence over any connection values in that file. See the [Configuration Reference](/mcp-server/reference/configuration#configuration-file).
+
+## Update the bundle
+
+Claude Desktop does not update bundles installed from a file. When a new version of the server is released:
+
+1. Download `mainwp-mcp.mcpb` from the newest release on the [releases page](https://github.com/mainwp/mainwp-mcp/releases).
+2. Install it the same way you installed the first one.
+3. Click **Configure** on the **MainWP** extension and check that the three fields still hold your Dashboard URL, username, and Application Password, then ask Claude to list your sites.
+
+## Remove the bundle
+
+1. In Claude Desktop, go to **Settings → Extensions**, open the **⋯** menu of the **MainWP** extension under **Installed on your computer**, and choose **Uninstall**.
+2. On your Dashboard, go to **Access → Application Passwords** and click **Revoke** on the password you created for Claude Desktop. Revoking it stops any copy of that password from working, wherever it is stored.
+
+## Troubleshooting
+
+To read the server's startup messages and errors, go to **Settings → Developer**, select **MainWP** under **Local MCP servers**, and click **View logs**.
+
+<AccordionGroup>
+  <Accordion title="dashboardUrl uses HTTP which transmits credentials in plain text">
+    The full message is:
+
+    ```text
+    dashboardUrl uses HTTP which transmits credentials in plain text. Use HTTPS, or set allowHttp=true to allow insecure connections (not recommended).
+    ```
+
+    The Dashboard URL starts with `http://`, so the server stops at startup instead of sending your Application Password unencrypted. Enable HTTPS on the Dashboard and change the **Dashboard URL** field to the `https://` address.
+
+    The `allowHttp` setting in the message is not a field in the bundle. It exists for isolated local development, where it can be set in `~/.config/mainwp-mcp/settings.json`. Don't use it for a Dashboard reached over a network; see [SSL](/mcp-server/reference/configuration#ssl).
+  </Accordion>
+
+  <Accordion title="Invalid dashboardUrl: is not a valid URL">
+    The **Dashboard URL** field does not hold a complete URL. Enter the full address including `https://`, for example `https://your-dashboard.com`.
+  </Accordion>
+
+  <Accordion title="Claude only sees mainwp_get_setup_status and mainwp_configure">
+    The server started but could not connect, so it is in setup mode with the MainWP tools hidden. Ask Claude to check the MainWP connection status. It calls `mainwp_get_setup_status`, which reports one of these states:
+
+    - `credentials_rejected`: the Dashboard refused the username or Application Password. The report names the user and explains the likely cause, for example `The Dashboard has no user "..." (invalid_username)` when a display name was entered instead of the login name, or `The Dashboard rejected the application password for user "..." (incorrect_password)` when the account's login password was entered. If the username looks like an Application Password, the report says the two fields may be swapped. Correct the values under **Configure**, then turn the extension off and on again.
+    - `degraded`: the Dashboard could not be reached or answered with an error that is not a credential rejection, such as a TLS error, an HTTP 5xx, or a bare HTTP 403 from a firewall. Check that the Dashboard is up and reachable from this computer, then ask Claude to check the connection again. The server retries with the credentials it already has.
+
+    Chat-based setup with `mainwp_configure` does not apply to the bundle. The bundle supplies the connection values as environment variables, and `mainwp_configure` refuses to save credentials that environment variables would override. Fix the values under **Configure** instead. Details are in [Rejected credentials](/mcp-server/reference/configuration#rejected-credentials).
+  </Accordion>
+
+  <Accordion title="SSL certificate problem">
+    Errors such as `UNABLE_TO_VERIFY_LEAF_SIGNATURE` mean the server could not verify the Dashboard's certificate. Install the full certificate chain on the Dashboard and check that the certificate matches the domain and has not expired.
+  </Accordion>
+
+  <Accordion title="Dashboard with a self-signed or locally issued certificate">
+    The bundle connects only to Dashboards with a publicly trusted certificate. A Dashboard whose certificate is self-signed or issued by a local certificate authority, such as a local development site, fails to connect, and the logs show `fetch failed` or a certificate error code.
+
+    For a local development Dashboard, set up the server with `npx` instead, as described in the [Quickstart](/mcp-server/quickstart), and use the `skipSslVerify` setting described under [SSL](/mcp-server/reference/configuration#ssl). Use it only for an isolated development environment. A production Dashboard should have a publicly trusted certificate.
+  </Accordion>
+</AccordionGroup>
+
+For other errors, see [Troubleshooting](/mcp-server/troubleshooting).
