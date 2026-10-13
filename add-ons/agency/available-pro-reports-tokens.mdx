@@ -769,14 +769,20 @@ These tokens require specific MainWP add-ons to be installed and activated.
   </Accordion>
 
   <Accordion title="Matomo Extension Tokens" icon="chart-pie">
+    Matomo Integration 5.2 supplies these six summary values for the selected date range. The existing token names remain unchanged.
+
     | Token | Description |
     |-------|-------------|
-    | `[piwik.visits]` | Displays the Number of Visits during the selected date range |
-    | `[piwik.pageviews]` | Displays the Number of Page Views during the selected date range |
-    | `[piwik.pages.visit]` | Displays the Number of Page visits during the selected date range |
-    | `[piwik.bounce.rate]` | Displays the Bounce Rate during the selected date range |
-    | `[piwik.avg.time]` | Displays the Average Visit Time during the selected date range |
-    | `[piwik.new.visits]` | Displays the Number of New Visits during the selected date range |
+    | `[piwik.visits]` | Number of visits (`nb_visits`) |
+    | `[piwik.pageviews]` | Number of actions (`nb_actions`) |
+    | `[piwik.pages.visit]` | Actions per visit (`nb_actions_per_visit`) |
+    | `[piwik.bounce.rate]` | Bounce rate (`bounce_rate`) |
+    | `[piwik.avg.time]` | Average time on site (`avg_time_on_site`) |
+    | `[piwik.new.visits]` | Unique visitors (`nb_uniq_visitors`), not a separate count of new visits |
+
+    Version 5.1.2 returned additional data. The 5.2 report response is limited to these summaries and excludes the connection and token. Report requests do not require the Matomo extension capability, but site access, Team Control restrictions, edit rights, a connected MainWP site, and a current Matomo assignment still apply.
+
+    See [Matomo setup and report access](/add-ons/analytics/matomo-extension#matomo-data-in-reports) for migration requirements and configuration.
   </Accordion>
 
   <Accordion title="Advanced Uptime Monitor Tokens" icon="clock">

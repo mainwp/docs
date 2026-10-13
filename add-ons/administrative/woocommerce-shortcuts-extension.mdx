@@ -13,6 +13,8 @@ thirdPartyPlugin: WooCommerce
 - Where to find the WooCommerce Shortcuts widget
 - Available shortcuts and their destinations
 - Requirements and installation steps
+- How cached WooCommerce status affects shortcut availability
+- Read-only status checks through MainWP Abilities
 
 ---
 
@@ -24,7 +26,7 @@ thirdPartyPlugin: WooCommerce
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="integration"
-  data-version="5.0.2"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-woocommerce-shortcuts-extension/"
   data-owned-by="Automattic Inc."
@@ -45,7 +47,7 @@ After installing the add-on, the WooCommerce Shortcuts widget appears on individ
 2. Click on any child site name to open its Overview page
 3. Look for the **WooCommerce Shortcuts** widget
 
-The widget only appears for child sites where WooCommerce is installed, activated, and detected during site sync.
+Shortcut menus are available when MainWP's validated cached plugin inventory shows WooCommerce as active. If WooCommerce is inactive or the cached status cannot be trusted, the widget shows a notice instead of the menus.
 
 If you open **MainWP > Add-ons > WooCommerce Shortcuts**, the page only shows a notice. The add-on does not provide separate settings there and works through the individual site Overview widget.
 
@@ -99,14 +101,47 @@ The widget is organized into four accordion sections:
 
 Each link opens the child site's WooCommerce screen in a new window via MainWP's Jump to WP Admin functionality.
 
+## Permissions
+
+WooCommerce Shortcuts 5.1 checks access to the Add-on, the selected site, and the **Jump to WP Admin** operation before showing the widget's contents. If you use [Team Control](/add-ons/agency/team-control-extension), grant the user the WooCommerce Shortcuts extension permission, access to that site, and permission to access Child site WordPress admin areas.
+
+Shortcuts use a fixed set of WooCommerce destinations through MainWP's authorized Jump to WP Admin flow. The Add-on does not grant additional permissions inside the Child site's WordPress admin area.
+
 ## Requirements
 
 - MainWP Dashboard with WooCommerce Shortcuts Extension installed
 - WooCommerce plugin installed and activated on the child site
 - MainWP Child plugin connected
 - Child site synced after WooCommerce is activated so MainWP can detect it
+- User access to WooCommerce Shortcuts, the selected site, and Jump to WP Admin
 
-If WooCommerce is not detected on a child site, the widget displays a **WooCommerce not detected** notice instead of the shortcut menus.
+## Cached Status and Synchronization
+
+The widget reads cached MainWP data. Opening it does not contact the Child site to check WooCommerce.
+
+| Cached result | Widget behavior | Next step |
+|---------------|-----------------|-----------|
+| WooCommerce is active | Shows the shortcut menus | Use a shortcut to open the corresponding screen |
+| WooCommerce is inactive or absent from a valid inventory | Shows **WooCommerce not detected** | Install or activate WooCommerce as needed, then sync the site with plugin inventory enabled |
+| Status cannot be established | Shows **WooCommerce status unavailable** | Sync the site and resolve any synchronization errors |
+
+Synchronization data older than 24 hours is treated as stale. Failed syncs, malformed inventory, and inconsistent cached data also make the status unavailable. An unavailable result does not mean WooCommerce is uninstalled.
+
+### After Updating to 5.1
+
+Existing stored plugin inventory can keep shortcuts available immediately after the upgrade, before the next sync creates the new detection record. The inventory must still pass the current synchronization and validity checks; a stale or failed sync does not keep the menus available.
+
+### When Installed Plugins Sync Is Disabled
+
+If **Installed plugins** is disabled under **Select data to sync**, WooCommerce Shortcuts uses the existing stored plugin inventory when the next sync omits that data. Disabling this sync item no longer clears valid WooCommerce detection by itself.
+
+The retained inventory can still reflect an earlier WooCommerce installation or activation state. To detect a later plugin change, enable **Installed plugins** in [MainWP Dashboard settings](/sites/management/mainwp-dashboard-settings) and sync the site again.
+
+## MainWP Abilities
+
+WooCommerce Shortcuts 5.1 adds `mainwp/get-woocommerce-shortcuts-status-v1`, a read-only ability that reports one authorized site's cached WooCommerce state, observation and sync timestamps, and freshness classification.
+
+The ability uses the same cached detection as the widget and requires Add-on, site, and Child site WordPress admin access. It does not sync the site, launch a shortcut, or change WooCommerce. See the dedicated [WooCommerce Shortcuts Abilities reference](/api-reference/abilities-api/woocommerce-shortcuts) for requirements, request examples, and response fields.
 
 ## Installation
 
@@ -119,5 +154,6 @@ If WooCommerce is not detected on a child site, the widget displays a **WooComme
 
 ## Related Resources
 
+- [WooCommerce Shortcuts Abilities](/api-reference/abilities-api/woocommerce-shortcuts) - Read cached status for an authorized site
 - [WooCommerce Status Extension](/add-ons/administrative/woocommerce-status-extension) - Sales data and order statistics
 - [Administrative Add-ons](/add-ons/administrative) - Browse administrative add-ons

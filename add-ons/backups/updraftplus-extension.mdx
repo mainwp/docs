@@ -17,7 +17,7 @@ thirdPartyPlugin: UpdraftPlus
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="integration"
-  data-version="5.0"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-updraftplus-extension/"
   data-integrates-with="UpdraftPlus"
@@ -31,6 +31,8 @@ thirdPartyPlugin: UpdraftPlus
 - Configuring backup schedules and settings
 - Creating and restoring backups from MainWP
 - Managing per-site backup configurations
+- Saving account credentials without displaying the stored password
+- Checking settings errors and Abilities API availability
 
 ---
 
@@ -157,9 +159,27 @@ When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Pre
 
 When MainWP reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
 
+If a connection request fails, MainWP shows **Unable to connect.** for that site. Bulk connection continues with the remaining sites.
+
+#### Save Account Credentials
+
+Starting with version 5.2, the **Connect with UpdraftPlus account** form leaves the password field blank even when a password is already saved. The stored password is not displayed or included in the form.
+
+- To keep the saved password, leave the email address unchanged, leave the password field blank, and click **Connect**.
+- To replace the password, enter the new password before connecting.
+- To use a different account, enter both its email address and password. A saved password is not reused for a different email address.
+
+Newly saved account passwords are encrypted. A password saved as plain text by an older version is migrated to encrypted storage when you save that account again. If encryption or saving fails, MainWP reports **Could not save UpdraftPlus account credentials.** Resolve the save error before connecting again. The previously stored password remains readable if a replacement cannot be saved.
+
 ### UpdraftPlus Settings per Child Site
 
 All UpdraftPlus Settings can be set separately for different child sites. To do this, go to the MainWP > Sites page, and in the sites table, under the child site URL, you can find the UpdraftPlus Backup/Restore link. This link will open Individual site UpdraftPlus Options. The Settings tab will show you all plugin options to set custom settings for the child site. To override global options, set the **Override General Settings** to **YES** and click the Save button.
+
+### Unreadable Stored Settings
+
+Version 5.2 validates stored site settings before loading them. Corrupted data, serialized PHP objects, and values that exceed the supported nesting or complexity limits are rejected. If an existing settings record cannot be read safely, the add-on also rejects a settings merge rather than replacing that record with an incomplete configuration.
+
+If a site's settings appear empty or an update cannot be saved, check UpdraftPlus directly on the Child site and contact MainWP Support with the affected site's name and the error message. Do not assume an empty settings view means the Child site's configuration or backups were deleted.
 
 ## MainWP UpdraftPlus Extension Backup/Restore
 
@@ -249,6 +269,12 @@ If the child site has the UpdraftPlus **Anonymisation** add-on active, the datab
 Anonymized data cannot be recovered from the backup. Use anonymization for backups you intend to share with developers or to seed staging environments, not for disaster-recovery copies.
 </Warning>
 
+### Check an Uncertain Operation Result
+
+If a remote operation times out or its response cannot be verified, check UpdraftPlus on the Child site before submitting the action again. Review the current operation, backup history, and log to determine whether the request took effect. A missing response does not prove that a backup, deletion, or restore failed.
+
+Version 5.2's future Abilities API runtime distinguishes an unknown write outcome from a confirmed failure so automation can avoid submitting an unsafe duplicate request. That runtime remains [disabled by default](#abilities-api-availability).
+
 ## Schedule Backups With MainWP UpdraftPlus Extension
 
 MainWP UpdraftPlus Extension allows you to schedule your backups easily. To set scheduled backups, go to the Extension Settings page and locate the **File Backups Intervals** and the **Database Backup Intervals** options.
@@ -267,6 +293,18 @@ Set the frequency of the wanted backup and click the **Save Settings** button at
 To be sure you see the fresh data, select wanted sites, and click the Reload Data button.
 </Tip>
 
+## Database Health Check
+
+Version 5.2 supplies its settings table and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair settings, check Child site databases, or verify backup files.
+
+## Abilities API Availability
+
+Version 5.2 adds database and runtime groundwork for future MainWP Abilities API backup operations. Its UpdraftPlus abilities are **disabled by default** until compatible MainWP Child support is available. Updating the add-on to 5.2 does not make these backup operations available through the Abilities API or MainWP AI Assistant.
+
+Continue using the Dashboard backup, settings, and restore workflows described above. See [Abilities API Overview](/api-reference/abilities-api/overview#add-on-abilities) for the currently available Add-on abilities.
+
 ---
 
 ## Related Resources
@@ -274,3 +312,5 @@ To be sure you see the fresh data, select wanted sites, and click the Reload Dat
 - [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
 - [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
 - [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp) - Installing plugins on child sites
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Dashboard's Add-on database structure
+- [Abilities API Overview](/api-reference/abilities-api/overview#add-on-abilities) - Available Add-on abilities
