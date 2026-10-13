@@ -368,8 +368,17 @@ Set the **Overwrite General Settings** option to **YES** and click the **Save Ch
 
 ---
 
+## Database Health Check
+
+BackWPup Integration 5.2 supplies its settings, per-site job, and global job tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair tables, check Child site databases, or verify backup files.
+
+---
+
 ## Related Resources
 
 - [Backup Add-ons](/add-ons/backups) - Browse all backup integrations
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database structure
 - [Manage Backups](/sites/backups/manage-backups) - Understanding backup management in MainWP
 - [Managing Plugins with MainWP](/sites/plugins/managing-plugins-with-mainwp) - Installing plugins on child sites

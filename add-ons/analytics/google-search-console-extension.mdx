@@ -221,6 +221,10 @@ See [Google Search Console Abilities](/api-reference/abilities-api/google-search
 
 If you use **MainWP Pro Reports**, you can include Google Search Console data in your client reports. For the full list of available tokens, see the [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) article.
 
+The integration first requests Google Search Console data for the report's selected date range. If that request returns no usable data, it falls back to cached Dashboard metrics when available so the report does not contain blank values.
+
+Cached metrics may cover a different period from the report dates. If the figures appear to match older Dashboard data, check the Google connection and property access, refresh the data, and regenerate the report after the date-range request succeeds.
+
 ## Troubleshooting
 
 ### JSON connection fails after updating to 6.3
@@ -321,6 +325,7 @@ If Google Analytics shows a similar warning, follow the instructions in the [Goo
 
 ## Related Resources
 
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's registered site-assignment and cached-statistics tables
 - [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) - Automate mappings, settings, and refreshes
 - [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include GSC data in reports

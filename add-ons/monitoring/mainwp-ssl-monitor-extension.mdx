@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1.4"
+  data-version="5.3"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-ssl-monitor-extension/"
   data-owned-by="Jestart LLC"
@@ -51,6 +51,14 @@ The SSL Monitor extension allows you to check information about SSL certificates
 </Frame>
 
 The extension also provides all the detailed information about the SSL certificates that you may need.
+
+## Browse Certificate Status
+
+On **MainWP > Add-ons > Monitoring > SSL Monitor > Dashboard**, search by site name or URL, sort supported column headings, and use the page and page-size controls to browse your sites. Results load as you change the table controls; wait for the loading indicator to finish before selecting rows or starting a check.
+
+The **SSL Monitor** widget on the main **Overview** page also supports search, sorting, and paging. Click **SSL Monitor Dashboard** in its footer to open the full table. An individual site's **Overview** widget shows its saved certificate details and links to that site's SSL Monitor page.
+
+`N/A` or **Not checked** indicates that certificate data is unavailable or has not been collected. Run **Check SSL Certificate** for the site and review any reported error before relying on its expiration information. The table and widgets show saved results; browsing them does not perform a new certificate check.
 
 ## Install the SSL Monitor extension
 
@@ -129,6 +137,12 @@ Go to the **MainWP > Add-ons > Monitoring > SSL Monitor > Settings** page.
 </Steps>
 
 
+## Automatic Inclusion of New Sites
+
+SSL Monitor 5.3 automatically adds a monitoring record when you connect a new HTTPS site to MainWP Dashboard. It does not perform a certificate lookup during site connection. With **Automated Checks** enabled, the scheduler performs the first check and subsequent checks at the configured frequency.
+
+Automatic checks apply only to sites whose saved URL starts with `https://`. HTTP sites are excluded. Existing individual overrides remain in effect, including sites where automated checks are disabled.
+
 ## Adjust the SSL Monitor settings on a Single Site
 
 ![Animated screenshot showing how to overwrite general SSL Monitor settings for a single site](/images/add-ons/4f9770763ce7.gif)
@@ -183,6 +197,7 @@ All MainWP REST API calls, including full documentation and examples, are public
 
 ## Related Resources
 
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database table and column definitions
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
 - [Domain Monitor](/add-ons/monitoring/mainwp-domain-monitor-extension) - Track domain expiration
 - [Advanced Uptime Monitor](/add-ons/monitoring/advanced-uptime-monitor-extension) - Monitor site uptime

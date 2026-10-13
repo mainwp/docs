@@ -25,7 +25,7 @@ addonType: integration
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="integration"
-  data-version="5.3.5"
+  data-version="5.4"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-advanced-uptime-monitor-extension/"
   data-owned-by="Jestart LLC"
@@ -327,6 +327,14 @@ To get the Better Uptime API token:
 - If data is not loading properly from your Uptime Robot account, try resaving the Uptime Robot settings in the Advanced Uptime Monitor Integration.
 </Warning>
 
+## Abilities API
+
+The upcoming Abilities-enabled release adds seven MainWP abilities for listing cached monitors and events, reading live uptime summaries, creating monitors, pausing or resuming them, deleting monitors, and synchronizing provider inventory. Supported providers are UptimeRobot, Site24x7, NodePing, and Better Stack.
+
+Use WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an Advanced Uptime Monitor build that registers the `mainwp-advanced-uptime-monitor` category. Site permissions and Team Control restrictions apply. Inventory synchronization requires unrestricted administrator access, and deletion and synchronization support previews and require explicit confirmation before changes.
+
+See [Advanced Uptime Monitor Abilities](/api-reference/abilities-api/advanced-uptime-monitor) for discovery, authentication, request examples, cached-versus-live results, provider limits, and error handling. These calls are available only after updating to the Abilities-enabled release.
+
 ## Team Control Permissions
 
 If you use the [Team Control Extension](/add-ons/agency/team-control-extension), the Advanced Uptime Monitor respects each role's **Allowed Child Sites** configuration. Users signed in with a restricted role only see monitors that belong to the child sites they are permitted to access; monitors for sites outside their scope are hidden from the Monitors tab and from related views.
@@ -343,6 +351,8 @@ No additional configuration is required. Assign **Allowed Child Sites** to each 
 
 ## Related Resources
 
+- [Advanced Uptime Monitor Abilities](/api-reference/abilities-api/advanced-uptime-monitor) - Read uptime data and manage provider monitors in the Abilities-enabled release
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's registered monitor, options, and provider-statistics tables
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
 - [Domain Monitor](/add-ons/monitoring/mainwp-domain-monitor-extension) - Track domain expiration
 - [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Monitor SSL certificates

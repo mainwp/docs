@@ -26,7 +26,7 @@ thirdPartyPlugin: Virusdie
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0.1"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-virusdie-extension/"
   data-integrates-with="Virusdie"
@@ -322,8 +322,17 @@ For more details about this child-to-Dashboard reverse-download requirement, see
 
 ---
 
+## Database Health Check
+
+Virusdie 5.1 supplies its site and scan report tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair tables or scan your Child Sites for malware.
+
+---
+
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database structure
 - [Sucuri Extension](/add-ons/security/sucuri-extension) - Alternative malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Scan for known vulnerabilities

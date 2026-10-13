@@ -27,7 +27,7 @@ thirdPartyPlugin: Wordfence
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.1.2"
+  data-version="5.2.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-wordfence-extension/"
   data-integrates-with="Wordfence"
@@ -103,6 +103,23 @@ Use the settings tabs to define network defaults. Saving a network settings sect
 
 If you install Wordfence Security on additional child sites, sync them and re-save each relevant network settings tab to apply the defaults.
 
+### Settings Added in 5.2
+
+Wordfence Integration 5.2 adds these controls to the existing settings tabs. Configure them globally or from a site's Wordfence settings when individual overrides are enabled, then click **Save Settings**.
+
+| Tab | Setting | Purpose |
+|-----|---------|---------|
+| Options | **Display "Audit Log" menu item** | Show the Wordfence Audit Log menu item in the Child site's WordPress admin |
+| Options | **Trusted Proxy Preset** | Choose **None**, **Amazon CloudFront**, **Ezoic**, or **Quic.cloud** to configure trusted proxy handling |
+| Options | **Look up visitor IP locations via Wordfence servers** | Enable Wordfence's remote visitor IP location lookup |
+| Scan | **Monitor Web Application Firewall status** | Include the firewall's status in scan checks |
+| Scan | **Use only IPv4 to start scans** | Use IPv4 when starting a scan |
+| Scan | Scan resume attempts | Set the maximum number of scan resume attempts from `0` through `5` |
+
+<Note>
+In Wordfence Integration 5.2.2, the Scan tab's `0`-`5` resume-attempt selector is labeled **Alert me with scan results of this severity level or greater**. That selector controls scan resume attempts.
+</Note>
+
 ### Individual Site Settings
 
 The integration also provides per-site Wordfence settings.
@@ -132,7 +149,9 @@ Go to **MainWP > Add-ons > Security > Wordfence** and open the **Wordfence Overv
 
 ### Available Actions
 
-The row action menu includes **Overview**, **Edit**, **Open Wordfence**, and **Hide Plugin** or **Unhide Plugin**. For active installations, it also includes **Scan Site**, **Live Traffic**, **Blocking**, and **Scan Results**. **Update Plugin** appears when an update is available.
+The row action menu includes **Overview**, **Edit**, **Open Wordfence**, and **Hide Plugin** or **Unhide Plugin**. For active installations, it also includes **Scan Site**, **Live Traffic**, **Blocking**, **Scan Results**, and **Deactivate Plugin**. Inactive installations offer **Activate Plugin**. **Update Plugin** appears when an update is available.
+
+To deactivate Wordfence Security on several sites, select their checkboxes in **Wordfence Overview**, choose **Deactivate** from **Bulk Actions**, and click **Apply**. The integration processes selected active installations. Use **Activate** to enable selected inactive installations again. Deactivation turns off Wordfence Security on those Child sites.
 
 #### Important Notes
 

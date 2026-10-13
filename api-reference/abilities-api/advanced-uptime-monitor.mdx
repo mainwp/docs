@@ -1,0 +1,196 @@
+---
+title: Advanced Uptime Monitor Abilities
+sidebarTitle: "Uptime Monitor Abilities"
+description: >-
+  Read cached uptime monitors and events, retrieve live uptime summaries, and manage provider monitors for authorized MainWP sites.
+---
+
+<Note>
+These abilities require the upcoming Advanced Uptime Monitor release that includes Abilities API support. Earlier builds may not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled Advanced Uptime Monitor release registers seven abilities in the `mainwp-advanced-uptime-monitor` category. Calls run on your MainWP Dashboard and use the `mainwp/` namespace.
+
+## What You'll Learn
+
+- Distinguish cached monitor data from live provider uptime
+- Create, pause, resume, and delete mapped monitors
+- Preview inventory synchronization and follow its continuation results
+- Handle uncertain provider results before retrying changes
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples
+- An active Advanced Uptime Monitor build that registers these abilities
+- A configured uptime provider for operations that contact the provider
+- An authenticated user with `manage_options`, access to the Add-on, and access to the selected site
+
+Team Control and permitted-site restrictions apply. Inventory synchronization requires an administrator with unrestricted access to all sites; a user restricted to selected sites cannot synchronize provider inventory.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or another [supported authentication method](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-uptime-monitors-v1` | GET | Read cached monitor mappings for one site and provider |
+| `mainwp/list-uptime-monitor-events-v1` | GET | Read cached events for one mapped monitor |
+| `mainwp/get-site-uptime-summary-v1` | GET | Retrieve live uptime percentages from the provider |
+| `mainwp/create-site-uptime-monitor-v1` | POST | Create a monitor for the stored MainWP site URL |
+| `mainwp/set-uptime-monitor-state-v1` | POST | Set a mapped monitor to active or paused |
+| `mainwp/delete-uptime-monitor-v1` | POST | Preview or confirm deletion of a provider monitor and its local data |
+| `mainwp/sync-uptime-monitors-v1` | POST | Preview or synchronize provider inventory with Dashboard mappings |
+
+Discover the registered abilities and their complete schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-advanced-uptime-monitor'
+```
+
+The three GET abilities are read-only and idempotent. Setting a monitor's state is also marked idempotent. Creation, deletion, and inventory synchronization are not marked idempotent. Deletion and synchronization are marked destructive and require `dry_run: true` or `confirm: true`.
+
+## Identify the Site, Provider, and Monitor
+
+Use a positive JSON integer for `site_id`, identifying the MainWP Dashboard site. Use `local_monitor_id` from a monitor-list response for monitor-specific operations. It identifies a Dashboard mapping, not the provider's monitor ID.
+
+| Provider | `service` value |
+|----------|-----------------|
+| UptimeRobot | `uptimerobot` |
+| Site24x7 | `site24x7` |
+| NodePing | `nodeping` |
+| Better Stack / Better Uptime | `betteruptime` |
+
+Inputs reject extra properties. Do not supply provider credentials, arbitrary site URLs, or provider monitor IDs.
+
+## List Cached Monitors and Events
+
+Supply `site_id` and `service` to list cached mappings:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"service":"uptimerobot","page":1,"per_page":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-uptime-monitors-v1/run'
+```
+
+The response uses `source: dashboard_cached_mapping` and includes `monitors` and `pagination`. Each monitor supplies its local ID, site ID, service, name, address, `administrative_state`, `observed_status`, and `last_local_update` Unix timestamp.
+
+`administrative_state` is `active`, `paused`, or `unknown`. `observed_status` is `up`, `down`, `degraded`, `pending`, or `unknown`. An active monitor does not establish that the site is currently up.
+
+Use a returned local ID to read its cached events:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"service":"uptimerobot","local_monitor_id":12,"page":1,"per_page":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-uptime-monitor-events-v1/run'
+```
+
+This response uses `source: dashboard_cached_event`. Events include a local `event_id`, `occurred_at` Unix timestamp, normalized status, and nullable `duration_seconds` and `response_time_ms`. Raw provider messages, provider event IDs, and credentials are omitted.
+
+Both list abilities default to `page: 1` and `per_page: 50`. `per_page` accepts 1 through 100. Pagination includes `page`, `per_page`, `returned`, `total`, and `has_more`. These reads do not contact the provider or refresh cached data.
+
+## Read Live Uptime
+
+The summary requires an existing mapped monitor for the selected site and provider:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"service":"uptimerobot"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-uptime-summary-v1/run'
+```
+
+The response uses `source: live_provider` and includes `site_id`, `service`, `local_monitor_id`, `measured_at`, `ratios`, and `remote_confirmed`. Ratios contain `days_7`, `days_15`, `days_30`, `days_45`, `days_60`, and `all_time`, each a percentage from 0 through 100 or `null` when unavailable. Treat `null` as unavailable, not zero uptime.
+
+For Site24x7 and Better Stack, `all_time` is bounded to the last 365 days. This request does not import events or update Dashboard cache.
+
+## Create a Monitor
+
+Creation accepts only `site_id` and `service`. It uses the site's stored URL and the provider's defaults:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"service":"uptimerobot"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-site-uptime-monitor-v1/run'
+```
+
+An existing site/provider mapping returns `mainwp_aum_monitor_exists`. The stored site URL must be no longer than 100 characters. Stored HTTP Basic Authentication credentials are forwarded where supported, except for NodePing. The result reports `stored_http_credentials_forwarded` without exposing those credentials.
+
+A successful result has `status: created`, a new `local_monitor_id`, `remote_confirmed: true`, and `local_mapping_saved: true`. If provider creation succeeds but the local mapping cannot be saved, synchronize provider inventory before retrying creation.
+
+## Pause or Resume a Monitor
+
+Use `state: paused` to pause or `state: active` to resume:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12,"state":"paused"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-uptime-monitor-state-v1/run'
+```
+
+The result has `status: updated` or `status: unchanged` and reports the state, `remote_confirmed`, and `local_cache_updated`. Administrative state and observed site availability remain separate.
+
+## Preview and Delete a Monitor
+
+Preview deletion first:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"service":"uptimerobot","local_monitor_id":12,"dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-uptime-monitor-v1/run'
+```
+
+The preview reports `would_affect` counts for `remote_monitors`, `local_mappings`, and `cached_events`. It does not delete anything.
+
+To delete the selected monitor after reviewing the preview, submit the same target with `confirm: true` and omit `dry_run`. Do not set both flags to `true`. The Add-on removes the local mapping and cached events only after a confirmed provider deletion. A successful result reports `status: deleted`, `remote_confirmed`, `local_mapping_deleted`, and `local_events_deleted`.
+
+## Preview and Synchronize Provider Inventory
+
+Inventory synchronization matches provider monitors to managed sites and skips unassigned monitors. Terminal reconciliation removes stale Dashboard mappings; it does not delete provider monitors.
+
+Preview one inventory page:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"service":"uptimerobot","dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-uptime-monitors-v1/run'
+```
+
+The preview contacts the provider without changing Dashboard data. It reports `fetched`, `would_insert`, `would_update`, `would_skip_unassigned`, `would_delete`, and `has_more`. `would_delete` is `null` while later pages remain.
+
+Start a confirmed run with `service` and `confirm: true`, omitting `sync_token` and `cursor`. Each result reports `status: more` or `status: complete`, `sync_token`, `cursor`, `next_cursor`, and counts for fetched, inserted, updated, deleted, and skipped unassigned monitors.
+
+If the result is `more`, send the returned `sync_token` and `next_cursor` as `cursor` with the same `service` and `confirm: true`. Continue until `complete`, when `next_cursor` is `null`. Echo the continuation values exactly; do not invent a cursor or start a new run for each page. Confirmation is required on every page.
+
+Tokens are short-lived. An expired or invalid continuation returns `mainwp_aum_sync_expired`. Some provider failures include `sync_token` and `cursor` in error data so the existing run can be resumed.
+
+Site24x7 and NodePing inventory synchronization supports up to 100 monitors. Larger inventories return `mainwp_aum_provider_rejected` rather than completing a partial reconciliation.
+
+## Handle Errors and Retries
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_aum_invalid_input` | 400 | Check required fields, provider values, positive IDs, and extra properties |
+| `mainwp_confirmation_required` | 400 | Use `dry_run: true` or `confirm: true` for deletion or synchronization |
+| `mainwp_aum_access_denied` | 403 | Check Dashboard, Add-on, site, and Team Control permissions |
+| `mainwp_aum_site_not_found` | 404 | Verify the MainWP site ID |
+| `mainwp_aum_monitor_not_found` | 404 | List mappings and use the local ID for the exact site and provider |
+| `mainwp_aum_monitor_exists` | 409 | Use the existing mapping instead of creating another monitor |
+| `mainwp_aum_provider_not_configured` | 409 | Configure the selected uptime provider |
+| `mainwp_aum_operation_locked` | 409 | Wait for the current operation to finish and inspect its result |
+| `mainwp_aum_sync_expired` | 409 | Start a new synchronization run after checking the previous outcome |
+| `mainwp_aum_database_failure` | 500 | Check local database health and whether the remote operation already completed |
+| `mainwp_aum_provider_rejected` | 502 | Review provider configuration, limits, and the requested operation |
+| `mainwp_aum_remote_outcome_unknown` | 504 | Check provider state before retrying a change |
+
+A timeout or unknown result does not establish that a provider change failed. Inspect provider state and reconcile mappings before retrying creation or deletion. WordPress may also reject schema-invalid input before the Add-on callback runs and return its own authentication or permission errors.
+
+## Related Resources
+
+- [Advanced Uptime Monitor](/add-ons/monitoring/advanced-uptime-monitor-extension) - Provider setup and Dashboard workflows
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Inspect Dashboard database structure

@@ -15,7 +15,7 @@ thirdPartyPlugin: "Patchstack"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Patchstack" data-purchase-url="https://mainwp.com/add-on/patchstack-integration/" data-pricing-tier="free" data-bundle="Essentials" data-addon-type="integration" data-version="6.0.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-patchstack-extension/" data-video-url="https://www.youtube.com/watch?v=eQ6LMfOj1zU" data-integrates-with="Patchstack" data-owned-by="Patchstack OÜ" data-privacy-url="https://patchstack.com/privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Patchstack" data-purchase-url="https://mainwp.com/add-on/patchstack-integration/" data-pricing-tier="free" data-bundle="Essentials" data-addon-type="integration" data-version="6.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-patchstack-extension/" data-video-url="https://www.youtube.com/watch?v=eQ6LMfOj1zU" data-integrates-with="Patchstack" data-owned-by="Patchstack OÜ" data-privacy-url="https://patchstack.com/privacy-policy/" />
 
 <iframe src="https://www.youtube.com/embed/K9N_gmRFqGI" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
 
@@ -82,6 +82,11 @@ The Patchstack add-on connects your MainWP Dashboard with your Patchstack accoun
   <Step title="Select sites">
     Choose the child sites you want to protect and click **Protect With Patchstack**.
   </Step>
+  <Step title="Review the provisioning confirmation">
+    Review the number of sites being added, the current and resulting totals, and your configured plan allowance. Adding sites beyond that allowance may increase your Patchstack bill. Click **Yes, proceed!** to continue, or **Cancel** to return to the selection.
+
+    If the allowance is **Not configured**, MainWP disables the proceed button. Save **Plan allowance (sites)** in the Settings tab first. Enter the allowance for your Patchstack plan, or `0` for an unlimited allowance.
+  </Step>
   <Step title="Complete setup">
     The wizard registers each site with Patchstack, installs and activates the Patchstack plugin on the child site, activates the Patchstack license, syncs data, and refreshes the dashboard.
   </Step>
@@ -95,6 +100,8 @@ The Patchstack add-on connects your MainWP Dashboard with your Patchstack accoun
 - **Sync Patchstack Data** (top-right): Syncs all linked sites
 - **Sync API Data** (row ellipsis menu): Syncs individual sites
 
+The sync dialog reports progress and results for each site. A completed progress bar means all requests finished; check for **Process completed with errors.** and hover over a site's red error icon for its error details. When all requests succeed, the page refreshes automatically.
+
 ## Where to View Data
 
 ![Patchstack Integration overview tab showing protected sites table](/images/miscellaneous/add-ons-security-793424.png)
@@ -103,11 +110,22 @@ The Patchstack add-on connects your MainWP Dashboard with your Patchstack accoun
 
 The DataTable lists each protected site with firewall status, 7-day attack sparkline, total vulnerabilities, outdated components, and time since last sync.
 
+In version 6.1, the overview loads results as you search, sort, or change pages:
+
+- Search by site name or URL.
+- Click the sortable **Attacks**, **Vulnerabilities**, **Updates**, or **Last Sync** column headings to change the order.
+- Use the page controls and page-size selector to browse larger site lists.
+- Wait for the loading indicator to finish before selecting rows or starting another action.
+
+Hover over a site's colored status indicator for details. Green means the firewall is active, yellow means the firewall or plugin is missing or turned off, and red indicates a deactivated plugin. If no sites with the Patchstack plugin are found, the overview displays an empty-state message.
+
 **Row actions:** View details, update the Patchstack plugin when an update is available, sync API data, hide or unhide the plugin, edit the site, or remove the site.
 
 To hide the Patchstack plugin from a child site's installed plugins list and admin menu, open the site's row ellipsis menu and select **Hide Plugin**. Select **Unhide Plugin** from the same menu to restore its visibility.
 
 **Bulk actions:** Update Patchstack plugin, sync API data, or remove multiple sites.
+
+Select the intended rows before choosing a bulk action. Review confirmation and warning messages, especially when adding sites or removing protection.
 
 ### Add-on Threats Tab
 
