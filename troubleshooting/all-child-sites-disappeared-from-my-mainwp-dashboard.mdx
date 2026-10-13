@@ -1,12 +1,15 @@
 ---
 title: All child sites disappeared from my MainWP Dashboard
 description: >-
-  Missing child sites usually indicates database corruption. Check if ANSI_QUOTES
-  MySQL mode is enabled, then repair the database using WP_ALLOW_REPAIR or
-  phpMyAdmin, or restore from a recent backup.
+  Check database errors and MySQL configuration when Child Sites disappear from
+  MainWP Dashboard, then review database repair and backup restoration options.
 ---
 
-When all child sites disappear from the Manage Sites table, the most common cause is database corruption. This guide covers how to diagnose the issue and repair your database to restore your sites.
+When all Child Sites disappear from the Manage Sites table, check for database errors and configuration issues before attempting database repair or restoring a backup. This guide covers MySQL configuration, database repair, and backup restoration options.
+
+<Note>
+If your Dashboard's error log contains **Error 1104** or **MAX_JOIN_SIZE**, follow [Resolve MAX_JOIN_SIZE Errors](/troubleshooting/resolve-max-join-size-errors) first. A database query limit can hide sites from the list even when the site records still exist.
+</Note>
 
 ## What You'll Learn
 

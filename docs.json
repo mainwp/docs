@@ -427,6 +427,7 @@
                 "pages": [
                   "dashboard/overview/how-can-i-initiate-the-quick-setup-wizard",
                   "troubleshooting/how-to-enable-error-logging",
+                  "troubleshooting/resolve-max-join-size-errors",
                   "troubleshooting/which-mainwp-database-tables-can-get-large",
                   "troubleshooting/slow-updates-pages-large-networks",
                   "troubleshooting/resolve-system-requirement-issues",

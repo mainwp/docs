@@ -1,0 +1,174 @@
+---
+title: Resolve MAX_JOIN_SIZE Errors in MainWP Dashboard
+sidebarTitle: MAX_JOIN_SIZE Errors
+description: >-
+  Identify database Error 1104, ask your hosting provider to resolve the query
+  limit, and review an optional unsupported workaround for the Dashboard site.
+---
+
+A database query limit can prevent MainWP Dashboard from displaying Child Sites on **Manage Sites** and in site selectors. Other operations that retrieve site data may also be affected.
+
+<Note>
+Contact your hosting provider first. The recommended solution is a hosting configuration that allows MainWP Dashboard's database queries to run. Use the optional workaround below only if your provider cannot supply a suitable solution and confirms that a session override is permitted.
+</Note>
+
+## What You'll Learn
+
+- Identify a `MAX_JOIN_SIZE` database error
+- Request a persistent solution from your hosting provider
+- Refresh the site list after the restriction is resolved
+- Install and remove an optional unsupported workaround
+
+## Prerequisites
+
+- Access to the database error reported by your Dashboard site or hosting provider
+- A way to contact support for the hosting account running MainWP Dashboard
+- For the workaround: a current Dashboard backup and file manager or SFTP access to that WordPress installation
+
+---
+
+## Identify the Error
+
+This guide applies when your Dashboard's error log contains a message such as:
+
+```text
+The SELECT would examine more than MAX_JOIN_SIZE rows;
+check your WHERE and use SET SQL_BIG_SELECTS=1 or
+SET MAX_JOIN_SIZE=# if the SELECT is okay
+```
+
+This is database **Error 1104**. An empty site list alone does not establish this cause. If you do not have the error details, ask your hosting provider to check the database errors while you repeat the affected operation. See [Enable Error Logging](/troubleshooting/how-to-enable-error-logging) if you need to collect a WordPress error log.
+
+An error recorded during another operation, such as an uptime check, shows that the restriction affects that query. To confirm that it also explains an empty Manage Sites table, check for the same error when loading that table.
+
+## Why the Site Count Can Still Be Correct
+
+`MAX_JOIN_SIZE` limits how many rows a database query is estimated to examine. It is a query-processing limit, rather than a limit on the number of Child Sites you can manage. See the [MariaDB query limits documentation](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/query-optimizations/query-limits-and-timeouts).
+
+MainWP Dashboard uses queries that combine multiple tables to retrieve site details. A simpler site-count query may still succeed while a site-list query fails. Your system report can therefore show the expected site count while Manage Sites remains empty.
+
+This discrepancy does not, by itself, mean that your site records have been deleted or that your database needs repair.
+
+---
+
+## Contact Your Hosting Provider
+
+Contact the provider hosting your **MainWP Dashboard**, and share the exact database error. Ask them to review whether they can:
+
+- Enable `SQL_BIG_SELECTS` persistently for the WordPress database connections used by MainWP Dashboard.
+- Adjust `MAX_JOIN_SIZE` appropriately for your hosting environment.
+
+Your provider should choose the appropriate configuration and assess database performance. You can send this message:
+
+> My MainWP Dashboard is receiving database Error 1104: "The SELECT would examine more than MAX_JOIN_SIZE rows." Site lists are affected. Could you review the restriction and provide a persistent solution for the Dashboard's WordPress database connections, such as enabling SQL_BIG_SELECTS or adjusting MAX_JOIN_SIZE? If neither is available, please confirm whether an application-level SQL_BIG_SELECTS session override is permitted.
+
+<Info>
+Running `SET SESSION SQL_BIG_SELECTS = 1` once in phpMyAdmin changes only that connection's session. It does not configure the separate database connections used by WordPress. See the [MySQL system-variable documentation](https://dev.mysql.com/doc/refman/8.4/en/server-system-variables.html#sysvar_sql_big_selects).
+</Info>
+
+## Check the Result
+
+Repeat these checks after your provider changes the configuration or after installing the optional workaround.
+
+<Steps>
+<Step title="Reload Manage Sites">
+Go to **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) and check whether your Child Sites appear.
+
+Use [Table view](/dashboard/overview/choose-list-or-grid-view-for-manage-sites-table) for the filter-reset check below.
+</Step>
+
+<Step title="Reset filters and refresh the site list">
+If the list remains empty, select **Connected** from the status filter, click **Filter**, and then click **Reset** to return to all statuses. Resetting the filters also clears the cached Manage Sites results in the table view.
+
+If **Reset** is already available, you can click it directly.
+</Step>
+
+<Step title="Repeat the affected operations">
+Check any site selectors that were empty and try synchronizing a site. Ask your provider to check for new occurrences of Error 1104 while you repeat the previously failing operation, or review your error log if you have access.
+</Step>
+</Steps>
+
+If the database error remains, share the new error with your hosting provider. If Error 1104 is resolved but sites are still missing, [contact MainWP Support](https://mainwp.com/mainwp-support/) with your MainWP Dashboard version, the remaining symptoms, and your provider's response.
+
+---
+
+## Optional Unsupported Workaround
+
+<Warning>
+This workaround is not a built-in MainWP feature or part of MainWP's supported configuration. Consider it only after contacting hosting support, when your provider cannot supply a suitable hosting-side solution and confirms that the session override is permitted.
+
+It bypasses the query-size restriction for queries using the same WordPress database connection, including queries from other plugins. It does not optimize queries or repair missing indexes. Review performance concerns with your provider; a successful result does not establish long-term compatibility or performance.
+</Warning>
+
+The workaround uses a small WordPress must-use plugin to run `SET SESSION SQL_BIG_SELECTS = 1`. This makes the database ignore `MAX_JOIN_SIZE` for the current connection without changing the server's global configuration. See the [MySQL SQL_BIG_SELECTS reference](https://dev.mysql.com/doc/refman/8.4/en/server-system-variables.html#sysvar_sql_big_selects).
+
+### Install the Workaround
+
+Apply these steps to the **WordPress installation hosting MainWP Dashboard**. Do not install the file on your Child Sites.
+
+<Steps>
+<Step title="Back up the Dashboard site and confirm file access">
+Create a current backup of your Dashboard database and files, and confirm that it completed successfully. Keep file manager or SFTP access available so you can remove the workaround if necessary.
+</Step>
+
+<Step title="Open the must-use plugins directory">
+Using your hosting file manager or SFTP, open the Dashboard installation's `wp-content` directory. Create a directory named `mu-plugins` if it does not already exist. Preserve any existing files in that directory.
+</Step>
+
+<Step title="Create the workaround file">
+Create a plain-text file named `mainwp-sql-big-selects-workaround.php` with the complete code below, including the opening `<?php` tag:
+
+```php
+<?php
+/**
+ * Plugin Name: MainWP Dashboard SQL_BIG_SELECTS Workaround
+ * Description: Enables large SELECT queries for the current WordPress database session.
+ * Version: 1.0.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+global $wpdb;
+
+$wpdb->query( 'SET SESSION SQL_BIG_SELECTS = 1' );
+```
+
+Save the file directly inside `mu-plugins`, with this path relative to the WordPress installation:
+
+```text
+wp-content/mu-plugins/mainwp-sql-big-selects-workaround.php
+```
+
+Ensure the filename ends in `.php`, rather than `.php.txt`. If a file with the same name already exists, retain a copy before replacing it.
+</Step>
+
+<Step title="Verify the result">
+WordPress automatically loads PHP files placed directly in `mu-plugins` before normal plugins. No activation is required. See the [WordPress must-use plugin documentation](https://developer.wordpress.org/advanced-administration/plugins/mu-plugins/).
+
+Follow [Check the Result](#check-the-result) to verify the site list and the previously failing operation. If the workaround causes new problems, remove the file using the instructions below.
+</Step>
+</Steps>
+
+### Remove the Workaround
+
+Once your hosting provider supplies a permanent solution, remove the workaround and repeat [Check the Result](#check-the-result).
+
+Using your hosting file manager or SFTP, delete only this file:
+
+```text
+wp-content/mu-plugins/mainwp-sql-big-selects-workaround.php
+```
+
+Preserve all other must-use plugins. Must-use plugins cannot be deactivated from the standard WordPress Plugins screen; remove this file to stop applying the override on subsequent WordPress loads.
+
+If the underlying database restriction remains, Error 1104 may return after removal.
+
+---
+
+## Related Resources
+
+- [Enable Error Logging](/troubleshooting/how-to-enable-error-logging) - Collect errors from the Dashboard site
+- [MainWP Database Health Check](/dashboard/overview/mainwp-database-health-check) - Review database structure and privilege checks
+- [All Child Sites Disappeared](/troubleshooting/all-child-sites-disappeared-from-my-mainwp-dashboard) - Investigate other causes of missing sites
