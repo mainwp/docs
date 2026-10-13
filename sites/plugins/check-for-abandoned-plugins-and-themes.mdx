@@ -38,7 +38,7 @@ MainWP identifies plugins and themes that may be abandoned based on how long sin
 MainWP marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
 
 <Note>
-MainWP can evaluate only plugins and themes with usable WordPress.org metadata. Delisted items and premium, private, or custom plugins and themes that are absent from WordPress.org cannot be evaluated for abandonment.
+By default, MainWP evaluates only plugins and themes with a WordPress.org last updated date. To also evaluate premium, private, custom, or delisted items, enable [Abandoned check by local file date](#check-premium-and-custom-items-by-local-file-date).
 </Note>
 
 ### Why Abandoned Items Matter
@@ -59,6 +59,51 @@ When abandoned plugin and theme data is enabled for sync, MainWP Child schedules
 <Note>
 These checks depend on the sync-data settings in **MainWP > Settings > Advanced Settings**. In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, MainWP does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
 </Note>
+
+---
+
+## Check premium and custom items by local file date
+
+Premium, private, and custom plugins and themes never receive a last updated date from WordPress.org. When you enable **Abandoned check by local file date**, MainWP Child uses the modification date of the item's main file instead:
+
+- **Plugins**: the main plugin file
+- **Themes**: the theme's `style.css` file
+
+MainWP Child compares the file age with the **Abandoned plugins/themes tolerance** value. The plugin or theme does not need to be active.
+
+The setting is disabled by default, so existing premium plugins and themes are not flagged until you turn it on.
+
+### Enable the local file date check
+
+<Steps>
+<Step title="Open Updates Settings">
+Go to **MainWP > Settings > General Settings** and find the **Updates Settings** section.
+</Step>
+<Step title="Turn on the toggle">
+Enable **Abandoned check by local file date**.
+</Step>
+<Step title="Save">
+Click **Save Settings**.
+</Step>
+<Step title="Sync sites">
+Sync your child sites. MainWP Child receives the setting during sync.
+</Step>
+</Steps>
+
+### How the fallback works
+
+- **WordPress.org date wins**: If WordPress.org returns a last updated date, MainWP uses that date and ignores the file date.
+- **Only undated items**: The file date is used only for items that WordPress.org answered for without a date, for example a plugin that is not listed there.
+- **Connection failures are skipped**: If the child site cannot reach WordPress.org, MainWP Child skips the item and retries during a later check. A temporary outage does not mark premium items as abandoned.
+- **Different label**: Items detected this way show **Main file modified N days ago** instead of **Updated N days ago**.
+
+<Note>
+Results can take more than one sync to appear. MainWP Child runs the WordPress.org check in WordPress cron after the sync and caches the results. If a completed cache already exists, newly installed items are not checked until the cache refreshes. To force a fresh check, change **Abandoned plugins/themes tolerance** (for example, from 365 to 364), save, sync, let WordPress cron run on the child site, and then sync again.
+</Note>
+
+<Tip>
+Updating a plugin or theme, or editing its main file, changes the file modification date and resets the age MainWP uses.
+</Tip>
 
 ---
 
@@ -138,6 +183,7 @@ When you identify abandoned plugins or themes:
 - [ ] Abandoned themes check completes successfully
 - [ ] Results display in the Updates page
 - [ ] Tolerance setting matches your requirements
+- [ ] **Abandoned check by local file date** is enabled if you want premium and custom items evaluated
 
 ---
 

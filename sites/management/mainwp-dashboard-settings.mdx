@@ -80,6 +80,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Blocks updates when a full backup is older than the allowed tolerance.
     - **Days without of a full backup tolerance** (Default: 7): Defines how old the last full backup can be when backup-before-update is enabled.
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
+    - **Abandoned check by local file date** (Default: Disabled): When WordPress.org returns no last updated date, such as for premium or custom items, uses the modification date of the main plugin file or the theme's `style.css` and compares it with the abandoned tolerance. See [Check premium and custom items by local file date](/sites/plugins/check-for-abandoned-plugins-and-themes#check-premium-and-custom-items-by-local-file-date).
 
     ### Backup Settings Section (on the same page)
 

@@ -24,9 +24,7 @@ Abandoned plugins and themes can create problems for your sites:
 
 MainWP checks the last-updated date on wordpress.org for each plugin and theme. If no update has been released within your configured threshold, the item is flagged as possibly abandoned.
 
-<Note>
-MainWP can only check items listed on wordpress.org. Premium plugins and themes or those delisted from wordpress.org cannot be detected as abandoned.
-</Note>
+Premium plugins and themes, and items delisted from wordpress.org, have no wordpress.org date. By default, MainWP cannot detect them as abandoned. If you enable **Abandoned check by local file date** in **MainWP > Settings > General Settings**, MainWP uses the modification date of the item's main file (the main plugin file or the theme's `style.css`) instead. These items show **Main file modified N days ago**. See [Check premium and custom items by local file date](/sites/plugins/check-for-abandoned-plugins-and-themes#check-premium-and-custom-items-by-local-file-date).
 
 ## Where to View Abandoned Items
 
