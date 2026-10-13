@@ -18,7 +18,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.0.1"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-clone-extension/"
   data-owned-by="Jestart LLC"
@@ -31,6 +31,8 @@ addonType: extension
 - Preparing destination sites for cloning
 - Cloning sites up to 256MB with Quick Clone
 - Cloning larger sites using backup files
+- Managing Clone enablement and site participation
+- Reading and changing Clone policy through the Abilities API
 - Troubleshooting common cloning issues
 
 ---
@@ -67,6 +69,34 @@ To clone a site, the connection between two child sites (Source and Destination)
 Starting with MainWP Child 6.2.2, Clone/Restore leaves a database value unchanged during URL replacement if its serialized data contains PHP objects, cannot be safely decoded, or exceeds processing limits. Source-site URLs inside those values are not replaced with destination-site URLs. This applies to both Quick Clone and Clone from Backup.
 
 After cloning, check plugin and theme settings on the destination site for references to the source site. If a setting still uses the source URL, update it through the plugin or theme's settings, or follow its developer's migration instructions.
+
+## Manage Clone Settings
+
+Open **MainWP Dashboard > Sites > Clone** to manage the Clone policy.
+
+<Steps>
+  <Step title="Enable the Clone feature.">
+    Turn on **Enable the Clone feature**. This toggle saves separately from the site selection. Check the page's save message before continuing.
+  </Step>
+  <Step title="Choose which sites can participate.">
+    Use each site's toggle, or **Allow All** and **Disallow All**, to prepare the selection. Click **Save Selection** to save it.
+  </Step>
+  <Step title="Sync the affected sites.">
+    Policy changes take effect on a Child site after its next successful individual sync. Sync affected destination sites again when their available source choices change.
+  </Step>
+</Steps>
+
+Version 5.1 validates the complete submitted site selection before saving. An invalid site ID, a site that is no longer available in the selection, or an unreadable entry causes the save to fail instead of saving a partial selection. Site exclusions outside your visible site list are preserved.
+
+The selection save also checks whether the saved policy or visible site list changed after the page loaded. If another edit conflicts with your selection, reload the page, review the current settings, and submit the selection again. The page reports **Clone site selection could not be saved. Please try again.** for a failed selection save; a failed global toggle reports **Clone setting could not be saved. Please try again.**
+
+If the page reports that the policy or visible-site list could not be read completely, selection controls are disabled until that data is available. Reload the page and resolve the reported data issue before saving. A success message confirms the Dashboard settings were saved; it does not confirm that every Child site has received them.
+
+## Abilities API
+
+Version 5.1 adds three WordPress abilities to read one site's stored Clone policy, enable or disable Clone globally, and allow or disallow one site's participation. These operations manage Dashboard settings. They do not sync sites, start a clone, create backups, or restore data.
+
+See [Clone Abilities](/api-reference/abilities-api/clone) for requirements, permissions, request examples, and save-result handling.
 
 ## Clone WordPress Site (Quick Clone)
 
@@ -209,6 +239,7 @@ If after the cloning process, your destination site is redirecting you back to t
 
 ## Related Resources
 
+- [Clone Abilities](/api-reference/abilities-api/clone) - View and manage stored Clone policy
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Staging Extension](/add-ons/development/staging-extension) - Create staging environments
 - [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Verify server requirements
