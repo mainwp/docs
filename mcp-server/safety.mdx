@@ -46,7 +46,7 @@ sequenceDiagram
 
 The gate is strict. A destructive call with no confirmation parameters is rejected outright; the server never executes a bare destructive request. Operations that cannot produce a preview still go through the same token gate, and the AI must describe what will happen and get your explicit approval first.
 
-This applies to every tool the server classifies as destructive, including `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. On Dashboard 6.3 and later it also covers the update tools and `unignore_site_updates_v1`. Update confirmation is coming in MainWP 6.3 but available now in the [Early Access program](https://mainwp.com/add-on/early-access/). An ability that does not explicitly declare itself non-destructive is treated as destructive and gated the same way.
+This applies to every tool the server classifies as destructive, including `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. On Dashboard 6.3 and later it also covers the update tools and `unignore_site_updates_v1`. See [Updates Abilities](/api-reference/abilities-api/updates#confirmation-and-update-holds-in-6-3) for the Dashboard's preview and confirmation requirements. An ability that does not explicitly declare itself non-destructive is treated as destructive and gated the same way.
 
 When one request needs several previews, for example update calls for different items on different sites, previews shown together can be approved in one explicit reply. Each still runs with its own token, and approval never covers anything you were not shown.
 

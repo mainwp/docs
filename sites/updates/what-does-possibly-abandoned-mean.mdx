@@ -7,7 +7,7 @@ description: >-
   identify potentially abandoned plugins or themes.
 ---
 
-MainWP marks plugins and themes as "Possibly Abandoned" when the author has not released an update for a specified period. By default, this threshold is 365 days. Items without an official release for this duration appear in the Abandoned Plugins and Abandoned Themes sections of your Dashboard.
+MainWP marks plugins and themes as "Possibly Abandoned" when their last-updated date exceeds your configured tolerance. The default is 365 days. This is a prompt to investigate the item's maintenance status, not proof that its author has stopped development.
 
 ## Why This Matters
 
@@ -25,8 +25,21 @@ Abandoned plugins and themes can create problems for your sites:
 MainWP checks the last-updated date on wordpress.org for each plugin and theme. If no update has been released within your configured threshold, the item is flagged as possibly abandoned.
 
 <Note>
-MainWP can only check items listed on wordpress.org. Premium plugins and themes or those delisted from wordpress.org cannot be detected as abandoned.
+WordPress.org dates are the default source. Items without usable dates can be checked with the optional local-file fallback described below.
 </Note>
+
+### Local File Date Fallback in 6.3
+
+MainWP Dashboard 6.3 adds **Abandoned check by local file date** under **Settings > General Settings > Updates Settings**. It is disabled by default and requires MainWP Child 6.3 or later. Enable it, save settings, and sync the affected sites before checking again.
+
+When WordPress.org cannot provide a usable last-updated date, MainWP Child compares a local file's modification date with **Abandoned plugins/themes tolerance**:
+
+- Plugins use their main plugin file.
+- Themes use `style.css`.
+
+This can cover premium, custom, private, or delisted items. The file must exist and be readable. A usable WordPress.org date takes priority; the fallback does not replace it.
+
+Locally detected rows describe the age of the file modification. Copying, restoring, or deploying files can change this date without a new author release. Review the vendor's maintenance information before deciding the item is abandoned.
 
 ## Where to View Abandoned Items
 

@@ -281,6 +281,8 @@ Both `plugin_cache` and `cloudflare` contain `attempted` and `result_basis`:
 | `preflight_failed` | A prerequisite failed before the purge request, such as missing credentials or zone lookup failure |
 | `attempt_failed` | The purge was attempted but failed or returned an unusable response |
 
+With MainWP Child 6.3, Pressable Cache Management reports provider confirmation only when all required cache layers succeed: object cache, Batcache when available, and Edge cache when enabled. A failed layer produces a failed outcome instead of a success timestamp.
+
 `last_purged_at` is the most recent plugin or Cloudflare purge timestamp in the Child response, or `0` when unavailable. It may be an earlier timestamp and does not override `overall`.
 
 Keep MainWP Child up to date. This ability requires structured purge results, including `result_basis`. A Child response without those fields returns `mainwp_cache_control_purge_result_invalid`; the cache may still have been purged, so check the site's logs before retrying.

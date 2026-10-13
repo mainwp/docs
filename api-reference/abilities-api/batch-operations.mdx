@@ -39,6 +39,12 @@ These abilities support batch queuing:
 | `mainwp/check-sites-v1` | Batch connectivity check |
 | `mainwp/suspend-sites-v1` | Batch suspend |
 
+## Update Confirmation and Permissions
+
+In MainWP Dashboard 6.3, preview `run-updates-v1` and `update-all-v1` with `dry_run: true`, then submit the reviewed selection with `confirm: true`. A preview does not queue an update job. See [Updates Abilities](/api-reference/abilities-api/updates#confirmation-and-update-holds-in-6-3) for confirmation flags and update holds.
+
+Queued jobs run under the requesting user's permissions. MainWP rechecks site access, operation permissions, and applicable update holds before executing updates. If access changes after a job is queued, review its errors and skipped items before retrying. Check individual results even when a job's status is `completed`.
+
 ## Response Patterns
 
 ### Immediate Response (≤200 sites)
@@ -114,7 +120,7 @@ curl -G -u "admin:xxxx" \
 |--------|-------------|
 | `queued` | Waiting to start |
 | `processing` | Currently running |
-| `completed` | Finished successfully |
+| `completed` | Processing finished; individual items may have failed |
 | `failed` | Failed with errors |
 
 ## Polling Workflow

@@ -2,12 +2,12 @@
 title: Abilities API Overview
 sidebarTitle: "Abilities API Overview"
 description: >-
-  MainWP registers 62 abilities into WordPress Core's Abilities API framework for programmatic site management via AI agents and automation tools.
+  MainWP Dashboard 6.3 registers 70 abilities into WordPress Core's Abilities API framework for programmatic site management, Knowledge, and automation.
 ---
 
 The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
 
-MainWP Dashboard registers 62 abilities into this framework across five categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface.
+MainWP Dashboard 6.3 registers 70 abilities into this framework across six categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface. Earlier Dashboard versions expose a smaller catalog.
 
 ## What You'll Learn
 
@@ -45,7 +45,7 @@ The Abilities API adds a **discovery layer** to WordPress. AI agents and automat
 - WordPress 6.9 or later
 - MainWP Dashboard 6.0 or later
 - WordPress user with `manage_options` capability
-- API key with appropriate permissions
+- A WordPress Application Password or another native WordPress REST authentication method
 
 ---
 
@@ -63,14 +63,9 @@ https://your-dashboard.com/wp-json/wp-abilities/v1/
 
 The Abilities API accepts any WordPress REST API authentication method.
 
-### Bearer Token
+### MainWP API Keys
 
-Use the same API keys generated in **Dashboard > API Access > API Keys > Add API Keys**:
-
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities"
-```
+MainWP REST API keys authenticate MainWP REST namespaces such as `mainwp/v2`. They do not authenticate WordPress Abilities routes under `wp-abilities/v1`, even when the ability name starts with `mainwp/`. Use an Application Password for the examples on these pages.
 
 ### Application Passwords
 
@@ -82,6 +77,14 @@ curl -u "USERNAME:APPLICATION_PASSWORD" \
 ```
 
 For full setup steps, see [Application Passwords](/api-reference/rest-api/application-passwords).
+
+Dashboard 6.3 also provides inline credential creation under **MainWP > AI > MainWP MCP** and **MainWP > AI > MainWP Control**. See [AI Menu](/dashboard/overview/mainwp-ai).
+
+### Site Access and Operation Permissions
+
+Authentication does not override the user's site access or Team Control permissions. Dashboard 6.3 checks the requested sites and the operation's required rights. For example, plugin updates need **Update Plugins**, site deletion needs **Delete Sites**, client changes need **Manage Clients**, and tag changes need **Manage Groups**. Multi-type update calls need the rights for each selected update type.
+
+Background jobs recheck their owner's permissions and site access when they execute. A queued job is not a guarantee that its originally selected sites or actions will still be permitted. Add-on abilities can require their own extension and operation permissions; see each Add-on's reference.
 
 ---
 
@@ -132,17 +135,18 @@ MainWP registers these categories:
 | Category | Abilities | Description |
 |----------|-----------|-------------|
 | `mainwp-sites` | 30 | Site management and monitoring |
-| `mainwp-updates` | 13 | Update detection and execution |
+| `mainwp-updates` | 14 | Update detection, previewed execution, and site hold removal |
 | `mainwp-clients` | 11 | Client management |
 | `mainwp-tags` | 7 | Tag/group management |
 | `mainwp-batch` | 1 | Batch operation monitoring |
+| `mainwp-knowledge` | 7 | Agency, client, and site Knowledge reads and record management |
 
 <CardGroup cols={2}>
   <Card title="Sites Abilities" icon="server" href="/api-reference/abilities-api/sites">
     30 abilities for site management
   </Card>
   <Card title="Updates Abilities" icon="rotate" href="/api-reference/abilities-api/updates">
-    13 abilities for update management
+    14 abilities for update management
   </Card>
   <Card title="Clients Abilities" icon="users" href="/api-reference/abilities-api/clients">
     11 abilities for client management
@@ -150,13 +154,16 @@ MainWP registers these categories:
   <Card title="Tags Abilities" icon="tags" href="/api-reference/abilities-api/tags">
     7 abilities for tag management
   </Card>
+  <Card title="Knowledge Abilities" icon="book-open" href="/dashboard/overview/mainwp-knowledge#knowledge-tools">
+    7 abilities for saved context, Skills, and Memory
+  </Card>
 </CardGroup>
 
 ---
 
 ## Add-on Abilities
 
-MainWP Add-ons can register additional abilities alongside the 62 Dashboard abilities. These appear only when the relevant Add-on is active.
+MainWP Add-ons can register additional abilities alongside the 70 Dashboard abilities in version 6.3. These appear only when the relevant Add-on is active.
 
 | Add-on | Category | Abilities | Reference |
 |--------|----------|-----------|-----------|
@@ -171,6 +178,8 @@ These Add-ons use the `mainwp/` namespace. Cache Control provides cache status r
 
 <Note>
 UpdraftPlus 5.2 includes database and runtime groundwork for future backup abilities, but those abilities are disabled by default until compatible MainWP Child support is available. Activating the add-on does not make them available through the Abilities API or MainWP AI Assistant. Use the [UpdraftPlus Dashboard workflows](/add-ons/backups/updraftplus-extension#abilities-api-availability) in this release.
+
+Updating MainWP Child for 6.3 does not enable these backup abilities: its UpdraftPlus protocol still advertises no executable provider operations.
 </Note>
 
 ---
@@ -276,7 +285,7 @@ Each ability includes metadata describing its behavior:
 | Annotation | Type | Description |
 |------------|------|-------------|
 | `readonly` | boolean | True if ability only reads data |
-| `destructive` | boolean | True if ability deletes data |
+| `destructive` | boolean | True for protected changes, including deletion and 6.3 update execution or hold removal |
 | `idempotent` | boolean | True if repeated calls have no additional effect |
 | `instructions` | string | Custom usage guidance |
 

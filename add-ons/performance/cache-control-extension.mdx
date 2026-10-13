@@ -161,6 +161,10 @@ Review each site's result after a bulk purge. If the cache plugin succeeds but C
 
 Sites with warnings or failures remain available for retry. Sync the affected sites, review **Cache Control > Logs**, and correct the reported issue. Then select the sites that need another attempt and run **Purge Cache (Cache Control)** again.
 
+With MainWP Child 6.3, a Pressable Cache Management purge reports success only when object cache and any applicable Batcache or Edge cache purges succeed. If a layer fails, check the reported failure before retrying.
+
+A recent **Last Purged** time alone does not prove every cache layer succeeded. For example, Cloudflare can succeed while the site's cache plugin fails. Review the per-site result and logs together.
+
 ## View Cache Control Status
 
 The **MainWP > Sites > Manage Sites** table can show Cache Control columns such as **Last Purged Cache** and **Cache Solution**. These columns help you confirm when cache was last purged and which supported cache plugin MainWP Child detected on each site.

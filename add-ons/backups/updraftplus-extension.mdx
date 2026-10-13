@@ -275,6 +275,10 @@ If a remote operation times out or its response cannot be verified, check Updraf
 
 Version 5.2's future Abilities API runtime distinguishes an unknown write outcome from a confirmed failure so automation can avoid submitting an unsafe duplicate request. That runtime remains [disabled by default](#abilities-api-availability).
 
+### Download Backup Files Through One-Click Login
+
+MainWP Child 6.3 fixes authorization for protected downloads opened through one-click login, including UpdraftPlus backup files. If a download previously opened the Child site's WordPress admin but failed as unauthorized, update MainWP Child and open a fresh download link from the Dashboard.
+
 ## Schedule Backups With MainWP UpdraftPlus Extension
 
 MainWP UpdraftPlus Extension allows you to schedule your backups easily. To set scheduled backups, go to the Extension Settings page and locate the **File Backups Intervals** and the **Database Backup Intervals** options.
@@ -301,7 +305,7 @@ See [Database Health Check](/dashboard/overview/mainwp-database-health-check) fo
 
 ## Abilities API Availability
 
-Version 5.2 adds database and runtime groundwork for future MainWP Abilities API backup operations. Its UpdraftPlus abilities are **disabled by default** until compatible MainWP Child support is available. Updating the add-on to 5.2 does not make these backup operations available through the Abilities API or MainWP AI Assistant.
+Version 5.2 adds database and runtime groundwork for future MainWP Abilities API backup operations. Its UpdraftPlus abilities are **disabled by default** until compatible MainWP Child support is available. Updating the add-on to 5.2 does not make these backup operations available through the Abilities API or MainWP AI Assistant. MainWP Child 6.3 does not yet provide that compatible backup support, so updating Child to 6.3 does not enable these abilities either.
 
 Continue using the Dashboard backup, settings, and restore workflows described above. See [Abilities API Overview](/api-reference/abilities-api/overview#add-on-abilities) for the currently available Add-on abilities.
 

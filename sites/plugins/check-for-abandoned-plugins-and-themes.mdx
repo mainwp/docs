@@ -38,8 +38,18 @@ MainWP identifies plugins and themes that may be abandoned based on how long sin
 MainWP marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
 
 <Note>
-MainWP can evaluate only plugins and themes with usable WordPress.org metadata. Delisted items and premium, private, or custom plugins and themes that are absent from WordPress.org cannot be evaluated for abandonment.
+By default, MainWP uses WordPress.org metadata. Dashboard 6.3 adds an optional local-file-date fallback for items without a usable WordPress.org last-updated date, including premium, private, or delisted items. This requires MainWP Child 6.3 or later.
 </Note>
+
+### Check Items Without a WordPress.org Date
+
+1. Open **MainWP > Settings > General Settings** and find **Updates Settings**.
+2. Enable **Abandoned check by local file date**, review **Abandoned plugins/themes tolerance**, and click **Save Settings**.
+3. Sync the affected sites to send the setting to MainWP Child, then run the abandoned checks below.
+
+The fallback compares the modification date of a plugin's main file or a theme's `style.css` with the same tolerance used for WordPress.org dates. It is disabled by default. An older Child that does not support it continues using WordPress.org metadata.
+
+A local file date is a signal to investigate. Copying or restoring files can change it, and it does not establish the author's last release date. See [how the fallback works](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3).
 
 ### Why Abandoned Items Matter
 

@@ -11,6 +11,8 @@ Every client below runs the same server the same way: `npx -y @mainwp/mcp` with 
 
 If you keep credentials in a central `~/.config/mainwp-mcp/settings.json` instead (see [Configuration Reference](/mcp-server/reference/configuration#configuration-file)), omit the `env` block in any of these examples.
 
+In MainWP Dashboard 6.3, open **AI > MainWP MCP** for [guided setup](/mcp-server/quickstart#guided-setup-in-mainwp-dashboard). The Application Password success dialog also offers a **Connect an AI tool** panel with prefilled Claude Code, Cursor, and VS Code configurations. Copy the format for your client while the password is visible; see [Application Passwords](/api-reference/rest-api/application-passwords#connect-an-ai-tool).
+
 <Tabs>
   <Tab title="Claude Desktop">
     <ClaudeDesktopConfig />
@@ -22,7 +24,7 @@ If you keep credentials in a central `~/.config/mainwp-mcp/settings.json` instea
     Add the server with the CLI:
 
     ```bash
-    claude mcp add --transport stdio mainwp \
+    claude mcp add --transport stdio --scope user mainwp \
       --env MAINWP_URL=https://your-dashboard.com \
       --env MAINWP_USER=admin \
       --env MAINWP_APP_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx" \
@@ -32,16 +34,16 @@ If you keep credentials in a central `~/.config/mainwp-mcp/settings.json` instea
     With a central settings file, the short form works:
 
     ```bash
-    claude mcp add --transport stdio mainwp -- npx -y @mainwp/mcp
+    claude mcp add --transport stdio --scope user mainwp -- npx -y @mainwp/mcp
     ```
 
-    You can also define the same server in `~/.claude.json`.
+    User scope makes the server available across projects. The command contains the password and can remain in shell history. You can also define the same server in `~/.claude.json`.
 
     Claude Code can alternatively install the server as a plugin, together with an agent skill and `/mainwp:*` workflow commands. See [Claude Code Plugin](/mcp-server/claude-code-plugin).
   </Tab>
 
   <Tab title="Cursor">
-    Add to `.cursor/mcp.json` in your project, or `~/.cursor/mcp.json` globally:
+    Add to `~/.cursor/mcp.json` globally. This configuration contains a password; keep it out of a shared project's `.cursor/mcp.json`:
 
     ```json
     {

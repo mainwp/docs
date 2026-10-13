@@ -13,7 +13,8 @@ The abandoned tolerance setting controls how long a plugin or theme must go with
 
 - Adjust the abandoned tolerance threshold
 - Understand when to increase or decrease the value
-- Disable abandoned checking entirely
+- Choose whether to use the local-file-date fallback
+- Turn off abandoned data collection during synchronization
 
 ## Prerequisites
 
@@ -29,13 +30,15 @@ The abandoned tolerance setting controls how long a plugin or theme must go with
 Go to **MainWP > Settings**.
 </Step>
 <Step title="Find Update Settings">
-Locate the **Update Settings** section.
+Open **General Settings** and locate the **Updates Settings** section.
 </Step>
 <Step title="Set tolerance">
 Find **Abandoned plugins/themes tolerance** and enter your preferred number of days.
 </Step>
 <Step title="Save">
 Click **Save Settings**.
+
+Sync the affected sites before running another abandoned check so MainWP Child receives the new tolerance.
 </Step>
 </Steps>
 
@@ -48,7 +51,6 @@ Click **Save Settings**.
 | 180 | Stricter monitoring, early warning of potential issues |
 | 365 | Default balance between useful alerts and noise |
 | 730 | Lenient monitoring, fewer alerts |
-| 0 | Disable abandoned checking entirely |
 
 ---
 
@@ -66,11 +68,20 @@ Click **Save Settings**.
 - You receive too many false positives
 - Your plugins are intentionally feature-complete without frequent updates
 
-### Disable checking (0 days) if:
+### Turn Off Abandoned Data Collection During Sync
+
+Setting the tolerance to `0` does not disable this feature; the General Settings save handler uses 365 when the submitted value is empty or zero. To stop collecting abandoned data during regular synchronization, open **MainWP > Settings > Advanced Settings > Select data to sync**, clear **Abandoned plugins information** and **Abandoned themes information**, and save settings.
+
+This may suit a workflow where:
 
 - You manually track plugin/theme status
-- You use mostly premium plugins not on wordpress.org
 - The alerts are not useful for your workflow
+
+### Enable the Local File Date Fallback
+
+Dashboard 6.3 adds **Abandoned check by local file date** beside the tolerance in **General Settings > Updates Settings**. Enable it to apply the same tolerance to a plugin's main file or a theme's `style.css` when WordPress.org has no usable last-updated date. Save settings and sync the affected sites; MainWP Child 6.3 or later is required.
+
+The fallback is disabled by default. Read [the detection limits](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3) before relying on a local file date.
 
 ---
 

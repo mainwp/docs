@@ -2,10 +2,10 @@
 title: Updates Abilities
 sidebarTitle: "Updates Abilities"
 description: >-
-  13 abilities for checking and applying WordPress updates across MainWP child sites.
+  14 abilities for checking, previewing, and applying WordPress updates and managing site update holds.
 ---
 
-MainWP registers 13 update management abilities into the WordPress Abilities API framework. These enable programmatic control over WordPress core, plugin, theme, and translation updates across your network.
+MainWP Dashboard 6.3 registers 14 update management abilities into the WordPress Abilities API framework. These enable programmatic control over WordPress core, plugin, theme, and translation updates across your network.
 
 ## What You'll Learn
 
@@ -13,6 +13,20 @@ MainWP registers 13 update management abilities into the WordPress Abilities API
 - Applying WordPress core, plugin, theme, and translation updates
 - Managing ignored updates
 - Batch update operations
+
+---
+
+## Confirmation and Update Holds in 6.3
+
+`run-updates-v1`, `update-all-v1`, and the four `update-site-*` abilities require either `dry_run: true` to preview or `confirm: true` to execute. A call with neither returns `mainwp_confirmation_required` with HTTP 400. Do not set both flags to true.
+
+Preview first, review the returned sites and update plan, then submit the same selection with `confirm: true`. A direct Abilities API request uses these flags; the separate one-time confirmation token used by MainWP MCP belongs to the MCP server's [confirmation flow](/mcp-server/safety).
+
+Previews return `dry_run`, `would_affect`, `count`, `warnings`, and `errors`. Confirmed immediate responses include `dry_run: false`, `skipped`, and `summary.total_skipped`. Inspect both `errors` and `skipped`; a successful HTTP request does not mean every update was installed. Queued responses return a job ID for [status polling](/api-reference/abilities-api/batch-operations).
+
+These abilities respect site-level and global update holds. Pending items blocked by a hold appear as skipped, and queued jobs recheck holds, site access, and the job owner's operation permissions when they execute. Translation updates also respect the site's translation ignore setting.
+
+Adding an update hold remains available through the ignore abilities. Removing a site's own holds uses the new `mainwp/unignore-site-updates-v1` ability with preview or confirmation. The older `action: unignore` and `action: remove` paths return an error directing you to that ability.
 
 ---
 
@@ -74,16 +88,16 @@ Execute updates on sites. Operations affecting more than 200 sites are queued fo
 **Method:** POST
 
 ```bash
-# Update specific plugin on all sites
+# Preview a specific plugin update on selected sites
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"types":["plugins"],"specific_items":["akismet/akismet.php"]}}' \
+  -d '{"input":{"site_ids_or_domains":[1,2,3],"types":["plugins"],"specific_items":["akismet/akismet.php"],"dry_run":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-updates-v1/run'
 
-# Update all plugins on specific sites
+# Apply the same selection after reviewing the preview
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_ids_or_domains":[1,2,3],"types":["plugins"]}}' \
+  -d '{"input":{"site_ids_or_domains":[1,2,3],"types":["plugins"],"specific_items":["akismet/akismet.php"],"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-updates-v1/run'
 ```
 
@@ -94,11 +108,16 @@ curl -X POST -u 'admin:xxxx' \
 | `site_ids_or_domains` | array | No | [] | Sites to update. Empty = all with updates |
 | `types` | array | No | [] | Update types: `core`, `plugins`, `themes`, `translations` |
 | `specific_items` | array | No | [] | Specific slugs to update |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
+  "dry_run": false,
   "updated": [
     {
       "site_id": 1,
@@ -113,10 +132,12 @@ curl -X POST -u 'admin:xxxx' \
   ],
   "errors": [],
   "summary": {
-    "total_updated": 5,
+    "total_updated": 1,
     "total_errors": 0,
-    "sites_updated": 3
-  }
+    "sites_updated": 1,
+    "total_skipped": 0
+  },
+  "skipped": []
 }
 ```
 
@@ -159,10 +180,14 @@ curl -G -u 'admin:xxxx' \
   ],
   "summary": {
     "core": 0,
-    "plugins": 3,
-    "themes": 1,
-    "translations": 2,
-    "total": 6
+    "plugins": 1,
+    "themes": 0,
+    "translations": 0,
+    "total": 1
+  },
+  "rollback_items": {
+    "plugins": [],
+    "themes": []
   }
 }
 ```
@@ -178,7 +203,7 @@ Update WordPress core on a single site.
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-core-v1/run'
 ```
 
@@ -187,16 +212,30 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
-  "site_id": 1,
-  "site_url": "https://site1.example.com",
-  "updated": true,
-  "old_version": "6.4.1",
-  "new_version": "6.4.2"
+  "dry_run": false,
+  "updated": {
+    "site_id": 1,
+    "site_url": "https://site1.example.com",
+    "site_name": "Site 1",
+    "type": "core",
+    "slug": "wordpress",
+    "name": "WordPress",
+    "old_version": "6.4.1",
+    "new_version": "6.4.2"
+  },
+  "skipped": [],
+  "summary": {
+    "total_skipped": 0
+  }
 }
 ```
 
@@ -212,13 +251,13 @@ Update plugins on a single site.
 # Update specific plugins
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"],"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-plugins-v1/run'
 
 # Update all plugins
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-plugins-v1/run'
 ```
 
@@ -228,15 +267,22 @@ curl -X POST -u 'admin:xxxx' \
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
 | `slugs` | array | No | [] | Specific plugins to update. Empty = all |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
-  "site_id": 1,
-  "site_url": "https://site1.example.com",
+  "dry_run": false,
   "updated": [
     {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "plugin",
       "slug": "akismet/akismet.php",
       "name": "Akismet",
       "old_version": "5.3",
@@ -244,7 +290,12 @@ curl -X POST -u 'admin:xxxx' \
     }
   ],
   "errors": [],
-  "total_updated": 1
+  "skipped": [],
+  "summary": {
+    "total_updated": 1,
+    "total_errors": 0,
+    "total_skipped": 0
+  }
 }
 ```
 
@@ -260,13 +311,13 @@ Update themes on a single site.
 # Update specific themes
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"slugs":["twentytwentyfour"]}}' \
+  -d '{"input":{"site_id_or_domain":1,"slugs":["twentytwentyfour"],"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-themes-v1/run'
 
 # Update all themes
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-themes-v1/run'
 ```
 
@@ -276,15 +327,22 @@ curl -X POST -u 'admin:xxxx' \
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
 | `slugs` | array | No | [] | Specific themes to update. Empty = all |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
-  "site_id": 1,
-  "site_url": "https://site1.example.com",
+  "dry_run": false,
   "updated": [
     {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "theme",
       "slug": "twentytwentyfour",
       "name": "Twenty Twenty-Four",
       "old_version": "1.0",
@@ -292,7 +350,12 @@ curl -X POST -u 'admin:xxxx' \
     }
   ],
   "errors": [],
-  "total_updated": 1
+  "skipped": [],
+  "summary": {
+    "total_updated": 1,
+    "total_errors": 0,
+    "total_skipped": 0
+  }
 }
 ```
 
@@ -307,7 +370,7 @@ Update translations on a single site.
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1}}' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-site-translations-v1/run'
 ```
 
@@ -316,15 +379,36 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
+| `slugs` | array | No | [] | Specific translation slugs to update. Empty = all available |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
-  "site_id": 1,
-  "site_url": "https://site1.example.com",
-  "updated": true,
-  "translations_updated": 5
+  "dry_run": false,
+  "updated": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "translation",
+      "slug": "akismet",
+      "name": "Akismet",
+      "old_version": "",
+      "new_version": "5.3.1"
+    }
+  ],
+  "errors": [],
+  "skipped": [],
+  "summary": {
+    "total_updated": 1,
+    "total_errors": 0,
+    "total_skipped": 0
+  }
 }
 ```
 
@@ -371,7 +455,7 @@ curl -u 'admin:xxxx' \
 
 ## mainwp/set-ignored-updates-v1
 
-Add or remove items from ignored updates list.
+Add an item to a site's ignored updates list. In 6.3, use `action: ignore` here and [unignore-site-updates-v1](#mainwp-unignore-site-updates-v1) to remove a hold.
 
 **Method:** POST
 
@@ -382,18 +466,13 @@ curl -X POST -u 'admin:xxxx' \
   -d '{"input":{"action":"ignore","site_id_or_domain":1,"type":"plugin","slug":"woocommerce/woocommerce.php"}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-ignored-updates-v1/run'
 
-# Unignore
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"action":"unignore","site_id_or_domain":1,"type":"plugin","slug":"woocommerce/woocommerce.php"}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/set-ignored-updates-v1/run'
 ```
 
 **Input Parameters:**
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `action` | string | Yes | — | `ignore` or `unignore` |
+| `action` | string | Yes | - | Use `ignore`; `unignore` is rejected in 6.3 |
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
 | `type` | string | Yes | — | `core`, `plugin`, or `theme` |
 | `slug` | string | Yes | — | Item slug (use `wordpress` for core) |
@@ -414,7 +493,7 @@ curl -X POST -u 'admin:xxxx' \
 
 ## mainwp/ignore-site-core-v1
 
-Manage core update ignore status for a site.
+Add a core update hold for a site. Use `unignore-site-updates-v1` with `type: core` to remove it.
 
 **Method:** POST
 
@@ -425,11 +504,6 @@ curl -X POST -u 'admin:xxxx' \
   -d '{"input":{"site_id_or_domain":1,"action":"add"}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-core-v1/run'
 
-# Unignore core updates
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"action":"remove"}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-core-v1/run'
 ```
 
 **Input Parameters:**
@@ -437,16 +511,15 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
+| `action` | string | Yes | - | Use `add`; `remove` is rejected in 6.3 |
 
 **Response:**
 
 ```json
 {
   "success": true,
-  "site_id": 1,
-  "action": "add",
-  "core_ignored": true
+  "message": "Core updates ignored for this site.",
+  "ignored_count": 1
 }
 ```
 
@@ -454,7 +527,7 @@ curl -X POST -u 'admin:xxxx' \
 
 ## mainwp/ignore-site-plugins-v1
 
-Manage plugin ignore status for a site.
+Add plugin update holds for a site. Use `unignore-site-updates-v1` with `type: plugin` to remove them.
 
 **Method:** POST
 
@@ -465,11 +538,6 @@ curl -X POST -u 'admin:xxxx' \
   -d '{"input":{"site_id_or_domain":1,"action":"add","slugs":["akismet/akismet.php"]}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-plugins-v1/run'
 
-# Unignore plugin updates
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"action":"remove","slugs":["akismet/akismet.php"]}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-plugins-v1/run'
 ```
 
 **Input Parameters:**
@@ -477,17 +545,16 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
-| `slugs` | array | Yes | — | Plugin slugs to ignore/unignore |
+| `action` | string | Yes | - | Use `add`; `remove` is rejected in 6.3 |
+| `slugs` | array | Yes | - | Plugin slugs to ignore |
 
 **Response:**
 
 ```json
 {
   "success": true,
-  "site_id": 1,
-  "action": "add",
-  "plugins_ignored": ["akismet/akismet.php"]
+  "message": "1 plugin ignored.",
+  "ignored_count": 1
 }
 ```
 
@@ -495,7 +562,7 @@ curl -X POST -u 'admin:xxxx' \
 
 ## mainwp/ignore-site-themes-v1
 
-Manage theme ignore status for a site.
+Add theme update holds for a site. Use `unignore-site-updates-v1` with `type: theme` to remove them.
 
 **Method:** POST
 
@@ -506,11 +573,6 @@ curl -X POST -u 'admin:xxxx' \
   -d '{"input":{"site_id_or_domain":1,"action":"add","slugs":["twentytwenty"]}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-themes-v1/run'
 
-# Unignore theme updates
-curl -X POST -u 'admin:xxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"action":"remove","slugs":["twentytwenty"]}}' \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ignore-site-themes-v1/run'
 ```
 
 **Input Parameters:**
@@ -518,19 +580,63 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `action` | string | Yes | — | `add` to ignore, `remove` to unignore |
-| `slugs` | array | Yes | — | Theme slugs to ignore/unignore |
+| `action` | string | Yes | - | Use `add`; `remove` is rejected in 6.3 |
+| `slugs` | array | Yes | - | Theme slugs to ignore |
 
 **Response:**
 
 ```json
 {
   "success": true,
-  "site_id": 1,
-  "action": "add",
-  "themes_ignored": ["twentytwenty"]
+  "message": "1 theme ignored.",
+  "ignored_count": 1
 }
 ```
+
+---
+
+## mainwp/unignore-site-updates-v1
+
+Preview or remove one site's own update holds. Removing a hold can make an update eligible for later update runs, including queued runs; this ability does not install the update.
+
+**Method:** POST
+
+```bash
+# Preview removal of one plugin's site hold
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"type":"plugin","slugs":["akismet/akismet.php"],"dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/unignore-site-updates-v1/run'
+
+# Remove that hold after reviewing the preview
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"type":"plugin","slugs":["akismet/akismet.php"],"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/unignore-site-updates-v1/run'
+```
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `site_id_or_domain` | integer or string | Yes | Authorized site ID or domain |
+| `type` | string | Yes | `core`, `plugin`, or `theme` |
+| `slugs` | array of strings | For plugin and theme | Nonempty list of item slugs; ignored for core |
+| `dry_run` | boolean | For preview | Set to `true` to inspect the holds without changing them |
+| `confirm` | boolean | For execution | Set to `true` to remove the site's own holds |
+
+A preview returns `would_affect.holds`, a count, warnings, and errors. A hold's `still_held_by` field identifies a global or whole-site hold that will remain in effect. Execution returns `removed`, `not_held`, and `count` with `dry_run: false`:
+
+```json
+{
+  "dry_run": false,
+  "removed": [
+    "akismet/akismet.php"
+  ],
+  "not_held": [],
+  "count": 1
+}
+```
+
+Global holds and whole-site ignore flags remain unchanged. Site access and **Ignore/Unignore Updates** permissions apply.
 
 ---
 
@@ -544,13 +650,13 @@ Execute all available updates across sites. Use with caution on production envir
 # Update everything on all sites
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{}}' \
+  -d '{"input":{"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-all-v1/run'
 
 # Update everything on specific sites
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_ids_or_domains":[1, 2, 3]}}' \
+  -d '{"input":{"site_ids_or_domains":[1,2,3],"confirm":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/update-all-v1/run'
 ```
 
@@ -559,23 +665,36 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_ids_or_domains` | array | No | [] | Sites to update. Empty = all sites |
+| `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
+| `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
+
+Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
 **Response:**
 
 ```json
 {
-  "updated": {
-    "core": 2,
-    "plugins": 15,
-    "themes": 3,
-    "translations": 5
-  },
+  "dry_run": false,
+  "updated": [
+    {
+      "site_id": 1,
+      "site_url": "https://site1.example.com",
+      "site_name": "Site 1",
+      "type": "plugin",
+      "slug": "akismet/akismet.php",
+      "name": "Akismet",
+      "old_version": "5.3",
+      "new_version": "5.3.1"
+    }
+  ],
   "errors": [],
   "summary": {
-    "total_updated": 25,
+    "total_updated": 1,
     "total_errors": 0,
-    "sites_updated": 10
-  }
+    "sites_updated": 1,
+    "total_skipped": 0
+  },
+  "skipped": []
 }
 ```
 

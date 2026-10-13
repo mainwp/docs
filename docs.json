@@ -199,6 +199,7 @@
             "pages": [
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
               "dashboard/overview/mainwp-command-palette",
+              "dashboard/overview/mainwp-ai",
               "dashboard/overview/mainwp-knowledge",
               "dashboard/overview/mainwp-database-health-check",
               "dashboard/overview/manage-extensions",

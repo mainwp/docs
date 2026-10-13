@@ -80,6 +80,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Blocks updates when a full backup is older than the allowed tolerance.
     - **Days without of a full backup tolerance** (Default: 7): Defines how old the last full backup can be when backup-before-update is enabled.
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
+    - **Abandoned check by local file date** (Default: Disabled; Dashboard 6.3): Uses the installed plugin's main file or theme's `style.css` modification date when WordPress.org has no usable last-updated date. It uses the same tolerance above. Sync the affected sites after changing it so MainWP Child 6.3 or later receives the setting. See [abandoned detection](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3) for its limits.
 
     ### Backup Settings Section (on the same page)
 
@@ -116,6 +117,12 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     | Minimum delay between requests in milliseconds | 200ms | Pause between consecutive requests |
     | Per-IP request limit | 1 | Concurrent requests to sites on the same server/IP |
     | Minimum delay between requests to the same IP in milliseconds | 1000ms | Pause between requests to the same server/IP |
+
+    ### Child Request Timeout
+
+    **Child request timeout (seconds)** controls how long MainWP Dashboard waits for a Child site request. In Dashboard 6.3, leave it blank to use the default of 72,000 seconds (20 hours), or enter a whole number of at least 300 seconds. Entering 72,000 clears the override. Invalid input keeps the saved value.
+
+    Site removal uses 300 seconds by default; a saved timeout above 300 also raises that limit. This setting does not change a hosting provider's execution limits or guarantee a long-running request will finish.
 
     ### Batch Processing Settings
 
