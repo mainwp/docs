@@ -154,12 +154,14 @@ Most `/mainwp:*` commands below inspect data or prepare a plan. For example, `/m
 
 Claude Code suppresses a plugin MCP server that duplicates a manually configured one, matching on the command and args. A hand-added `mainwp` entry that runs the standard `npx -y @mainwp/mcp` wins silently: the plugin's server never starts, and the plugin still contributes its commands and skill. A manual entry that runs anything else (a pinned version, a local checkout) is not a duplicate, so both servers start. The plugin's copy reads its launching environment and the first `settings.json` it finds, with environment variables taking precedence.
 
+Run `claude mcp list`, or `/mcp` in a Claude Code session, to check which MainWP server is active before relying on its configuration.
+
 To switch to the plugin's server:
 
-1. Move everything in the manual entry's `env` block (credentials and any `MAINWP_*` settings such as safe mode or tool filters) into the environment that launches Claude Code, or into the corresponding fields in `~/.config/mainwp-mcp/settings.json`.
+1. Move everything in the manual entry's `env` block (credentials and any `MAINWP_*` settings such as safe mode or tool filters) into the environment that launches Claude Code, or into the corresponding fields in the first `settings.json` the server will load. It checks `./settings.json` in its working directory before `~/.config/mainwp-mcp/settings.json`; the files are not merged.
 2. Remove the manual entry.
 
-The plugin ships no `env` map by design. Preserve those values in the launching environment or the central settings file before removing the manual entry, or the plugin's server may start without credentials or with different settings than before.
+The plugin ships no `env` map by design. Preserve those values in the launching environment or the settings file the server will load before removing the manual entry, or the plugin's server may start without credentials or with different settings than before.
 
 ## The agent skill
 
