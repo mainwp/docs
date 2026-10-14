@@ -1,11 +1,13 @@
 ---
 title: Install in Claude Desktop with the MCP Bundle
-sidebarTitle: "Claude Desktop Bundle"
+sidebarTitle: "Claude Desktop"
 description: >-
   Install the MainWP MCP server in Claude Desktop from the mainwp-mcp.mcpb bundle, without editing a config file.
 ---
 
-The MainWP MCP server is also packaged as an MCP Bundle, a single `mainwp-mcp.mcpb` file that Claude Desktop installs as an extension. Claude Desktop asks for your Dashboard URL, username, and Application Password during installation, so you don't edit `claude_desktop_config.json`. The server it installs is the same `@mainwp/mcp` server described in the [Quickstart](/mcp-server/quickstart).
+Use this guide for the **Claude Desktop chat app** on macOS or Windows. To connect **Claude Code CLI** in your terminal, follow [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli).
+
+Claude Desktop installs the MainWP MCP server from a single `mainwp-mcp.mcpb` extension file. You enter your Dashboard URL, username, and Application Password under **Configure**, so you don't edit `claude_desktop_config.json`. This installs the MCP server for Desktop chats; the Claude Code plugin's agent skill and `/mainwp:*` commands belong to the separate CLI installation.
 
 ## Before you start
 
@@ -20,44 +22,73 @@ The bundle declares Node.js 20.19 or later. By default the extension runs on Cla
 ## Install the bundle
 
 <Steps>
-  <Step title="Download mainwp-mcp.mcpb">
-    Download [mainwp-mcp.mcpb](https://github.com/mainwp/mainwp-mcp/releases/latest/download/mainwp-mcp.mcpb) from the latest release on GitHub. Download it only from there; the same file is listed under **Assets** on the [mainwp-mcp releases page](https://github.com/mainwp/mainwp-mcp/releases).
+  <Step title="Download the MainWP extension">
+    Download [mainwp-mcp.mcpb](https://github.com/mainwp/mainwp-mcp/releases/latest/download/mainwp-mcp.mcpb) from the official MainWP release. Save the file on the computer that runs Claude Desktop.
   </Step>
+  <Step title="Open the extension installer">
+    Open Claude Desktop's **Settings**. On macOS, choose **Claude → Settings…** from the menu bar. Go to **Extensions → Advanced settings → Install extension**.
 
-  <Step title="Check the download">
-    This step is optional. [Check the download](#check-the-download) below shows how to confirm that the file arrived intact and that MainWP's release workflow built it.
+    Select `mainwp-mcp.mcpb`. In the macOS file picker, click **Preview** to open the extension details.
   </Step>
-
-  <Step title="Open it in Claude Desktop">
-    Do one of the following:
-
-    - Double-click `mainwp-mcp.mcpb`.
-    - Drag the file into the Claude Desktop window.
-    - In Claude Desktop, go to **Settings → Extensions → Advanced settings**, click **Install extension**, and select the file.
-
-    Claude Desktop opens an install dialog for the **MainWP** extension, with a warning above its description. [About the install warning](#about-the-install-warning) explains it.
+  <Step title="Install MainWP">
+    Check that the extension is named **MainWP** and shows **All requirements met**. Review the extension notice, click **Install**, and confirm **Install** in the next dialog. If MainWP is already installed, the first button is **Update**.
   </Step>
+  <Step title="Save your Dashboard connection">
+    Under **Settings → Extensions → Installed on your computer**, find **MainWP** and click **Configure**. Enter:
 
-  <Step title="Fill in the three fields">
-    The dialog labels them as follows. See [What each field means](#what-each-field-means) below.
+    - **Dashboard URL (required)**: your Dashboard's full HTTPS address, such as `https://your-dashboard.com`.
+    - **WordPress username (required)**: the login name of the user who owns the Application Password.
+    - **WordPress Application Password (required)**: that user's Application Password.
 
-    - **Dashboard URL (required)**
-    - **WordPress username (required)**
-    - **WordPress Application Password (required)**
+    ![MainWP connection settings in Claude Desktop with example Dashboard URL and username, a masked Application Password, Save, and the enabled toggle.](/images/mcp-server/claude-desktop-connection.jpg)
+
+    Click **Save** and check that the MainWP extension is enabled. If you changed an existing connection, turn the extension off and on again.
   </Step>
+  <Step title="Choose how Claude can use MainWP tools">
+    On the MainWP configuration page, scroll to **Tool permissions**. Claude Desktop separates **Read-only tools** from **Write/delete tools**.
 
-  <Step title="Finish the installation and test it">
-    Complete the install dialog, then start a new chat and ask:
+    ![Claude Desktop Write/delete tools menu with Needs approval selected and Always allow, Blocked, and Custom available.](/images/mcp-server/claude-desktop-tool-permissions.jpg)
 
-    > List all my sites
+    For changes you review before execution, keep the relevant tools on **Needs approval**. For a Desktop connection restricted to reading, set the **Write/delete tools** group to **Blocked** and check the individual tools for exceptions.
+  </Step>
+  <Step title="Test the connection in a Desktop chat">
+    Return to Claude and start a new chat. Ask:
 
-    A working setup returns your child sites by name and URL.
+    > Use MainWP to list all my sites. Do not change anything.
+
+    If Desktop asks to use a MainWP tool, click **Allow once**. A working connection returns your child sites. If Claude reports a connection problem, correct it under **MainWP → Configure**; see the [Desktop troubleshooting guide](/mcp-server/claude-desktop-bundle#troubleshooting).
   </Step>
 </Steps>
 
-After installation, the extension is listed as **MainWP** under **Installed on your computer** in **Settings → Extensions**. Its **Configure** button is where you edit the three values later, and its **⋯** menu has **Details** and **Uninstall**.
+## Make changes from Claude Desktop
 
-If you set up the server earlier by adding a `mainwp` entry to `claude_desktop_config.json`, remove that entry and restart Claude Desktop. If you leave it, the old server and the bundle run side by side, each with its own set of MainWP tools.
+Claude Desktop can make WordPress site changes through MainWP when the required write tool is available and permitted. A read-only connection can inspect sites and prepare recommendations; it cannot apply those changes.
+
+1. Open **Settings → Extensions → MainWP → Configure → Tool permissions**.
+2. Under **Write/delete tools**, find the operation you need and select **Needs approval**. A tool set to **Blocked** cannot run.
+3. In a new Desktop chat, name the child site and the exact change. For example, if Hello Dolly is installed but inactive on a test site:
+
+   > Activate Hello Dolly on Example Test Site. Leave every other plugin unchanged.
+
+   Replace “Example Test Site” with your child site's name.
+
+4. Review the requested tool and its inputs. Click **Allow once** to permit that call. This allows one call; **Always allow** changes the tool's permission for future calls.
+5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If MainWP returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and MainWP's server confirmation are separate steps.
+6. Ask Claude to check the result, then verify it on the child site.
+
+| Desktop tool permission | What happens |
+| --- | --- |
+| **Needs approval** | Claude asks before using that tool. **Allow once** permits the pending call. |
+| **Blocked** | Claude cannot call the tool. Change the permission before asking it to apply that operation. |
+| **Always allow** | Claude can call that tool without asking for Desktop approval each time. MainWP's server policies still apply. |
+
+Desktop approval does not override MainWP's server settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep MainWP's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
+
+For the Desktop bundle, put `safeMode`, `allowedTools`, `blockedTools`, and `requireUserConfirmation` in `~/.config/mainwp-mcp/settings.json`. The bundle's **Configure** form has only the three connection fields. Turn the extension off and on after changing the file; see the [configuration file instructions](/mcp-server/reference/configuration#configuration-file).
+
+After installation, MainWP appears under **Installed on your computer** in **Settings → Extensions**. Use **Configure** to edit the connection and tool permissions.
+
+If you previously added a `mainwp` entry to `claude_desktop_config.json`, remove that entry and restart Claude Desktop to avoid running two copies. Preserve any optional server settings you still need before removing it.
 
 ## About the install warning
 
@@ -113,7 +144,8 @@ The command fails if the file was changed after the build or was not built in th
 
 1. In **Settings → Extensions**, find **MainWP** under **Installed on your computer** and click **Configure**.
 2. Change the Dashboard URL, username, or Application Password.
-3. Turn the extension off and on again so the server restarts with the new values.
+3. Click **Save**.
+4. Turn the extension off and on again so the server restarts with the new values.
 
 ## What each field means
 
@@ -126,6 +158,8 @@ The command fails if the file was changed after the build or was not built in th
 The server acts with that user's WordPress permissions. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
 
 The bundle passes these values to the server as `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD`. The bundle has no fields for other options. To turn on safe mode or filter tools, put those settings in `~/.config/mainwp-mcp/settings.json`; the connection values from the bundle take precedence over any connection values in that file. See the [Configuration Reference](/mcp-server/reference/configuration#configuration-file).
+
+The server checks `./settings.json` in its working directory before the central file and uses only the first file it finds; the files are not merged.
 
 ## Update the bundle
 
@@ -175,9 +209,9 @@ To read the server's startup messages and errors, go to **Settings → Developer
   </Accordion>
 
   <Accordion title="Dashboard with a self-signed or locally issued certificate">
-    The bundle connects only to Dashboards with a publicly trusted certificate. A Dashboard whose certificate is self-signed or issued by a local certificate authority, such as a local development site, fails to connect, and the logs show `fetch failed` or a certificate error code.
+    The bundle verifies the Dashboard certificate by default. A Dashboard whose certificate is self-signed or issued by a local certificate authority, such as a local development site, fails to connect, and the logs show `fetch failed` or a certificate error code.
 
-    For a local development Dashboard, set up the server with `npx` instead, as described in the [Quickstart](/mcp-server/quickstart), and use the `skipSslVerify` setting described under [SSL](/mcp-server/reference/configuration#ssl). Use it only for an isolated development environment. A production Dashboard should have a publicly trusted certificate.
+    For an isolated local development Dashboard, the bundle can read the `skipSslVerify` setting from the central configuration file described under [SSL](/mcp-server/reference/configuration#ssl). Use it only for an isolated development environment. A production Dashboard should have a publicly trusted certificate.
   </Accordion>
 </AccordionGroup>
 

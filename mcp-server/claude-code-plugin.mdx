@@ -1,33 +1,167 @@
 ---
-title: Claude Code Plugin
-sidebarTitle: "Claude Code Plugin"
+title: Connect MainWP to Claude Desktop or Claude Code
+sidebarTitle: "Claude Desktop & Code"
 description: >-
-  Install the MainWP MCP server, an agent skill, and ten workflow commands in Claude Code with two commands.
+  Install MainWP in Claude Desktop, choose read-only or approved site changes, or install the plugin in Claude Code CLI.
 ---
 
-Claude Code can install everything this server ships in one step: the MCP server itself, the `mainwp-dashboard` agent skill, and ten `/mainwp:*` workflow commands.
+Connect Claude to your MainWP Dashboard to inspect your child sites and carry out the changes you approve. Follow the **Claude Desktop** steps first if you use the chat app. **Claude Code CLI** setup is a separate section below.
+
+## Install in Claude Desktop
+
+Use these steps in the **Claude Desktop chat app**. The MainWP extension connects Desktop chats to your MainWP Dashboard. The [Claude Code CLI instructions](#install-in-claude-code-cli) follow below.
+
+You need Claude Desktop for macOS or Windows, an HTTPS MainWP Dashboard, and a WordPress Application Password for a Dashboard user with the `manage_options` capability. See the [Dashboard requirements](/mcp-server/quickstart#before-you-start) and [Application Password instructions](/api-reference/rest-api/application-passwords).
+
+<Steps>
+  <Step title="Download the MainWP extension">
+    Download [mainwp-mcp.mcpb](https://github.com/mainwp/mainwp-mcp/releases/latest/download/mainwp-mcp.mcpb) from the official MainWP release. Save the file on the computer that runs Claude Desktop.
+  </Step>
+  <Step title="Open the extension installer">
+    Open Claude Desktop's **Settings**. On macOS, choose **Claude → Settings…** from the menu bar. Go to **Extensions → Advanced settings → Install extension**.
+
+    Select `mainwp-mcp.mcpb`. In the macOS file picker, click **Preview** to open the extension details.
+  </Step>
+  <Step title="Install MainWP">
+    Check that the extension is named **MainWP** and shows **All requirements met**. Review the extension notice, click **Install**, and confirm **Install** in the next dialog. If MainWP is already installed, the first button is **Update**.
+  </Step>
+  <Step title="Save your Dashboard connection">
+    Under **Settings → Extensions → Installed on your computer**, find **MainWP** and click **Configure**. Enter:
+
+    - **Dashboard URL (required)**: your Dashboard's full HTTPS address, such as `https://your-dashboard.com`.
+    - **WordPress username (required)**: the login name of the user who owns the Application Password.
+    - **WordPress Application Password (required)**: that user's Application Password.
+
+    ![MainWP connection settings in Claude Desktop with example Dashboard URL and username, a masked Application Password, Save, and the enabled toggle.](/images/mcp-server/claude-desktop-connection.jpg)
+
+    Click **Save** and check that the MainWP extension is enabled. If you changed an existing connection, turn the extension off and on again.
+  </Step>
+  <Step title="Choose how Claude can use MainWP tools">
+    On the MainWP configuration page, scroll to **Tool permissions**. Claude Desktop separates **Read-only tools** from **Write/delete tools**.
+
+    ![Claude Desktop Write/delete tools menu with Needs approval selected and Always allow, Blocked, and Custom available.](/images/mcp-server/claude-desktop-tool-permissions.jpg)
+
+    For changes you review before execution, keep the relevant tools on **Needs approval**. For a Desktop connection restricted to reading, set the **Write/delete tools** group to **Blocked** and check the individual tools for exceptions.
+  </Step>
+  <Step title="Test the connection in a Desktop chat">
+    Return to Claude and start a new chat. Ask:
+
+    > Use MainWP to list all my sites. Do not change anything.
+
+    If Desktop asks to use a MainWP tool, click **Allow once**. A working connection returns your child sites. If Claude reports a connection problem, correct it under **MainWP → Configure**; see the [Desktop troubleshooting guide](/mcp-server/claude-desktop-bundle#troubleshooting).
+  </Step>
+</Steps>
+
+## Make changes from Claude Desktop
+
+Claude Desktop can make WordPress site changes through MainWP when the required write tool is available and permitted. A read-only connection can inspect sites and prepare recommendations; it cannot apply those changes.
+
+1. Open **Settings → Extensions → MainWP → Configure → Tool permissions**.
+2. Under **Write/delete tools**, find the operation you need and select **Needs approval**. A tool set to **Blocked** cannot run.
+3. In a new Desktop chat, name the child site and the exact change. For example, if Hello Dolly is installed but inactive on a test site:
+
+   > Activate Hello Dolly on Example Test Site. Leave every other plugin unchanged.
+
+   Replace “Example Test Site” with your child site's name.
+
+4. Review the requested tool and its inputs. Click **Allow once** to permit that call. This allows one call; **Always allow** changes the tool's permission for future calls.
+5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If MainWP returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and MainWP's server confirmation are separate steps.
+6. Ask Claude to check the result, then verify it on the child site.
+
+| Desktop tool permission | What happens |
+| --- | --- |
+| **Needs approval** | Claude asks before using that tool. **Allow once** permits the pending call. |
+| **Blocked** | Claude cannot call the tool. Change the permission before asking it to apply that operation. |
+| **Always allow** | Claude can call that tool without asking for Desktop approval each time. MainWP's server policies still apply. |
+
+Desktop approval does not override MainWP's server settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep MainWP's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
+
+For the Desktop bundle, put `safeMode`, `allowedTools`, `blockedTools`, and `requireUserConfirmation` in `~/.config/mainwp-mcp/settings.json`. The bundle's **Configure** form has only the three connection fields. Turn the extension off and on after changing the file; see the [configuration file instructions](/mcp-server/reference/configuration#configuration-file).
+
+For download verification, connection fields, updates, and troubleshooting, see the [Claude Desktop bundle guide](/mcp-server/claude-desktop-bundle).
+
+## Claude Code CLI plugin
+
+The Claude Code plugin includes the MCP server, the `mainwp-dashboard` agent skill, and ten `/mainwp:*` workflow commands.
+
+## Before you start with Claude Code CLI
+
+You need Claude Code CLI installed and signed in, Node.js 20.19 or later with `npx`, and an HTTPS connection to your MainWP Dashboard. Create a WordPress Application Password for a Dashboard user with the `manage_options` capability, which WordPress administrators have; see [Application Passwords](/api-reference/rest-api/application-passwords).
+
+## Install in Claude Code CLI
+
+<Steps>
+  <Step title="Open your terminal">
+    Run the installation commands from your shell:
+
+```bash
+claude plugin marketplace add mainwp/mainwp-mcp
+claude plugin install mainwp@mainwp-mcp
+```
+
+    If you already have an interactive Claude Code session open, use these slash commands there instead:
 
 ```text
 /plugin marketplace add mainwp/mainwp-mcp
 /plugin install mainwp@mainwp-mcp
 ```
 
-## Credentials come from your environment
+    Both forms install the same plugin. Choose one form for the place where you are working.
+  </Step>
+
+  <Step title="Configure your Dashboard connection">
+    Set your Dashboard URL, WordPress username, and Application Password in the environment that launches Claude Code or the central `settings.json` file. The [credentials and settings](#credentials-and-settings) section below explains both sources.
+  </Step>
+
+  <Step title="Start a new Claude Code session">
+    Run `claude` in your terminal. If a session was already open, restart it after changing connection settings. For a plugin installation with no connection-setting changes, you can run `/reload-plugins` in the existing session.
+  </Step>
+
+  <Step title="Verify the connection">
+    Run `/mainwp:setup`, then ask:
+
+    > List all my sites
+
+    A working connection returns your child sites by name and URL. Use `/mainwp:tools` to inspect the capabilities available on your Dashboard.
+  </Step>
+</Steps>
+
+## Credentials and settings
 
 The plugin carries no credential values. The server it starts inherits `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD` from the environment Claude Code runs in, so export them in the shell profile (or launcher) that starts Claude Code. A central `~/.config/mainwp-mcp/settings.json` works too; see the [Configuration Reference](/mcp-server/reference/configuration#configuration-file).
 
-The same goes for every optional `MAINWP_*` setting, such as safe mode or tool filters: set them in the environment, not in a config file entry.
+The server checks `./settings.json` in its working directory first and uses only the first file it finds, so a settings file in the folder where you start Claude Code takes precedence over the central file; the files are not merged.
+
+Optional settings, such as safe mode or tool filters, can also come from that environment or the central `settings.json`. Environment variables take precedence over file settings. The plugin ships no `env` map of its own.
+
+## Read-only access and making changes
+
+Installing the plugin does not make your MainWP Dashboard read-only. What Claude can do depends on the tools exposed by the server, its configuration, and the permissions of the WordPress user whose Application Password you use. Claude Code's own tool permissions can also prevent a call.
+
+| Configuration | What you can do in Claude Code |
+| ------------- | ----------------------------- |
+| Read-only tool allowlist | Inspect sites, diagnose problems, and prepare reports or plans. Claude cannot apply changes because the write tools are unavailable. |
+| Safe mode (`safeMode: true`) | Read data and use operations the Dashboard classifies as non-destructive. Plugin and theme activation and site syncing can still change your sites. Destructive calls are blocked, including updates on Dashboard 6.3 and later. |
+| Normal operation (`safeMode: false`, the default) | Ask Claude to make changes through the available tools. Destructive operations require the server's confirmation flow when `requireUserConfirmation` is enabled, as it is by default. |
+
+For strictly read-only access, use the [read-only tool allowlist](/mcp-server/guides/restrict-tools#ready-made-configurations). Safe mode alone is not read-only; on Dashboards before 6.3, it also permits updates.
+
+To carry out a change, the tool for that operation must be available: include it if you use `allowedTools`, and make sure `blockedTools` does not exclude it. Safe mode must be off for a destructive operation. Keep `requireUserConfirmation` enabled, review the preview or confirmation request, and approve the specific operation before Claude executes it. Approval cannot override safe mode, tool filters, or WordPress permissions. See [Safety & Permissions](/mcp-server/safety).
+
+Most `/mainwp:*` commands below inspect data or prepare a plan. For example, `/mainwp:update-workflow` prepares an update plan for review; it does not apply updates automatically. Ask Claude to carry out the changes you want after reviewing the plan. In a read-only session, you must first change the server configuration to expose the required write tools and restart Claude Code.
 
 ## If you already added a `mainwp` server by hand
 
-Claude Code suppresses a plugin MCP server that duplicates a manually configured one, matching on the command and args. A hand-added `mainwp` entry that runs the standard `npx -y @mainwp/mcp` wins silently: the plugin's server never starts, and the plugin still contributes its commands and skill. A manual entry that runs anything else (a pinned version, a local checkout) is not a duplicate, so both servers start and the plugin's copy reads whatever `MAINWP_*` values the environment carries, or none.
+Claude Code suppresses a plugin MCP server that duplicates a manually configured one, matching on the command and args. A hand-added `mainwp` entry that runs the standard `npx -y @mainwp/mcp` wins silently: the plugin's server never starts, and the plugin still contributes its commands and skill. A manual entry that runs anything else (a pinned version, a local checkout) is not a duplicate, so both servers start. The plugin's copy reads its launching environment and the first `settings.json` it finds, with environment variables taking precedence.
+
+Run `claude mcp list`, or `/mcp` in a Claude Code session, to check which MainWP server is active before relying on its configuration.
 
 To switch to the plugin's server:
 
-1. Move everything in the manual entry's `env` block (credentials and any `MAINWP_*` settings such as safe mode or tool filters) into the environment that launches Claude Code.
+1. Move everything in the manual entry's `env` block (credentials and any `MAINWP_*` settings such as safe mode or tool filters) into the environment that launches Claude Code, or into the corresponding fields in the first `settings.json` the server will load. It checks `./settings.json` in its working directory before `~/.config/mainwp-mcp/settings.json`; the files are not merged.
 2. Remove the manual entry.
 
-The plugin ships no `env` map by design, so its server reads `MAINWP_*` only from that environment. Skipping step 1 leaves the server running without credentials or with different settings than before.
+The plugin ships no `env` map by design. Preserve those values in the launching environment or the settings file the server will load before removing the manual entry, or the plugin's server may start without credentials or with different settings than before.
 
 ## The agent skill
 
@@ -48,4 +182,6 @@ The `mainwp-dashboard` skill loads automatically when a task involves managing s
 | `/mainwp:maintenance-check` | Maintenance sweep across every site, ranked by urgency |
 | `/mainwp:performance-check` | Performance indicators for one site or the network, from Dashboard data |
 
-Commands that act on a specific site take a site ID or name as an argument and resolve it against the Dashboard before doing anything; they stop if the site cannot be found.
+`/mainwp:site-report` and `/mainwp:troubleshoot-site` accept a site ID or name. With no argument, they list your managed sites and ask which one you want.
+
+`/mainwp:backup-status`, `/mainwp:security-audit`, and `/mainwp:update-workflow` take site IDs or `all` for their site scope. `/mainwp:performance-check` takes one site ID or `all`. An empty site scope means every managed site. Commands resolve the requested sites against your Dashboard and stop if a supplied site cannot be found.

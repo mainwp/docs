@@ -7,7 +7,18 @@ description: >-
 
 import ClaudeDesktopConfig from '/snippets/claude-desktop-config.mdx';
 
-Every client below runs the same server the same way: `npx -y @mainwp/mcp` with your Dashboard URL, WordPress username, and [Application Password](/mcp-server/quickstart#before-you-start) in the environment. Only the config file location and format differ.
+Choose the installation guide for the application you use:
+
+<CardGroup cols={2}>
+  <Card title="Claude Code CLI" icon="terminal" href="/mcp-server/claude-code-plugin#install-in-claude-code-cli">
+    Install the plugin from your terminal, with an agent skill and workflow commands.
+  </Card>
+  <Card title="Claude Desktop" icon="desktop" href="/mcp-server/claude-desktop-bundle">
+    Install the MCP Bundle through the Desktop app's extension dialog.
+  </Card>
+</CardGroup>
+
+The manual configurations below run `npx -y @mainwp/mcp` with your Dashboard URL, WordPress username, and [Application Password](/mcp-server/quickstart#before-you-start). Use them for another AI client or when you prefer a manual server connection.
 
 If you keep credentials in a central `~/.config/mainwp-mcp/settings.json` instead (see [Configuration Reference](/mcp-server/reference/configuration#configuration-file)), omit the `env` block in any of these examples.
 
@@ -15,13 +26,17 @@ In MainWP Dashboard 6.3, open **AI > MainWP MCP** for [guided setup](/mcp-server
 
 <Tabs>
   <Tab title="Claude Desktop">
+    For extension installation, use [Install in Claude Desktop](/mcp-server/claude-desktop-bundle). The instructions below are the manual config-file alternative.
+
     <ClaudeDesktopConfig />
 
     Restart Claude Desktop after saving.
   </Tab>
 
-  <Tab title="Claude Code">
-    Add the server with the CLI:
+  <Tab title="Claude Code CLI">
+    For the plugin, agent skill, and workflow commands, use [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli). The commands below add only the MCP server manually.
+
+    Add the server from your terminal:
 
     ```bash
     claude mcp add --transport stdio --scope user mainwp \
@@ -38,8 +53,6 @@ In MainWP Dashboard 6.3, open **AI > MainWP MCP** for [guided setup](/mcp-server
     ```
 
     User scope makes the server available across projects. The command contains the password and can remain in shell history. You can also define the same server in `~/.claude.json`.
-
-    Claude Code can alternatively install the server as a plugin, together with an agent skill and `/mainwp:*` workflow commands. See [Claude Code Plugin](/mcp-server/claude-code-plugin).
   </Tab>
 
   <Tab title="Cursor">
