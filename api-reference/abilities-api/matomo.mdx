@@ -104,7 +104,7 @@ The response does not expose the URL or API token. Read it before changing the c
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| `origin_url` | Yes | Absolute HTTPS address at the site root, such as `https://analytics.example.com` |
+| `origin_url` | Yes | Absolute HTTPS base URL, including the subfolder when Matomo is installed in one, such as `https://analytics.example.com` or `https://example.com/matomo/` |
 | `api_token` | Yes | A new write-only token, or JSON `null` to retain the saved token |
 | `trust_profile` | Yes | `public`, or `private_allowlisted` for an origin explicitly allowed by server policy |
 | `timeout_seconds` | Yes | Integer from 1 to 30 |
@@ -114,14 +114,14 @@ The response does not expose the URL or API token. Read it before changing the c
 | `request_ref` | Yes | UUID identifying this request |
 | `dry_run`, `confirm` | See request rules | Preview or execute |
 
-The URL cannot include a subfolder, query string, fragment, or embedded credentials. TLS certificate verification is always enabled. `private_allowlisted` requires an existing server-side allowlist; selecting it does not itself grant access to a private destination or disable certificate verification.
+The URL cannot include a query string, fragment, or embedded credentials. Folder names can contain ASCII letters, digits, `.`, `_`, `~`, and `-`. Empty, `.`, and `..` segments and percent-encoded characters are refused. A trailing `index.php` is removed; `index.php` anywhere else in the path is refused. Subfolder URLs require version 5.2.1 or later. TLS certificate verification is always enabled. `private_allowlisted` requires an existing server-side allowlist; selecting it does not itself grant access to a private destination or disable certificate verification.
 
 Use `api_token: null` only when retaining the current origin and trust profile with a usable saved token. Changing either requires a token. The token is never returned in a response.
 
 Start with `dry_run: true`. Even a preview contacts Matomo to validate the candidate connection and property catalog, so it requires a reachable server and a valid token. Review `changed`, `credential_action` (`retained` or `rotated`), `property_count`, and `rebind_count` before sending the confirmed request.
 
 <Warning>
-Changing the origin, token, or trust profile creates a new account generation. Existing assignments require rebinding, old local mappings and cached analytics are cleared, and undispatched operations for the previous account are cancelled. `rebind_count` reports how many assignments are affected.
+Changing the origin (including its folder), token, or trust profile creates a new account generation. Existing assignments require rebinding, old local mappings and cached analytics are cleared, and undispatched operations for the previous account are cancelled. `rebind_count` reports how many assignments are affected.
 </Warning>
 
 A completed response contains `mode`, `request_id`, `changed`, `credential_action`, `property_count`, `rebind_count`, and the resulting `revision`. For the confirmed call, retain the current revision used in the preview; the preview does not save its proposed revision.
