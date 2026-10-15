@@ -15,7 +15,7 @@ thirdPartyPlugin: Matomo
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2"
+  data-version="5.2.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-matomo-piwik-extension/"
   data-integrates-with="Matomo"
@@ -34,7 +34,7 @@ thirdPartyPlugin: Matomo
 ## Prerequisites
 
 - An active MainWP Matomo Integration
-- A Matomo Cloud or Matomo On-Premise instance available over HTTPS at the site root
+- A Matomo Cloud or Matomo On-Premise instance available over HTTPS
 - A Matomo API token with access to the properties you want to use
 - Sites configured for tracking in Matomo and added to MainWP Dashboard
 
@@ -53,9 +53,9 @@ The Matomo Analytics widget displays data on the MainWP Dashboard Overview and i
     In MainWP Dashboard, go to **MainWP > Add-ons > Matomo > Settings** and locate **Matomo Connection**.
   </Step>
   <Step title="Enter the Matomo URL and API token">
-    Enter the root address in **Matomo URL**, such as `https://analytics.example.com`, and paste your token into **API token**.
+    Enter the address you use to open Matomo in **Matomo URL**, such as `https://analytics.example.com`, or `https://example.com/matomo/` when Matomo is installed in a subfolder. Paste your token into **API token**.
 
-    The address must use HTTPS and must not contain a subfolder, query string, fragment, or embedded username and password. For example, `http://analytics.example.com` and `https://example.com/matomo` are not supported.
+    The address must use HTTPS and must not contain a query string, fragment, or embedded username and password. For example, `http://analytics.example.com` is not supported. Folder names can contain letters A to Z, digits, dots, hyphens, underscores, and tildes. Subfolder addresses require version 5.2.1 or later.
   </Step>
   <Step title="Configure data and reporting">
     Select the **Reporting period** and **Sync frequency**, and set **Connection timeout (in seconds)** to a value from 1 to 30.
@@ -71,7 +71,7 @@ The Matomo Analytics widget displays data on the MainWP Dashboard Overview and i
 
 The **API token** field stays blank after saving. The saved token is protected and kept outside the general settings row; it is not displayed in the form.
 
-Leave the field blank to retain the saved token when saving settings for the same Matomo server. Paste a new token to replace it. Changing the server requires a token for the new server; MainWP does not send the old token to a different address.
+Leave the field blank to retain the saved token when saving settings for the same Matomo server and folder. Paste a new token to replace it. Changing the server or folder requires a token for the new address; MainWP does not send the old token to a different address.
 
 If MainWP reports that the saved connection cannot be verified or needs credential recovery, check the Matomo URL, paste the current API token, and click **Save Settings**.
 
@@ -97,7 +97,7 @@ Matomo 5.2 always verifies TLS certificates. The old `mainwp_piwik_sslVerifyCert
 
 A Matomo property can be assigned to only one MainWP site. Properties already assigned elsewhere are unavailable for selection. If a conflicting selection is rejected, the previous valid assignment is retained; choose a different available property.
 
-If you change the Matomo server or replace its token, review your site assignments. Connection changes can invalidate earlier mappings and cached analytics, requiring properties to be assigned again.
+If you change the Matomo server or its folder, or replace its token, review your site assignments. Connection changes can invalidate earlier mappings and cached analytics, requiring properties to be assigned again.
 
 ## After Updating to Matomo 5.2
 
@@ -107,7 +107,8 @@ After updating, an administrator must open a MainWP Dashboard `wp-admin` page at
 
 Open **MainWP > Add-ons > Matomo > Settings** and check any migration notices. Large installations may need additional admin page loads to finish processing existing site data.
 
-- If the saved address uses HTTP or a subfolder, configure an HTTPS root address and click **Save Settings**.
+- If the saved address uses HTTP, change it to HTTPS and click **Save Settings**. The saved token is kept.
+- If version 5.2 paused a connection because its saved address has a subfolder, version 5.2.1 resumes it on the next `wp-admin` page load. No new save is needed. MainWP waits 15 minutes after its last failed attempt before retrying, so if analytics are still paused, open a `wp-admin` page again after that.
 - If MainWP asks you to save the connection again, verify the URL and token and follow the notice.
 - If site assignments could not be imported, save the connection to reload its property list, then review and save the affected site assignments.
 - Resolve any database or migration error displayed before relying on analytics or abilities.
