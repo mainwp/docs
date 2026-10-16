@@ -53,9 +53,9 @@ The Matomo Analytics widget displays data on the MainWP Dashboard Overview and i
     In MainWP Dashboard, go to **MainWP > Add-ons > Matomo > Settings** and locate **Matomo Connection**.
   </Step>
   <Step title="Enter the Matomo URL and API token">
-    Enter the root address in **Matomo URL**, such as `https://analytics.example.com`, and paste your token into **API token**.
+    Enter the address you use to open Matomo in **Matomo URL**, and paste your token into **API token**. If Matomo is installed in a subfolder, include the subfolder, such as `https://example.com/matomo/`. Otherwise, use the root address, such as `https://analytics.example.com`.
 
-    The address must use HTTPS and must not contain a subfolder, query string, fragment, or embedded username and password. For example, `http://analytics.example.com` and `https://example.com/matomo` are not supported.
+    The address must use HTTPS and must not contain a query string, fragment, or embedded username and password. For example, `http://analytics.example.com` is not supported.
   </Step>
   <Step title="Configure data and reporting">
     Select the **Reporting period** and **Sync frequency**, and set **Connection timeout (in seconds)** to a value from 1 to 30.
@@ -67,11 +67,34 @@ The Matomo Analytics widget displays data on the MainWP Dashboard Overview and i
   </Step>
 </Steps>
 
+### Matomo URL rules
+
+MainWP saves a normalized form of the Matomo URL. Matomo 5.2.1 and later accept addresses such as:
+
+```text
+https://analytics.example.com
+https://example.com/matomo/
+https://example.com/matomo/index.php
+https://example.com:8443/stats/
+```
+
+A trailing `index.php` is removed, so `https://example.com/matomo/index.php` is saved as `https://example.com/matomo/`.
+
+MainWP rejects the URL and keeps the existing settings when:
+
+- A folder name contains characters other than ASCII letters, digits, `.`, `_`, `~`, and `-`.
+- A folder name is empty (two slashes in a row), `.`, or `..`, or contains `%` codes.
+- `index.php` appears anywhere other than the end of the address.
+- The server name contains unsupported characters, such as an underscore or non-ASCII letters. Enter international domain names in their `xn--` form.
+- The port is outside 1 to 65535, or the address is longer than 2048 characters.
+
 ### Saved API Tokens
 
 The **API token** field stays blank after saving. The saved token is protected and kept outside the general settings row; it is not displayed in the form.
 
-Leave the field blank to retain the saved token when saving settings for the same Matomo server. Paste a new token to replace it. Changing the server requires a token for the new server; MainWP does not send the old token to a different address.
+Leave the field blank to retain the saved token when saving settings for the same Matomo installation. The host, port, and subfolder must stay the same. Changing only `http://` to `https://` keeps the saved token. Paste a new token to replace it.
+
+Changing the server, port, or subfolder requires a token for the new installation. MainWP does not send the old token to a different address. Two Matomo installations in different subfolders on one server, such as `/matomo/` and `/stats/`, are separate connections with their own token, site assignments, and cached analytics.
 
 If MainWP reports that the saved connection cannot be verified or needs credential recovery, check the Matomo URL, paste the current API token, and click **Save Settings**.
 
@@ -107,7 +130,8 @@ After updating, an administrator must open a MainWP Dashboard `wp-admin` page at
 
 Open **MainWP > Add-ons > Matomo > Settings** and check any migration notices. Large installations may need additional admin page loads to finish processing existing site data.
 
-- If the saved address uses HTTP or a subfolder, configure an HTTPS root address and click **Save Settings**.
+- If the saved address uses HTTP, configure the HTTPS address and click **Save Settings**.
+- Saved subfolder connections from version 5.1.2 migrate automatically. If version 5.2 paused a subfolder connection, update to 5.2.1 or later. The connection resumes on an admin page load within about 15 minutes, without saving the settings again.
 - If MainWP asks you to save the connection again, verify the URL and token and follow the notice.
 - If site assignments could not be imported, save the connection to reload its property list, then review and save the affected site assignments.
 - Resolve any database or migration error displayed before relying on analytics or abilities.
