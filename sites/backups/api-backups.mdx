@@ -1,0 +1,336 @@
+---
+title: API Backups
+description: >-
+  Create and restore hosting-provider backups from MainWP Dashboard. Configure
+  API Backups for cPanel, Plesk, Kinsta, Cloudways, GridPane, Vultr, Linode,
+  and DigitalOcean.
+---
+
+API Backups connects MainWP Dashboard to your hosting provider's backup service. Create and restore backups without installing a backup plugin on your Child Sites. Your provider creates and stores the backups.
+
+To create backups with MainWP and choose your own storage destinations, see [Native Backups](/sites/backups/manage-backups).
+
+## What You'll Learn
+
+- Connect a supported hosting provider and assign Child Sites
+- Create backups for individual or multiple sites
+- Restore provider backups and understand where they are stored
+- Troubleshoot common provider configuration problems
+
+## Prerequisites
+
+- MainWP Dashboard installed and Child Sites connected
+- The API Backups module enabled
+- API credentials and backup access for your hosting provider
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/Ey3OFHx7Ry8"
+  title="API Backups Walkthrough - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## Supported Providers
+
+| Provider | Notes |
+|----------|-------|
+| cPanel | Native and WP Toolkit backups |
+| Plesk | WP Toolkit backups |
+| Kinsta | Full API integration |
+| Cloudways | Automatic site assignment |
+| GridPane | Requires Owner Account with Developer Plan or higher |
+| Vultr | Full API integration |
+| Akamai (Linode) | Full API integration |
+| DigitalOcean | Full API integration |
+
+## Connect API Backups
+
+Open **MainWP > Settings > API Backups Settings** (`admin.php?page=SettingsApiBackups`) and enter the credentials required by your provider. For Cloudways, use an **Access Token**; existing connections can continue using the legacy **Account Email** and **API Key** fields.
+
+![Animation showing API Backups settings with API key entry fields for cloud providers](/images/dashboard/sites-backups-273419.gif)
+
+<Warning>
+For Plesk API Backups, enter only the Plesk panel URL in the **Plesk URL** field and do not add a trailing slash. Use `https://your-plesk-hostname:8443`, not `https://your-plesk-hostname:8443/`. Do not include `/api/`, paths, query strings, or fragments.
+</Warning>
+
+## Assign Provider to Child Sites
+
+Cloudways and GridPane automatically detect sites. For all other providers, assign the VPS provider to each child site manually.
+
+<Steps>
+<Step title="Open site settings">
+Go to the Child Site **Overview > Edit** page.
+</Step>
+<Step title="Configure backup provider">
+Locate the **Backup API Provider Settings** section, select your VPS provider from the dropdown, and enter the Instance ID.
+
+![Child Site Edit page showing Backup API Provider Settings](/images/dashboard/sites-backups-b24544.png)
+</Step>
+<Step title="Save settings">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+### Per-Site Configuration
+
+For all providers except Cloudways and GridPane, you can enter hosting information per site. This allows you to use multiple accounts from the same provider across your child sites.
+
+---
+
+## cPanel Backups
+
+New cPanel installations have backups disabled by default. Contact your hosting support to enable backups, or follow these steps if you have WHM access.
+
+### Check Backup Status
+
+The system displays a red notification on the File and Directory Restoration interfaces when backups are unavailable:
+- cPanel: **Home > Files > File and Directory Restoration**
+- WHM: **Home > Backups > File and Directory Restoration**
+
+### Enable Backups via Terminal
+
+If the red notification appears, run these commands to enable backups:
+
+| Step | Command | Documentation |
+|------|---------|---------------|
+| Force initial backup | `backup --force` | [cPanel backup timing](https://support.cpanel.net/hc/en-us/articles/360050631974-How-can-I-change-the-backup-time) |
+| Generate metadata | `backups_create_metadata` | [Metadata script](https://docs.cpanel.net/whm/scripts/the-backups_create_metadata-script/) |
+
+<Note>
+cPanel automatic backups run on a cron schedule. You may need to manually trigger the first backup via terminal if no automatic backups exist yet. See [metadata management](https://docs.cpanel.net/knowledge-base/backup/how-to-manage-metadata-settings/) for details.
+</Note>
+
+### Multi-Site Environment Configuration
+
+For cPanel accounts with multiple WordPress sites, install each site in its own folder. Site paths are case sensitive.
+
+**Multi-site example:**
+
+| URL | Site Path |
+|-----|-----------|
+| `https://your-site.com/Child-1/` | `/public_html/Child-1/` |
+| `https://child-2.your-site.com/` | `/public_html/child-2/` |
+
+**Single-site example:**
+
+| URL | Site Path |
+|-----|-----------|
+| `https://your-site.com` | `/public_html/` |
+
+---
+
+## Connect DigitalOcean
+
+<Steps>
+<Step title="Create a DigitalOcean account">
+Sign up at [DigitalOcean](https://mainwp.com/go/digital-ocean/) if you don't have an account.
+</Step>
+<Step title="Generate a Personal Access Token">
+Visit **Apps & API > Tokens** in your DigitalOcean control panel.
+
+![DigitalOcean Personal Access Tokens page](/images/dashboard/sites-backups-b9e74e.png)
+
+Enter a token name, set expiration to **No expire**, and select **Full Access**.
+
+![DigitalOcean New Personal Access Token form](/images/dashboard/sites-backups-c2af2b.png)
+</Step>
+<Step title="Enter the token in MainWP">
+Paste your Personal Access Token in the API Backups settings and click **Save Settings**.
+</Step>
+<Step title="Configure child sites">
+Go to each site's Edit page and set the correct Provider and Instance ID. Find the Instance ID in the Droplet URL or through [droplet metadata](https://docs.digitalocean.com/products/droplets/how-to/retrieve-droplet-metadata/).
+</Step>
+</Steps>
+
+---
+
+## Connect Kinsta
+
+### Find Your Kinsta Credentials
+
+| Credential | Location |
+|------------|----------|
+| Account Email | The email address used to log into Kinsta (usually the main account) |
+| API Key | **Company Settings > API Keys > Create API Key** |
+| Environment ID | In the browser address bar when viewing site Info |
+| Company ID | In the browser address bar when viewing site Info |
+
+<Steps>
+<Step title="Create an API Key">
+Navigate to **Company Settings > API Keys** and click **Create API Key**.
+
+![Kinsta API Keys navigation](/images/dashboard/sites-backups-37c7be.png)
+
+![Kinsta Create API Key dialog](/images/dashboard/sites-backups-ad43cf.png)
+</Step>
+<Step title="Find Environment and Company IDs">
+Click on a site, go to **Info**, and locate both IDs in the browser address bar.
+
+![Kinsta Environment ID in address bar](/images/dashboard/sites-backups-4ab2eb.png)
+
+![Kinsta Company ID in URL](/images/dashboard/sites-backups-ae51dd.png)
+</Step>
+</Steps>
+
+### Configure Global Settings
+
+<Steps>
+<Step title="Open API Backups settings">
+Navigate to **MainWP > Settings > API Backups Settings** (`admin.php?page=SettingsApiBackups`) and select **Kinsta**.
+</Step>
+<Step title="Enable and save">
+Turn on **Enable Kinsta API**, enter your API Key, and click **Save**.
+
+![MainWP Kinsta API settings](/images/dashboard/sites-backups-18a8ca.png)
+</Step>
+</Steps>
+
+### Configure Individual Sites
+
+Navigate to each child site's Edit page and scroll to the bottom. Select **Kinsta** from the provider dropdown and enter your Account Email, Company ID, and Environment ID. For sites using a different Kinsta account, enable **Overwrite Global Settings** and enter the alternate API Key.
+
+### Use Kinsta Backups
+
+After configuration, the API Backups tab displays Kinsta restore points such as automatic daily and manual backups. These entries can be restored or deleted, but they are not downloadable ZIP files. Click **Refresh Available Backups** to update the lists, or **Backup Now** to create a new manual restore point in Kinsta.
+
+![Kinsta API Backups tab](/images/dashboard/sites-backups-9b1a66.png)
+
+<Info>
+A Kinsta downloadable backup is a separate ZIP export containing the site's files and database. MainWP cannot create this export. To create one, go to **MyKinsta > Sites > your site > Backups > Download** and click **Create backup now**.
+
+When Kinsta finishes creating the archive, return to MainWP and click **Refresh Available Backups**. MainWP retrieves existing downloadable backups separately and displays any active download link returned by Kinsta under **Downloadable Backups**.
+
+See [Kinsta's downloadable backup documentation](https://kinsta.com/docs/wordpress-hosting/wordpress-backups/#downloadable-backups) for current creation limits and availability periods.
+</Info>
+
+---
+
+## Create Backups
+
+### Individual Site Backup
+
+<Steps>
+<Step title="Navigate to API Backups">
+Go to **MainWP > Sites > Backups > API Backups** (`admin.php?page=ManageApiBackups`).
+</Step>
+<Step title="Create the backup">
+Locate the site and click **Backup** from the ellipsis menu.
+</Step>
+</Steps>
+
+![Creating an API backup](/images/dashboard/sites-backups-4ceefc.gif)
+
+<Note>
+Backup duration depends on site size and host speed.
+</Note>
+
+### Multiple Sites Backup
+
+<Steps>
+<Step title="Navigate to API Backups">
+Go to **MainWP > Sites > Backups > API Backups** (`admin.php?page=ManageApiBackups`).
+</Step>
+<Step title="Select sites and start the backups">
+Select the sites and click **Backup Selected Sites**.
+</Step>
+</Steps>
+
+---
+
+## Restore Backups
+
+<Steps>
+<Step title="Navigate to API Backups">
+Go to **MainWP > Sites > Backups > API Backups** (`admin.php?page=ManageApiBackups`).
+</Step>
+<Step title="Manage backups">
+Locate the site and click **Manage Backups** from the ellipsis menu.
+</Step>
+<Step title="Restore the backup">
+Find the backup and click **Restore Backup** from the ellipsis menu.
+</Step>
+</Steps>
+
+<Note>
+Restore duration depends on site size and host speed.
+</Note>
+
+---
+
+## Backup Storage Location
+
+API Backups uses your hosting provider's storage settings. Configure backup storage with your provider.
+
+| Provider | Documentation |
+|----------|---------------|
+| GridPane | [Backup configuration](https://gridpane.com/kb/v2-backups-configuration-purging-exports/#location) |
+| Cloudways | [Download backups](https://support.cloudways.com/en/articles/5123346-how-to-download-the-backup-of-your-application) |
+| Vultr | [Automatic backups](https://www.vultr.com/docs/vps-automatic-backups/) |
+| DigitalOcean | [Backups product](https://docs.digitalocean.com/products/images/backups/) |
+| Akamai (Linode) | [Backup service](https://www.linode.com/docs/products/storage/backups/) |
+| cPanel | [System backups](https://docs.cpanel.net/knowledge-base/backup/system-backups/) |
+| Plesk | [WP Toolkit backups](https://www.plesk.com/kb/docs/wp-toolkit-backing-up-and-restoring-wordpress-installations/) |
+
+<Note>
+**cPanel DB Backups:** Manual database backups are created via MySQLdump on the child site server and placed in `/wp-content/uploads/mainwp/api_db_backups/`.
+</Note>
+
+---
+
+## Troubleshooting
+
+### Kinsta 404 Errors
+
+If Kinsta API Backups fail to load or show a 404 error, the problem is usually an incorrect Environment ID or a temporary API issue.
+
+**Example error from Custom Event Monitor:**
+```text
+API Backups :: [Status] 404 :: [Action] kinsta_action_refresh_available_backups
+API Backups :: [Response] {"status":404,"message":"The requested environment was not found!"}
+```
+
+<Steps>
+<Step title="Verify Environment ID">
+The Environment ID appears in the URL of the container package, not elsewhere in the interface.
+</Step>
+<Step title="Check all credentials">
+Confirm your Account Email, Company ID, and API Key are entered correctly.
+</Step>
+<Step title="Save and refresh">
+Save settings and click **Refresh Available Backups**.
+</Step>
+</Steps>
+
+If the error persists with correct data, try again later as it may be a temporary Kinsta API issue.
+
+### Plesk ID Confusion
+
+Plesk API Backups may fail if you use the wrong ID during setup. Each WordPress installation in Plesk WP Toolkit has three IDs:
+
+| ID Type | Description |
+|---------|-------------|
+| Site ID | Main identifier for the WordPress installation |
+| Domain ID | Appears in Plesk URL (not correct for backups) |
+| Owner ID | Account owner identifier |
+
+**Solution:** Use the **Main Site ID** instead of the Domain ID when configuring your Plesk connection in MainWP. Re-save settings and retry the backup.
+
+---
+
+## Self-Check Checklist
+
+- [ ] API credentials are entered and saved
+- [ ] Child sites are assigned to the correct provider
+- [ ] Test backup completes successfully
+- [ ] Backups appear in the Manage Backups list
+- [ ] Test restore works (on a staging site if possible)
+
+---
+
+## Related Resources
+
+- [Native Backups](/sites/backups/manage-backups) - Back up Child Sites directly with MainWP Dashboard and MainWP Child
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings#api-backups-settings) - Provider settings reference
+- [Backup Add-ons](/add-ons/backups) - Integrations with third-party backup plugins

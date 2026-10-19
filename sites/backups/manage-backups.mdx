@@ -1,358 +1,365 @@
 ---
-title: Manage Backups
+title: Native Backups
 description: >-
-  MainWP integrates with popular backup solutions including BackWPup, BackupBuddy,
-  Time Capsule, UpdraftPlus, and WPVivid. API Backups support cPanel, Plesk,
-  Kinsta, Cloudways, GridPane, Vultr, Linode, and DigitalOcean.
+  Back up and restore Child Sites directly from MainWP Dashboard. Configure
+  schedules, incremental backups, storage destinations, encryption, and retention.
 ---
 
-MainWP integrates with popular backup solutions through add-ons and API-based backups. Use backup add-ons for plugin-based solutions, or API Backups to trigger backups directly through your hosting provider or cloud manager.
+Native Backups lets you back up and restore Child Sites directly from MainWP Dashboard, without a backup add-on or third-party backup plugin.
 
-## What You'll Accomplish
+MainWP Child creates the backup and sends it to your Dashboard. You can also store copies on remote storage or a mounted drive.
 
-- Configure backup add-ons for plugin-based backups
-- Set up API Backups with your hosting provider
-- Create and restore backups from your Dashboard
-- Troubleshoot common backup issues
+<Info>
+This guide covers Native Backups in the MainWP 6.3 beta. Use matching, current beta versions of MainWP Dashboard and MainWP Child. Test backups and restores on a staging site, and keep an independent backup while evaluating the beta.
+</Info>
+
+To manage your hosting provider's backups, use [API Backups](/sites/backups/api-backups). For third-party backup plugins, see [Backup Add-ons](/add-ons/backups).
+
+## What You'll Learn
+
+- Create your first backup and confirm where it is stored
+- Schedule full, database, files-only, and incremental backups
+- Connect storage destinations and protect backups with encryption
+- Restore a site and roll back using a safety backup
+- Manage retention and investigate failed jobs
 
 ## Prerequisites
 
-- MainWP Dashboard installed and activated
-- Child sites connected to your Dashboard
-- Backup add-on installed, or API credentials from your hosting provider
+- MainWP Dashboard and MainWP Child with Native Backups support
+- A connected Child Site that syncs successfully
+- An administrator account to enable and configure backup settings
+- Enough free disk space on the Child Site and Dashboard for backup and restore files
+- Working WordPress cron on the Dashboard for schedules and background tasks
+- Storage credentials if you want copies outside the Dashboard
 
----
----
+Keep a separate backup of your MainWP Dashboard installation, including its database and backup encryption keys.
 
-## Backup Add-ons
+## Find the Backup Screens
 
-MainWP integrates with popular backup plugins through dedicated add-ons:
+Open **MainWP > Sites > Backups** after enabling Native Backups.
 
-| Add-on | Plugin |
-|-----------|--------|
-| [BackWPup](https://mainwp.com/add-on/backwpup/) | BackWPup |
-| [BackupBuddy](https://mainwp.com/add-on/mainwpbuddy/) | BackupBuddy |
-| [Time Capsule](https://mainwp.com/add-on/time-capsule/) | Time Capsule |
-| [UpdraftPlus](https://mainwp.com/add-on/updraftplus/) | UpdraftPlus |
-| [WPVivid](https://mainwp.com/add-on/wpvivid-backup-for-mainwp/) | WPVivid |
+| Screen | Use it for | Relative URL |
+| --- | --- | --- |
+| Settings > General Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `admin.php?page=Settings` |
+| Backups > Manage Backups | View schedules, run tasks, and inspect errors | `admin.php?page=ManageBackups` |
+| Backups > Add New | Create a scheduled backup task | `admin.php?page=ManageBackupsAddNew` |
+| Backups > Storage | Connect and test storage destinations | `admin.php?page=ManageBackupsStorage` |
+| Backups > Snapshots & Restore | Create an on-demand backup, download, restore, or clean up snapshots | `admin.php?page=ManageBackupsSnapshots` |
 
----
+A **task** defines what to back up, which sites to include, and when to run. A **snapshot** is a backup of one site at a particular time. One task can create snapshots for several sites.
+
+## Create Your First Backup
+
+<Steps>
+<Step title="Enable Native Backups">
+Open **MainWP > Settings > General Settings** (`admin.php?page=Settings`). In **Backup Settings**, turn on **Enable native backups** and save.
+
+If **Select primary backup system** is shown, select **Native backups**.
+</Step>
+
+<Step title="Choose where to store the backup">
+The backup stays on your Dashboard server unless you add another destination.
+
+For an additional copy, open **Backups > Storage**, add and test a destination, and select **Use as default destination**. See [Configure Storage](#configure-storage).
+</Step>
+
+<Step title="Select the site and start the backup">
+Open **Backups > Snapshots & Restore** (`admin.php?page=ManageBackupsSnapshots`) and select your test site.
+
+Read the destination message, then click **Back Up Now**. This creates a full backup. To run a different backup type, create a task and use **Run Now** instead.
+</Step>
+
+<Step title="Confirm the result">
+Wait for the backup to finish and confirm that a new snapshot appears with the expected date, type, and size.
+
+If you selected remote storage, wait for the upload to finish. See [Check Backup Status](#check-backup-status).
+</Step>
+</Steps>
+
+<Note>
+**Back Up Now** uses the destinations selected on the site's scheduled tasks. If those tasks have no destinations, the backup stays on the Dashboard. The default destination applies only to sites without a scheduled task.
+</Note>
+
+## Configure Storage
+
+Completed backups are stored in the Dashboard's private backup directory. Storage destinations receive additional copies. Keep enough free space on both the Dashboard and Child Site to create and process backups.
+
+<Steps>
+<Step title="Add a destination">
+Open **Backups > Storage** (`admin.php?page=ManageBackupsStorage`) and click **Add Destination**. Enter a descriptive **Destination name**, then choose a **Provider**.
+</Step>
+
+<Step title="Enter the provider details">
+Enter the details listed below for your provider. The account needs permission to upload, read, and delete backup files at that destination.
+</Step>
+
+<Step title="Test and save">
+Click **Test Connection & Save**. Resolve any connection error before assigning the destination to a backup task.
+
+For Dropbox, use **Connect Dropbox** to approve the connection. A successful connection tests and saves the destination.
+</Step>
+
+<Step title="Assign the destination">
+On each backup task, select one or more destinations under **Upload to storage**.
+
+Choose **Use as default destination** or **Make default** to preselect a destination for new tasks. Update existing tasks separately if you want them to use it.
+</Step>
+</Steps>
+
+| Provider | Details to enter |
+| --- | --- |
+| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable Path style addressing when your service requires it. |
+| Google Cloud Storage | Bucket, HMAC access key, and HMAC secret from your storage interoperability settings. |
+| Dropbox | App key, App secret, and an optional Folder. Register the exact Redirect URI shown in MainWP in your Dropbox app, then use Connect Dropbox. The app needs `files.content.write`, `files.content.read`, and `files.metadata.read` permissions. |
+| SFTP | Host, Port, Username, and an existing absolute Directory path. Use a Password or a PEM Private key. When a private key is supplied, Password is its passphrase. |
+| Local Path | An absolute Directory path on the Dashboard server, such as a mounted storage directory. It must be writable by the Dashboard. |
+
+For SFTP, you can supply the server's **Host key fingerprint** to verify its identity. If left empty, the first key received is trusted and pinned. Obtain the fingerprint from your server administrator when possible.
+
+**Local Path** does not count as offsite storage, even on a mounted drive, and cannot satisfy **Require an offsite-verified backup**.
+
+### Encrypt Backup Archives
+
+Open **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`):
+
+1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
+2. Enable **Encrypt backup archives** and save.
+
+MainWP encrypts new archives before uploading them. Existing snapshots remain unchanged. To change the recovery passphrase, enter the current and new passphrases. Leave the fields blank to keep the existing passphrase.
+
+<Warning>
+Keep the recovery passphrase and your Dashboard's encryption keys safe. The passphrase can recover a lost encryption key, but you still need backups of the Dashboard database and backup files.
+</Warning>
+
+S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption.
+
+## Create a Scheduled Backup
+
+Open **Backups > Add New** (`admin.php?page=ManageBackupsAddNew`).
+
+<Steps>
+<Step title="Name the task and select its sites">
+Enter a **Backup task name** that describes its purpose, such as "Daily client sites". Select the Child Sites to include.
+</Step>
+
+<Step title="Choose the backup type and schedule">
+Select a **Backup type** from the table below. Choose **Daily**, **Weekly**, **Monthly**, or **Every N hours**.
+
+Times use the Dashboard WordPress site's timezone. Monthly schedules accept days 1 through 28. Leave the optional time empty to run the task at the next scheduler check after its interval has elapsed.
+</Step>
+
+<Step title="Choose storage, exclusions, and retention">
+Select destinations under **Upload to storage**, review **Backup Excludes**, and set **Backup Retention**.
+
+Leave storage empty to keep backups only on the Dashboard. Set retention limits to control storage use.
+</Step>
+
+<Step title="Save and run a first test">
+Click **Schedule Backup**. On **Manage Backups**, click **Run Now** for the task to test its configured type and destinations.
+
+Check the result for each site, then confirm the task's **Next run**.
+</Step>
+</Steps>
+
+### Choose a Backup Type
+
+| Type | What it contains | Restore behavior |
+| --- | --- | --- |
+| Full Backup | Site files and database, subject to exclusions | Restores files and database |
+| Database Backup | Database content, such as posts, settings, and users | Restores the database without replacing files |
+| Files Only Backup | Site files without the database, subject to exclusions | Restores files while keeping the current database, when the Child Site supports files-only restore |
+| Incremental Backup | A full first backup, then changed files and a fresh database dump on each later run | Reconstructs the selected point in time using its backup chain |
+
+An incremental **chain** includes the initial full backup and the later incremental backups that depend on it. Keep the chain together so MainWP can restore the selected snapshot.
+
+The first incremental task run is full even when started with **Run Now**. If a Child Site lacks incremental support, MainWP takes full backups and records a note on the task. Keep MainWP Child updated and sync the site after updating.
+
+### Archive Format and Exclusions
+
+**Archive type** can use the site setting, the global setting, or an explicit format. The available formats are Zip, Tar, Tar GZip, and Tar BZip2.
+
+For large sites, use **Tar GZip**. MainWP can switch large Zip backups to Tar GZip unless **Keep Zip even when the site is large** is enabled.
+
+Review the exclusion switches for known backup locations, known cache locations, non-WordPress folders, and ZIP archives. Excluding old backup archives avoids repeatedly backing up earlier backups. Do not exclude files you expect to recover.
+
+Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`.
+
+## Check Backup Status
+
+Open **Manage Backups** (`admin.php?page=ManageBackups`) to check **Last run**, **Next run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+
+Use the task's action menu to **Edit**, **Pause**, **Resume**, or **Delete** it. When deleting a task, clear **Also delete this task's snapshots** if you want to keep its backups. This option is selected by default.
+
+For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`). Confirm that your Dashboard can send email before relying on these alerts.
+
+On **Snapshots & Restore**, select a site and check **Available from** and the upload details.
+
+| Status | Meaning |
+| --- | --- |
+| Uploading / Waiting to upload | The copy has not finished reaching its destination |
+| Partially uploaded | Some configured remote copies completed, but others have not |
+| Upload failed / Re-enter credentials | Inspect the error and test or update the affected storage connection |
+| Offsite Verified | All remote uploads for this snapshot completed and passed verification |
+
+**Offsite Verified** includes remote file size checks. It does not confirm that the backup can restore the site.
+
+The **Test Restore** column shows automatic restore test results. MainWP periodically tests selected backups in a temporary environment on the Dashboard, leaving the live Child Site unchanged. **Couldn't test here** can indicate missing database permissions on the Dashboard host. Test a restore on a staging site as well.
+
+### Download a Backup
+
+Click **Download** beside a snapshot when its archive is available on the Dashboard.
+
+Incremental backups cannot be downloaded as one archive. Use **Restore** to restore the selected point in the chain. Backups stored only on remote storage can be restored, but cannot be downloaded through the Dashboard.
+
+## Retention and Cleanup
+
+Each scheduled task has its own retention settings, applied per site.
+
+| Setting | Effect |
+| --- | --- |
+| Keep last | Retains the selected number of backups or complete incremental chains |
+| Remove backups older than (days) | Makes older backups or chains eligible for removal |
+| Storage cap (MB) | Removes older backups or chains when their combined size exceeds the cap |
+| Start a new chain after (backups) | Creates a new full base after an incremental chain reaches this length, including its initial full backup |
+| Remove cloud copies too | Also removes the corresponding copies from the task's storage destinations |
+
+Leave a retention limit blank or enter zero for no limit. MainWP always keeps the newest complete, restorable backup or chain, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
+
+For **Back Up Now**, set **On-demand backups to keep** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`). The default is five per site, with a minimum of one.
+
+On **Snapshots & Restore**:
+
+- Use **Delete** to remove a backup. Select **Also delete cloud copies** to remove its copies from storage destinations.
+- Use **Clean Up** to remove leftover folders and old backups that meet the retention rules.
+- Enable **Show removed backups** to see removal history and reasons.
+
+<Warning>
+Use the Dashboard controls for cleanup. Do not delete individual incremental chain files or the entire Child Site `wp-content/uploads/mainwp` directory. That directory can contain other MainWP data and encryption material.
+</Warning>
+
+## Restore a Backup
+
+You can restore a snapshot to its original Child Site. Connect the site and wait for any running backup or restore to finish before starting.
+
+<Steps>
+<Step title="Select the site and snapshot">
+Open **Backups > Snapshots & Restore** (`admin.php?page=ManageBackupsSnapshots`). Select the site, check the snapshot date and type, and click **Restore**.
+
+MainWP can use an available local or completed remote copy. For incremental backups, the required chain must be available.
+</Step>
+
+<Step title="Review what will be replaced">
+A full or incremental restore replaces files and database content. A database restore changes the database only; a files-only restore leaves the database in place.
+
+Changes made after the snapshot may be lost. Review any warnings before proceeding.
+</Step>
+
+<Step title="Keep the safety backup enabled">
+Leave **Create a safety backup first** selected. This backup stays on the Child Site and lets you roll back if the restore fails or you need to undo it.
+
+Confirm **I understand this replaces the current site content**, then click **Start Restore**.
+</Step>
+
+<Step title="Check the restored site">
+Wait for **Restore completed**, then click **Visit site**. Check key pages, sign-in, and other site functions. Review any warnings and the **Recent restores** list.
+</Step>
+</Steps>
+
+### Cancel or Roll Back a Restore
+
+**Cancel Restore** stops further processing but does not undo files already replaced. If a safety backup is available, use **Roll Back** to return to the site's state before the restore.
+
+If the restore finished on the Child Site but the Dashboard cannot reconnect, click **Stop Checking** to end the connection checks. This marks the restore as failed without rolling it back. Visit the site to check its state.
+
+After a failed database restore, resolve the reported database problem before removing maintenance mode.
+
+<Accordion title="Restoring a WooCommerce store">
+Restoring a database normally replaces orders, customers, and other data with the snapshot's version.
+
+When available, select **Preserve orders placed since the backup** to keep live order tables and reapply recent customer and stock data. This requires High-Performance Order Storage (HPOS), order-table synchronization turned off, an HPOS backup, and a matching WooCommerce database version. Older order-table contents from the backup are not restored.
+
+If those conditions are not met, the restore stops with an explanation. Review order, customer, and stock data after any store restore.
+</Accordion>
+
+## Require a Backup Before Updates
+
+In **Settings > General Settings > Updates Settings** (`admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without of a full backup tolerance**.
+
+Use this setting to require a recent backup before updating from **Manage Sites**.
+
+Native Backups accepts completed full, database-only, or incremental backups within the allowed age. Files-only backups do not qualify.
+
+Enable **Require an offsite-verified backup** to also require verified copies on remote storage. Local Path destinations do not count as offsite storage. Wait for remote uploads to finish before retrying the update.
+
+For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates/does-mainwp-have-safe-updates).
+
+## Troubleshooting and Beta Limitations
+
+| Symptom | What to check |
+| --- | --- |
+| Native Backup screens are missing | Enable Native Backups, check the primary backup system, and confirm your account has the relevant permissions |
+| Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
+| Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
+| Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
+| Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
+| Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
+| File backup is refused because content is outside the WordPress folder | The beta does not support this layout for file backups or restores. Use database-only tasks and your host's file backups while this limitation applies. |
+
+Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores in this beta. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
+
+A database-only restore may also stop on these sites because the safety backup includes files. Keep an independent backup and follow the error message before retrying without the safety backup.
+
+### Export Diagnostics
+
+Enable **Backup run diagnostics** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`), save, and reproduce the problem.
+
+Click **Export diagnostics data** and include the export in your support request, along with the task, backup type, storage provider, and exact error. Diagnostics are stored on the Dashboard for two weeks.
+
+{/* Keep incoming links to the former API guide usable after its content moves. */}
+<div id="backup-add-ons" />
+<div id="supported-providers" />
+<div id="connect-api-backups" />
+<div id="assign-provider-to-child-sites" />
+<div id="per-site-configuration" />
+<div id="cpanel-backups" />
+<div id="enable-backups-via-terminal" />
+<div id="multi-site-environment-configuration" />
+<div id="connect-digitalocean" />
+<div id="connect-kinsta" />
+<div id="find-your-kinsta-credentials" />
+<div id="configure-global-settings" />
+<div id="configure-individual-sites" />
+<div id="use-kinsta-backups" />
+<div id="create-backups" />
+<div id="individual-site-backup" />
+<div id="multiple-sites-backup" />
+<div id="restore-backups" />
+<div id="backup-storage-location" />
+<div id="troubleshooting" />
+<div id="kinsta-404-errors" />
+<div id="plesk-id-confusion" />
 
 ## API Backups
 
-API Backups lets you create backups directly through your hosting provider, cloud manager, or VPS without installing backup plugins on your sites.
-
-<iframe
-  className="w-full aspect-video rounded-xl"
-  src="https://www.youtube.com/embed/Ey3OFHx7Ry8"
-  title="API Backups Walkthrough - Video Tutorial"
-  frameBorder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowFullScreen
-></iframe>
-
-### Supported Providers
-
-| Provider | Notes |
-|----------|-------|
-| cPanel | Native and WP Toolkit backups |
-| Plesk | WP Toolkit backups |
-| Kinsta | Full API integration |
-| Cloudways | Automatic site assignment |
-| GridPane | Requires Owner Account with Developer Plan or higher |
-| Vultr | Full API integration |
-| Akamai (Linode) | Full API integration |
-| DigitalOcean | Full API integration |
-
-### Connect API Backups
-
-Enter the credentials required by your provider in the MainWP settings. For Cloudways, use an **Access Token**; existing connections can continue using the legacy **Account Email** and **API Key** fields.
-
-![Animation showing API Backups settings with API key entry fields for cloud providers](/images/dashboard/sites-backups-273419.gif)
-
-<Warning>
-For Plesk API Backups, enter only the Plesk panel URL in the **Plesk URL** field and do not add a trailing slash. Use `https://your-plesk-hostname:8443`, not `https://your-plesk-hostname:8443/`. Do not include `/api/`, paths, query strings, or fragments.
-</Warning>
-
-### Assign Provider to Child Sites
-
-Cloudways and GridPane automatically detect sites. For all other providers, assign the VPS provider to each child site manually.
-
-<Steps>
-<Step title="Open site settings">
-Go to the Child Site **Overview > Edit** page.
-</Step>
-<Step title="Configure backup provider">
-Locate the **Backup API Provider Settings** section, select your VPS provider from the dropdown, and enter the Instance ID.
-
-![Child Site Edit page showing Backup API Provider Settings](/images/dashboard/sites-backups-b24544.png)
-</Step>
-<Step title="Save settings">
-Click **Save Settings**.
-</Step>
-</Steps>
-
-### Per-Site Configuration
-
-For all providers except Cloudways and GridPane, you can enter hosting information per site. This allows you to use multiple accounts from the same provider across your child sites.
-
----
-
-## cPanel Backups
-
-New cPanel installations have backups disabled by default. Contact your hosting support to enable backups, or follow these steps if you have WHM access.
-
-### Check Backup Status
-
-The system displays a red notification on the File and Directory Restoration interfaces when backups are unavailable:
-- cPanel: **Home > Files > File and Directory Restoration**
-- WHM: **Home > Backups > File and Directory Restoration**
-
-### Enable Backups via Terminal
-
-If the red notification appears, run these commands to enable backups:
-
-| Step | Command | Documentation |
-|------|---------|---------------|
-| Force initial backup | `backup --force` | [cPanel backup timing](https://support.cpanel.net/hc/en-us/articles/360050631974-How-can-I-change-the-backup-time) |
-| Generate metadata | `backups_create_metadata` | [Metadata script](https://docs.cpanel.net/whm/scripts/the-backups_create_metadata-script/) |
-
-<Note>
-cPanel automatic backups run on a cron schedule. You may need to manually trigger the first backup via terminal if no automatic backups exist yet. See [metadata management](https://docs.cpanel.net/knowledge-base/backup/how-to-manage-metadata-settings/) for details.
-</Note>
-
-### Multi-Site Environment Configuration
-
-For cPanel accounts with multiple WordPress sites, install each site in its own folder. Site paths are case sensitive.
-
-**Multi-site example:**
-
-| URL | Site Path |
-|-----|-----------|
-| `https://your-site.com/Child-1/` | `/public_html/Child-1/` |
-| `https://child-2.your-site.com/` | `/public_html/child-2/` |
-
-**Single-site example:**
-
-| URL | Site Path |
-|-----|-----------|
-| `https://your-site.com` | `/public_html/` |
-
----
-
-## Connect DigitalOcean
-
-<Steps>
-<Step title="Create a DigitalOcean account">
-Sign up at [DigitalOcean](https://mainwp.com/go/digital-ocean/) if you don't have an account.
-</Step>
-<Step title="Generate a Personal Access Token">
-Visit **Apps & API > Tokens** in your DigitalOcean control panel.
-
-![DigitalOcean Personal Access Tokens page](/images/dashboard/sites-backups-b9e74e.png)
-
-Enter a token name, set expiration to **No expire**, and select **Full Access**.
-
-![DigitalOcean New Personal Access Token form](/images/dashboard/sites-backups-c2af2b.png)
-</Step>
-<Step title="Enter the token in MainWP">
-Paste your Personal Access Token in the API Backups settings and click **Save Settings**.
-</Step>
-<Step title="Configure child sites">
-Go to each site's Edit page and set the correct Provider and Instance ID. Find the Instance ID in the Droplet URL or through [droplet metadata](https://docs.digitalocean.com/products/droplets/how-to/retrieve-droplet-metadata/).
-</Step>
-</Steps>
-
----
-
-## Connect Kinsta
-
-### Find Your Kinsta Credentials
-
-| Credential | Location |
-|------------|----------|
-| Account Email | The email address used to log into Kinsta (usually the main account) |
-| API Key | **Company Settings > API Keys > Create API Key** |
-| Environment ID | In the browser address bar when viewing site Info |
-| Company ID | In the browser address bar when viewing site Info |
-
-<Steps>
-<Step title="Create an API Key">
-Navigate to **Company Settings > API Keys** and click **Create API Key**.
-
-![Kinsta API Keys navigation](/images/dashboard/sites-backups-37c7be.png)
-
-![Kinsta Create API Key dialog](/images/dashboard/sites-backups-ad43cf.png)
-</Step>
-<Step title="Find Environment and Company IDs">
-Click on a site, go to **Info**, and locate both IDs in the browser address bar.
-
-![Kinsta Environment ID in address bar](/images/dashboard/sites-backups-4ab2eb.png)
-
-![Kinsta Company ID in URL](/images/dashboard/sites-backups-ae51dd.png)
-</Step>
-</Steps>
-
-### Configure Global Settings
-
-<Steps>
-<Step title="Open API Backups settings">
-Navigate to **Sites > Backups > API Backups > Manage API Settings > Kinsta**.
-</Step>
-<Step title="Enable and save">
-Turn on **Enable Kinsta API**, enter your API Key, and click **Save**.
-
-![MainWP Kinsta API settings](/images/dashboard/sites-backups-18a8ca.png)
-</Step>
-</Steps>
-
-### Configure Individual Sites
-
-Navigate to each child site's Edit page and scroll to the bottom. Select **Kinsta** from the provider dropdown and enter your Account Email, Company ID, and Environment ID. For sites using a different Kinsta account, enable **Overwrite Global Settings** and enter the alternate API Key.
-
-### Use Kinsta Backups
-
-After configuration, the API Backups tab displays Kinsta restore points such as automatic daily and manual backups. These entries can be restored or deleted, but they are not downloadable ZIP files. Click **Refresh Available Backups** to update the lists, or **Backup Now** to create a new manual restore point in Kinsta.
-
-![Kinsta API Backups tab](/images/dashboard/sites-backups-9b1a66.png)
-
-<Info>
-A Kinsta downloadable backup is a separate ZIP export containing the site's files and database. MainWP cannot create this export. To create one, go to **MyKinsta > Sites > your site > Backups > Download** and click **Create backup now**.
-
-When Kinsta finishes creating the archive, return to MainWP and click **Refresh Available Backups**. MainWP retrieves existing downloadable backups separately and displays any active download link returned by Kinsta under **Downloadable Backups**.
-
-See [Kinsta's downloadable backup documentation](https://kinsta.com/docs/wordpress-hosting/wordpress-backups/#downloadable-backups) for current creation limits and availability periods.
-</Info>
-
----
-
-## Create Backups
-
-### Individual Site Backup
-
-<Steps>
-<Step title="Navigate to API Backups">
-Go to **MainWP > Sites > API Backups**.
-</Step>
-<Step title="Create backup">
-Locate the site and click **Backup** from the ellipsis menu.
-</Step>
-</Steps>
-
-![Creating an API backup](/images/dashboard/sites-backups-4ceefc.gif)
-
-<Note>
-Backup duration depends on site size and host speed.
-</Note>
-
-### Multiple Sites Backup
-
-<Steps>
-<Step title="Navigate to API Backups">
-Go to **MainWP > Sites > API Backups**.
-</Step>
-<Step title="Select and backup">
-Check the boxes next to desired sites and click **Backup Selected Sites**.
-</Step>
-</Steps>
-
----
-
-## Restore Backups
-
-<Steps>
-<Step title="Navigate to API Backups">
-Go to **MainWP > Sites > API Backups**.
-</Step>
-<Step title="Manage backups">
-Locate the site and click **Manage Backups** from the ellipsis menu.
-</Step>
-<Step title="Restore">
-Find the desired backup and click **Restore Backup** from the ellipsis menu.
-</Step>
-</Steps>
-
-<Note>
-Restore duration depends on site size and host speed.
-</Note>
-
----
-
-## Backup Storage Location
-
-MainWP API Backups triggers backups through provider APIs. Your hosting provider handles storage according to their configured settings.
-
-<Warning>
-MainWP API Backups does not use custom storage locations. Backups are stored wherever your host or cloud manager has configured.
-</Warning>
-
-| Provider | Documentation |
-|----------|---------------|
-| GridPane | [Backup configuration](https://gridpane.com/kb/v2-backups-configuration-purging-exports/#location) |
-| Cloudways | [Download backups](https://support.cloudways.com/en/articles/5123346-how-to-download-the-backup-of-your-application) |
-| Vultr | [Automatic backups](https://www.vultr.com/docs/vps-automatic-backups/) |
-| DigitalOcean | [Backups product](https://docs.digitalocean.com/products/images/backups/) |
-| Akamai (Linode) | [Backup service](https://www.linode.com/docs/products/storage/backups/) |
-| cPanel | [System backups](https://docs.cpanel.net/knowledge-base/backup/system-backups/) |
-| Plesk | [WP Toolkit backups](https://www.plesk.com/kb/docs/wp-toolkit-backing-up-and-restoring-wordpress-installations/) |
-
-<Note>
-**cPanel DB Backups:** Manual database backups are created via MySQLdump on the child site server and placed in `/wp-content/uploads/mainwp/api_db_backups/`.
-</Note>
-
----
-
-## Troubleshooting
-
-### Kinsta 404 Errors
-
-If Kinsta API Backups fail to load or show a 404 error, the problem is usually an incorrect Environment ID or a temporary API issue.
-
-**Example error from Custom Event Monitor:**
-```text
-API Backups :: [Status] 404 :: [Action] kinsta_action_refresh_available_backups
-API Backups :: [Response] {"status":404,"message":"The requested environment was not found!"}
-```
-
-<Steps>
-<Step title="Verify Environment ID">
-The Environment ID appears in the URL of the container package, not elsewhere in the interface.
-</Step>
-<Step title="Check all credentials">
-Confirm your Account Email, Company ID, and API Key are entered correctly.
-</Step>
-<Step title="Save and refresh">
-Save settings and click **Refresh Available Backups**.
-</Step>
-</Steps>
-
-If the error persists with correct data, try again later as it may be a temporary Kinsta API issue.
-
-### Plesk ID Confusion
-
-Plesk API Backups may fail if you use the wrong ID during setup. Each WordPress installation in Plesk WP Toolkit has three IDs:
-
-| ID Type | Description |
-|---------|-------------|
-| Site ID | Main identifier for the WordPress installation |
-| Domain ID | Appears in Plesk URL (not correct for backups) |
-| Owner ID | Account owner identifier |
-
-**Solution:** Use the **Main Site ID** instead of the Domain ID when configuring your Plesk connection in MainWP. Re-save settings and retry the backup.
-
----
+To create and restore backups through your hosting provider, see [API Backups](/sites/backups/api-backups). Provider setup instructions include:
+
+- [cPanel backups](/sites/backups/api-backups#cpanel-backups)
+- [DigitalOcean setup](/sites/backups/api-backups#connect-digitalocean)
+- [Kinsta setup and downloads](/sites/backups/api-backups#connect-kinsta)
 
 ## Self-Check Checklist
 
-- [ ] API credentials are entered and saved
-- [ ] Child sites are assigned to the correct provider
-- [ ] Test backup completes successfully
-- [ ] Backups appear in the Manage Backups list
-- [ ] Test restore works (on a staging site if possible)
-
----
+- [ ] Native Backups is enabled and the test Child Site syncs successfully
+- [ ] A first backup completed and appears under Snapshots & Restore
+- [ ] The expected storage copies completed, including Offsite Verified when required
+- [ ] Scheduled tasks have the intended sites, destinations, exclusions, and retention
+- [ ] The recovery passphrase is stored separately if encryption is enabled
+- [ ] A restore has been checked on a test site
+- [ ] The Dashboard itself has a separate backup
 
 ## Related Resources
 
-- [Why doesn't MainWP include backups](/sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard) - Backup philosophy explained
-- [Backup Add-ons](https://mainwp.com/mainwp-add-ons/add-on-category/backups/) - All backup add-ons
+- [API Backups](/sites/backups/api-backups) - Hosting-provider backup integrations
+- [Backup Add-ons](/add-ons/backups) - Third-party backup plugin integrations
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - General configuration
+- [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) - Keep scheduled work running
