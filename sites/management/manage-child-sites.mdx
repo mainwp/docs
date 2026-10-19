@@ -213,7 +213,7 @@ MainWP requires CSV format. TXT and other text formats will not work.
 
 <Steps>
 <Step title="Open Tools">
-Go to **MainWP > Settings > Tools**.
+Go to **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
 </Step>
 <Step title="Export">
 Click **Export Child Sites**.
@@ -248,7 +248,7 @@ Locate the site, open the actions menu, and click **Sync Data**.
 </Steps>
 
 <Note>
-MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **MainWP > Settings > General Settings**. The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Note>
 
 ### Child Site Cron Warnings
@@ -297,7 +297,7 @@ Per-site settings provide translation ignore control. Configure automatic transl
 
 ### Site URL and Detected Address
 
-Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **MainWP > Settings > Advanced Settings**, under **Miscellaneous Settings**.
+Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **top-right user menu > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`), under **Miscellaneous Settings**.
 
 When the stored address differs from the reported address only by protocol or `www`, the site's settings show **The child site reports its address as:** and a **Use detected** button. The hint is not shown for a different domain or port, or for a path-only difference.
 

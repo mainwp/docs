@@ -27,7 +27,7 @@ The abandoned tolerance setting controls how long a plugin or theme must go with
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Update Settings">
 Open **General Settings** and locate the **Updates Settings** section.
@@ -70,7 +70,7 @@ Sync the affected sites before running another abandoned check so MainWP Child r
 
 ### Turn Off Abandoned Data Collection During Sync
 
-Setting the tolerance to `0` does not disable this feature; the General Settings save handler uses 365 when the submitted value is empty or zero. To stop collecting abandoned data during regular synchronization, open **MainWP > Settings > Advanced Settings > Select data to sync**, clear **Abandoned plugins information** and **Abandoned themes information**, and save settings.
+Setting the tolerance to `0` does not disable this feature; the General Settings save handler uses 365 when the submitted value is empty or zero. To stop collecting abandoned data during regular synchronization, open **top-right user menu > MainWP Settings > Advanced Settings > Select data to sync** (`/wp-admin/admin.php?page=SettingsAdvanced`), clear **Abandoned plugins information** and **Abandoned themes information**, and save settings.
 
 This may suit a workflow where:
 

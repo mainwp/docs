@@ -2,16 +2,16 @@
 title: Update Frequency Settings
 sidebarTitle: "Update Frequency"
 description: >-
-  Configure how often MainWP automatically synchronizes data and runs updates on your child sites. Adjust the daily update frequency and set your preferred sync time.
+  Configure separate schedules for automatic synchronization and advanced automatic updates. Choose sync frequency, update days and times, and the update delay.
 ---
 
-MainWP automatically synchronizes data from your child sites and can run automatic updates on a schedule you define. Adjusting the update frequency determines how often MainWP checks for and applies trusted updates.
+MainWP Dashboard has separate schedules for automatic synchronization and advanced automatic updates. Sync refreshes child-site data, including available updates. The automatic-update schedule controls when MainWP installs eligible updates.
 
 ## What You'll Learn
 
-- Configure the automatic daily sync time
-- Set how many times per day MainWP runs automatic updates
-- Understand how sync timing works
+- Configure the daily sync time and frequency
+- Schedule automatic updates daily, weekly, or monthly
+- Understand how the update delay and cron affect timing
 
 ## Prerequisites
 
@@ -20,28 +20,28 @@ MainWP automatically synchronizes data from your child sites and can run automat
 
 ---
 
-## Configure Update Frequency
+## Configure Sync Frequency
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find General Settings">
-Locate the **General Settings** section.
+On the **General Settings** tab, locate the **General Settings** section.
 </Step>
 <Step title="Set daily sync time">
-Find **Automatic daily sync time** and set your preferred start time.
+Find **Daily sync time** and set your preferred start time.
 
 This determines when MainWP begins the first automatic sync of the day.
 </Step>
-<Step title="Set update frequency">
-Find **Daily update frequency** and select how many times per day MainWP should run automatic syncs and updates.
+<Step title="Set sync frequency">
+Set **Frequency of auto sync** to the number of sync runs per day. Options range from **Once per day** to **Twelve times per day**; the default is **Twice per day**.
 
 | Option | Sync Times |
 |--------|------------|
-| Once daily | At the configured sync time |
-| Twice daily | Sync time + 12 hours later |
-| Three times daily | Every 8 hours starting at sync time |
+| Once per day | At the configured sync time |
+| Twice per day | Sync time + 12 hours later |
+| Three times per day | Every 8 hours starting at sync time |
 </Step>
 <Step title="Save">
 Click **Save Settings**.
@@ -50,32 +50,64 @@ Click **Save Settings**.
 
 ---
 
+## Configure Update Frequency
+
+<Steps>
+<Step title="Open Updates Settings">
+Open **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`) and find the **Updates Settings** section.
+</Step>
+<Step title="Enable the update types you need">
+Set the relevant control to **Install Trusted Updates**:
+
+- **Plugin advanced automatic updates**
+- **Theme advanced automatic updates**
+- **Translation advanced automatic updates**
+- **WP Core advanced automatic updates**
+
+Mark plugins or themes as trusted on their **Advanced Auto Updates** pages. WordPress core also requires **Auto Update Core** enabled for each site. Follow the [Manage Updates guide](/sites/updates/manage-updates) for these steps and translation eligibility.
+</Step>
+<Step title="Choose the schedule">
+Set **Frequency of automatic updates** to **Daily**, **Weekly**, or **Monthly**. For weekly or monthly runs, use **Select day** to choose the weekday or day of the month. Set **Select time** for the update run.
+</Step>
+<Step title="Set the update delay">
+Choose **Advanced automatic updates delay**. The default is **1 day**; available options are **Delay off**, **1 day** through **7 days**, **14 days**, and **30 days**. An update must meet the delay before it is eligible for a scheduled run.
+</Step>
+<Step title="Save the schedule">
+Click **Save Settings**.
+</Step>
+</Steps>
+
+---
+
 ## How Timing Works
 
-If you set:
-- **Automatic daily sync time**: 7:00 AM
-- **Daily update frequency**: 3 times per day
+For example, configure:
 
-MainWP will sync and check for updates at:
-- 7:00 AM
-- 3:00 PM (8 hours later)
-- 11:00 PM (8 hours later)
+- **Daily sync time**: 7:00 AM
+- **Frequency of auto sync**: Three times per day
+- **Frequency of automatic updates**: Daily
+- **Select time**: 11:30 PM
+
+MainWP schedules syncs for 7:00 AM, 3:00 PM, and 11:00 PM. The automatic-update run is scheduled separately for 11:30 PM, subject to the enabled update types, trust settings, ignored updates, and update delay.
+
+Use the **Timezone** configured in MainWP Dashboard when choosing these times. Scheduled times depend on cron execution; a late cron trigger can delay a run.
 
 ---
 
 ## Important Notes
 
-- Automatic updates only apply to items marked as **Trusted**
-- Updates may take up to 24 hours after MainWP detects a new version
-- MainWP uses WP Cron for scheduling; ensure cron runs reliably
-- Consider using Uptime Robot to ping your Dashboard for consistent cron execution
+- Increasing sync frequency does not increase automatic-update frequency.
+- Plugin and theme advanced automatic updates require both the global setting and trusted items. Ignored items are excluded.
+- The update delay and the next scheduled run can both affect when an eligible update is installed; there is no universal 24-hour completion deadline.
+- MainWP uses cron for background work. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) for reliable cron execution.
 
 ---
 
 ## Self-Check Checklist
 
-- [ ] Daily sync time is configured
-- [ ] Update frequency matches your needs
+- [ ] Daily sync time and frequency are configured
+- [ ] Required automatic-update types and trust settings are enabled
+- [ ] Update schedule and delay match your needs
 - [ ] Settings are saved
 - [ ] WP Cron runs reliably on your Dashboard
 

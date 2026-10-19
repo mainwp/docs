@@ -30,7 +30,7 @@ WordPress.org dates are the default source. Items without usable dates can be ch
 
 ### Local File Date Fallback in 6.3
 
-MainWP Dashboard 6.3 adds **Abandoned check by local file date** under **Settings > General Settings > Updates Settings**. It is disabled by default and requires MainWP Child 6.3 or later. Enable it, save settings, and sync the affected sites before checking again.
+MainWP Dashboard 6.3 adds **Abandoned check by local file date** under **top-right user menu > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`). It is disabled by default and requires MainWP Child 6.3 or later. Enable it, save settings, and sync the affected sites before checking again.
 
 When WordPress.org cannot provide a usable last-updated date, MainWP Child compares a local file's modification date with **Abandoned plugins/themes tolerance**:
 
@@ -45,8 +45,8 @@ Locally detected rows describe the age of the file modification. Copying, restor
 
 Find abandoned items at:
 
-- **MainWP > Updates > Abandoned Plugins**
-- **MainWP > Updates > Abandoned Themes**
+- **Sites > Plugins > Abandoned Plugins** (`/wp-admin/admin.php?page=PluginsAbandoned`)
+- **Sites > Themes > Abandoned Themes** (`/wp-admin/admin.php?page=ThemesAbandoned`)
 
 ## What to Do with Abandoned Items
 

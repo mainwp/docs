@@ -25,6 +25,17 @@ The Manage Updates feature lets you run WordPress core, plugin, theme, and trans
 Before running updates, synchronize your child sites to ensure all available updates are displayed.
 </Note>
 
+## Find Update and Trust Settings
+
+Use **Sites > Updates** (`/wp-admin/admin.php?page=UpdatesManage`) to run manual updates. Trust controls are on separate pages:
+
+- **Sites > Plugins > Advanced Auto Updates** (`/wp-admin/admin.php?page=PluginsAutoUpdate`)
+- **Sites > Themes > Advanced Auto Updates** (`/wp-admin/admin.php?page=ThemesAutoUpdate`)
+
+On either trust page, click **Show Plugins** or **Show Themes**, select the items you want to trust, then choose **Mark as Trusted** from **Bulk Actions** and click **Apply**. The trust action is not on the manual Updates or Manage Plugins/Themes pages.
+
+To enable automatic updates, open the **user menu in the top-right corner** and select **MainWP Settings** (`/wp-admin/admin.php?page=Settings`). In **General Settings**, find the **Updates Settings** section. Marking items as trusted and enabling automatic updates are separate steps.
+
 ---
 
 <iframe
@@ -44,12 +55,10 @@ Before running updates, synchronize your child sites to ensure all available upd
 
 <Steps>
 <Step title="Navigate to WordPress Updates">
-Go to **MainWP > Updates > WordPress Updates**.
+Go to **Sites > Updates > WordPress** (`/wp-admin/admin.php?page=UpdatesManage&tab=wordpress-updates`).
 </Step>
 <Step title="Update all sites">
-Click **Update All Sites** in the table header.
-
-![WordPress Updates page showing Update All Sites button in the table header](/images/dashboard/sites-updates-3cf677.jpg)
+Click **Update All WP Cores** in the action bar.
 </Step>
 <Step title="Confirm">
 Confirm when prompted.
@@ -60,7 +69,7 @@ Confirm when prompted.
 
 <Steps>
 <Step title="Navigate to WordPress Updates">
-Go to **MainWP > Updates > WordPress Updates**.
+Go to **Sites > Updates > WordPress** (`/wp-admin/admin.php?page=UpdatesManage&tab=wordpress-updates`).
 </Step>
 <Step title="Locate site">
 Find the WordPress installation in the table.
@@ -78,15 +87,13 @@ Enable automatic WordPress core updates in two steps: enable the feature, then e
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Update Settings">
-Locate the **Update Settings** section.
+Locate the **Updates Settings** section in **General Settings**.
 </Step>
 <Step title="Enable">
-Set **WP Core auto-updates** to **Install updates**.
-
-![Update Settings section showing WP Core auto-updates dropdown with Install updates option](/images/dashboard/sites-updates-61e181.jpg)
+Set **WP Core advanced automatic updates** to **Install Trusted Updates**.
 </Step>
 <Step title="Save">
 Click **Save Settings**.
@@ -113,7 +120,7 @@ Click **Save Settings**.
 </Steps>
 
 <Note>
-MainWP Auto Update is independent from WordPress native auto-updates. It uses WP Cron and may take up to 24 hours after detecting an update. Use Uptime Robot to ping your Dashboard for reliable cron execution.
+MainWP advanced automatic updates are independent from WordPress native auto-updates. Configure **Frequency of automatic updates**, **Select time**, and **Advanced automatic updates delay** in **Updates Settings**. These settings are separate from automatic sync frequency. See [Update Frequency Settings](/sites/updates/how-to-change-daily-update-and-sync-frequency) for scheduling and cron requirements.
 </Note>
 
 ### Ignore WordPress Core Updates
@@ -148,7 +155,7 @@ Click **Save Settings**.
 
 <Steps>
 <Step title="Navigate to WordPress Updates">
-Go to **MainWP > Updates > WordPress Updates**.
+Go to **Sites > Updates > WordPress** (`/wp-admin/admin.php?page=UpdatesManage&tab=wordpress-updates`).
 </Step>
 <Step title="Locate the site">
 Find the child site with the WordPress core update you want to ignore.
@@ -162,7 +169,7 @@ Use the row action to select **Ignore this version**, **Ignore this version glob
 
 Use the same child site settings steps and set **Ignore Core Update** to **NO**.
 
-To review ignored WordPress core versions, go to **MainWP > Updates > WordPress Updates** and click **View Ignored Updates**. This button appears only when ignored WordPress core updates exist.
+To review ignored WordPress core versions, go to **Sites > Updates > WordPress** (`/wp-admin/admin.php?page=UpdatesManage&tab=wordpress-updates`) and click **View Ignored Updates**. This button appears only when ignored WordPress core updates exist.
 
 The ignored WordPress core updates page uses `wp-admin/admin.php?page=UpdatesManage&tab=updates-ignore`, but it is not shown as a separate Updates menu item. MainWP opens it from the **View Ignored Updates** button on the WordPress Updates tab.
 
@@ -178,10 +185,10 @@ If WordPress core is up to date but ignored WordPress core updates still exist, 
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins**.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`).
 </Step>
 <Step title="Update all">
-Click **Update All Plugins (Update All Sites)**.
+Click **Update All Plugins**.
 
 ![Update All Plugins button in the Plugins Updates page header](/images/dashboard/7aa4706544cd.png)
 </Step>
@@ -194,7 +201,7 @@ Confirm when prompted.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Item**.
@@ -213,7 +220,7 @@ Click **Update All** in the plugin row.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Site**.
@@ -232,10 +239,10 @@ Click **Update All** in the site row.
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`).
 </Step>
 <Step title="Select view">
-Set **View updates per** to **Site**.
+Select **Show updates per Site**.
 </Step>
 <Step title="Locate site">
 Find the child site and expand its row.
@@ -253,7 +260,7 @@ The plugin update rows include a **History** action so you can review recent cha
 
 <Steps>
 <Step title="Open a plugin row with History">
-Go to **MainWP > Updates > Plugins Updates** and use the **Site**, **Item**, or **Tag** view. You can also use **History** in plugin rows in individual site update tables.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`) and use the **Site**, **Item**, or **Tag** view. You can also use **History** in plugin rows in individual site update tables.
 </Step>
 <Step title="Open the history modal">
 Click **History** in the plugin row.
@@ -279,13 +286,13 @@ If you see "This plugin has no recorded activity in Dashboard Insights," check [
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Update Settings">
 Locate the **Updates Settings** section.
 </Step>
 <Step title="Enable">
-Set **Plugin automatic updates** to **Install Updates**.
+Set **Plugin advanced automatic updates** to **Install Trusted Updates**.
 </Step>
 <Step title="Save">
 Click **Save Settings**.
@@ -295,19 +302,17 @@ Click **Save Settings**.
 #### Mark Plugins as Trusted
 
 <Steps>
-<Step title="Navigate to Auto Updates">
-Go to **MainWP > Plugins > Auto Updates**.
+<Step title="Navigate to Advanced Auto Updates">
+Go to **Sites > Plugins > Advanced Auto Updates** (`/wp-admin/admin.php?page=PluginsAutoUpdate`).
 </Step>
 <Step title="Filter plugins">
-Use **Status**, **Trust Status**, and **Keyword** filters to find plugins.
+Use **Plugin Status to Search**, the trust-status dropdown under **Search Options**, and the **Plugin name** field to find plugins.
 </Step>
 <Step title="Search">
 Click **Show Plugins**.
 </Step>
 <Step title="Select and trust">
-Check the plugins to trust, select **Trust** from **Bulk Actions**, and click **Apply**.
-
-![Plugins Auto Updates page showing plugin list with checkboxes and Bulk Actions dropdown](/images/dashboard/c85c94240a94.png)
+Check the plugins to trust, select **Mark as Trusted** from **Bulk Actions**, and click **Apply**.
 </Step>
 </Steps>
 
@@ -322,7 +327,7 @@ Check the plugins to trust, select **Trust** from **Bulk Actions**, and click **
 
 <Steps>
 <Step title="Navigate to Plugin Updates">
-Go to **MainWP > Updates > Plugins Updates**.
+Go to **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Item**.
@@ -336,11 +341,11 @@ Find the plugin and select your ignore option.
 
 #### Un-ignore a Plugin
 
-When ignored plugin updates exist, you can click **View Ignored Updates** on **MainWP > Updates > Plugins Updates**. You can also use the Plugins menu path below.
+When ignored plugin updates exist, you can click **View Ignored Updates** on **Sites > Updates > Plugins** (`/wp-admin/admin.php?page=UpdatesManage&tab=plugins-updates`). You can also use the Plugins menu path below.
 
 <Steps>
 <Step title="Navigate to Ignored Updates">
-Go to **MainWP > Plugins > Ignored Updates**.
+Go to **Sites > Plugins > Ignored Updates** (`/wp-admin/admin.php?page=PluginsIgnore`).
 </Step>
 <Step title="Un-ignore">
 Find the plugin and click **Unignore**.
@@ -350,7 +355,7 @@ Find the plugin and click **Unignore**.
 </Steps>
 
 <Info>
-If there are no available plugin updates but ignored plugin updates exist, the Plugin Updates action bar remains visible. **View Ignored Updates** stays clickable, while plugin update buttons such as **Update Selected Plugins** and **Update All Sites** are disabled.
+If there are no available plugin updates but ignored plugin updates exist, the Plugin Updates action bar remains visible. **View Ignored Updates** stays clickable, while plugin update buttons such as **Update Selected Plugins** and **Update All Plugins** are disabled.
 </Info>
 
 ---
@@ -361,12 +366,10 @@ If there are no available plugin updates but ignored plugin updates exist, the P
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Update all">
-Click **Update All Sites (Update All Themes)**.
-
-![MainWP Themes Updates page with Update All Sites button highlighted](/images/dashboard/sites-updates-0716a8.png)
+Click **Update All Themes**.
 </Step>
 <Step title="Confirm">
 Confirm when prompted.
@@ -377,10 +380,10 @@ Confirm when prompted.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
-Set **Show updates per** to **Plugin/Theme**.
+Select **Show updates per Item**.
 </Step>
 <Step title="Locate theme">
 Find the theme you want to update.
@@ -396,7 +399,7 @@ Click **Update All** in the theme row.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Site**.
@@ -415,7 +418,7 @@ Click **Update All** in the site row.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Site**.
@@ -436,7 +439,7 @@ The theme update rows include a **History** action so you can review recent chan
 
 <Steps>
 <Step title="Open a theme row with History">
-Go to **MainWP > Updates > Themes Updates** and use the **Site**, **Item**, or **Tag** view. You can also use **History** in theme rows in individual site update tables.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`) and use the **Site**, **Item**, or **Tag** view. You can also use **History** in theme rows in individual site update tables.
 </Step>
 <Step title="Open the history modal">
 Click **History** in the theme row.
@@ -462,15 +465,13 @@ If you see "This theme has no recorded activity in Dashboard Insights," check [N
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Update Settings">
-Locate the **Update Settings** section.
+Locate the **Updates Settings** section in **General Settings**.
 </Step>
 <Step title="Enable">
-Enable **Theme Automatic Updates**.
-
-![Update Settings section showing Theme Automatic Updates toggle enabled](/images/dashboard/sites-updates-422515.jpg)
+Set **Theme advanced automatic updates** to **Install Trusted Updates**.
 </Step>
 <Step title="Save">
 Click **Save Settings**.
@@ -480,19 +481,17 @@ Click **Save Settings**.
 #### Mark Themes as Trusted
 
 <Steps>
-<Step title="Navigate to Auto Updates">
-Go to **MainWP > Themes > Auto Updates**.
+<Step title="Navigate to Advanced Auto Updates">
+Go to **Sites > Themes > Advanced Auto Updates** (`/wp-admin/admin.php?page=ThemesAutoUpdate`).
 </Step>
 <Step title="Filter themes">
-Use **Status**, **Trust Status**, and **Keyword** filters to find themes.
+Use **Theme Status to Search**, the trust-status dropdown under **Search Options**, and the **Theme name** field to find themes.
 </Step>
 <Step title="Search">
 Click **Show Themes**.
 </Step>
 <Step title="Select and trust">
-Check the themes to trust, select **Trust** from **Bulk Actions**, and click **Confirm**.
-
-![Themes Auto Updates page showing theme list with checkboxes and Bulk Actions dropdown](/images/dashboard/sites-updates-df2cc6.png)
+Check the themes to trust, select **Mark as Trusted** from **Bulk Actions**, and click **Apply**.
 </Step>
 </Steps>
 
@@ -507,7 +506,7 @@ Check the themes to trust, select **Trust** from **Bulk Actions**, and click **C
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Item**.
@@ -521,11 +520,11 @@ Find the theme and select your ignore option.
 
 #### Un-ignore a Theme
 
-When ignored theme updates exist, you can click **View Ignored Updates** on **MainWP > Updates > Themes Updates**. You can also use the Themes menu path below.
+When ignored theme updates exist, you can click **View Ignored Updates** on **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`). You can also use the Themes menu path below.
 
 <Steps>
 <Step title="Navigate to Ignored Updates">
-Go to **MainWP > Themes > Ignored Updates**.
+Go to **Sites > Themes > Ignored Updates** (`/wp-admin/admin.php?page=ThemesIgnore`).
 </Step>
 <Step title="Un-ignore">
 Find the theme and click **Unignore**.
@@ -544,7 +543,7 @@ If there are no available theme updates but ignored theme updates exist, the The
 
 MainWP Dashboard 6.2 includes built-in update compatibility for many premium plugins and themes. Available premium updates still appear in the normal plugin and theme update screens described above.
 
-If a premium update is missing, check its license and update availability on the child site, then sync again. For products that need extra compatibility, go to **MainWP > Settings > Premium Updates** and add a **Custom Identifier**.
+If a premium update is missing, check its license and update availability on the child site, then sync again. For products that need extra compatibility, go to **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`) and add a **Custom Identifier**.
 
 ![Premium Updates settings with licensing guidance and custom identifier controls](/images/dashboard/premium-updates-overview-dark.svg)
 
@@ -558,7 +557,7 @@ See [Premium Updates](/sites/updates/premium-updates) for setup. An active vendo
 
 <Steps>
 <Step title="Navigate to Translation Updates">
-Go to **MainWP > Updates > Translation Updates**.
+Go to **Sites > Updates > Translation** (`/wp-admin/admin.php?page=UpdatesManage&tab=translations-updates`).
 </Step>
 <Step title="Update all">
 Click **Update All** to run all available translation updates.
@@ -569,7 +568,7 @@ Click **Update All** to run all available translation updates.
 
 <Steps>
 <Step title="Navigate to Translation Updates">
-Go to **MainWP > Updates > Translation Updates**.
+Go to **Sites > Updates > Translation** (`/wp-admin/admin.php?page=UpdatesManage&tab=translations-updates`).
 </Step>
 <Step title="Switch to Site view">
 Set **Show updates per** to **Site**.
@@ -581,11 +580,11 @@ Find the child site and run the available translation updates for that site.
 
 ### Translation Auto Updates
 
-Configure translation auto-updates globally in **MainWP > Settings**, under the **Updates Settings** section.
+Configure translation auto-updates globally in **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`), under the **Updates Settings** section.
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Updates Settings">
 Locate the **Updates Settings** section.
@@ -614,7 +613,7 @@ Auto Updates Email is separate from Daily Digest and does not wait for the next 
 
 ### Disable Auto Updates Email
 
-1. Go to **MainWP > Settings > Email Settings**.
+1. Go to **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`).
 2. Click **Manage** beside **Auto Updates Email**.
 3. Turn **Enable** off and click **Save Settings**.
 
