@@ -63,8 +63,10 @@ It configures the logs dataset used by both Network Activity and Dashboard Insig
 
 You can use the **Network Activity** widget in:
 
-- **MainWP > Operations**
-- Individual child site **Operations** pages
+- **MainWP > Operations** (`admin.php?page=mainwp_tab`)
+- Individual child site **Overview** pages (`admin.php?page=managesites&dashboard=<site-id>`)
+
+Replace `<site-id>` with the child site ID.
 
 ## Understand Activity Sources
 
@@ -108,8 +110,8 @@ Non-MainWP Changes are a subset of Network Activity data. They show activity tha
 ![Animation showing how to filter Network Activity widget for Non-MainWP Changes only](/images/faq/non-mainwp-changes-filter.gif)
 
 <Steps>
-<Step title="Open an Operations page with the widget">
-Open **MainWP > Operations** or an individual child site **Operations** view.
+<Step title="Open a page with the widget">
+Open **MainWP > Operations** (`admin.php?page=mainwp_tab`) or an individual child site **Overview** (`admin.php?page=managesites&dashboard=<site-id>`).
 </Step>
 <Step title="Open the widget menu">
 In the **Network Activity** widget, click the three-dot menu.
@@ -125,7 +127,7 @@ Choose **Non-MainWP Changes** to show WP Admin-originated events only.
 
 <Steps>
 <Step title="Go to Network Activity">
-Go to **MainWP > Sites > Network Activity**.
+Go to **MainWP > Sites > Network Activity** (`admin.php?page=InsightsManage`).
 </Step>
 <Step title="Set source filter">
 In the **Source** filter, select **WP Admin**.
@@ -150,7 +152,7 @@ To dismiss only specific logs, select their checkboxes and use **Dismiss Selecte
 Dismissal removes logs from the active activity list; it does not undo the original changes on your sites. All dismiss actions require confirmation before execution.
 
 <Info>
-Bulk dismissal is available on the Network Activity page and in the Network Activity widget shown on Operations and individual child site Operations pages.
+Dismissal actions are available on the Network Activity page. The Network Activity widget has no dismissal controls; click **View All Changes** to open the page and dismiss events.
 </Info>
 
 ---
@@ -161,10 +163,13 @@ Open **MainWP > Settings > Network Activity Settings** (`admin.php?page=Settings
 
 - **Enable Network Activity logging**
 - **Automatically archive logs** (optional)
-- **Data retention period** for active logs
+- **Data retention period** for active Dashboard logs before automatic archiving; **Forever** disables age-based archiving
+- **Retention period for Network Activity Logs on child sites**, in days (default: 7); this controls local Child-site cleanup and does not change Dashboard retention
 - **Select events to log** for Dashboard and Non-MainWP sources
 
-These settings affect both Network Activity and Dashboard Insights because both features use the same logs dataset.
+Click **Save Settings** after making changes. Manually sync the child sites to send the logging, event-selection, and Child-site retention settings to them.
+
+Dashboard logging and archiving settings affect both Network Activity and Dashboard Insights because both features use the same logs dataset.
 
 ## Delete Archived Network Activity Data
 
@@ -172,10 +177,10 @@ To remove archived records:
 
 <Steps>
 <Step title="Open Tools settings">
-Go to **MainWP > Settings > Tools**.
+Go to **MainWP > Settings > Tools** (`admin.php?page=MainWPTools`).
 </Step>
 <Step title="Delete archived data">
-Use **Delete Archived Network Activity Data**.
+Click **Delete Archived Network Activity Data** and confirm. This permanently deletes all archived Network Activity records and their metadata from the Dashboard; active logs are not deleted.
 </Step>
 </Steps>
 
