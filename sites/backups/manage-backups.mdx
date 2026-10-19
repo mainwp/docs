@@ -10,7 +10,7 @@ Native Backups lets you back up and restore Child Sites directly from MainWP Das
 MainWP Child creates the backup and sends it to your Dashboard. You can also store copies on remote storage or a mounted drive.
 
 <Info>
-This guide covers Native Backups in the MainWP 6.3 beta. Use matching, current beta versions of MainWP Dashboard and MainWP Child. Test backups and restores on a staging site, and keep an independent backup while evaluating the beta.
+This guide covers Native Backups in MainWP 6.3. Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
 </Info>
 
 To manage your hosting provider's backups, use [API Backups](/sites/backups/api-backups). For third-party backup plugins, see [Backup Add-ons](/add-ons/backups).
@@ -186,6 +186,23 @@ Review the exclusion switches for known backup locations, known cache locations,
 
 Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`.
 
+## Check Backup Health
+
+View **Backup Health** in **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) or **MainWP > Operations** (`/wp-admin/admin.php?page=mainwp_tab`). The summary appears when Native Backups is enabled and your account has permission to run backups.
+
+Each site is classified using its latest completed native snapshot:
+
+| Status | Meaning |
+| --- | --- |
+| Protected | The snapshot is no more than 24 hours old and its offsite copies are verified. |
+| At Risk | The snapshot is over 24 hours old but no more than 7 days old, or is no more than 24 hours old without verified offsite copies. |
+| Critical | The latest completed snapshot is more than 7 days old. |
+| No Backup | No completed native snapshot is recorded. |
+
+Click a status to filter Manage Sites to the matching sites. For **At Risk**, check the backup schedule and storage uploads. For **Critical** or **No Backup**, run a backup and confirm it completes.
+
+A recent backup stored only locally shows **At Risk**. **Protected** confirms backup age and offsite verification; it does not confirm a successful restore test. See [Check Backup Status](#check-backup-status) for upload and restore-test results.
+
 ## Check Backup Status
 
 Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last run**, **Next run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
@@ -295,7 +312,7 @@ Enable **Require an offsite-verified backup** to also require verified copies on
 
 For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates/does-mainwp-have-safe-updates).
 
-## Troubleshooting and Beta Limitations
+## Troubleshooting and Limitations
 
 | Symptom | What to check |
 | --- | --- |
@@ -305,9 +322,9 @@ For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
-| File backup is refused because content is outside the WordPress folder | The beta does not support this layout for file backups or restores. Use database-only tasks and your host's file backups while this limitation applies. |
+| File backup is refused because content is outside the WordPress folder | Native Backups does not support this layout for file backups or restores. Use database-only tasks and your host's file backups. |
 
-Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores in this beta. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
+Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
 
 A database-only restore may also stop on these sites because the safety backup includes files. Keep an independent backup and follow the error message before retrying without the safety backup.
 
