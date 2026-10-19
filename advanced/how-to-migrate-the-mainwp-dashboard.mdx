@@ -1,22 +1,27 @@
 ---
-title: Can I migrate the MainWP Dashboard to a different server?
+title: Migrate the MainWP Dashboard to a Different Server
 sidebarTitle: "Migrate Dashboard"
 description: >-
-  Migrating a WordPress installation with MainWP installed is identical to
-  migrating any WordPress site. Use any migration method, and MainWP continues
-  working without reconfiguration in most cases.
+  Move the complete MainWP Dashboard installation to another server, preserve
+  its database and key files, and verify child site connections afterward.
 ---
 
-Migrating a WordPress installation with MainWP installed works the same as migrating any WordPress site. You can use migration plugins, hosting migration tools, or manually copy files and the database. MainWP functionality continues after migration without requiring reconfiguration in most cases.
+You can move your MainWP Dashboard to another server while retaining its settings, clients, child site records, and Add-on data. Transfer the complete WordPress installation, including the database, installed Add-ons, uploads, and MainWP encryption-key files.
+
+<Warning>
+If the Dashboard domain or subdomain changes, exclude `wp_mainwp_wp` and `wp_mainwp_wp_sync` from search-replace, using your actual table prefix. Replacements that match child site URLs can corrupt those addresses. Include these tables in the backup and migration; exclude them only from search-replace.
+</Warning>
+
+For a new domain or subdomain, with or without a server change, follow [Move MainWP Dashboard to a New Domain or Subdomain](/advanced/changing-the-domain-of-your-mainwp-dashboard-site). That guide covers the complete workflow and URL recovery. The [Domain Changes During Migration](#domain-changes-during-migration) section below also includes the exclusion command.
 
 ## What You'll Learn
 
-- How to prepare for migration
-- What to verify after migration
-- How to handle domain changes
-- How to reconnect child sites
+- How to prepare a complete Dashboard migration
+- How to protect child site URLs if the Dashboard address changes
+- How to verify retained data, Add-ons, and connections
+- How to troubleshoot sites that fail to reconnect
 
-For general WordPress migration guidance, see the official documentation: [Moving WordPress](https://developer.wordpress.org/advanced-administration/upgrade/migrating/).
+For the underlying WordPress transfer process, see [Migrating WordPress](https://developer.wordpress.org/advanced-administration/upgrade/migrating/).
 
 ---
 
@@ -26,37 +31,92 @@ For general WordPress migration guidance, see the official documentation: [Movin
 
 | Item | Why It Matters |
 |------|----------------|
-| Dashboard URL | Child sites use this to communicate with the Dashboard |
-| Add-on license keys | Required if reactivation is needed after migration |
-| Add-on settings | Export using built-in import/export features where available |
+| Dashboard URL | Determines whether the move also requires a domain or subdomain change |
+| Child site URLs | Lets you check that migration did not change their addresses |
+| Add-ons and their settings | Lets you verify that installed Add-ons, templates, and schedules were retained |
+| MainWP account and license access | Lets you reactivate Add-on licenses if needed |
+| Scheduled work on the old server | Must stop on the old copy after the move to avoid duplicate activity |
 
-Sync all child sites before migration to ensure the database contains current information.
+Open **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) and click **Sync** in the header before migration. You can [export your site list](/sites/how-can-i-export-child-sites) for comparison, but that export does not replace a full Dashboard backup.
 
 ### Create Backups
 
 <Warning>
-Create backups before starting migration.
+Create a fresh backup and verify that it completed with all required files and tables before starting migration. A database-only transfer does not preserve the entire Dashboard installation.
 </Warning>
 
 | Backup Type | Contents |
 |-------------|----------|
-| Database | Full database backup of the Dashboard site |
-| Files | Complete backup including `wp-content` |
-| Configuration | Document wp-config.php constants and .htaccess rules |
+| Database | Full Dashboard database, including all MainWP and Add-on tables |
+| Files | Complete WordPress installation, including installed Add-ons and uploads |
+| MainWP key files | Entire MainWP uploads directory, normally `wp-content/uploads/mainwp/`, including `pk`; preserve the corresponding directory if uploads are customized |
+| Configuration | `wp-config.php`, applicable server rules, and any externally configured scheduled jobs |
+
+The database holds settings and records. Add-on code and encryption-key files are stored on disk. Missing key files can prevent the migrated Dashboard from decrypting connection keys and other encrypted data.
 
 ---
 
 ## During Migration
 
-Use any standard WordPress migration method:
+Use a migration plugin, your host's migration service, or a manual transfer that copies the full database and files. Confirm that the destination meets the [MainWP Dashboard requirements](/advanced/miscellaneous/mainwp-system-requirements). Update the destination's database connection settings in `wp-config.php` if necessary.
 
-| Method | Examples |
-|--------|----------|
-| Migration plugins | Duplicator, All-in-One WP Migration, UpdraftPlus |
-| Hosting tools | Many hosts offer one-click migration |
-| Manual migration | Export database, copy files, update wp-config.php |
+Some migration tools perform automatic URL replacement during export, import, or restoration. If the Dashboard URL changes, confirm the search-replace exclusions before starting. Excluding tables from the backup or transfer would omit the MainWP records you need to retain.
 
-If changing domains during migration, see [Changing the Domain of Your MainWP Dashboard](/advanced/changing-the-domain-of-your-mainwp-dashboard-site) for important considerations about search-replace operations.
+Keep the original backup until verification is complete. After the move, use the destination as the active Dashboard and stop scheduled work on the old copy.
+
+## Domain Changes During Migration
+
+A move from `dash.example.com` to `mainwp.example.com` is a Dashboard URL change even though both addresses use the same parent domain.
+
+<Warning>
+Exclude `wp_mainwp_wp` and `wp_mainwp_wp_sync` from every domain search-replace, replacing `wp_` with your actual prefix. The exclusions protect child site records from matching replacements; the tables must still be migrated in full.
+</Warning>
+
+Run this preview against the restored Dashboard at the destination, substituting the full old and new Dashboard URLs and the actual table prefix:
+
+```bash
+wp search-replace \
+  'https://dash.example.com' \
+  'https://mainwp.example.com' \
+  --skip-tables=wp_mainwp_wp,wp_mainwp_wp_sync \
+  --skip-columns=guid \
+  --dry-run
+```
+
+Review the reported tables and replacements. If they match the intended change, remove `--dry-run`:
+
+```bash
+wp search-replace \
+  'https://dash.example.com' \
+  'https://mainwp.example.com' \
+  --skip-tables=wp_mainwp_wp,wp_mainwp_wp_sync \
+  --skip-columns=guid
+```
+
+The example uses WP-CLI's default table selection. Have your host review additional tables before expanding the operation, and configure the same exclusions for any separate automatic replacement. See the [WP-CLI search-replace reference](https://developer.wordpress.org/cli/commands/search-replace/).
+
+Corruption depends on the searched text matching a child site address. For example, replacing `example.com` with `example.net` also changes `client.example.com`, even when that child site has not moved. For host-assisted or manual URL changes, and repairs after an incorrect replacement, use the [domain and subdomain guide](/advanced/changing-the-domain-of-your-mainwp-dashboard-site#preventing-url-corruption).
+
+---
+
+## Keeping the Same Domain
+
+If the complete Dashboard URL stays the same, a domain search-replace is not needed.
+
+<Steps>
+<Step title="Prepare the destination">
+Restore the complete files and database, configure the server to serve the existing Dashboard domain, and verify its HTTPS certificate.
+</Step>
+<Step title="Update DNS">
+Point the Dashboard domain to the destination server. Allow for DNS caching before assessing access from different locations.
+</Step>
+<Step title="Check network access">
+If child site security rules restrict the Dashboard by server IP, update the relevant allowlists for the destination.
+</Step>
+<Step title="Verify connections">
+Follow the checks below. A complete migration preserves the connection data, so reconnect only sites that report an error after syncing.
+</Step>
+</Steps>
 
 ---
 
@@ -65,109 +125,65 @@ If changing domains during migration, see [Changing the Domain of Your MainWP Da
 ### Verify Dashboard Access
 
 <Steps>
-<Step title="Log in">
-Access your MainWP Dashboard at the new location.
+<Step title="Log in at the destination">
+Confirm that the Dashboard opens from the destination server and that settings, clients, and child site records are present.
 </Step>
-<Step title="Check status">
-Navigate to **MainWP > Info > Server** to confirm the Dashboard is functioning.
+<Step title="Check server information">
+Open **MainWP > Info > Server** (`/wp-admin/admin.php?page=ServerInformation`) and review any requirements or configuration warnings.
 </Step>
-<Step title="Verify add-ons">
-Confirm all add-ons appear and are activated.
+<Step title="Verify Add-ons and their data">
+Confirm that installed Add-ons are present and their settings were retained. For example, check your saved Pro Reports templates and schedules. A complete files-and-database migration does not require recreating this setup.
 </Step>
 </Steps>
 
 ### Reconnect Add-ons
 
-If add-ons show as deactivated, go to **MainWP > Add-ons**, enter your API credentials, and reactivate any add-ons that require license verification.
+Open **MainWP > Add-ons > Manage Add-ons** (`/wp-admin/admin.php?page=Extensions`) and check license activation. If licenses need reactivation at the new location, follow [Activate Add-ons](/dashboard/overview/manage-extensions#activate-add-ons). License activation and the presence of your saved Add-on data are separate checks.
 
 ### Verify Child Site Connections
 
 <Steps>
 <Step title="Open Manage Sites">
-Navigate to **MainWP > Sites > Manage Sites**.
+Go to **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) and compare the child site URLs with your saved list.
 </Step>
 <Step title="Sync all sites">
-Click **Sync All** to verify connections.
+Click **Sync** in the header and review the results. On a successful sync, MainWP Child updates its stored Dashboard address automatically if it has changed.
 </Step>
-<Step title="Check connection status">
-Verify each site shows as connected.
+<Step title="Test site access">
+Use **Jump to WP Admin** on several child sites and confirm that their current data appears in the Updates view.
 </Step>
 </Steps>
 
 ### Reconnect Disconnected Sites
 
-When the Dashboard URL changes, child sites may not automatically find the new location.
+For a failed connection, check the child site's URL, MainWP Child activation, copied encryption-key files, and any firewall rules that restrict the new Dashboard server. If search-replace changed site addresses, follow [Fixing Corrupted Child Site URLs](/advanced/changing-the-domain-of-your-mainwp-dashboard-site#fixing-corrupted-child-site-urls).
 
-<Steps>
-<Step title="Access child site">
-Visit the child site's wp-admin directly.
-</Step>
-<Step title="Update Dashboard URL">
-Go to **Settings > MainWP Child** and update the Dashboard URL if it shows the old address.
-</Step>
-<Step title="Reconnect">
-Reconnect from your new Dashboard location.
-</Step>
-</Steps>
+After correcting the cause, use **Reconnect** in the affected site's action menu under **Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`). Supply the current [Unique Security ID](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) if requested.
 
-If using the same domain, ensure DNS has propagated, clear any CDN or caching layers, and force a sync from the Dashboard.
+MainWP Child has no editable Dashboard URL field, and a domain change does not require manually updating that address on every child site. For unresolved errors, see [Troubleshoot Connection Problems](/troubleshooting/potential-issues).
 
 ### Test Core Functionality
 
-Verify these features work after migration:
-
-| Test | Action |
-|------|--------|
-| Site access | Jump to WP Admin for several child sites |
-| Data sync | Sync site data successfully |
-| Updates view | View updates across your network |
-| Update test | Run a test update on a non-critical site |
-
----
-
-## Domain Changes During Migration
-
-When your Dashboard domain changes (for example, `olddashboard.com` to `newdashboard.com`):
-
-1. Avoid running search-replace operations on MainWP tables
-2. Child sites will need reconnection to the new Dashboard URL
-3. See [Changing the Domain of Your MainWP Dashboard](/advanced/changing-the-domain-of-your-mainwp-dashboard-site) for detailed guidance
-
----
-
-## Keeping the Same Domain
-
-When migrating to a new server while keeping the same domain:
-
-<Steps>
-<Step title="Update DNS">
-Point DNS to the new server.
-</Step>
-<Step title="Wait for propagation">
-DNS propagation may take up to 48 hours.
-</Step>
-<Step title="Verify connections">
-Child site connections should resume automatically once DNS resolves to the new server. Use Jump to WP Admin or sync operations to confirm.
-</Step>
-</Steps>
-
-No reconfiguration is typically needed when the domain stays the same.
+Verify the workflows you use, including sync, **Jump to WP Admin**, the Updates view, and Add-on settings. If you use scheduled reports or other scheduled actions, confirm that they are configured on the destination and no longer run from the old copy.
 
 ---
 
 ## Self-Check Checklist
 
-- [ ] Backup created before migration
-- [ ] Add-on license keys documented
-- [ ] Dashboard accessible at new location
-- [ ] Add-ons activated and functioning
-- [ ] All child sites connected and syncing
-- [ ] Core functionality tested
+- [ ] Complete files and database backup verified before migration
+- [ ] MainWP and Add-on tables, files, and encryption-key files copied
+- [ ] MainWP tables excluded from search-replace if the Dashboard URL changed
+- [ ] Dashboard accessible from the destination server
+- [ ] Settings, clients, child site records, and Add-on data retained
+- [ ] Add-on licenses checked
+- [ ] Child site URLs unchanged or repaired against the original list
+- [ ] Sync and Jump to WP Admin checks successful
+- [ ] Scheduled work runs only from the destination Dashboard
 
 ---
 
 ## Related Resources
 
-- [Change Dashboard Domain](/advanced/changing-the-domain-of-your-mainwp-dashboard-site) - Domain change procedures
-- [Move Child Sites](/advanced/move-child-sites-to-another-mainwp-dashboard) - Transfer sites between Dashboards
-- [Reconnecting Child Sites](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) - Reconnection process
+- [Move MainWP Dashboard to a New Domain or Subdomain](/advanced/changing-the-domain-of-your-mainwp-dashboard-site) - Complete domain-change workflow and URL recovery
+- [Move Child Sites](/advanced/move-child-sites-to-another-mainwp-dashboard) - Transfer sites between separate Dashboards
+- [Reconnect a Child Site](/sites/management/manage-child-sites#reconnect-a-child-site) - Single-site and bulk reconnection

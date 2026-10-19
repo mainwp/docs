@@ -36,7 +36,7 @@ This page documents built-in Monitoring Settings in MainWP Dashboard. It is diff
 
 <Steps>
 <Step title="Open Monitoring Settings">
-Go to **MainWP > Settings > Monitoring Settings**.
+Go to **top-right user menu > MainWP Settings > Monitoring Settings** (`/wp-admin/admin.php?page=MonitoringSettings`).
 </Step>
 <Step title="Locate Uptime Monitoring">
 In the **Uptime Monitoring** section, configure global monitor behavior for all child sites.
@@ -54,7 +54,7 @@ In the **Site Health Monitoring** section, configure health monitoring behavior.
 
 ### HTTP Response Check Settings
 
-**Check site HTTP response after update** and **Check site HTTP response method** are global-only settings. Configure them under **MainWP > Settings > Monitoring Settings**; they do not appear when editing an individual site's Uptime Monitoring settings. The status-code list is shared with Uptime Monitoring and can still be overridden per site.
+**Check site HTTP response after update** and **Check site HTTP response method** are global-only settings. Configure them under **top-right user menu > MainWP Settings > Monitoring Settings** (`/wp-admin/admin.php?page=MonitoringSettings`); they do not appear when editing an individual site's Uptime Monitoring settings. The status-code list is shared with Uptime Monitoring and can still be overridden per site.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -70,7 +70,7 @@ In the **Site Health Monitoring** section, configure health monitoring behavior.
 | Monitor Type | HTTP(s) | `HTTP(s)`, `Ping`, or `Keyword Monitoring` |
 | Method | HEAD | For HTTP(s) monitor type: `HEAD`, `GET`, `POST`, `PUSH`, `PATCH`, or `DELETE` |
 | Keyword to Look For | Empty | Appears when Monitor Type is `Keyword Monitoring` |
-| Monitor Interval (minutes) | 60m | Slider from `5m`, `10m`, `15m`, `30m`, `45m`, then `1h` through `24h` |
+| Monitor Interval (minutes) | 1h (60 minutes) | Slider from `5m`, `10m`, `15m`, `30m`, `45m`, then `1h` through `24h` |
 | Timeout (seconds) | 60s | Slider values: `30s`, `45s`, `60s`, `90s`, `2-10min`, `15min`, `30min`, `45min`, `60min`, `90min`, `No limit` |
 | Down Confirmation Check | Enabled | Confirms downtime before creating alerts |
 | Attempt to bypass page cache | Disabled | Adds cache-control headers and a unique cache-busting value to each uptime request as a best-effort attempt to reach the origin server |
@@ -87,7 +87,7 @@ Monitoring Data Retention options:
 - 365 days (1 year)
 
 <Note>
-Configure **Maximum simultaneous uptime monitoring requests** in **MainWP > Settings > Advanced Settings**.
+Configure **Maximum simultaneous uptime monitoring requests** in **top-right user menu > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`).
 </Note>
 
 ### Site Health Monitoring Settings
@@ -101,10 +101,10 @@ WordPress Site Health is a WordPress core feature that evaluates the site's conf
 
 On each child site, you can review the same information directly in the site `wp-admin` under **Tools > Site Health**. The child site's Site Health screen includes the native WordPress **Status** and **Info** tabs.
 
-Site Health Monitoring in this page uses that existing WordPress core Site Health data and does not rely on third-party services. MainWP simply retrieves the Site Health result already generated on the child site, compares it against your configured threshold, and relays the status in your MainWP Dashboard and notifications.
+Site Health Monitoring uses cached WordPress Site Health test counts collected by MainWP Child during synchronization. MainWP Dashboard calculates a health score from those counts, compares it against your configured threshold, and uses it for notifications. It does not run a fresh Site Health test with each uptime check, so its data can lag behind the child site.
 
 Site Health Monitoring notification templates support the `[site.name]` token for dynamic site name insertion.
-Use `[site.name]` in the email subject, heading, or template content to insert the child site name automatically.
+Use `[site.name]` in the email subject, heading, or template content for individual-site notifications. A combined administrator summary has no single child-site context for template token replacement.
 
 ---
 
@@ -112,13 +112,13 @@ Use `[site.name]` in the email subject, heading, or template content to insert t
 
 ### Monitoring Table
 
-Go to **MainWP > Sites > Monitoring** to review monitor status across sites.
+Go to **MainWP > Sites > Monitoring** (`admin.php?page=MonitoringSites`) to review monitor status across sites.
 
 The Monitoring table includes a **Status code** column so you can quickly see the latest HTTP response code for each monitor.
 
 ### Individual Site Uptime Widget
 
-On the individual site Operations page, the Uptime Monitoring widget shows:
+On the individual site **Overview** tab (`admin.php?page=managesites&dashboard=SITE_ID`), the Uptime Monitoring widget shows:
 
 - Current status (UP, DOWN, PENDING, or DISABLED)
 - Current HTTP status code
@@ -131,30 +131,30 @@ If the widget shows **Failed to create the primary monitor for this site**, open
 
 ### Site Health in Monitoring Views
 
-The Monitoring page also includes Site Health indicators so you can review health state alongside uptime data.
+When Site Health Monitoring is enabled, the Monitoring page includes a **Site Health** column so you can review health state alongside uptime data.
 
-These indicators reflect the same WordPress core Site Health status shown on the child site in **Tools > Site Health**, allowing you to monitor that native WordPress information centrally from MainWP Dashboard.
+These indicators use the Site Health counts from the last synchronization. MainWP displays **Good** when its calculated score is at least 80 and there are no critical issues; otherwise, it displays **Should be improved**. To investigate, open **Tools > Site Health** (`site-health.php`) on the child site and synchronize again after refreshing its results.
 
 ---
 
 ## Uptime Monitoring Email Notifications
 
-Go to **MainWP > Settings > Email Settings > Uptime Monitoring Email**.
+Go to **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`) and select **Uptime Monitoring Email**.
 
 ![Uptime email settings](/images/dashboard/sites-management-c33b3f.png)
 
 | Setting | Description |
 |---------|-------------|
 | Enable | Turns uptime email notifications on or off |
-| Recipient(s) | One or more email addresses for alerts |
-| Subject and Heading | Customizes the notification subject and heading |
+| Recipient(s) | One or more email addresses for alerts, separated by commas |
+| Subject and Email heading | Customizes the notification subject and heading |
 | HTML Template | Uses default template or custom copy in `wp-content/uploads/mainwp/templates/emails/` |
 
 Uptime notifications are sent on important status changes, including when a site goes down and when it comes back online. Emails include the monitor URL, status code, and event timestamp.
 
 ### `[uptime.status]` Token Support
 
-You can use `[uptime.status]` in uptime email content and settings to insert the current status value.
+You can use `[uptime.status]` in the email subject and heading, and in template content for individual-site uptime emails. In a combined administrator summary, the subject and heading use the first included event's status; a token in the template body is not replaced for each listed monitor.
 
 Supported values include:
 
@@ -162,6 +162,8 @@ Supported values include:
 - `DOWN`
 - `PENDING`
 - `DISABLED`
+
+These are token values, not four separate alert types. Automatic uptime alerts are triggered by confirmed downtime and recovery; `PENDING` and `DISABLED` do not trigger their own alerts.
 
 ---
 
@@ -171,7 +173,7 @@ You can override global settings for specific sites.
 
 ![Individual site uptime settings](/images/dashboard/sites-management-68b8c5.png)
 
-Access per-site settings at **Child Site Dashboard > Uptime Monitoring**.
+In MainWP Dashboard, open the child site's **Settings** tab (`admin.php?page=managesites&id=SITE_ID`) and expand **Site Monitoring Settings**. Replace `SITE_ID` with the child site's MainWP ID. Click **Save Settings** after making changes.
 
 Per-site options support `Use global setting` for applicable fields.
 
@@ -183,7 +185,7 @@ The post-update HTTP response toggle and request method cannot be overridden per
 |--------|-------------|
 | Enable Uptime Monitoring | `Use global setting`, `Enable`, or `Disable` |
 | Monitor Type | `Use global setting`, `HTTP(s)`, `Ping`, or `Keyword Monitoring` |
-| Method | `Use global setting` or HTTP methods (`HEAD`, `GET`, `POST`, `PUSH`, `PATCH`, `DELETE`) |
+| Method | `Use global settings` or HTTP methods (`HEAD`, `GET`, `POST`, `PUSH`, `PATCH`, `DELETE`) |
 | Keyword to Look For | Site-specific keyword for keyword monitoring |
 | Monitor Interval (minutes) | Site-specific interval slider or global value |
 | Timeout (seconds) | Site-specific timeout slider or global value |
@@ -191,7 +193,7 @@ The post-update HTTP response toggle and request method cannot be overridden per
 | Attempt to bypass page cache | `Use global setting`, `Enable`, or `Disable`; available for the primary site monitor, not sub-monitors |
 | Up HTTP Codes for HTTP Response and Uptime Monitoring | Site-specific code list or global value |
 | Sub-Monitors | Add extra monitored paths with **Create Sub-Monitor** |
-| Monitor actions | Disable the monitor or delete a sub-monitor |
+| Monitor actions | Use **Disable Monitor** for the primary monitor or **Delete** in a sub-monitor's edit dialog |
 
 When adding a sub-monitor, enter only the path segment (excluding the main site URL).
 

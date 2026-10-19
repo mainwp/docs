@@ -7,7 +7,7 @@ description: "Advanced reference for invoking individual MainWP Dashboard and Ad
 <Warning>
 This is an advanced manual setup and is not the recommended solution for a low-traffic MainWP Dashboard. Direct worker files invoke specific MainWP tasks; they do not replace WordPress's complete cron and background-event processing.
 
-For most installations, keep **MainWP Dashboard > Settings > Advanced Settings > Use WP Cron** enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+For most installations, keep **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`) enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Warning>
 
 This page documents the individual workers currently available for administrators who intentionally choose to maintain direct server cron jobs.
@@ -89,7 +89,7 @@ Before switching, inventory every enabled MainWP feature and Add-on and identify
     Record every MainWP Dashboard feature and Add-on that relies on scheduled processing, including multi-stage workflows.
   </Step>
   <Step title="Turn off Use WP Cron">
-    Turn off **MainWP Dashboard > Settings > Advanced Settings > Use WP Cron**. This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
+    Turn off **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`). This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
   </Step>
   <Step title="Configure each documented worker">
     Create a separate server job for every required worker at the exact cadence shown below.

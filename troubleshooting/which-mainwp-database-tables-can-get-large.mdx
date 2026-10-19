@@ -61,7 +61,7 @@ Each logged event adds a row to `wp_mainwp_wp_logs`, and related metadata can ad
 
 **How to reduce them**
 
-- In MainWP Dashboard, go to **MainWP > Settings > Network Activity Settings**.
+- In MainWP Dashboard, go to **top-right user menu > MainWP Settings > Network Activity Settings** (`/wp-admin/admin.php?page=SettingsInsights`).
 - Enable **Automatically archive logs**.
 - Set a **Data retention period** instead of `Forever`.
 - Reduce logged event categories if you do not need the full history.
@@ -80,7 +80,7 @@ Auto-archiving moves data into these archive tables instead of deleting it.
 
 **How to reduce them**
 
-- In MainWP Dashboard, go to **MainWP > Settings > Tools**.
+- In MainWP Dashboard, go to **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
 - Use **Delete Archived Network Activity Data** when you no longer need the archived history.
 
 <Info>
@@ -101,7 +101,7 @@ Every uptime check adds rows. The table grows faster when you monitor many sites
 
 **How to reduce it**
 
-- In MainWP Dashboard, go to [Uptime Monitoring](/sites/management/uptime-monitoring) at **MainWP > Settings > Monitoring Settings**.
+- In MainWP Dashboard, go to [Uptime Monitoring](/sites/management/uptime-monitoring) at **top-right user menu > MainWP Settings > Monitoring Settings** (`/wp-admin/admin.php?page=MonitoringSettings`).
 - Increase the monitor interval if you do not need frequent checks.
 - Reduce the number of monitored sites or sub-monitors.
 - Set **Monitoring Data Retention** to a limited period such as 30, 90, 180, or 365 days instead of `Keep forever`.
@@ -128,7 +128,7 @@ Busy child sites generate more content, user, plugin, theme, core, and other adm
 
 **How to reduce them**
 
-- In MainWP Dashboard, go to **MainWP > Settings > Network Activity Settings**.
+- In MainWP Dashboard, go to **top-right user menu > MainWP Settings > Network Activity Settings** (`/wp-admin/admin.php?page=SettingsInsights`).
 - Keep **Enable Network Activity logging** enabled only if you need this data.
 - Lower **Retention period for Network Activity Logs on child sites** to shorten how long child-site logs are stored before cleanup runs locally.
 - Disable child-site event categories you do not need.
