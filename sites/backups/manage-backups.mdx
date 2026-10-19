@@ -40,11 +40,11 @@ Open **MainWP > Sites > Backups** after enabling Native Backups.
 
 | Screen | Use it for | Relative URL |
 | --- | --- | --- |
-| Settings > General Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `admin.php?page=Settings` |
-| Backups > Manage Backups | View schedules, run tasks, and inspect errors | `admin.php?page=ManageBackups` |
-| Backups > Add New | Create a scheduled backup task | `admin.php?page=ManageBackupsAddNew` |
-| Backups > Storage | Connect and test storage destinations | `admin.php?page=ManageBackupsStorage` |
-| Backups > Snapshots & Restore | Create an on-demand backup, download, restore, or clean up snapshots | `admin.php?page=ManageBackupsSnapshots` |
+| Top-right user menu > MainWP Settings > General Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=Settings` |
+| Backups > Manage Backups | View schedules, run tasks, and inspect errors | `/wp-admin/admin.php?page=ManageBackups` |
+| Backups > Add New | Create a scheduled backup task | `/wp-admin/admin.php?page=ManageBackupsAddNew` |
+| Backups > Storage | Connect and test storage destinations | `/wp-admin/admin.php?page=ManageBackupsStorage` |
+| Backups > Snapshots & Restore | Create an on-demand backup, download, restore, or clean up snapshots | `/wp-admin/admin.php?page=ManageBackupsSnapshots` |
 
 A **task** defines what to back up, which sites to include, and when to run. A **snapshot** is a backup of one site at a particular time. One task can create snapshots for several sites.
 
@@ -52,7 +52,7 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 
 <Steps>
 <Step title="Enable Native Backups">
-Open **MainWP > Settings > General Settings** (`admin.php?page=Settings`). In **Backup Settings**, turn on **Enable native backups** and save.
+Open **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). In **Backup Settings**, turn on **Enable native backups** and save.
 
 If **Select primary backup system** is shown, select **Native backups**.
 </Step>
@@ -64,7 +64,7 @@ For an additional copy, open **Backups > Storage**, add and test a destination, 
 </Step>
 
 <Step title="Select the site and start the backup">
-Open **Backups > Snapshots & Restore** (`admin.php?page=ManageBackupsSnapshots`) and select your test site.
+Open **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`) and select your test site.
 
 Read the destination message, then click **Back Up Now**. This creates a full backup. To run a different backup type, create a task and use **Run Now** instead.
 </Step>
@@ -84,9 +84,11 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 
 Completed backups are stored in the Dashboard's private backup directory. Storage destinations receive additional copies. Keep enough free space on both the Dashboard and Child Site to create and process backups.
 
+When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-native-backup-files).
+
 <Steps>
 <Step title="Add a destination">
-Open **Backups > Storage** (`admin.php?page=ManageBackupsStorage`) and click **Add Destination**. Enter a descriptive **Destination name**, then choose a **Provider**.
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and click **Add Destination**. Enter a descriptive **Destination name**, then choose a **Provider**.
 </Step>
 
 <Step title="Enter the provider details">
@@ -120,7 +122,7 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 ### Encrypt Backup Archives
 
-Open **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`):
+Open **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`):
 
 1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
 2. Enable **Encrypt backup archives** and save.
@@ -135,7 +137,7 @@ S3 **Server-side encryption** encrypts the stored copy at the provider. You can 
 
 ## Create a Scheduled Backup
 
-Open **Backups > Add New** (`admin.php?page=ManageBackupsAddNew`).
+Open **Backups > Add New** (`/wp-admin/admin.php?page=ManageBackupsAddNew`).
 
 <Steps>
 <Step title="Name the task and select its sites">
@@ -186,11 +188,11 @@ Enter **Custom excludes** as paths relative to the Child Site's WordPress direct
 
 ## Check Backup Status
 
-Open **Manage Backups** (`admin.php?page=ManageBackups`) to check **Last run**, **Next run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last run**, **Next run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
 
 Use the task's action menu to **Edit**, **Pause**, **Resume**, or **Delete** it. When deleting a task, clear **Also delete this task's snapshots** if you want to keep its backups. This option is selected by default.
 
-For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`). Confirm that your Dashboard can send email before relying on these alerts.
+For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`). Confirm that your Dashboard can send email before relying on these alerts.
 
 On **Snapshots & Restore**, select a site and check **Available from** and the upload details.
 
@@ -225,7 +227,7 @@ Each scheduled task has its own retention settings, applied per site.
 
 Leave a retention limit blank or enter zero for no limit. MainWP always keeps the newest complete, restorable backup or chain, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
 
-For **Back Up Now**, set **On-demand backups to keep** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`). The default is five per site, with a minimum of one.
+For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`). The default is five per site, with a minimum of one.
 
 On **Snapshots & Restore**:
 
@@ -243,7 +245,7 @@ You can restore a snapshot to its original Child Site. Connect the site and wait
 
 <Steps>
 <Step title="Select the site and snapshot">
-Open **Backups > Snapshots & Restore** (`admin.php?page=ManageBackupsSnapshots`). Select the site, check the snapshot date and type, and click **Restore**.
+Open **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`). Select the site, check the snapshot date and type, and click **Restore**.
 
 MainWP can use an available local or completed remote copy. For incremental backups, the required chain must be available.
 </Step>
@@ -283,7 +285,7 @@ If those conditions are not met, the restore stops with an explanation. Review o
 
 ## Require a Backup Before Updates
 
-In **Settings > General Settings > Updates Settings** (`admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without of a full backup tolerance**.
+In **top-right user menu > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without of a full backup tolerance**.
 
 Use this setting to require a recent backup before updating from **Manage Sites**.
 
@@ -311,7 +313,7 @@ A database-only restore may also stop on these sites because the safety backup i
 
 ### Export Diagnostics
 
-Enable **Backup run diagnostics** under **Settings > General Settings > Backup Settings** (`admin.php?page=Settings`), save, and reproduce the problem.
+Enable **Backup run diagnostics** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`), save, and reproduce the problem.
 
 Click **Export diagnostics data** and include the export in your support request, along with the task, backup type, storage provider, and exact error. Diagnostics are stored on the Dashboard for two weeks.
 
