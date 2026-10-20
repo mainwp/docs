@@ -311,6 +311,7 @@
                   "mcp-server/remote/connection-tokens",
                   "mcp-server/remote/approval-policies",
                   "mcp-server/remote/revoke-and-kill-switch",
+                  "mcp-server/remote/extension-developers",
                   "mcp-server/remote/troubleshooting",
                   {
                     "group": "Host Guides",

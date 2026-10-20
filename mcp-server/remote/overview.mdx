@@ -97,14 +97,7 @@ After the app's first sign-in completes, you get an email titled "New AI app con
 
 **You choose the access.** **View only** lets the app read data and list tools. **View and make changes** also lets it call tools that change sites, each one through an approval tier. You can change a connection to view only in the panel at any time. Going back to changes needs a new connection.
 
-**The Dashboard enforces approvals.** Every tool has a tier:
-
-| Tier | What happens |
-| --- | --- |
-| Read | Runs directly |
-| Write | Runs directly |
-| Confirm | The app shows you a preview in the chat, and the call runs only after a confirmation bound to that preview |
-| Dashboard | You approve the action on a page of your Dashboard, signed in as yourself |
+**The Dashboard enforces approvals.** Every tool has a tier. **Read** and **Write** tools run directly. A **Confirm** tool runs only after a confirmation in the chat that is bound to a preview. A **Dashboard** tool waits until you approve it on a page of your Dashboard, signed in as yourself.
 
 The connection's approval policy moves tools between tiers. The Dashboard tier is the only one that proves a person approved: the app can't click it for you. [Approval Policies](/mcp-server/remote/approval-policies) lists which tools are in which tier.
 
@@ -128,7 +121,7 @@ AI apps get the Dashboard's tools and a set of prompts adapted from the local MC
 
 <CardGroup cols={2}>
   <Card title="Set Up Your AI App" icon="plug" href="/mcp-server/remote/connect-apps">
-    Steps and configuration for Claude, ChatGPT, Cursor, VS Code and 19 more apps.
+    Steps and configuration for Claude, ChatGPT, Cursor, VS Code and the other supported apps.
   </Card>
   <Card title="Approval Policies" icon="shield-check" href="/mcp-server/remote/approval-policies">
     Standard, Strict and Hands-off, and the approval page.
