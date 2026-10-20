@@ -41,7 +41,7 @@ Open **MainWP > Sites > Backups** after enabling Native Backups.
 
 | Screen | Use it for | Relative URL |
 | --- | --- | --- |
-| Top-right user menu > MainWP Settings > General Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=Settings` |
+| Top-right user menu > MainWP Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
 | Backups > Manage Backups | View schedules, run tasks, and inspect errors | `/wp-admin/admin.php?page=ManageBackups` |
 | Backups > Add New | Create a scheduled backup task | `/wp-admin/admin.php?page=ManageBackupsAddNew` |
 | Backups > Storage | Connect and test storage destinations | `/wp-admin/admin.php?page=ManageBackupsStorage` |
@@ -53,7 +53,7 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 
 <Steps>
 <Step title="Enable Native Backups">
-Open **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). In **Backup Settings**, turn on **Enable native backups** and save.
+Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Turn on **Enable native backups** and save.
 
 If **Select primary backup system** is shown, select **Native backups**.
 </Step>
@@ -71,7 +71,7 @@ Read the destination message, then click **Back Up Now**. This creates a full ba
 </Step>
 
 <Step title="Confirm the result">
-Wait for the backup to finish and confirm that a new snapshot appears with the expected date, type, and size.
+Wait for the backup to finish and confirm that a new snapshot appears with the expected date, type, and size. Review any **files not backed up** warning before relying on the backup.
 
 If you selected remote storage, wait for the upload to finish. See [Check Backup Status](#check-backup-status).
 </Step>
@@ -89,7 +89,7 @@ When moving the Dashboard, [include its private backup directory in the transfer
 
 <Steps>
 <Step title="Add a destination">
-Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and click **Add Destination**. Enter a descriptive **Destination name**, then choose a **Provider**.
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and click **Add Storage Destination**. Enter a descriptive **Destination name**, then choose a **Provider**.
 </Step>
 
 <Step title="Enter the provider details">
@@ -105,7 +105,7 @@ For Dropbox, use **Connect Dropbox** to approve the connection. A successful con
 <Step title="Assign the destination">
 On each backup task, select one or more destinations under **Upload to storage**.
 
-Choose **Use as default destination** or **Make default** to preselect a destination for new tasks. Update existing tasks separately if you want them to use it.
+Choose **Use as default destination** or **Make Default** to preselect a destination for new tasks. Update existing tasks separately if you want them to use it.
 </Step>
 </Steps>
 
@@ -123,7 +123,7 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 ### Encrypt Backup Archives
 
-Open **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`):
+Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
 
 1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
 2. Enable **Encrypt backup archives** and save.
@@ -160,7 +160,7 @@ Leave storage empty to keep backups only on the Dashboard. Set retention limits 
 <Step title="Save and run a first test">
 Click **Schedule Backup**. On **Manage Backups**, click **Run Now** for the task to test its configured type and destinations.
 
-Check the result for each site, then confirm the task's **Next run**.
+Check the result for each site, then confirm the task's **Next Run**.
 </Step>
 </Steps>
 
@@ -206,19 +206,29 @@ A recent backup stored only locally shows **At Risk**. **Protected** confirms ba
 
 ## Check Backup Status
 
-Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last run**, **Next run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last Run**, **Next Run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+
+Starting a task with **Run Now** opens a progress window. Use **View Progress** or **View Result** to inspect the run. Closing the progress window leaves the backup running.
+
+Click **Cancel Backup** in the task's progress window to stop the current run. Completed sites keep their backups, and the task's schedule stays unchanged.
+
+For an on-demand backup, use **View progress** on **Snapshots & Restore** to reopen its progress window or **Cancel backup** to stop the current run.
 
 Use the task's action menu to **Edit**, **Pause**, **Resume**, or **Delete** it. When deleting a task, clear **Also delete this task's snapshots** if you want to keep its backups. This option is selected by default.
 
-For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`). Confirm that your Dashboard can send email before relying on these alerts.
+A later **Clean Up** for the site deletes these retained snapshots and their cloud copies. See [Retention and Cleanup](#retention-and-cleanup).
+
+For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
 
 On **Snapshots & Restore**, select a site and check **Available from** and the upload details.
 
+If a snapshot shows **files not backed up**, click the warning to inspect the listed paths. A completed backup can still omit files. Resolve any unexpected omissions and create another backup before relying on it.
+
 | Status | Meaning |
 | --- | --- |
-| Uploading / Waiting to upload | The copy has not finished reaching its destination |
-| Partially uploaded | Some configured remote copies completed, but others have not |
-| Upload failed / Re-enter credentials | Inspect the error and test or update the affected storage connection |
+| Uploading / Waiting to Upload | The copy has not finished reaching its destination |
+| Partially Uploaded | Some configured remote copies completed, but others have not |
+| Upload Failed / Re-enter Credentials | Inspect the error and test or update the affected storage connection |
 | Offsite Verified | All remote uploads for this snapshot completed and passed verification |
 
 **Offsite Verified** includes remote file size checks. It does not confirm that the backup can restore the site.
@@ -243,17 +253,19 @@ Each scheduled task has its own retention settings, applied per site.
 | Start a new chain after (backups) | Creates a new full base after an incremental chain reaches this length, including its initial full backup |
 | Remove cloud copies too | Also removes the corresponding copies from the task's storage destinations |
 
-Leave a retention limit blank or enter zero for no limit. MainWP always keeps the newest complete, restorable backup or chain, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
+Leave a retention limit blank or enter zero for no limit. Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
 
-For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`). The default is five per site, with a minimum of one.
+For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
 
 On **Snapshots & Restore**:
 
 - Use **Delete** to remove a backup. Select **Also delete cloud copies** to remove its copies from storage destinations.
-- Use **Clean Up** to remove leftover folders and old backups that meet the retention rules.
+- Use **Clean Up** to remove leftover files from interrupted backups, prune on-demand backups beyond the keep count, and delete snapshots whose task was deleted.
 - Enable **Show removed backups** to see removal history and reasons.
 
 <Warning>
+**Clean Up** also deletes cloud copies of snapshots whose task was deleted, even if you kept those snapshots when deleting the task. Deleted backups can no longer be restored.
+
 Use the Dashboard controls for cleanup. Do not delete individual incremental chain files or the entire Child Site `wp-content/uploads/mainwp` directory. That directory can contain other MainWP data and encryption material.
 </Warning>
 
@@ -331,7 +343,7 @@ A database-only restore may also stop on these sites because the safety backup i
 
 ### Export Diagnostics
 
-Enable **Backup run diagnostics** under **top-right user menu > MainWP Settings > General Settings > Backup Settings** (`/wp-admin/admin.php?page=Settings`), save, and reproduce the problem.
+Enable **Backup run diagnostics** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`), save, and reproduce the problem.
 
 Click **Export diagnostics data** and include the export in your support request, along with the task, backup type, storage provider, and exact error. Diagnostics are stored on the Dashboard for two weeks.
 
