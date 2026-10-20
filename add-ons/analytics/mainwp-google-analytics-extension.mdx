@@ -44,7 +44,7 @@ The [MainWP Google Analytics Extension](https://mainwp.com/extension/google-anal
 
 **Requirements**
 
-- PHP 8.2 or higher on the MainWP Dashboard
+- PHP 8.3 or higher on the Dashboard server when using MainWP Dashboard 6.3 (see [System Requirements](/advanced/miscellaneous/mainwp-system-requirements))
 - Google Analytics (GA4) installed on your child sites
 - For JSON import: Google Analytics Admin API, Google Analytics API, and Google Analytics Data API
 
@@ -65,7 +65,6 @@ You can connect Google Analytics in two ways. Use whichever fits your setup (you
 
 **Notes**
 
-- If your MainWP Dashboard server does not meet the required PHP version, the **Sign In with Google** tab is disabled and you can use **Import JSON File**.
 - This flow uses MainWP Bridge (`bridge.mainwp.com`) for secure authentication. See [MainWP Bridge](/advanced/miscellaneous/mainwp-bridge) and the [MainWP Bridge Privacy Policy](https://mainwp.com/mainwp-bridge-privacy-policy).
 - Before any OAuth action, the extension checks that your Dashboard's WordPress REST API root (`/wp-json/`) is reachable. If it isn't, the **Sign In with Google**, **Continue**, **Confirm**, **Reconnect Account**, and refresh buttons are disabled and an in-page notice links to [WordPress REST API does not respond](/troubleshooting/wordpress-rest-api-does-not-respond). Use **Import JSON File** to connect in the meantime.
 

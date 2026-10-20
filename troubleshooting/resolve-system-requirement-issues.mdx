@@ -60,12 +60,14 @@ See [WordPress Memory Limit documentation](http://codex.wordpress.org/Editing_wp
 
 ## PHP Version
 
+These PHP requirements apply to MainWP Dashboard 6.3. MainWP Child requires PHP 7.4 or higher on each connected site.
+
 | Requirement | Value |
 |-------------|-------|
-| Minimum | 7.4 |
-| Recommended | 8.0 or newer |
+| Minimum | 8.3 |
+| Recommended | 8.3 or newer |
 
-**How to fix:** Contact your hosting support to update PHP on your server. Most hosts provide PHP version switching in the control panel.
+**How to fix:** Update the Dashboard server to PHP 8.3 or higher before installing or updating to MainWP Dashboard 6.3. Most hosts provide PHP version switching in the control panel. Contact hosting support if you need help.
 
 ---
 
@@ -253,7 +255,7 @@ Some servers require a reboot after php.ini changes. Your host can handle this.
 ## Self-Check Checklist
 
 - [ ] All requirements show as met on Server Information page
-- [ ] PHP version is current
+- [ ] Dashboard server runs PHP 8.3 or higher
 - [ ] Memory and execution time limits are adequate
 - [ ] SSL and cURL extensions are enabled
 - [ ] MainWP upload directory is writable
