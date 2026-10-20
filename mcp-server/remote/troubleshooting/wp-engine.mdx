@@ -1,0 +1,47 @@
+---
+title: Remote AI Connections on WP Engine
+sidebarTitle: "WP Engine"
+description: >-
+  What to check when AI apps can't reach a MainWP Dashboard hosted on WP Engine.
+---
+
+The Dashboard links here when it detects WP Engine, from the `IS_WPE` or `WPE_APIKEY` constant that WP Engine defines.
+
+On WP Engine, the web server and its page cache are managed for you. Most fixes on this page are requests to WP Engine support rather than settings you change yourself.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. Note every `fail` and `warn` line. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each one.
+
+## What to look at
+
+**The well-known addresses.** If the self-test reports "Requests for the well-known addresses don't reach WordPress, so no app can find how to sign in.", ask WP Engine support to pass these two paths to WordPress's `index.php`, keeping the original address:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+```
+
+For a Dashboard in a subdirectory, include the rule the self-test shows. The [nginx rules](/mcp-server/remote/troubleshooting#nginx-rules) section has both forms.
+
+**The Authorization header.** If the self-test reports "The Authorization header doesn't reach WordPress", ask support to pass the `Authorization` request header to PHP for your site.
+
+**Caching.** The Dashboard marks every remote AI response as not cacheable. If the check from the internet reports "The MCP address didn't answer with a sign-in request (HTTP 401)." while the self-test passes, ask support to exclude these paths from the page cache:
+
+```text
+/wp-json/mainwp-remote/
+/mainwp-oauth/
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+```
+
+With plain permalinks, the MCP address uses `?rest_route=/mainwp-remote/v1/mcp` instead. Mention that form if your site uses it.
+
+## What to send to support
+
+- your Dashboard's address
+- the failing lines from the self-test and the check from the internet, word for word
+- the rule the self-test shows, if any
+- the time you ran the checks, so support can find the requests in the server logs
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

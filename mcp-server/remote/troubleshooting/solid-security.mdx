@@ -1,0 +1,32 @@
+---
+title: Remote AI Connections with Solid Security
+sidebarTitle: "Solid Security"
+description: >-
+  What to check in Solid Security when AI apps can't reach a MainWP Dashboard.
+---
+
+The Dashboard links here when Solid Security (formerly iThemes Security), free or Pro, is active on the Dashboard site.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line.
+
+## Lockouts
+
+Solid Security can lock out an address that triggers too many errors, such as a run of `404` responses. While an app looks for your Dashboard's sign-in information, it asks for several addresses, and some of them return `404` by design. A hosted app connects from its provider's servers, so a lockout there blocks it while your own browser still works.
+
+Check Solid Security's logs for lockouts around the time the app tried to connect. If the app's address was locked out, release it. If it happens again, add the address to Solid Security's list of hosts that are never locked out, or relax the rule that triggered it.
+
+## Server rules
+
+Solid Security can write rules to `.htaccess` or the nginx configuration. Check that none of them block:
+
+- paths that start with a dot, such as `/.well-known/oauth-authorization-server`
+- the `Authorization` request header
+- query strings such as `?rest_route=` when the site uses plain permalinks
+
+The self-test lines for [the well-known addresses](/mcp-server/remote/troubleshooting#requests-for-the-well-known-addresses) and [the Authorization header](/mcp-server/remote/troubleshooting#authorization-header) show whether something blocks them.
+
+Keep Solid Security's protections on, and change only the rule that blocks these requests. Every request to these paths still needs a valid token from your Dashboard.
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

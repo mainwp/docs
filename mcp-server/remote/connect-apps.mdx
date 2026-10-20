@@ -1,0 +1,456 @@
+---
+title: Set Up Your AI App
+sidebarTitle: "Set Up Your AI App"
+description: >-
+  Connection steps and configuration for each AI app that can connect to your MainWP Dashboard remotely.
+---
+
+Each app below connects to your Dashboard's MCP address. Before you start, turn on remote AI connections and run the self-test, as described in the [overview](/mcp-server/remote/overview#turn-on-remote-ai-connections).
+
+The examples on this page use `https://your-dashboard.com`. The **Connect an app** section of **API Access > AI Apps** shows the same configurations with your Dashboard's real address, so copy from there when you can.
+
+<Note>
+App menus and settings screens change between versions. The configuration shown for each app comes from the Dashboard; if a menu label in the app differs from the one named here, look for the app's custom connector or MCP server settings.
+</Note>
+
+## How each app signs in
+
+| App | How it connects |
+| --- | --- |
+| [Claude](#claude), [Claude Desktop](#claude-desktop), [ChatGPT](#chatgpt) | Hosted connector, signs in with OAuth |
+| [Claude Code](#claude-code), [VS Code](#vs-code), [Codex CLI](#codex-cli), [Zed](#zed), [Goose](#goose) | OAuth, with sign-in details the Dashboard ships |
+| [Cursor](#cursor), [Gemini CLI](#gemini-cli) | OAuth, with a fixed client ID in the configuration |
+| [Qwen Code](#qwen-code), [Cline](#cline), [Continue](#continue), [Cherry Studio](#cherry-studio), [Jan](#jan), [LM Studio](#lm-studio), [mcp-remote](#mcp-remote) | OAuth, the app registers itself as an app on your computer |
+| [Open WebUI](#open-webui) | OAuth, as a web app an administrator adds |
+| [AnythingLLM](#anythingllm), [5ire](#5ire), [Msty](#msty), [Roo Code](#roo-code) | A [connection token](/mcp-server/remote/connection-tokens) |
+
+Jan and LM Studio can also use a connection token.
+
+**Sign-in details the Dashboard ships.** Claude, Claude Code, ChatGPT, VS Code, Codex CLI, Zed and Goose are known to the Dashboard by their published client IDs. You only add the MCP address.
+
+**Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. Their consent screen reads "Cursor, or another program on your computer using Cursor's settings", and the same for Gemini CLI.
+
+**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** on under **Which apps can connect**, which it is by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same.
+
+**Signing in.** After you add the configuration, the app opens your Dashboard in a browser. Sign in if WordPress asks, review the consent screen, and click **Approve**. See [what the consent screen shows](/mcp-server/remote/overview#what-you-see-when-an-app-connects).
+
+## Hosted chat apps
+
+### Claude
+
+For claude.ai custom connectors. The Dashboard shows:
+
+```text
+Name: MainWP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authentication: OAuth
+```
+
+<Steps>
+  <Step title="Add a custom connector">
+    In Claude, open the connector settings and add a custom connector. Enter **MainWP** as the name and paste the MCP address as the URL.
+  </Step>
+  <Step title="Connect">
+    Click to connect. Claude opens your Dashboard's consent screen, which names the app **Claude (claude.ai)**. Approve it.
+  </Step>
+</Steps>
+
+Claude puts the approval link for [Dashboard-tier actions](/mcp-server/remote/approval-policies#the-approval-page) in the chat. Open it, approve, then ask Claude to try again.
+
+### Claude Desktop
+
+Claude Desktop uses the same custom connectors as claude.ai and the same configuration:
+
+```text
+Name: MainWP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authentication: OAuth
+```
+
+Add the connector the same way as for [Claude](#claude). The consent screen names it **Claude (claude.ai)** too.
+
+### ChatGPT
+
+```text
+Name: MainWP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authentication: OAuth
+```
+
+<Steps>
+  <Step title="Add the connector">
+    In ChatGPT's connector settings, create a connector for **MainWP** with the MCP address as its URL and **OAuth** as the authentication.
+  </Step>
+  <Step title="Connect">
+    ChatGPT opens your Dashboard's consent screen, which names the app **ChatGPT (chatgpt.com)**. Approve it.
+  </Step>
+</Steps>
+
+Which ChatGPT plans allow connectors that make changes is ChatGPT's decision; check your plan if write tools don't appear.
+
+ChatGPT keeps its own copy of the tool list. The Dashboard always lists the write tools, even on a view-only connection, so they are in that copy when you later allow changes. If you change which tools are switched on in the panel, refresh the connector in ChatGPT so its copy matches.
+
+## Coding tools and command-line apps
+
+### Claude Code
+
+Run this in a terminal:
+
+```bash
+claude mcp add --transport http mainwp 'https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp'
+```
+
+Then start Claude Code, run `/mcp`, select **mainwp** and sign in. The consent screen names the app **Claude Code (claude.ai)**.
+
+For [Dashboard-tier actions](/mcp-server/remote/approval-policies#the-approval-page), Claude Code asks you to open the approval link itself.
+
+### VS Code
+
+Add this to your MCP configuration file, either `.vscode/mcp.json` in a workspace or your user configuration:
+
+```json
+{
+    "servers": {
+        "mainwp": {
+            "type": "http",
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+Start the server from VS Code. VS Code asks you to sign in and opens the consent screen, which names the app **VS Code (vscode.dev)**. Like Claude Code, VS Code asks you to open the approval link for Dashboard-tier actions.
+
+### Codex CLI
+
+Add this to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.mainwp]
+url = "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+```
+
+Then sign in with `codex mcp login mainwp`. The consent screen names the app **Codex CLI (chatgpt.com)**.
+
+### Zed
+
+Add this to Zed's `settings.json`:
+
+```json
+{
+    "context_servers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+Zed opens the consent screen when it first connects. It names the app **Zed (zed.dev)**.
+
+### Goose
+
+Add this extension to Goose's `config.yaml`:
+
+```yaml
+extensions:
+  mainwp:
+    name: MainWP
+    type: streamable_http
+    enabled: true
+    uri: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+```
+
+Goose opens the consent screen when it starts the extension. Goose picks a new callback port each time, and the Dashboard accepts that for Goose's local callback address.
+
+### Cursor
+
+Add this to `~/.cursor/mcp.json`:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "auth": {
+                "CLIENT_ID": "mainwp-cursor"
+            }
+        }
+    }
+}
+```
+
+Then connect the **mainwp** server from Cursor's MCP settings. The `mainwp-cursor` client ID works with Cursor's desktop callback, `http://localhost:8787/callback`, and with its cloud agents' callback. It needs **Cursor (mainwp-cursor)** switched on under **Which apps can connect**.
+
+### Gemini CLI
+
+Add this to `~/.gemini/settings.json`:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "httpUrl": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "oauth": {
+                "enabled": true,
+                "clientId": "mainwp-gemini-cli"
+            }
+        }
+    }
+}
+```
+
+Then run `/mcp auth mainwp` in Gemini CLI. The client ID accepts callbacks of the form `http://localhost:<port>/oauth/callback` and needs **Gemini CLI (mainwp-gemini-cli)** switched on under **Which apps can connect**.
+
+### Qwen Code
+
+Add this to Qwen Code's `settings.json`:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "httpUrl": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+Qwen Code registers itself as an app on your computer, then opens the consent screen.
+
+### Cline
+
+Add this to Cline's MCP settings file:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "type": "streamableHttp",
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+Cline registers itself as an app on your computer, then opens the consent screen.
+
+### Continue
+
+Add this to Continue's `config.yaml`:
+
+```yaml
+mcpServers:
+  - name: MainWP
+    type: streamable-http
+    url: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+```
+
+Continue registers itself as an app on your computer, then opens the consent screen.
+
+## Desktop chat apps
+
+### Cherry Studio
+
+Add an MCP server in Cherry Studio's settings with these values:
+
+```text
+Name: MainWP
+Type: Streamable HTTP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authentication: OAuth
+```
+
+Cherry Studio registers itself as an app on your computer, then opens the consent screen.
+
+### Jan
+
+Add this MCP server in Jan:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+Jan registers itself as an app on your computer, then opens the consent screen. If you prefer pasting a token, [create a connection token](/mcp-server/remote/connection-tokens) and use the configuration with a header that the panel shows with the token:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "headers": {
+                "Authorization": "Bearer mwpct_..."
+            }
+        }
+    }
+}
+```
+
+### LM Studio
+
+Add this to LM Studio's `mcp.json`:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
+        }
+    }
+}
+```
+
+If LM Studio signs in with OAuth, it registers itself as an app on your computer and opens the consent screen. Otherwise, [create a connection token](/mcp-server/remote/connection-tokens) and use the configuration with a header:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "headers": {
+                "Authorization": "Bearer mwpct_..."
+            }
+        }
+    }
+}
+```
+
+## Apps that only run local servers
+
+### mcp-remote
+
+`mcp-remote` lets an app that only starts local (stdio) MCP servers reach a remote one. It needs [Node.js](https://nodejs.org). The Dashboard shows this command:
+
+```bash
+npx -y mcp-remote 'https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp'
+```
+
+In an app that takes an `mcpServers` command, the same command looks like this:
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "command": "npx",
+            "args": ["-y", "mcp-remote", "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"]
+        }
+    }
+}
+```
+
+`mcp-remote` registers itself as an app on your computer and opens the consent screen in your browser.
+
+## Web apps
+
+### Open WebUI
+
+Open WebUI is a multi-user web app that returns to its own HTTPS address after sign-in. Because that address is on the internet, an administrator has to add it first.
+
+<Steps>
+  <Step title="Add the web app (administrators without Team Control limits)">
+    In **API Access > AI Apps**, find **Web apps**. Enter an **App name** and the redirect URI your Open WebUI instance uses for MCP sign-in under **Redirect URIs, one per line (up to 3)**. Click **Add web app**.
+
+    Each redirect URI must be an exact `https://` address, with no wildcards, query string, `@`, `%`, backslashes or spaces.
+  </Step>
+  <Step title="Copy the client ID and secret">
+    The panel shows the **Client ID** and the **Client secret** once, with "Copy the client secret now. It isn't shown again."
+  </Step>
+  <Step title="Add the server in Open WebUI">
+    Use these values, filling in the client ID and secret from the previous step:
+
+    ```text
+    Name: MainWP
+    Type: MCP (Streamable HTTP)
+    URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+    Authentication: OAuth
+    Client ID: <client ID from Add a web app>
+    Client secret: <secret shown when adding the web app>
+    ```
+  </Step>
+  <Step title="Each user connects">
+    Each user signs in to the Dashboard from Open WebUI and approves their own connection. The consent screen names the app with the administrator who added it, for example "Open WebUI, added by Jane Admin on October 1, 2026. You'll return to chat.example.com."
+  </Step>
+</Steps>
+
+Under **Web apps**, each app has a switch, **Reissue secret** and **Delete**. Switching it off, reissuing the secret or deleting it ends every connection through that app. Turning the connector off and on, or **Disconnect all AI apps**, also ends the connections, but the app and its secret keep working for new sign-ins. Full administrators see a notice in the panel whenever a web app is added, switched, deleted or gets a new secret.
+
+## Apps that use a connection token
+
+These apps send a header but can't sign in with OAuth. [Create a connection token](/mcp-server/remote/connection-tokens) first; the panel then shows each configuration with your token filled in. The examples use the placeholder `mwpct_...`.
+
+### AnythingLLM
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "type": "streamable",
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "headers": {
+                "Authorization": "Bearer mwpct_..."
+            }
+        }
+    }
+}
+```
+
+### 5ire
+
+```text
+Name: MainWP
+Transport: Streamable HTTP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authorization: Bearer mwpct_...
+```
+
+### Msty
+
+```text
+Name: MainWP
+Type: Streamable HTTP
+URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+Authorization: Bearer mwpct_...
+```
+
+### Roo Code
+
+```json
+{
+    "mcpServers": {
+        "mainwp": {
+            "type": "streamable-http",
+            "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
+            "headers": {
+                "Authorization": "Bearer mwpct_..."
+            }
+        }
+    }
+}
+```
+
+## Allow changes later
+
+If you connected with **View only** and the app tries a change, it gets a refusal:
+
+- Claude, Claude Code and VS Code get a sign-in request for more access. Claude and VS Code ask you to sign in again. Claude Code tells you to run `/mcp` and sign in again.
+- ChatGPT gets "This connection can only view. Reconnect and allow changes."
+- Other apps get "Reconnect with changes allowed."
+- Connection tokens get "This token can only view. Create a token with changes allowed in MainWP > AI apps."
+
+When you reconnect, pick **View and make changes** on the consent screen. To go the other way, use **Change to view only** on the connection in the panel; that takes effect on the app's next request.
+
+## If an app can't connect
+
+- **"MainWP doesn't support this app yet"**: the app isn't one of the apps on this page, or its switch is off. Check **Which apps can connect** and, for registered apps, **Let apps on your own computer connect**.
+- **"This app needs to be added again"**: the app's registration was removed. Remove MainWP from the app and add it again.
+- **"This app can't connect right now"** after an app changed its callback addresses: updating MainWP Dashboard may fix it, because the Dashboard ships each known app's addresses.
+- **"Sign in first"** or **"You can't connect apps"**: sign in to the Dashboard with an administrator account, then start again from the app.
+- **The app never reaches the Dashboard**: ten minutes after you approve, the panel shows a line such as "Claude hasn't reached this Dashboard yet." Follow its **What to check on your host** link or see [Troubleshooting](/mcp-server/remote/troubleshooting).
+
+If your app still can't connect, the [local MCP server](/mcp-server/clients) works with most of these apps through an Application Password.

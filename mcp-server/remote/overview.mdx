@@ -1,0 +1,142 @@
+---
+title: Connect AI Apps to Your Dashboard
+sidebarTitle: "Overview"
+description: >-
+  Let Claude, ChatGPT, Cursor, VS Code and other AI apps connect to your MainWP Dashboard over the internet, with no local MCP server.
+---
+
+Remote AI connections let an AI app connect straight to your MainWP Dashboard. The Dashboard runs its own OAuth 2.1 sign-in server and an MCP address, so apps such as Claude, ChatGPT, Cursor and VS Code reach it over the internet. You don't install a program on your computer and you don't paste an Application Password into the app.
+
+Remote AI connections are off until an administrator turns them on.
+
+## How this differs from the local MCP server
+
+The [MainWP MCP Server](/mcp-server/overview) runs on your own computer and signs in with an Application Password. Remote connections run inside the Dashboard instead.
+
+| | Local MCP server | Remote AI connections |
+| --- | --- | --- |
+| Where it runs | On the computer that runs your AI app | Inside your MainWP Dashboard |
+| How the app signs in | An Application Password in the app's config | A sign-in and consent screen on your Dashboard, or a connection token |
+| Who enforces approvals | The MCP server process on your computer | The Dashboard, on every call |
+| Hosted apps (claude.ai, ChatGPT) | Not supported | Supported |
+| Tool names | `list_sites_v1`, `run_updates_v1` and so on | The same names |
+
+Both can be used side by side. If your app can't connect remotely, the local server remains the fallback: see [Connect Your AI Client](/mcp-server/clients).
+
+## Requirements
+
+- **HTTPS site address.** The Dashboard's site address must start with `https://`. With an `http://` address the connector can't be turned on.
+- **PHP 8.1 or newer.** On older PHP the panel shows "Remote AI connections need PHP 8.1 or newer; this server runs" followed by your version, and nothing else loads.
+- **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
+- **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the panel doesn't appear there.
+- **The activity log turned on.** Every AI app call is recorded, so the connector needs **Enable Network Activity logging** on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on.
+- **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
+- **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
+
+Port 443 is the safe choice. If your site address uses another port, the self-test warns that remote AI apps may not reach it.
+
+## Turn on remote AI connections
+
+<Steps>
+  <Step title="Turn on the activity log">
+    Open **MainWP Settings > Network Activity Settings** from the top-right user menu and turn on **Enable Network Activity logging**. Save the settings.
+  </Step>
+  <Step title="Open the AI Apps panel">
+    In MainWP Dashboard, open **API Access > AI Apps** (`/wp-admin/admin.php?page=RESTAPIRemoteMCP`). The **Remote AI connections** section shows whether the connector is on.
+  </Step>
+  <Step title="Run the self-test">
+    Click **Run the self-test**. Each line shows `pass`, `warn`, `fail` or `info`. Fix every `fail` line first. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line and its fix.
+
+    The self-test runs from the Dashboard itself, so it can't see what an app on the internet sees. Click **Check from the internet** for that view. It sends only your Dashboard's address to MainWP's checker, and nothing is stored.
+  </Step>
+  <Step title="Turn it on">
+    Click **Turn on**. If a blocking check still fails, the panel shows "Remote AI connections can't be turned on yet. Fix the checks below first." and lists the reasons.
+
+    When it works, the panel reads "On. AI apps you approve can connect to this Dashboard over the internet."
+  </Step>
+  <Step title="Connect your app">
+    The **Connect an app** section shows a ready configuration for each supported app. Follow the steps for your app in [Set Up Your AI App](/mcp-server/remote/connect-apps).
+  </Step>
+</Steps>
+
+### Your MCP address
+
+Every app connects to the same address. With pretty permalinks it is:
+
+```text
+https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
+```
+
+With plain permalinks the panel shows the query form instead:
+
+```text
+https://your-dashboard.com/?rest_route=/mainwp-remote/v1/mcp
+```
+
+Copy the address from the panel rather than typing it. Connections are tied to this exact address, so changing your site address or switching permalink modes means each app has to connect again.
+
+## What you see when an app connects
+
+The app opens your Dashboard in a browser. If you aren't signed in, WordPress asks you to sign in first. Then the consent screen, titled **An app wants to connect to your Dashboard**, shows:
+
+- the app's name and the host its identity comes from, for example **Claude Code (claude.ai)**. Apps that run on your computer and name themselves are labeled "(name not checked by MainWP), an app on this computer".
+- the warning "Only approve if you just started this in your own app."
+- where you return after deciding: "After you decide, you'll return to" followed by a host name
+- the account you're signed in as, with **Not you? Log out**
+- a Team Control line when your account is limited to some sites, because the app sees only what you can see
+- **What the app can do:** **View and make changes** or **View only**. Apps that ask only for view access show no choice.
+- **Approval policy:** **Standard**, **Strict**, and **Hands-off** for users without Team Control limits. See [Approval Policies](/mcp-server/remote/approval-policies).
+
+Click **Approve** or **Deny**. The screen appears on every new connection; there is no "remember this app".
+
+After the app's first sign-in completes, you get an email titled "New AI app connected to MainWP" followed by the app's name, with a link to revoke it. Administrators without Team Control limits also see a **New connection** notice in the panel.
+
+## The security model
+
+**The app acts as you.** Each connection belongs to the user who approved it. The app gets your WordPress permissions and your Team Control limits, never more. If you lose the `manage_options` capability, change your password or are deleted, your connections end.
+
+**You choose the access.** **View only** lets the app read data and list tools. **View and make changes** also lets it call tools that change sites, each one through an approval tier. You can change a connection to view only in the panel at any time. Going back to changes needs a new connection.
+
+**The Dashboard enforces approvals.** Every tool has a tier:
+
+| Tier | What happens |
+| --- | --- |
+| Read | Runs directly |
+| Write | Runs directly |
+| Confirm | The app shows you a preview in the chat, and the call runs only after a confirmation bound to that preview |
+| Dashboard | You approve the action on a page of your Dashboard, signed in as yourself |
+
+The connection's approval policy moves tools between tiers. The Dashboard tier is the only one that proves a person approved: the app can't click it for you. [Approval Policies](/mcp-server/remote/approval-policies) lists which tools are in which tier.
+
+**Tokens only work on the MCP address.** The Dashboard refuses the app's tokens on the WordPress Abilities API, the MainWP REST API and admin-ajax. Access tokens last 30 minutes and the app renews them on its own. A connection lasts up to 30 days, then the app asks you to sign in again.
+
+**Only known apps can connect.** The Dashboard ships the sign-in details of seven apps: Claude, Claude Code, ChatGPT, VS Code, Codex CLI, Zed and Goose. Cursor and Gemini CLI use fixed client IDs. Apps on your own computer can register themselves, but only with a callback address on that computer. Multi-user web apps such as Open WebUI need an administrator to add them. Any other app is refused before sign-in with "MainWP doesn't support this app yet". The Dashboard never downloads an app's details from the internet.
+
+**You control the tools.** The **Tools** section of the panel has a switch per category and per tool. A tool you switch off is neither listed nor callable. Extension tools that MainWP hasn't reviewed appear under **Not reviewed by MainWP** and always need your approval on the Dashboard, unless the connection uses Hands-off.
+
+**Large jobs run in the background.** An action over more than 10 sites runs as a background job in steps of 10 sites. The app follows its progress with the `get_remote_job_status_v1` tool.
+
+**You can stop everything.** Revoke one connection, disconnect all of yours, or force the connector off with a `wp-config.php` constant. See [Revoke Connections and the Kill Switch](/mcp-server/remote/revoke-and-kill-switch).
+
+**A changed site address ends every connection.** The panel then shows "Your site address changed. Connected AI apps need to reconnect." A staging copy with a different site address can't use tokens copied from the live site. A copy that keeps the same site address can't be told apart from the original.
+
+## What the remote connection offers
+
+AI apps get the Dashboard's tools and a set of prompts adapted from the local MCP server's prompts. The local server's `mainwp://` resources, completions and setup tools aren't part of the remote connection.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Set Up Your AI App" icon="plug" href="/mcp-server/remote/connect-apps">
+    Steps and configuration for Claude, ChatGPT, Cursor, VS Code and 19 more apps.
+  </Card>
+  <Card title="Approval Policies" icon="shield-check" href="/mcp-server/remote/approval-policies">
+    Standard, Strict and Hands-off, and the approval page.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/mcp-server/remote/troubleshooting">
+    Every self-test line, the check from the internet, and host-specific help.
+  </Card>
+  <Card title="Revoke Connections and the Kill Switch" icon="power-off" href="/mcp-server/remote/revoke-and-kill-switch">
+    End one connection, all of yours, or turn the connector off from `wp-config.php`.
+  </Card>
+</CardGroup>

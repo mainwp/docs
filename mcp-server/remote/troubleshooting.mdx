@@ -1,0 +1,285 @@
+---
+title: Troubleshooting Remote AI Connections
+sidebarTitle: "Troubleshooting"
+description: >-
+  What each self-test line and each result of the check from the internet means, and how to fix the server, permalink and port problems behind them.
+---
+
+Most failed connections never reach WordPress. A web server rule, a firewall or a proxy answers the app's request first, so the Dashboard has nothing to show. Two tools in **API Access > AI Apps** find these problems:
+
+- **Run the self-test** checks the Dashboard from the Dashboard itself. It makes requests to its own public addresses, so it sees what the server in front of WordPress does with them, but not what an app on the internet sees.
+- **Check from the internet** asks MainWP's checker to test your Dashboard from outside. It sends only your Dashboard's address, one request per click, and nothing is stored.
+
+Each line has a status: `pass`, `warn`, `fail`, `info` or `skipped`. Some lines show a fix below the message, and some link to **What to check**.
+
+## Host guides
+
+When the Dashboard recognizes your host or security plugin, its help links go to the matching guide:
+
+<CardGroup cols={3}>
+  <Card title="WP Engine" href="/mcp-server/remote/troubleshooting/wp-engine">
+    Managed WordPress hosting.
+  </Card>
+  <Card title="Kinsta" href="/mcp-server/remote/troubleshooting/kinsta">
+    Managed WordPress hosting with a CDN in front.
+  </Card>
+  <Card title="Cloudflare" href="/mcp-server/remote/troubleshooting/cloudflare">
+    Proxy, CDN and firewall.
+  </Card>
+  <Card title="Wordfence" href="/mcp-server/remote/troubleshooting/wordfence">
+    Security plugin with a firewall.
+  </Card>
+  <Card title="Sucuri" href="/mcp-server/remote/troubleshooting/sucuri">
+    Security plugin and cloud firewall.
+  </Card>
+  <Card title="Solid Security" href="/mcp-server/remote/troubleshooting/solid-security">
+    Security plugin, formerly iThemes Security.
+  </Card>
+</CardGroup>
+
+The Dashboard recognizes them from local signals only: WP Engine and Kinsta from their server settings, Cloudflare from the `CF-Ray` header on your own admin requests, and the security plugins when they're active. For anything else, the links come to this page.
+
+## An app hasn't reached the Dashboard
+
+If no request arrives within 10 minutes after you approve a connection or create a connection token, the panel shows a line such as:
+
+> Claude hasn't reached this Dashboard yet.
+
+with a **What to check on your host** link. You approved in your browser, which reached the Dashboard, but the app's own requests didn't. Run **Check from the internet**, then look at the connection's row under **Connections**:
+
+- **Last request** shows the time of the app's last successful request, or **Never**.
+- The IP address below it is where that request came from.
+- **Last failure** shows a reason code and its time when the Dashboard refused a request it could match to this connection. Common codes are `expired`, `revoked`, `wrong_resource` (the site address or permalink mode changed after the app connected), `cap_lost` (the user lost `manage_options`) and `unknown_client` (the app was switched off or removed).
+
+A request the Dashboard can't match to any connection only shows up in the self-test's 24-hour counters.
+
+## Self-test lines
+
+### Scope
+
+> These checks run from the Dashboard itself, so they can't see what Claude, ChatGPT or another app sees from the internet. Use "Check from the internet" for that.
+
+This `info` line always appears first.
+
+### PHP, WordPress and multisite
+
+| Line | Fix |
+| --- | --- |
+| "Remote AI connections need PHP 8.1 or newer; this server runs" with your version | Ask your host to move the site to PHP 8.1 or newer. |
+| "Remote AI connections need WordPress 6.9 or newer." | Update WordPress. |
+| "Remote AI connections aren't available on multisite networks." | Use a single-site install for the Dashboard. |
+
+### HTTPS site address
+
+> Your site address starts with http://. Remote AI connections need https://.
+
+Change the site address in **Settings > General** (or the `WP_HOME` constant) to `https://`, after the site has a working certificate. Changing the site address ends every existing connection.
+
+### Activity log
+
+> Turn on the activity log first: every AI app call must be recorded.
+
+Turn on **Enable Network Activity logging** under **MainWP Settings > Network Activity Settings**.
+
+### Kill switch
+
+> Remote AI connections are turned off on this site by the MAINWP_DISABLE_REMOTE_MCP setting in wp-config.php.
+
+or "…by a plugin." Someone forced the connector off. See [the kill switch](/mcp-server/remote/revoke-and-kill-switch#the-kill-switch) to find and remove it.
+
+### Another plugin serves the well-known addresses
+
+> Another plugin serves /.well-known/oauth-authorization-server through a rewrite rule. Two sign-in servers can't share that address, so remote AI connections can't be turned on.
+
+Another OAuth or OpenID Connect plugin answers the address every app asks first. Turn off that plugin's sign-in server, or deactivate the plugin, then run the self-test again.
+
+> Another plugin serves /.well-known/openid-configuration. Apps that look there first may find that plugin instead of this Dashboard.
+
+This is a warning. Apps that ask for `/.well-known/oauth-authorization-server` first still find the Dashboard.
+
+### Port other than 443
+
+> Remote AI apps may not reach port 8443.
+
+Your site address includes a port other than 443. Whether hosted apps such as Claude and ChatGPT connect to other ports hasn't been confirmed, so serve the Dashboard on port 443 if you can. See [Ports other than 443](#ports-other-than-443).
+
+### Requests for the well-known addresses
+
+> Requests for the well-known addresses don't reach WordPress, so no app can find how to sign in.
+
+The web server answers `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration` itself instead of passing them to WordPress. The fix line below the message depends on your permalinks:
+
+- With plain permalinks: "Turn on pretty permalinks in Settings > Permalinks, or add this rule to the .htaccess file of this WordPress install". See [Plain permalinks](#plain-permalinks).
+- Otherwise: "Ask your host to send these addresses to WordPress, or add this rule to the .htaccess file of this WordPress install".
+
+The rule for a Dashboard at the root of its domain is:
+
+```apache
+RewriteRule ^\.well-known/(oauth-authorization-server|openid-configuration)$ /index.php [L]
+```
+
+For a Dashboard in a subdirectory such as `/dashboard`, the self-test shows the path in the rule: `/dashboard/index.php`. On nginx, see [nginx rules](#nginx-rules).
+
+### Which apps can find the sign-in information
+
+The self-test fetches the four forms of the well-known addresses and replays the order in which Claude Code, Claude, VS Code and ChatGPT were seen asking for them.
+
+| Line | Status |
+| --- | --- |
+| "Claude Code, Claude, VS Code and ChatGPT can all find this Dashboard's sign-in information." | `pass` |
+| "…can't connect: on a root install, /.well-known/oauth-authorization-server must return this Dashboard's sign-in information." | `fail`, blocks turning the connector on |
+| "…can't find this Dashboard's sign-in information." | `fail`, blocks turning the connector on |
+| "…may not connect: they reach this Dashboard only after another sign-in document, or without the document they ask for first." | `warn` |
+
+Each line names the affected apps. Other apps aren't judged yet, but they read the same addresses.
+
+### Subdirectory installs
+
+On a Dashboard in a subdirectory, apps can find it at `/dashboard/.well-known/…` without a server rule. When that form is blocked too, the self-test shows one of:
+
+> https://your-dashboard.com/dashboard/.well-known/oauth-authorization-server is answered by another WordPress install, so the request never reaches this Dashboard. A server rule that blocks addresses starting with a dot usually causes this.
+
+> The web server blocks https://your-dashboard.com/dashboard/.well-known/oauth-authorization-server before it reaches WordPress. A server rule that blocks addresses starting with a dot usually causes this.
+
+followed by:
+
+> Add this rule to the web server in front of your site so apps find this Dashboard at the root well-known addresses.
+
+with the rule for your path. See [nginx rules](#nginx-rules).
+
+### Something other than WordPress answers
+
+> Something other than WordPress answers https://your-dashboard.com/.well-known/openid-configuration, for example a static file or a server rule. Remove it so these addresses reach WordPress.
+
+A file with that name exists on disk, or a server rule returns a fixed response. Remove it, or ask your host to.
+
+### Authorization header
+
+> The Authorization header doesn't reach WordPress: the web server or a proxy strips it, so every app request looks signed out.
+
+Every app request carries its token in the `Authorization` header. Some Apache and CGI setups drop it before PHP. The fix line reads "On Apache, add "CGIPassAuth On" to the .htaccess file, or ask your host to pass the Authorization header to PHP." Add this near the top of the `.htaccess` file of the Dashboard's install:
+
+```apache
+CGIPassAuth On
+```
+
+If your server refuses `CGIPassAuth` (it needs Apache 2.4.13 or later), this line passes the header as an environment variable instead:
+
+```apache
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+```
+
+On other servers, ask your host to pass the `Authorization` header to PHP.
+
+### HTTPS as WordPress sees it
+
+> Requests reach WordPress as http://; see the reverse proxy guide.
+
+A proxy, load balancer or CDN handles HTTPS and talks to WordPress over plain HTTP, so WordPress can't tell the request was secure. The Dashboard refuses those requests. The **What to check** link opens WordPress's guide to [HTTPS behind a proxy](https://developer.wordpress.org/advanced-administration/security/https/). The usual fix is this block in `wp-config.php`, above the line that says to stop editing:
+
+```php
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
+    $_SERVER['HTTPS'] = 'on';
+}
+```
+
+<Warning>
+Add it only when every request reaches WordPress through that proxy, and the proxy always sets `X-Forwarded-Proto` itself. If visitors can reach the server directly, anyone can send that header. The Dashboard never reads it on its own for that reason.
+</Warning>
+
+### The probe didn't reach WordPress
+
+> The probe of the MCP address didn't reach WordPress.
+
+The self-test's request to the MCP address got no answer from WordPress: a timeout, a block page, or an error from the server in front. This line shows twice, once for the header check and once for the HTTPS check. Check the server's error log and any firewall, then run the check from the internet.
+
+### Plain HTTP
+
+> A plain http:// request to the MCP address was answered. It must be refused.
+
+Something answers `http://` requests to the MCP address with a success response. Set the server to redirect `http://` to `https://` or refuse it. The pass line reads "Plain http:// requests to the MCP address are refused."
+
+### Counters for the last 24 hours
+
+> Last 24 hours: No Authorization header arrived: 3. Token rejected: 0.
+
+A count of requests without an `Authorization` header turns this line into a warning with "Requests that arrive without their Authorization header usually mean the web server or a proxy strips it." See [Authorization header](#authorization-header). Rejected tokens are usually expired or revoked connections that the app keeps trying.
+
+> Unknown apps refused in the last 24 hours: 2.
+
+Requests from apps the Dashboard doesn't know. Anyone can send these, so a small number is normal. If your app is counted here, check that it's in [Set Up Your AI App](/mcp-server/remote/connect-apps) and that its switch is on.
+
+### Bundled app files
+
+> These apps can't connect because their bundled file failed its check: ChatGPT. Reinstall or update MainWP.
+
+The Dashboard ships a file with each known app's sign-in details and checks it before use. A partial update or an edited file fails the check. Reinstall or update MainWP Dashboard.
+
+## Plain permalinks
+
+Remote AI connections work with plain permalinks. The panel shows the MCP address in its query form, `https://your-dashboard.com/?rest_route=/mainwp-remote/v1/mcp`, and the sign-in and approval pages use `?mainwp_oauth=` addresses.
+
+The well-known addresses still have to reach WordPress. On Apache with plain permalinks there is no WordPress block in `.htaccess`, so they don't, and the self-test fails the well-known line. Either:
+
+- turn on pretty permalinks in **Settings > Permalinks**, or
+- add the rule from the self-test's fix line to the `.htaccess` file.
+
+On nginx, WordPress configurations usually pass unknown paths to `index.php` whatever the permalink setting.
+
+If you switch permalink modes later, the MCP address changes, and every app has to connect again.
+
+## nginx rules
+
+On nginx, a rule that denies paths starting with a dot (often `location ~ /\.`) also blocks `/.well-known/…` and `/dashboard/.well-known/…`. For a Dashboard in a subdirectory, the self-test shows this rule, which was tested on nginx. Add it in the `server` block, before the `location` blocks, with your path in place of `/dashboard`:
+
+```nginx
+rewrite ^/\.well-known/(oauth-authorization-server|openid-configuration)/dashboard(/.*)?$ /dashboard/index.php last;
+```
+
+The self-test also shows the Apache form, labeled as untested, for the `.htaccess` file at the root of the domain:
+
+```apache
+RewriteRule ^\.well-known/(oauth-authorization-server|openid-configuration)/dashboard(/.*)?$ /dashboard/index.php [L]
+```
+
+For a Dashboard at the root of its domain, the same form without the path sends the two addresses to WordPress:
+
+```nginx
+rewrite ^/\.well-known/(oauth-authorization-server|openid-configuration)$ /index.php last;
+```
+
+The rewrite keeps the original address, which is what the Dashboard reads. Reload nginx after the change, then run the self-test again. On managed hosting where you can't edit the nginx configuration, send the rule to your host's support.
+
+## Ports other than 443
+
+If your site address includes a port, for example `https://your-dashboard.com:8443`, every address the Dashboard gives apps includes that port. The self-test shows "Remote AI apps may not reach port 8443." as a warning and still lets you turn the connector on.
+
+Apps on your own computer usually reach any port. Hosted apps such as Claude and ChatGPT connect from their own servers, and support for other ports hasn't been confirmed. Serving the Dashboard on 443 avoids the question. If you must use another port, test with **Check from the internet** and with the app itself.
+
+## Check from the internet
+
+The checker tests five things in order: DNS, TLS, discovery of the sign-in information, the sign-in information itself, and the MCP address. After a DNS or TLS failure, the remaining checks are skipped. A passing check reads "Passed." Failing and warning lines link to the host guide.
+
+| Line | What to check |
+| --- | --- |
+| "Your Dashboard's domain has no public DNS record." | The domain's A or AAAA record at your DNS provider. |
+| "Your Dashboard's domain points to a private address, so apps on the internet can't reach it." | A Dashboard on a local network or VPN can't take hosted apps. Use apps on your computer, or move the Dashboard to a public address. |
+| "The secure connection to your Dashboard failed." | The server's TLS setup and any proxy in front of it. |
+| "Your Dashboard's TLS certificate isn't valid for its domain." | Renew or replace the certificate so it covers the exact domain, with the full chain installed. |
+| "Your Dashboard didn't answer within 10 seconds." | Server load, a firewall that drops requests, or a slow proxy. |
+| "Apps can't find the sign-in information at the well-known address." | The [well-known addresses](#requests-for-the-well-known-addresses) and [nginx rules](#nginx-rules). |
+| "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page." | A firewall, bot protection or CDN rule. See the [host guides](#host-guides). |
+| "Only the subdirectory form of the well-known address answers. Some apps look elsewhere first." | A warning for subdirectory installs. Add the [nginx rule](#nginx-rules) for the root forms. |
+| "The sign-in information is missing required fields." | A cache, proxy or another plugin changing the response. |
+| "The sign-in information names a different site address." | The site address in **Settings > General**, or another WordPress install answering. |
+| "The MCP address didn't answer with a sign-in request (HTTP 401)." | Something in front of WordPress answers the MCP address, or caches it. Exclude `/wp-json/mainwp-remote/` from page caches. |
+| "The MCP address answered with a malformed sign-in request." | A proxy rewriting or dropping the `WWW-Authenticate` header. |
+| "Skipped after an earlier failure." | Fix the earlier line first. |
+
+If the checker can't run, or you run it too often, the panel shows "The check from the internet couldn't run. Try again in a few minutes." The checker accepts 10 checks per hour from one address.
+
+## Still stuck
+
+- Run the self-test and the check from the internet again after each change. Some hosts cache server rules for a few minutes.
+- If your host manages the web server, send them the failing lines and the rules on this page.
+- The [local MCP server](/mcp-server/clients) doesn't need the well-known addresses or a reachable Dashboard from the internet, only HTTPS from your computer, and works as a fallback.

@@ -1,0 +1,38 @@
+---
+title: Remote AI Connections with Wordfence
+sidebarTitle: "Wordfence"
+description: >-
+  What to check in Wordfence when AI apps can't reach a MainWP Dashboard.
+---
+
+The Dashboard links here when the Wordfence plugin is active on the Dashboard site. Wordfence's firewall runs before WordPress handles a request, so it can block an app's request before the Dashboard sees it.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line. A Wordfence block page usually shows up in the check from the internet as "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page." or as "The MCP address didn't answer with a sign-in request (HTTP 401)."
+
+## Find the blocked request
+
+Open Wordfence's **Live Traffic** view and look for requests to these paths around the time the app tried to connect:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+/wp-json/mainwp-remote/v1/mcp
+/wp-json/mainwp-remote/v1/oauth/token
+/wp-json/mainwp-remote/v1/register
+```
+
+With plain permalinks, the last three use `?rest_route=/mainwp-remote/v1/…` instead.
+
+Live Traffic shows whether the firewall blocked the request and which rule did it.
+
+## What to change
+
+- **A firewall rule blocked the request.** Allowlist that specific request in Wordfence instead of turning the firewall off or putting it into learning mode for the whole site.
+- **Rate limiting throttled the app.** An app can send many requests in a short time while it works. If Wordfence rate limiting blocked it, raise the limit or adjust the rule's action for these paths.
+- **A blocked IP or country.** Hosted apps such as Claude and ChatGPT connect from their providers' servers. A country or IP block can stop them even though your own browser gets through.
+
+Don't turn off Wordfence to make the connection work. Every request to these paths still needs a valid token from your Dashboard, so a narrow allowlist entry is enough.
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

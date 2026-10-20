@@ -304,6 +304,28 @@
               "mcp-server/safety",
               "mcp-server/prompt-cookbook",
               {
+                "group": "Remote AI Connections",
+                "pages": [
+                  "mcp-server/remote/overview",
+                  "mcp-server/remote/connect-apps",
+                  "mcp-server/remote/connection-tokens",
+                  "mcp-server/remote/approval-policies",
+                  "mcp-server/remote/revoke-and-kill-switch",
+                  "mcp-server/remote/troubleshooting",
+                  {
+                    "group": "Host Guides",
+                    "pages": [
+                      "mcp-server/remote/troubleshooting/wp-engine",
+                      "mcp-server/remote/troubleshooting/kinsta",
+                      "mcp-server/remote/troubleshooting/cloudflare",
+                      "mcp-server/remote/troubleshooting/wordfence",
+                      "mcp-server/remote/troubleshooting/sucuri",
+                      "mcp-server/remote/troubleshooting/solid-security"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Guides",
                 "pages": [
                   "mcp-server/guides/restrict-tools",

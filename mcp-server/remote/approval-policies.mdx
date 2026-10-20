@@ -1,0 +1,160 @@
+---
+title: Approval Policies
+sidebarTitle: "Approval Policies"
+description: >-
+  How the Dashboard decides which AI app actions run directly, which need a confirmation in the chat, and which need your approval on the Dashboard.
+---
+
+Every tool a remote AI app calls has a tier, and the Dashboard enforces it on every call. The connection's approval policy (**Standard**, **Strict** or **Hands-off**) moves tools between tiers. The app can't skip a tier: a call that arrives without the approval its tier needs doesn't run.
+
+## The four tiers
+
+| Tier | What happens |
+| --- | --- |
+| **Read** | The call runs directly. It only reads data. |
+| **Write** | The call runs directly. These are lower-risk changes, such as syncing sites or adding a tag. |
+| **Confirm** | The first call returns a preview. The app shows it to you, and a second call with the preview's confirmation token runs it. |
+| **Dashboard** | The first call returns a link to an approval page on your Dashboard. The action runs only after you approve it there, signed in as yourself. |
+
+A connection with **View only** access can call read tools only. Every other tier needs **View and make changes**.
+
+### Confirm: a preview in the chat
+
+For a confirm-tier call, the Dashboard runs the tool's preview where it has one, and otherwise lists what was asked. It returns `CONFIRMATION_REQUIRED` with the preview and a confirmation token. The app should show you the preview, wait for your reply, and call the tool again with the same arguments, `user_confirmed: true` and the token. The token is valid for 10 minutes and works once.
+
+Before it runs, the Dashboard checks the preview again. If the sites or the changes are different now, it returns a new preview instead.
+
+The app sends that confirmation itself. So this tier proves the app passed the preview's token back; it doesn't prove that a person read the preview. Only the Dashboard tier proves that.
+
+### Dashboard: your click on the approval page
+
+For a Dashboard-tier call, the first call runs nothing. The Dashboard stores the request and gives the app an approval link. See [The approval page](#the-approval-page).
+
+## Which tools are in which tier
+
+These are the tiers under **Standard**. Tool names are the ones AI apps see.
+
+| Tier | Core tools |
+| --- | --- |
+| Read | Every core `list_*`, `get_*` and `count_*` tool, for example `list_sites_v1`, `get_site_updates_v1`, `list_knowledge_v1` |
+| Write | `sync_sites_v1`, `check_site_v1`, `check_sites_v1`, `reconnect_site_v1`, `reconnect_sites_v1`, `activate_site_plugins_v1`, `activate_site_theme_v1`, `unsuspend_site_v1`, `unsuspend_client_v1`, `ignore_site_core_v1`, `ignore_site_plugins_v1`, `ignore_site_themes_v1`, `set_ignored_updates_v1`, `add_tag_v1`, `update_tag_v1` |
+| Confirm | `run_updates_v1`, `update_all_v1`, `update_site_core_v1`, `update_site_plugins_v1`, `update_site_themes_v1`, `update_site_translations_v1`, `unignore_site_updates_v1`, `deactivate_site_plugins_v1`, `suspend_site_v1`, `suspend_sites_v1`, `suspend_client_v1`, `delete_tag_v1`, `create_knowledge_record_v1`, `update_knowledge_record_v1`, `delete_knowledge_record_v1` |
+| Dashboard | `delete_site_v1`, `delete_client_v1`, `delete_site_plugins_v1`, `delete_site_themes_v1`, `disconnect_site_v1`, `disconnect_sites_v1`, `add_site_v1` |
+
+Three core tools change tier with their arguments:
+
+- `update_site_v1` is **Dashboard** when the call sets `url`, `verify_certificate`, `ssl_version`, `http_user` or `http_pass`; **Confirm** when it sets `suspended`; and **Write** otherwise.
+- `add_client_v1` and `update_client_v1` are **Confirm** when the call includes `selected_sites`, because that moves sites between clients, and **Write** otherwise.
+
+### Extension tools
+
+MainWP reviews the tools of its released extensions and sets their tiers. A few examples:
+
+- `replace_custom_dashboard_snippet_v1` from Custom Dashboard installs PHP code, so it's always **Dashboard**, under every policy. The approval page shows the snippet's language, size and SHA-256 instead of the code, so you can match it against the snippet you wrote.
+- Tools that carry a password or API key, such as the Matomo connection and the Termageddon credential, are **Dashboard**. The Dashboard never stores the secret, so the action runs only when the app calls the tool again after your approval.
+
+Extension tools MainWP hasn't reviewed are listed in the panel under **Not reviewed by MainWP**. They're always **Dashboard** tier (Confirm under Hands-off), and their approval page carries the heading "MainWP hasn't reviewed which sites this changes". Work they queue in the background isn't cancelled when you revoke the connection. Each has its own switch, and the section has one too.
+
+Extension tools with missing or contradictory safety annotations are listed under **Not available to AI apps** and can't be called. Tools waiting for an extension release appear under **Not available yet**.
+
+## The three policies
+
+You pick the policy on the consent screen, or when you [create a connection token](/mcp-server/remote/connection-tokens).
+
+### Standard
+
+The default. Tools use the tiers in the table above. The consent screen describes it as "Risky changes need your confirmation in the app or your approval on this Dashboard."
+
+### Strict
+
+Every write and confirm tool moves to the **Dashboard** tier. Read tools still run directly. The consent screen describes it as "Every change needs your approval on this Dashboard."
+
+Use Strict when you want to see every change on the Dashboard before it runs, for example on a connection from an app you're still evaluating.
+
+### Hands-off
+
+Dashboard-tier tools move to **Confirm**, so the app only needs a confirmation in the chat. These stay **Dashboard** under every policy:
+
+- `add_site_v1`
+- `update_site_v1` when the call sets `url`, `verify_certificate` or `ssl_version`
+- `replace_custom_dashboard_snippet_v1`
+
+Those are the changes that could send a site's keys to another address or run code on the Dashboard.
+
+Hands-off is offered only to users without Team Control limits. If the user gains limits later, the connection behaves as Standard until its policy is changed.
+
+<Warning>
+Hands-off gives up the one check that proves a person approved. The consent screen says: "Changes that would need your approval on this Dashboard only need a confirmation in the app, so MainWP can no longer check that a person approved them, and instructions hidden in site content could lead the app to make them." A post, comment or plugin description on a child site could contain such instructions.
+</Warning>
+
+## Change a connection's policy
+
+In **API Access > AI Apps**, find the connection under **Connections**, pick a value in its **Approval policy** list and click **Save policy**.
+
+- Only the person who connected the app can change its policy or access. Other administrators can revoke it, nothing more.
+- Approvals waiting under the old policy stop working, and background jobs started under it are cancelled. The panel confirms with "The approval policy changed. Approvals waiting under the old policy no longer apply."
+- A change to a looser policy (Strict to Standard, or anything to Hands-off) sends you the email "An AI app connection now needs fewer approvals", followed by the app's name. Full administrators also see a notice in the panel.
+
+## The approval page
+
+### How the link reaches you
+
+- **Claude Code and VS Code** ask you to open the link from inside the app.
+- **Every other app** gets the link in the tool result, with the text "This action needs approval in the MainWP Dashboard. Give the user this link". The app should show you the link and call the tool again after you approve.
+
+The link has this form, with the plain-permalinks form in parentheses:
+
+```text
+https://your-dashboard.com/mainwp-oauth/approve?approval=123
+(https://your-dashboard.com/?mainwp_oauth=approve&approval=123)
+```
+
+Waiting approvals are also listed under **Pending approvals** in the panel, so you can open them from there.
+
+### What the page shows
+
+The page, titled **Approve an action from an AI app**, shows:
+
+- the app and the date you connected it
+- the action
+- the sites it affects, and for an action on a client or tag, the sites it affects through them
+- the arguments the app sent, with passwords and keys shown only as supplied
+- the line "Only approve if you just asked your AI app to do this."
+
+You must be signed in as the user who owns the connection. A signed-out visitor is sent to the login page first, and anyone else is refused.
+
+### Approve or deny
+
+Click **Approve** or **Deny**.
+
+**Approve** runs the action's preview first, where it has one. For updates, the page then lists the exact items and expected versions. The page shows "You approved this. Go back to your AI app and ask it to try again." Ask the app to call the tool again with the same arguments; the action runs once.
+
+**Deny** runs nothing. The app is told "The user denied this action." once. If it calls the same tool again, a new approval starts.
+
+Some actions carry a password or key that the Dashboard doesn't store. Their page shows "The Dashboard doesn't store this action's details, so its check runs when your AI app tries again."
+
+### Time limits
+
+- An approval waits 30 minutes for your decision.
+- After you approve, the app has 15 minutes to call the tool again.
+- After that, the link reads "This approval can no longer be used. Ask your AI app to start again."
+
+### When something changed
+
+Before it runs, the Dashboard checks the action again. If a site was removed or you lost access to it, if the sites behind a client or tag changed, or if the preview no longer matches what you approved, nothing runs. The page shows "The sites or changes are no longer what you approved, so nothing ran. Ask your AI app to start again." The app's next call creates a new approval.
+
+For updates, your approval covers the exact items you saw. An update that appears after you approved isn't included. The child site installs the newest available version of each approved item, and the next sync shows what was installed.
+
+### Run it here instead
+
+Some apps can't call the tool again after you approve. After **Approve**, the page offers **Run it here instead**, which runs the approved action from the page, as you, without the app. The page shows the result, or "Started. The action runs in the background." for a large action. If the app calls the tool again later, it gets "Already run from the Dashboard:" followed by the result.
+
+**Run it here instead** isn't offered for actions that carry a password or key, or for extension tools MainWP hasn't reviewed. Those run only when the app calls the tool again.
+
+### Large actions
+
+An approved action over more than 10 sites runs as a background job, 10 sites at a time. The app gets a job ID and follows it with `get_remote_job_status_v1`. Before each step the Dashboard checks the connection again: revoking it, changing its policy, turning the activity log off or using the kill switch cancels the rest of the job.
+
+## The activity log
+
+Every AI app call is written to the activity log. If **Enable Network Activity logging** is off, changes are refused with "Remote AI connections need the MainWP activity log. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."

@@ -1,0 +1,69 @@
+---
+title: Connection Tokens
+sidebarTitle: "Connection Tokens"
+description: >-
+  Create a token for AI apps that can send a header but can't sign in with OAuth, and manage its access, approval policy and expiry.
+---
+
+Some AI apps can send an `Authorization` header but can't run an OAuth sign-in. AnythingLLM, 5ire, Msty and Roo Code are examples. For them, the Dashboard issues a connection token: one string you paste into the app's configuration. Jan and LM Studio can use one too.
+
+A connection token is a connection like any other. It belongs to you, it has its own access and approval policy, and it shows up under **Connections** in the panel, where you can revoke it.
+
+## Create a token
+
+<Steps>
+  <Step title="Open the token form">
+    In **API Access > AI Apps**, find **Connect with a token**.
+  </Step>
+  <Step title="Pick the settings">
+    - **Name**: up to 64 characters, so you can recognize the token later. The connection appears as `Connection token "<name>"`.
+    - **Access**: **View only** (the default) or **View and make changes**.
+    - **Approval policy**: **Standard** (the default) or **Strict**. Administrators without Team Control limits can also pick **Hands-off**. See [Approval Policies](/mcp-server/remote/approval-policies).
+    - **Expires after**: **30 days**, **90 days** (the default) or **365 days**. There is no option for a token that never expires.
+  </Step>
+  <Step title="Create it and copy it">
+    Click **Create token**. The panel shows the **Connection token** once, with "Copy the token now. It isn't shown again." Below it are the header and a ready configuration for each app that uses tokens, with the token filled in.
+  </Step>
+  <Step title="Paste it into your app">
+    Use the configuration for your app from [Set Up Your AI App](/mcp-server/remote/connect-apps#apps-that-use-a-connection-token). For any other app that sends a header, use:
+
+    ```text
+    Authorization: Bearer mwpct_...
+    ```
+
+    Replace `mwpct_...` with your token, and send it to your MCP address.
+  </Step>
+</Steps>
+
+Each user can have up to 5 connection tokens at a time. With 5, the **Create token** button is disabled and the panel shows "You already have 5 connection tokens. Revoke one first."
+
+When you create a token, you get the same email as for a new connection, titled "New MainWP connection token" followed by the token's name. If you didn't create it, revoke it from the link in the email.
+
+## Where a token works
+
+A connection token works only on the MCP address. The Dashboard refuses it on the WordPress Abilities API, the MainWP REST API and admin-ajax, so it can't replace an Application Password or an API key.
+
+A token can do what the connection's access and approval policy allow, as you, and nothing more. Actions in the Dashboard tier still need your click on the [approval page](/mcp-server/remote/approval-policies#the-approval-page) while you're signed in. A leaked token alone can't delete or disconnect sites, because those actions wait for that click. Under Hands-off it can, since Hands-off replaces most of those clicks with a confirmation in the chat.
+
+## Keep the token safe
+
+Many apps store the token in a plain-text configuration file. Anything that copies that file, such as dotfile sync or a backup, copies the token too. To limit the damage if a token leaks:
+
+- Give each app its own token and name it after the app.
+- Use **View only** when the app only needs to read.
+- Pick the shortest expiry that works for you.
+- Revoke a token as soon as you stop using the app.
+
+## Expiry
+
+The Dashboard emails you 7 days before a token expires, with the subject "Your MainWP connection token expires soon" followed by the token's name. After the expiry date, the app's requests are refused with "This MainWP connection token has expired. Create a new one in MainWP > AI apps."
+
+To keep the app working, create a new token and replace the old one in the app's configuration. A token can't be extended.
+
+## A token that can only view
+
+If the app tries a change with a **View only** token, the call fails with "This token can only view. Create a token with changes allowed in MainWP > AI apps." Create a new token with **View and make changes**, replace the old one in the app, and revoke the old token.
+
+## Revoke a token
+
+Click **Revoke** next to the token under **Connections**. The app's next request fails. See [Revoke Connections and the Kill Switch](/mcp-server/remote/revoke-and-kill-switch).

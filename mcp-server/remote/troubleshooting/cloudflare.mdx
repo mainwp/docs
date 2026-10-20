@@ -1,0 +1,50 @@
+---
+title: Remote AI Connections Behind Cloudflare
+sidebarTitle: "Cloudflare"
+description: >-
+  Cloudflare SSL modes, bot protection, caching and timeouts that affect AI apps connecting to a MainWP Dashboard.
+---
+
+The Dashboard links here when your own admin requests carry Cloudflare's `CF-Ray` header, which means the site is proxied through Cloudflare. AI apps reach your Dashboard through Cloudflare too, so Cloudflare's settings decide whether their requests arrive.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. The self-test only sees your server; the check from the internet goes through Cloudflare like a real app. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line.
+
+## SSL/TLS encryption mode
+
+If the self-test reports "Requests reach WordPress as http://; see the reverse proxy guide.", Cloudflare is probably connecting to your server over plain HTTP. That happens in the **Flexible** encryption mode.
+
+Set the encryption mode to **Full (strict)** in Cloudflare's SSL/TLS settings. Your server then needs a valid certificate, such as a Cloudflare Origin CA certificate or a public one. If you can't change the mode, add the `wp-config.php` block from [HTTPS as WordPress sees it](/mcp-server/remote/troubleshooting#https-as-wordpress-sees-it), which is safe only when all traffic reaches the server through Cloudflare.
+
+## Bot protection and challenges
+
+AI apps are programs, not browsers. They can't solve a challenge page. If the check from the internet reports "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page." or "The MCP address didn't answer with a sign-in request (HTTP 401).", look at these settings:
+
+- **Bot Fight Mode** or **Super Bot Fight Mode**
+- **Security Level**, especially **I'm Under Attack** mode
+- WAF custom rules or managed rules that challenge or block requests
+
+Cloudflare's security events log shows which rule acted on the request. Create a WAF custom rule that skips the challenge for these paths:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+/wp-json/mainwp-remote/
+```
+
+With plain permalinks, the MCP address is `/?rest_route=/mainwp-remote/v1/mcp`; match that form instead of the `/wp-json/` path.
+
+Cloudflare documents that Bot Fight Mode can't be skipped with a WAF rule. If it blocks the app, turn Bot Fight Mode off for the zone, or use a plan that offers Super Bot Fight Mode with skip rules.
+
+Keep the skip as narrow as these paths. Every request still needs a valid token from your Dashboard.
+
+## Caching
+
+The Dashboard marks every remote AI response as not cacheable, and Cloudflare respects that by default. A **Cache Everything** cache rule can override it. If one applies to your site, add a rule that bypasses the cache for the paths above and for `/mainwp-oauth/`.
+
+## Timeouts
+
+Cloudflare ends a proxied request that takes longer than 100 seconds on most plans. The Dashboard keeps each direct tool call under 90 seconds and runs larger approved actions as background jobs, so normal use stays under that limit. If an app reports a timeout on a single call, check the server's load and PHP time limits.
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

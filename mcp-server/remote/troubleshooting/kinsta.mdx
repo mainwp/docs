@@ -1,0 +1,37 @@
+---
+title: Remote AI Connections on Kinsta
+sidebarTitle: "Kinsta"
+description: >-
+  What to check when AI apps can't reach a MainWP Dashboard hosted on Kinsta.
+---
+
+The Dashboard links here when it detects Kinsta, from the `KINSTA_CACHE_ZONE` setting Kinsta provides.
+
+Kinsta runs nginx for you, and you can't edit its configuration yourself. Kinsta also routes traffic through its own edge network. Server rules and edge settings on this page are changes to request from Kinsta support.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. Note every `fail` and `warn` line. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each one.
+
+## What to look at
+
+**The well-known addresses.** nginx configurations often deny paths that start with a dot. If the self-test reports "Requests for the well-known addresses don't reach WordPress, so no app can find how to sign in.", or a subdirectory line says a server rule blocks addresses starting with a dot, send Kinsta support the rule from the [nginx rules](/mcp-server/remote/troubleshooting#nginx-rules) section with your path filled in.
+
+**Bot protection at the edge.** If the check from the internet reports "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page.", the edge network is answering the app's request instead of WordPress. Ask support to let requests to these paths through without a challenge:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+/wp-json/mainwp-remote/
+```
+
+**Caching.** The Dashboard marks every remote AI response as not cacheable. If the check from the internet reports "The MCP address didn't answer with a sign-in request (HTTP 401)." while the self-test passes, ask support to exclude the paths above and `/mainwp-oauth/` from the page cache and the edge cache.
+
+## What to send to support
+
+- your Dashboard's address
+- the failing lines from the self-test and the check from the internet, word for word
+- the rule the self-test shows, if any
+- the time you ran the checks
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

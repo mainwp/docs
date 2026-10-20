@@ -1,0 +1,36 @@
+---
+title: Remote AI Connections with Sucuri
+sidebarTitle: "Sucuri"
+description: >-
+  What to check in the Sucuri plugin and the Sucuri firewall when AI apps can't reach a MainWP Dashboard.
+---
+
+The Dashboard links here when the Sucuri Security plugin is active on the Dashboard site. Sucuri has two parts that matter here: the plugin on your site, and the Sucuri website firewall, a proxy that your traffic may pass through.
+
+## Start with the checks
+
+In **API Access > AI Apps**, click **Run the self-test**, then **Check from the internet**. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line. The self-test only sees your server; the check from the internet goes through the Sucuri firewall like a real app.
+
+## If your site uses the Sucuri firewall
+
+**Blocked or challenged requests.** If the check from the internet reports "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page." or "The MCP address didn't answer with a sign-in request (HTTP 401).", look at the firewall's audit log for requests to these paths, and allowlist them in the firewall's settings:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+/wp-json/mainwp-remote/
+```
+
+With plain permalinks, the MCP address is `/?rest_route=/mainwp-remote/v1/mcp`.
+
+**Caching.** The Dashboard marks every remote AI response as not cacheable. If the firewall still caches them, exclude the paths above and `/mainwp-oauth/` from its cache.
+
+**HTTPS.** The firewall handles HTTPS in front of your server. If the self-test reports "Requests reach WordPress as http://; see the reverse proxy guide.", see [HTTPS as WordPress sees it](/mcp-server/remote/troubleshooting#https-as-wordpress-sees-it). Use that fix only when all traffic reaches the server through the firewall.
+
+## The Sucuri plugin
+
+If you applied the plugin's hardening rules, check that they don't block `/.well-known/` paths or the `Authorization` header. The self-test lines for [the well-known addresses](/mcp-server/remote/troubleshooting#requests-for-the-well-known-addresses) and [the Authorization header](/mcp-server/remote/troubleshooting#authorization-header) show whether they do.
+
+Keep the firewall on. Every request to these paths still needs a valid token from your Dashboard, so allowlisting the paths is enough.
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
