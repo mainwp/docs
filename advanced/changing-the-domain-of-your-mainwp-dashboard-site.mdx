@@ -59,7 +59,7 @@ Open **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) 
 <Step title="Create and verify a complete backup">
 Back up the full Dashboard database, all WordPress files, and configuration. Include MainWP and Add-on tables, installed Add-on files, and the MainWP uploads directory with its encryption-key files. Verify that the backup completed and contains these items before proceeding.
 
-If you use Native Backups in the MainWP 6.3 Release Candidate (RC), also [preserve the private backup directory](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-native-backup-files) when transferring the Dashboard to another server or directory.
+If you use Native Backups in the MainWP 6.4 Release Candidate (RC), also [preserve the private backup directory](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-native-backup-files) when transferring the Dashboard to another server or directory.
 </Step>
 <Step title="Confirm the search-replace exclusions">
 Configure the tool or ask your host to exclude `wp_mainwp_wp` and `wp_mainwp_wp_sync` from URL replacement, using your actual prefix. Confirm that the same exclusions apply to any automatic replacement during import or restoration. If the tool cannot do this, ask your host to use a controlled migration method.
