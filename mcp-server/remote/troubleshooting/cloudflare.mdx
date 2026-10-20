@@ -45,6 +45,6 @@ The Dashboard marks every remote AI response as not cacheable, and Cloudflare re
 
 ## Timeouts
 
-Cloudflare ends a proxied request that takes longer than 100 seconds on most plans. The Dashboard keeps each direct tool call under 90 seconds and runs larger approved actions as background jobs, so normal use stays under that limit. If an app reports a timeout on a single call, check the server's load and PHP time limits.
+Cloudflare ends a proxied request that takes longer than 100 seconds on most plans. The Dashboard runs approved actions over more than 10 sites as background jobs, so most calls finish well within that limit. A single call to a slow child site can still take longer. If an app reports a timeout on a single call, check the server's load, PHP time limits and the child site it was working on.
 
 If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.

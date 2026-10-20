@@ -11,7 +11,7 @@ Remote AI connections serve abilities from the [WordPress Abilities API](/api-re
 
 The Dashboard serves every ability in the `mainwp/` namespace that sets `show_in_rest` to `true` in its `meta`. The tool name is the ability name without `mainwp/`, with hyphens turned into underscores: `mainwp/acme-purge-cache-v1` becomes `acme_purge_cache_v1`. If two abilities produce the same tool name, neither is served.
 
-Register your abilities in a category of your own. A `mainwp/` ability in one of MainWP's core categories (`mainwp-batch`, `mainwp-clients`, `mainwp-knowledge`, `mainwp-sites`, `mainwp-tags`, `mainwp-updates`) that MainWP's own tier table doesn't list is always **Dashboard** tier, whatever its annotations or contract say.
+Register your abilities in a category of your own. A `mainwp/` ability in one of MainWP's core categories (`mainwp-batch`, `mainwp-clients`, `mainwp-knowledge`, `mainwp-sites`, `mainwp-tags`, `mainwp-updates`) that MainWP's own tier table doesn't list is always **Dashboard** tier (**Confirm** under Hands-off), whatever its annotations or contract say.
 
 ## How an ability gets its tier
 
@@ -117,7 +117,7 @@ The resolver reads the call's arguments and turns them into a fixed list of site
 | `client` | `client_id_or_email` or `client_id` | Every site of the client at the time of the call |
 | `tag` | `tag_id` | Every site with the tag at the time of the call |
 
-When the call runs, the Dashboard replaces the site, client or tag argument with the resolved IDs, so a domain or an empty list can't select different sites later.
+When the call runs, the Dashboard replaces the site or client argument with the resolved IDs (a `tag_id` is already an ID), so a domain, an email or an empty list can't select different sites later.
 
 For a declared contract, use `atomic`, the default, which runs the ability once, or `chunked_sites`, which works with the `site` and `sites` resolvers and splits the sites into steps of 10. A call over more than 10 sites then runs as a background job. A contract with a `native_token_field` must use `atomic`, because a token belongs to one preview of one call. `direct` and `updates` are used by MainWP's own tools.
 
@@ -175,7 +175,7 @@ Mark secret inputs `writeOnly` in your input schema, so every consumer of the ab
 A call that carries a credential value, or any call to an ability with `credential_bearing: true`, is handled without storing it:
 
 - The credential never enters a stored approval or a background job. The call runs only when the app calls the tool again with the same arguments, and **Run it here instead** isn't offered.
-- It runs in one step while the app waits, never as a background job.
+- It runs in one step while the app waits, never as a background job. A credential-carrying call that would need more than one step, over 10 sites, is refused.
 - The approval page and the chat summary show the argument as "supplied".
 - In previews and results, credential fields at any depth show as `[redacted]`, and any string containing a credential value from the call has that value replaced with `[redacted]`.
 

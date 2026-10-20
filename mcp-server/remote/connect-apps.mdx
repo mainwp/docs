@@ -30,7 +30,7 @@ Jan and LM Studio can also use a connection token.
 
 **Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. Their consent screen reads "Cursor, or another program on your computer using Cursor's settings", and the same for Gemini CLI.
 
-**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** on under **Which apps can connect**, which it is by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same.
+**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** on under **Which apps can connect**, which it is by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning it off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
 
 **Signing in.** After you add the configuration, the app opens your Dashboard in a browser. Sign in if WordPress asks, review the consent screen, and click **Approve**. See [what the consent screen shows](/mcp-server/remote/overview#what-you-see-when-an-app-connects).
 
@@ -378,7 +378,7 @@ Open WebUI is a multi-user web app that returns to its own HTTPS address after s
   </Step>
 </Steps>
 
-Under **Web apps**, each app has a switch, **Reissue secret** and **Delete**. Switching it off, reissuing the secret or deleting it ends every connection through that app. Turning the connector off and on, or **Disconnect all AI apps**, also ends the connections, but the app and its secret keep working for new sign-ins. Full administrators see a notice in the panel whenever a web app is added, switched, deleted or gets a new secret.
+Under **Web apps**, each app has a switch, **Reissue secret** and **Delete**. Switching it off, reissuing the secret or deleting it ends every connection through that app. Turning the connector off and on, or **Disconnect all AI apps**, also ends the connections, but the app and its secret keep working for new sign-ins. Administrators without Team Control limits see a notice in the panel whenever a web app is added, switched, deleted or gets a new secret.
 
 ## Apps that use a connection token
 
@@ -441,13 +441,13 @@ If you connected with **View only** and the app tries a change, it gets a refusa
 - Claude, Claude Code and VS Code get a sign-in request for more access. Claude and VS Code ask you to sign in again. Claude Code tells you to run `/mcp` and sign in again.
 - ChatGPT gets "This connection can only view. Reconnect and allow changes."
 - Other apps get "Reconnect with changes allowed."
-- Connection tokens get "This token can only view. Create a token with changes allowed in MainWP > AI apps."
+- Connection tokens get "This token can only view. Create a token with changes allowed in API Access > AI Apps."
 
 When you reconnect, pick **View and make changes** on the consent screen. To go the other way, use **Change to view only** on the connection in the panel; that takes effect on the app's next request.
 
 ## If an app can't connect
 
-- **"MainWP doesn't support this app yet"**: the app isn't one of the apps on this page, or its switch is off. Check **Which apps can connect** and, for registered apps, **Let apps on your own computer connect**.
+- **"MainWP doesn't support this app yet"**: the app isn't one of the apps on this page, its switch under **Which apps can connect** is off, or it tried to register while **Let apps on your own computer connect** was off.
 - **"This app needs to be added again"**: the app's registration was removed. Remove MainWP from the app and add it again.
 - **"This app can't connect right now"** after an app changed its callback addresses: updating MainWP Dashboard may fix it, because the Dashboard ships each known app's addresses.
 - **"Sign in first"** or **"You can't connect apps"**: sign in to the Dashboard with an administrator account, then start again from the app.

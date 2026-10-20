@@ -22,7 +22,7 @@ A connection with **View only** access can call read tools only. Every other tie
 
 For a confirm-tier call, the Dashboard runs the tool's preview where it has one, and otherwise lists what was asked. It returns `CONFIRMATION_REQUIRED` with the preview and a confirmation token. The app should show you the preview, wait for your reply, and call the tool again with the same arguments, `user_confirmed: true` and the token. The token is valid for 10 minutes and works once.
 
-Before it runs, the Dashboard checks the preview again. If the sites or the changes are different now, it returns a new preview instead.
+Before it runs, the Dashboard checks which sites the call affects again. For tools that compare their preview, it also runs the preview again and compares the parts that describe the change. If either differs, it returns a new preview instead.
 
 The app sends that confirmation itself. So this tier proves the app passed the preview's token back; it doesn't prove that a person read the preview. Only the Dashboard tier proves that.
 
@@ -50,8 +50,8 @@ Three core tools change tier with their arguments:
 
 MainWP reviews the tools of its released extensions and sets their tiers. A few examples:
 
-- `replace_custom_dashboard_snippet_v1` from Custom Dashboard installs PHP code, so it's always **Dashboard**, under every policy. The approval page shows the snippet's language, size and SHA-256 instead of the code, so you can match it against the snippet you wrote.
-- Tools that carry a password or API key, such as the Matomo connection and the Termageddon credential, are **Dashboard**. The Dashboard never stores the secret, so the action runs only when the app calls the tool again after your approval.
+- `replace_custom_dashboard_snippet_v1` from Custom Dashboard can install PHP code that runs on the Dashboard, so it's always **Dashboard**, under every policy. The approval page shows the snippet's language, size and SHA-256 instead of the code, so you can match it against the snippet you wrote.
+- Tools that carry a password or API key, such as the Matomo connection, are **Dashboard**. The Dashboard never stores the secret, so the action runs only when the app calls the tool again after your approval.
 
 Extension tools MainWP hasn't reviewed are listed in the panel under **Not reviewed by MainWP**. They're always **Dashboard** tier (Confirm under Hands-off), and their approval page carries the heading "MainWP hasn't reviewed which sites this changes". Work they queue in the background isn't cancelled when you revoke the connection. Each has its own switch, and the section has one too.
 
@@ -95,7 +95,7 @@ In **API Access > AI Apps**, find the connection under **Connections**, pick a v
 
 - Only the person who connected the app can change its policy or access. Other administrators can revoke it, nothing more.
 - Approvals waiting under the old policy stop working, and background jobs started under it are cancelled. The panel confirms with "The approval policy changed. Approvals waiting under the old policy no longer apply."
-- A change to a looser policy (Strict to Standard, or anything to Hands-off) sends you the email "An AI app connection now needs fewer approvals", followed by the app's name. Full administrators also see a notice in the panel.
+- A change to a looser policy (Strict to Standard, or anything to Hands-off) sends you the email "An AI app connection now needs fewer approvals", followed by the app's name. Administrators without Team Control limits also see a notice in the panel.
 
 ## The approval page
 
@@ -143,7 +143,7 @@ Some actions carry a password or key that the Dashboard doesn't store. Their pag
 
 ### When something changed
 
-Before it runs, the Dashboard checks the action again. If a site was removed or you lost access to it, if the sites behind a client or tag changed, or if the preview no longer matches what you approved, nothing runs. The page shows "The sites or changes are no longer what you approved, so nothing ran. Ask your AI app to start again." The app's next call creates a new approval.
+Before it runs, the Dashboard checks the action again. If a site was removed or you lost access to it, if the sites behind a client or tag changed, or, for tools that compare their preview, if the preview no longer matches what you approved, nothing runs. The page shows "The sites or changes are no longer what you approved, so nothing ran. Ask your AI app to start again." The app's next call creates a new approval.
 
 For updates, your approval covers the exact items you saw. An update that appears after you approved isn't included. The child site installs the newest available version of each approved item, and the next sync shows what was installed.
 
@@ -159,4 +159,4 @@ An approved action over more than 10 sites runs as a background job, 10 sites at
 
 ## The activity log
 
-Every AI app call is written to the activity log. If **Enable Network Activity logging** is off, changes are refused with "Remote AI connections need the MainWP activity log. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."
+Every AI app call is written to the activity log. If **Enable Network Activity logging** is off, changes are refused with "Remote AI connections need the MainWP activity log. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on." Reads are unaffected.

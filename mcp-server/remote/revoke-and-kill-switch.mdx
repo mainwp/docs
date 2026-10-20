@@ -59,6 +59,8 @@ The Dashboard also ends connections when:
 - the user who owns them is deleted, changes their password, or loses the `manage_options` capability
 - the Dashboard's site address changes. The panel then shows "Your site address changed. Connected AI apps need to reconnect."
 - a connection reaches its 30-day limit, or a connection token reaches its expiry date
+- a connection goes 14 days without a request
+- you connect the same app a sixth time; each user keeps up to 5 connections per app, and the oldest one ends
 
 ## The kill switch
 
@@ -72,7 +74,7 @@ Add this line to `wp-config.php`, above the line that says to stop editing:
 define( 'MAINWP_DISABLE_REMOTE_MCP', true );
 ```
 
-Any value that counts as true in PHP turns the connector off. While the constant is set, the filter below isn't consulted, so no plugin can turn the connector back on.
+Any value that counts as true in PHP turns the connector off. While the constant is true, the filter below isn't consulted, so no plugin can turn the connector back on.
 
 ### The filter
 

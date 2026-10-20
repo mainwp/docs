@@ -49,7 +49,7 @@ with a **What to check on your host** link. You approved in your browser, which 
 
 - **Last request** shows the time of the app's last successful request, or **Never**.
 - The IP address below it is where that request came from.
-- **Last failure** shows a reason code and its time when the Dashboard refused a request it could match to this connection. Common codes are `expired`, `revoked`, `wrong_resource` (the site address or permalink mode changed after the app connected), `cap_lost` (the user lost `manage_options`) and `unknown_client` (the app was switched off or removed).
+- **Last failure** shows a reason code and its time when the Dashboard refused a request it could match to this connection. Common codes are `invalid_grant` (the app's sign-in expired or was replaced; sign in again from the app), `wrong_resource` (the permalink mode changed after the app connected), `cap_lost` (the user lost `manage_options`), `unknown_client` (the app was switched off or removed), `insufficient_scope` (a view-only connection tried a change) and `activity_log_off`.
 
 A request the Dashboard can't match to any connection only shows up in the self-test's 24-hour counters.
 
@@ -230,6 +230,8 @@ If you switch permalink modes later, the MCP address changes, and every app has 
 
 ## nginx rules
 
+This section covers both nginx and Apache.
+
 On nginx, a rule that denies paths starting with a dot (often `location ~ /\.`) also blocks `/.well-known/…` and `/dashboard/.well-known/…`. For a Dashboard in a subdirectory, the self-test shows this rule, which was tested on nginx. Add it in the `server` block, before the `location` blocks, with your path in place of `/dashboard`:
 
 ```nginx
@@ -258,7 +260,7 @@ Apps on your own computer usually reach any port. Hosted apps such as Claude and
 
 ## Check from the internet
 
-The checker tests five things in order: DNS, TLS, discovery of the sign-in information, the sign-in information itself, and the MCP address. After a DNS or TLS failure, the remaining checks are skipped. A passing check reads "Passed." Failing and warning lines link to the host guide.
+The checker tests five things in order: DNS, TLS, discovery of the sign-in information, the sign-in information itself, and the MCP address. After a check fails, the checks after it are skipped. A passing check reads "Passed." Failing and warning lines link to the host guide.
 
 | Line | What to check |
 | --- | --- |

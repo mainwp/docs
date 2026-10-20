@@ -19,11 +19,13 @@ Open Wordfence's **Live Traffic** view and look for requests to these paths arou
 /.well-known/oauth-authorization-server
 /.well-known/openid-configuration
 /wp-json/mainwp-remote/v1/mcp
+/wp-json/mainwp-remote/v1/oauth-protected-resource
 /wp-json/mainwp-remote/v1/oauth/token
 /wp-json/mainwp-remote/v1/register
+/mainwp-oauth/authorize
 ```
 
-With plain permalinks, the last three use `?rest_route=/mainwp-remote/v1/…` instead.
+With plain permalinks, the `/wp-json/` paths use `?rest_route=/mainwp-remote/v1/…` instead, and the sign-in page uses `?mainwp_oauth=authorize`.
 
 Live Traffic shows whether the firewall blocked the request and which rule did it.
 

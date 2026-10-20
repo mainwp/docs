@@ -25,11 +25,12 @@ Both can be used side by side. If your app can't connect remotely, the local ser
 
 ## Requirements
 
+- **A MainWP Dashboard version that includes Remote AI Connections.** Earlier versions don't have the **AI Apps** panel.
 - **HTTPS site address.** The Dashboard's site address must start with `https://`. With an `http://` address the connector can't be turned on.
 - **PHP 8.1 or newer.** On older PHP the panel shows "Remote AI connections need PHP 8.1 or newer; this server runs" followed by your version, and nothing else loads.
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
 - **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the panel doesn't appear there.
-- **The activity log turned on.** Every AI app call is recorded, so the connector needs **Enable Network Activity logging** on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on.
+- **The activity log turned on.** Every AI app call is recorded, so the connector needs **Enable Network Activity logging** on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on. Reads keep working.
 - **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
 - **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
 
@@ -85,7 +86,7 @@ The app opens your Dashboard in a browser. If you aren't signed in, WordPress as
 - the account you're signed in as, with **Not you? Log out**
 - a Team Control line when your account is limited to some sites, because the app sees only what you can see
 - **What the app can do:** **View and make changes** or **View only**. Apps that ask only for view access show no choice.
-- **Approval policy:** **Standard**, **Strict**, and **Hands-off** for users without Team Control limits. See [Approval Policies](/mcp-server/remote/approval-policies).
+- **Approval policy:** **Standard** or **Strict**, plus **Hands-off** for users without Team Control limits. It appears only when the app asks to make changes. See [Approval Policies](/mcp-server/remote/approval-policies).
 
 Click **Approve** or **Deny**. The screen appears on every new connection; there is no "remember this app".
 
@@ -101,7 +102,7 @@ After the app's first sign-in completes, you get an email titled "New AI app con
 
 The connection's approval policy moves tools between tiers. The Dashboard tier is the only one that proves a person approved: the app can't click it for you. [Approval Policies](/mcp-server/remote/approval-policies) lists which tools are in which tier.
 
-**Tokens only work on the MCP address.** The Dashboard refuses the app's tokens on the WordPress Abilities API, the MainWP REST API and admin-ajax. Access tokens last 30 minutes and the app renews them on its own. A connection lasts up to 30 days, then the app asks you to sign in again.
+**Tokens only work on the MCP address.** On the WordPress Abilities API, the MainWP REST API and admin-ajax, the app's tokens don't sign anyone in. Access tokens last 30 minutes. Apps that ask for offline access renew them on their own; an app that doesn't has to sign in again when its token expires. A connection lasts up to 30 days, or until it goes 14 days without use, then the app asks you to sign in again.
 
 **Only known apps can connect.** The Dashboard ships the sign-in details of seven apps: Claude, Claude Code, ChatGPT, VS Code, Codex CLI, Zed and Goose. Cursor and Gemini CLI use fixed client IDs. Apps on your own computer can register themselves, but only with a callback address on that computer. Multi-user web apps such as Open WebUI need an administrator to add them. Any other app is refused before sign-in with "MainWP doesn't support this app yet". The Dashboard never downloads an app's details from the internet.
 
