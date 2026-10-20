@@ -14,7 +14,7 @@ The MainWP Dashboard Settings page controls how your Dashboard communicates with
 - Set up automatic updates for plugins, themes, and WordPress core
 - Enable uptime and site health monitoring
 - Manage email notification settings
-- Configure Cost Tracker, Network Activity, and API Backups settings
+- Configure Native Backups, Cost Tracker, Network Activity, and API Backups settings
 - Optimize request settings for your hosting environment
 - Access maintenance tools
 
@@ -36,25 +36,22 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
 
 ## Settings Reference
 
-The Settings menu is organized as subpages. **Updates Settings** and **Backup Settings** are sections inside **General Settings**, not standalone settings pages.
-
-1. General Settings (includes Updates Settings and Backup Settings)
+1. General Settings
 2. Advanced Settings
 3. Monitoring Settings (Uptime Monitoring, Site Health Monitoring, and HTTP response checks)
-4. Email Settings
-5. Premium Updates
-6. Cost Tracker Settings
-7. Network Activity Settings
-8. API Backups Settings
-9. Tools
+4. Backup Settings
+5. Email Settings
+6. Premium Updates
+7. Cost Tracker Settings
+8. Network Activity Settings
+9. API Backups Settings
+10. Tools
 
 <AccordionGroup>
   <Accordion title="General Settings" icon="gear" defaultOpen>
     **Page:** **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`)
 
-    This is a single settings page with three sections: **General Settings**, **Updates Settings**, and **Backup Settings**.
-
-    ### General Settings Section
+    ### General Settings
 
     - **Daily sync time** (`H:mm`): Sets the start time of the first automatic synchronization run each day.
     - **Frequency of auto sync** (Default: Twice per day): Controls how many automatic sync runs happen per day (1 to 12).
@@ -65,7 +62,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Hide the Update Everything button**: Hides the `Update Everything` action from the Updates Overview widget.
     - **Show widgets**: Lets you choose which widgets are visible on Operations and individual site Operations pages.
 
-    ### Updates Settings Section
+    ### Updates Settings
 
     - **Plugin advanced automatic updates** (Default: Disabled): Enables automatic updates for trusted plugins.
     - **Theme advanced automatic updates** (Default: Disabled): Enables automatic updates for trusted themes.
@@ -77,29 +74,12 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Advanced automatic updates delay** (Default: 1 day): Delays new updates for the selected number of days before auto-installing.
     - **Show WordPress language updates** (Default: Enabled): Shows translation updates in update management views.
     - **Update confirmations** (`Enable`, `Disable`, `Disable for single updates`): Controls confirmation prompts before update actions.
-    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Blocks updates when a full backup is older than the allowed tolerance.
-    - **Days without of a full backup tolerance** (Default: 7): Defines how old the last full backup can be when backup-before-update is enabled.
+    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Requires a recent backup before updates started from Manage Sites. Native Backups accepts completed full, database-only, or incremental backups.
+    - **Days without of a full backup tolerance** (Default: 7): Sets the allowed backup age for the backup-before-update check.
+    - **Require an offsite-verified backup** (Default: Disabled; Native Backups): Also requires verified copies on remote storage. Local Path destinations do not count as offsite storage. See [Backups Before Updates](/sites/backups/manage-backups#require-a-backup-before-updates).
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
     - **Abandoned check by local file date** (Default: Disabled; Dashboard 6.3): Uses the installed plugin's main file or theme's `style.css` modification date when WordPress.org has no usable last-updated date. It uses the same tolerance above. Sync the affected sites after changing it so MainWP Child 6.3 or later receives the setting. See [abandoned detection](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3) for its limits.
 
-    ### Backup Settings Section (on the same page)
-
-    MainWP Dashboard is moving away from native backup development. For long-term workflows, prefer [Backup Add-ons](https://mainwp.com/extensions/extension-category/backups/).
-
-    - **Select primary backup system**: Chooses the main backup method (native or an integrated backup method) used by MainWP Dashboard.
-    - **Enable legacy backup feature** (Default: Disabled): Enables the legacy native backup settings and related controls.
-
-    The remaining fields in this section appear when the legacy backup feature is enabled.
-
-    - **Backups on server**: Sets how many backup archives are retained locally on child sites.
-    - **Backups on remote storage**: Sets how many backup archives are retained on external storage destinations.
-    - **Archive format**: Selects backup archive type (`zip`, `tar`, `tar.gz`, or `tar.bz2`).
-    - **Auto detect maximum file descriptors on child sites**: Lets MainWP auto-detect safe descriptor limits for ZIP backup processing.
-    - **Maximum file descriptors fallback value**: Provides a manual descriptor value when automatic detection is unavailable.
-    - **Load files in memory before zipping**: Uses a memory-first ZIP process for environments that need it.
-    - **Send email when backup fails**: Sends a notification when a legacy backup job fails.
-    - **Send email when backup starts**: Sends a notification when a legacy backup job starts.
-    - **Execute backup tasks in chunks**: Runs legacy backup jobs in smaller chunks to reduce server load spikes.
   </Accordion>
 
   <Accordion title="Advanced Settings" icon="sliders">
@@ -187,6 +167,27 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
     - **Site health threshold** (Default: `Should be improved`): Sets the threshold (`Should be improved` or `Good`) used to evaluate site health status.
   </Accordion>
 
+  <Accordion title="Backup Settings" icon="hard-drive">
+    **Page:** **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`)
+
+    Configure [Native Backups](/sites/backups/manage-backups) for connected Child Sites. These settings are available in the MainWP 6.4 Release Candidate (RC).
+
+    - **Select primary backup system** (when other backup methods are available): Selects Native backups or an integrated backup method.
+    - **Enable native backups**: Turns on backup creation, scheduling, and restores.
+    - **On-demand backups to keep** (Default: 5; minimum: 1): Sets how many Back Up Now snapshots to keep per site.
+    - **Encrypt backup archives**: Encrypts new backup archives before upload. Set and safely store a recovery passphrase first.
+    - **Backup recovery passphrase**: Lets you recover the backup encryption key. Initial setup asks for your WordPress password; changes require the current passphrase.
+    - **Backup run diagnostics**: Records detailed backup and restore progress locally. Enable it before reproducing a problem, then use **Export diagnostics data** for support.
+    - **Archive format**: Sets the global archive format; individual sites or tasks can override it.
+    - **Auto detect maximum file descriptors on child sites**: Automatically detects how many files MainWP can open at once when creating a ZIP backup.
+    - **Maximum file descriptors fallback value**: Provides a manual limit when automatic detection is unavailable.
+    - **Load files in memory before zipping**: Reads files into memory before adding them to a ZIP archive.
+    - **Send email when backup fails**: Enables backup failure emails.
+    - **Send email when backup starts**: Enables backup start emails.
+
+    Set retention for scheduled backups on each task. The **Backups on server** and **Backups on remote storage** fields apply to Legacy Backups. See [Retention and Cleanup](/sites/backups/manage-backups#retention-and-cleanup).
+  </Accordion>
+
   <Accordion title="Email Settings" icon="envelope">
     **Page:** **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`)
 
@@ -265,7 +266,7 @@ The Settings menu is organized as subpages. **Updates Settings** and **Backup Se
   <Accordion title="API Backups Settings" icon="server">
     **Page:** **top-right user menu > MainWP Settings > API Backups Settings** (`/wp-admin/admin.php?page=SettingsApiBackups`)
 
-    This module-based settings page configures provider APIs used by MainWP API Backups workflows.
+    Connect your hosting provider's backup service through [API Backups](/sites/backups/api-backups).
 
     ### Provider Tabs
 

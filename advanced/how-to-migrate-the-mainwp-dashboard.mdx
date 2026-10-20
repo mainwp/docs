@@ -54,6 +54,14 @@ Create a fresh backup and verify that it completed with all required files and t
 
 The database holds settings and records. Add-on code and encryption-key files are stored on disk. Missing key files can prevent the migrated Dashboard from decrypting connection keys and other encrypted data.
 
+### Preserve Native Backup Files
+
+If you use [Native Backups](/sites/backups/manage-backups) in the MainWP 6.4 Release Candidate (RC), also back up and transfer the Dashboard's private backup directory. It is outside the WordPress installation, so copying WordPress files and uploads alone can leave these archives behind.
+
+The default location is `mainwp-private/<wordpress-directory-name>/backups` beside the WordPress directory. Your hosting setup or a custom `MAINWP_BACKUP_PRIVATE_DIR` setting can change this location. Confirm the directory in use and include it in the transfer, keeping it outside publicly accessible folders.
+
+Preserve the backup encryption keys and recovery passphrase. After the move, check **Snapshots & Restore** and any **Local Path** storage destinations to confirm that existing backups remain accessible before removing the old Dashboard.
+
 ---
 
 ## During Migration

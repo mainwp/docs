@@ -165,6 +165,10 @@
     {
       "source": "/api-reference/abilities-api/mcp-server",
       "destination": "/mcp-server/overview"
+    },
+    {
+      "source": "/sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard",
+      "destination": "/sites/backups/manage-backups"
     }
   ],
   "navigation": {
@@ -222,14 +226,15 @@
               "sites/management/uptime-monitoring",
               "sites/management/mainwp-dashboard-settings",
               "sites/how-can-i-export-child-sites",
-              "sites/network-activity",
-              {
-                "group": "Backups",
-                "pages": [
-                  "sites/backups/manage-backups",
-                  "sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard"
-                ]
-              }
+              "sites/network-activity"
+            ]
+          },
+          {
+            "group": "Backups",
+            "icon": "hard-drive",
+            "pages": [
+              "sites/backups/manage-backups",
+              "sites/backups/api-backups"
             ]
           },
           {

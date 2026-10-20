@@ -204,7 +204,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 
     Runs registered MainWP regular-sequence processes incrementally. It is not the general WordPress WP-Cron dispatcher and does not execute arbitrary due WP-Cron events.
 
-    #### Start Legacy Backups
+    #### Start Backup Tasks
 
     **Frequency:** *every hour (crontab schedule: 0 * * * *)*
 
@@ -212,7 +212,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups.php > /dev/null 2>&1
     ```
 
-    #### Continue Legacy Backups
+    #### Continue Backups and Restores
 
     **Frequency:** *every 5 minutes (crontab schedule: */5 * * * *)*
 
@@ -221,7 +221,11 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     ```
 
     <Note>
-    Configure these two workers only when the built-in MainWP Legacy Backup feature is enabled. They do not run backup Add-ons.
+    These workers run Native Backups in the MainWP 6.4 Release Candidate (RC) and Legacy Backups in earlier versions. They do not run backup Add-ons.
+
+    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Native Backups also requires other scheduled events, including daily retention cleanup, that these two workers do not run.
+
+    For [Native Backups](/sites/backups/manage-backups), keep **Use WP Cron** enabled and follow the [low-traffic cron setup](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) to run all required events.
     </Note>
 
     #### Send Site Health Notifications
@@ -486,7 +490,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 - [ ] Start and continuation workers are configured separately
 - [ ] MainWP recurring hooks and matching direct workers are not both running
 - [ ] `DISABLE_WP_CRON` is not enabled unless a general external WP-Cron runner is working
-- [ ] Legacy Backup workers are configured if the Legacy Backup feature is enabled
+- [ ] Native Backups uses a general WP-Cron runner, or the Legacy Backup workers are configured for earlier versions
 - [ ] Regression Testing uses the recommended WP-Cron setup when complete automation is required
 - [ ] Newly connected sites appear in Domain Monitor, and eligible HTTPS sites appear in SSL Monitor, after automatic reconciliation
 - [ ] Actual saved data and feature-specific results were verified, not only command exit status
