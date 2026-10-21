@@ -14,7 +14,7 @@ The MainWP Dashboard Settings page controls how your Dashboard communicates with
 - Set up automatic updates for plugins, themes, and WordPress core
 - Enable uptime and site health monitoring
 - Manage email notification settings
-- Configure Native Backups, Cost Tracker, Network Activity, and API Backups settings
+- Configure built-in backups, Cost Tracker, Network Activity, and API Backups settings
 - Optimize request settings for your hosting environment
 - Access maintenance tools
 
@@ -74,9 +74,9 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
     - **Advanced automatic updates delay** (Default: 1 day): Delays new updates for the selected number of days before auto-installing.
     - **Show WordPress language updates** (Default: Enabled): Shows translation updates in update management views.
     - **Update confirmations** (`Enable`, `Disable`, `Disable for single updates`): Controls confirmation prompts before update actions.
-    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Requires a recent backup before updates started from Manage Sites. Native Backups accepts completed full, database-only, or incremental backups.
+    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Requires a recent backup before updates started from Manage Sites. Built-in backups accept completed full, database-only, or incremental backups.
     - **Days without of a full backup tolerance** (Default: 7): Sets the allowed backup age for the backup-before-update check.
-    - **Require an offsite-verified backup** (Default: Disabled; Native Backups): Also requires verified copies on remote storage. Local Path destinations do not count as offsite storage. See [Backups Before Updates](/sites/backups/manage-backups#require-a-backup-before-updates).
+    - **Require an offsite-verified backup** (Default: Disabled; built-in backups): Also requires verified copies on remote storage. Local Path destinations do not count as offsite storage. See [Backups Before Updates](/sites/backups/manage-backups#require-a-backup-before-updates).
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
     - **Abandoned check by local file date** (Default: Disabled; Dashboard 6.3): Uses the installed plugin's main file or theme's `style.css` modification date when WordPress.org has no usable last-updated date. It uses the same tolerance above. Sync the affected sites after changing it so MainWP Child 6.3 or later receives the setting. See [abandoned detection](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3) for its limits.
 
@@ -170,10 +170,10 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   <Accordion title="Backup Settings" icon="hard-drive">
     **Page:** **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`)
 
-    Configure [Native Backups](/sites/backups/manage-backups) for connected Child Sites. These settings are available in the MainWP 6.4 Release Candidate (RC).
+    Configure [MainWP Built-In Backups](/sites/backups/manage-backups) for connected Child Sites. These settings are available in the MainWP 6.4 Release Candidate (RC).
 
-    - **Select primary backup system** (when other backup methods are available): Selects Native backups or an integrated backup method.
-    - **Enable native backups**: Turns on backup creation, scheduling, and restores.
+    - **Select primary backup system** (when other backup methods are available): Selects built-in backups or an integrated backup method.
+    - **Built-in backups**: Enable backup creation, scheduling, and restores.
     - **On-demand backups to keep** (Default: 5; minimum: 1): Sets how many Back Up Now snapshots to keep per site.
     - **Encrypt backup archives**: Encrypts new backup archives before upload. Set and safely store a recovery passphrase first.
     - **Backup recovery passphrase**: Lets you recover the backup encryption key. Initial setup asks for your WordPress password; changes require the current passphrase.
