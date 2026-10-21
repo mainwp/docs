@@ -60,6 +60,17 @@ The Team Control screen has two tabs:
 - **Dashboard Users** - View users immediately, filter by one or more roles, search the users table, and apply bulk actions.
 - **Roles & Permissions** - Create roles, review role descriptions, see how many users have each role, and manage or delete roles.
 
+## Who can manage Team Control
+
+Only WordPress administrators on your Dashboard site can open the Team Control page and create, edit, assign, or delete roles. This applies even if a custom Team Control role grants access to the Team Control add-on. A custom role can't grant its users the right to manage Team Control.
+
+If a non-administrator opens the Team Control page or runs one of its actions, Team Control refuses the request with an **Insufficient permissions** message.
+
+Team Control also protects administrator accounts:
+
+- You can't change the role of an administrator or delete an administrator from the Team Control screen. Team Control returns **Protected administrators cannot be changed here.**
+- You can't change your own role or delete your own account from the Team Control screen.
+
 ## Create a Custom Role
 
 ![Team Control Create Role modal showing role info and permission sections](/images/add-ons/team-control-create-role-modal.png)
@@ -138,6 +149,8 @@ Select the new role, then click **Apply**.
 </Steps>
 
 
+Team Control refuses **Change role** for administrator accounts. To change an administrator's role, use the WordPress **Users** screen.
+
 **Note:** If you'd like a user to have access through a site tag, grant the role access to that tag in **Allowed Child Sites** > **Select by Tag**.
 
 ## Edit Custom Role
@@ -187,6 +200,15 @@ If any users currently have that role, choose a replacement role for each user i
 <Step title="Click the Delete Role button in the confirmation dialog">
 </Step>
 </Steps>
+
+Team Control checks the reassignment before it deletes the role:
+
+- Each replacement role must exist and must be different from the role you're deleting.
+- Every affected user must keep at least one role. Otherwise, Team Control shows **A user would be left without a role.**
+- If an administrator has the role, Team Control refuses the delete. Remove the role from that administrator first.
+- If the user list in the dialog no longer matches the users who hold the role, Team Control shows **User reassignment data does not match the current role assignments.** Reload the page and try again.
+
+If any step fails, Team Control restores the users' previous roles and shows an error instead of deleting the role.
 
 ---
 
