@@ -140,6 +140,66 @@ Select the new role, then click **Apply**.
 
 **Note:** If you'd like a user to have access through a site tag, grant the role access to that tag in **Allowed Child Sites** > **Select by Tag**.
 
+## Backups permissions
+
+The **Backups** permission group controls what users with the role can do with [MainWP Built-In Backups](/sites/backups/manage-backups). Earlier versions of Team Control named this group **Backups (Legacy)**.
+
+The role form shows the **Backups** group only when backups are enabled on your Dashboard:
+
+- On a Dashboard with built-in backups, the group appears when built-in backups are enabled in **top-right user menu > MainWP Settings > Backup Settings**.
+- On earlier Dashboard versions, the group appears when the **MainWP Legacy Backups** feature is enabled.
+
+| Permission | What it allows |
+|------------|----------------|
+| Execute Backups | View backup status, history, snapshots, and restore jobs. Run, cancel, and clean up site backups. Delete snapshots. |
+| Restore Backups | Restore a snapshot, roll back a restore, and cancel a restore. Also requires **Execute Backups**. |
+| Download Backups | Download backup files |
+| Add Backup Tasks | Create scheduled backup tasks |
+| Edit Backup Tasks | View and edit backup tasks. View and manage storage destinations. |
+| Delete Backup Tasks | Delete backup tasks |
+| Pause/Resume Backup Tasks | Pause and resume backup tasks, and reset a stuck task run |
+| Run Backup Tasks | Run a backup task and check its run status |
+
+Every action is limited to the role's allowed child sites. A user can use a backup task only when every site in the task is allowed for the role.
+
+### Backup abilities for team members
+
+Users whose role has the **Use MainWP abilities and MCP** permission can also call the built-in backup [abilities](/api-reference/abilities-api/overview) over REST and through the [MCP server](/mcp-server/overview). This requires a MainWP Dashboard that registers the built-in backup abilities. MainWP Dashboard 6.2 to 6.2.2 still allow only `list-sites`, `count-sites`, and `get-sites-basic` for users with a Team Control role.
+
+Team Control allows the call, then MainWP Dashboard checks the role's backup permissions and allowed sites:
+
+| Abilities | Required permission |
+|-----------|---------------------|
+| `get-backup-status-v1`, `list-backup-history-v1`, `list-backup-tasks-v1`, `get-site-backup-progress-v1`, `list-backup-snapshots-v1`, `get-backup-snapshot-v1`, `list-restore-jobs-v1`, `get-restore-job-v1` | Execute Backups |
+| `run-site-backup-v1`, `cancel-site-backup-v1`, `cleanup-site-backups-v1`, `delete-backup-snapshot-v1` | Execute Backups |
+| `restore-site-snapshot-v1`, `rollback-restore-v1`, `cancel-restore-v1` | Execute Backups and Restore Backups |
+| `create-backup-task-v1` | Add Backup Tasks |
+| `get-backup-task-v1`, `update-backup-task-v1` | Edit Backup Tasks |
+| `delete-backup-task-v1` | Delete Backup Tasks |
+| `pause-backup-task-v1`, `resume-backup-task-v1`, `reset-backup-task-run-v1` | Pause/Resume Backup Tasks |
+| `run-backup-task-v1`, `get-backup-task-run-v1` | Run Backup Tasks |
+| `list-backup-destinations-v1`, `get-backup-destination-v1` | Edit Backup Tasks |
+| `test-backup-destination-v1`, `set-default-backup-destination-v1`, `update-backup-destination-v1`, `delete-backup-destination-v1` | Edit Backup Tasks, and access to every child site |
+| `get-backup-settings-v1`, `update-backup-settings-v1` | Access MainWP Settings |
+
+All ability names use the `mainwp/` prefix.
+
+What the Dashboard returns depends on the check that fails:
+
+- A missing permission returns a 403 error that names the missing permission.
+- A site, snapshot, task, restore job, or destination outside the role's allowed sites returns the same 404 not-found error as one that doesn't exist.
+- Destination changes from a role limited to some child sites return `mainwp_restricted_account`.
+- `update-backup-settings-v1` always returns `mainwp_permission_denied` for users with a Team Control role. Only a Dashboard administrator without a Team Control role can change backup settings.
+
+For example, a team member can check backup status for their allowed sites with an [Application Password](/api-reference/rest-api/application-passwords):
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-backup-status-v1/run'
+```
+
+The response includes only the sites the role can access.
+
 ## Edit Custom Role
 
 <Steps>
