@@ -68,6 +68,8 @@ For an additional copy, open **Backups > Storage**, add and test a destination, 
 Open **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`) and select your test site.
 
 Read the destination message, then click **Back Up Now**. This creates a full backup. To run a different backup type, create a task and use **Run Now** instead.
+
+![Snapshots & Restore in dark mode, with the selected site, backup destinations, Back Up Now button, and existing snapshots.](/images/sites/built-in-backups/snapshots-and-restore.jpg)
 </Step>
 
 <Step title="Confirm the result">
@@ -94,6 +96,8 @@ Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and
 
 <Step title="Enter the provider details">
 Enter the details listed below for your provider. The account needs permission to upload, read, and delete backup files at that destination.
+
+![Add Storage Destination form with S3 Compatible Storage selected and example destination and bucket names.](/images/sites/built-in-backups/storage-destination.jpg)
 </Step>
 
 <Step title="Test and save">
@@ -127,6 +131,8 @@ Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/adm
 
 1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
 2. Enable **Encrypt backup archives** and save.
+
+![Backup Settings with archive encryption enabled and fields for the current and new recovery passphrases.](/images/sites/built-in-backups/backup-encryption.jpg)
 
 MainWP encrypts new archives before uploading them. Existing snapshots remain unchanged. To change the recovery passphrase, enter the current and new passphrases. Leave the fields blank to keep the existing passphrase.
 
@@ -164,6 +170,8 @@ Check the result for each site, then confirm the task's **Next Run**.
 </Step>
 </Steps>
 
+![Scheduled backup form configured for daily full backups at 02:00, with three sites and offsite SFTP storage selected.](/images/sites/built-in-backups/scheduled-backup.jpg)
+
 ### Choose a Backup Type
 
 | Type | What it contains | Restore behavior |
@@ -190,6 +198,8 @@ Enter **Custom excludes** as paths relative to the Child Site's WordPress direct
 ## Check Backup Health
 
 View **Backup Health** in **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) or **MainWP > Operations** (`/wp-admin/admin.php?page=mainwp_tab`). The summary appears when built-in backups are enabled and your account has permission to run backups.
+
+<img src="/images/sites/built-in-backups/backup-health.jpg" alt="Backup Health widget with counts for Protected, At Risk, Critical, and No Backup." width="390" />
 
 Each site is classified using its latest completed built-in backup snapshot:
 
@@ -245,6 +255,8 @@ Incremental backups cannot be downloaded as one archive. Use **Restore** to rest
 
 Each scheduled task has its own retention settings, applied per site.
 
+![Backup Retention settings showing Keep last, age and storage limits, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
+
 | Setting | Effect |
 | --- | --- |
 | Keep last | Retains the selected number of backups or complete incremental chains |
@@ -290,6 +302,8 @@ Changes made after the snapshot may be lost. Review any warnings before proceedi
 Leave **Create a safety backup first** selected. This backup stays on the Child Site and lets you roll back if the restore fails or you need to undo it.
 
 Confirm **I understand this replaces the current site content**, then click **Start Restore**.
+
+![Restore Backup confirmation with the replacement warning, safety backup enabled, consent checkbox, and optional WooCommerce order preservation.](/images/sites/built-in-backups/restore-confirmation.jpg)
 </Step>
 
 <Step title="Check the restored site">
