@@ -1,0 +1,253 @@
+---
+title: Team Control Abilities
+sidebarTitle: "Team Control Abilities"
+description: >-
+  List, create, replace, and delete Team Control roles, manage user role assignments and notes, and reconcile roles through MainWP Abilities.
+---
+
+MainWP Team Control 5.2 registers twelve abilities in the `mainwp-team-control` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- List delegable permissions, roles, and manageable users
+- Preview and confirm role and user changes
+- Replace a user's roles or note
+- Delete roles and users safely
+- Reconcile a role whose stored data disagrees
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- Team Control 5.2 or later, active in MainWP Dashboard, with its upgrade complete
+- An authenticated user who is a [Team Control owner](/add-ons/agency/team-control-extension#team-control-owners)
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Only owners can call these abilities. Users with a Team Control role can't call them, even with the **Use MainWP abilities and MCP** permission. Until the Team Control upgrade finishes, every ability returns `schema_unavailable`.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-team-control-capabilities-v1` | GET | List permissions that can be granted to roles |
+| `mainwp/list-team-control-roles-v1` | GET | List role summaries |
+| `mainwp/get-team-control-role-v1` | GET | Read one role's labels, grants, state, and revision |
+| `mainwp/create-team-control-role-v1` | POST | Preview or create a role |
+| `mainwp/replace-team-control-role-v1` | POST | Preview or replace a role's labels and complete grants |
+| `mainwp/delete-team-control-role-v1` | POST | Preview or delete a role after reassigning its users |
+| `mainwp/list-team-control-users-v1` | GET | List users the owner can manage |
+| `mainwp/get-team-control-user-v1` | GET | Read one user's roles, scope counts, and note |
+| `mainwp/replace-team-control-user-roles-v1` | POST | Preview or replace a user's complete role set |
+| `mainwp/replace-team-control-user-note-v1` | POST | Preview or replace a user's note |
+| `mainwp/delete-team-control-user-v1` | POST | Preview or delete a user and reassign their content |
+| `mainwp/reconcile-team-control-role-v1` | POST | Preview or reconcile a role's stored data |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-team-control'
+```
+
+Team Control's write abilities are marked destructive and idempotent. The examples use JSON **POST** requests to the `/run` endpoint with an `{"input":{...}}` body.
+
+## Request Rules
+
+All inputs reject extra properties, and every declared input is required. Pass `null` for an optional cursor or token rather than omitting it.
+
+`role_ref`, `user_ref`, `capability_ref`, `catalog_generation`, and `revision` values are opaque 64-character lowercase hexadecimal strings returned by the abilities. Use the returned values. Don't construct them yourself.
+
+Every write uses two steps:
+
+| Step | `dry_run` | `confirm` | `preview_token` | Effect |
+|------|-----------|-----------|-----------------|--------|
+| Preview | `true` | `false` | `null` | Validate the change and return a `preview_token` |
+| Confirm | `false` | `true` | Token from the preview | Apply the change |
+
+Exactly one of `dry_run` and `confirm` must be `true`. Each write requires a UUID `request_ref`. Reuse it only to retry the identical confirmed request. A retry of a change that already committed returns the stored response.
+
+Writes on an existing role or user also require `if_match`, set to the current `revision`. If another owner changes the target after your preview, the confirmed call returns `stale_revision`. Read the target again and repeat the preview.
+
+## List Delegable Permissions
+
+**Ability:** `mainwp/list-team-control-capabilities-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"namespace":"site","limit":100,"after_capability_ref":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-team-control-capabilities-v1/run'
+```
+
+| Input | Meaning |
+|-------|---------|
+| `namespace` | `dashboard`, `extension`, `site`, `group` (tags), `rest_api`, `extension_defined`, or `null` for all |
+| `limit` | 1 to 100 |
+| `after_capability_ref` | Cursor from `next_after_capability_ref`, or `null` |
+
+Each entry contains `capability_ref`, `namespace`, `key`, and `label`. The response also returns `catalog_generation`, which role create and replace calls require. Continue with `next_after_capability_ref` while `truncated` is `true`.
+
+## List and Read Roles
+
+**Ability:** `mainwp/list-team-control-roles-v1`<br />
+**Method:** GET<br />
+**Input:** `limit` (1 to 100) and `after_role_ref` (cursor or `null`)
+
+Each role contains `role_ref`, `display_name`, `grant_count`, `assignee_count`, `state`, and `revision`.
+
+**Ability:** `mainwp/get-team-control-role-v1`<br />
+**Method:** GET<br />
+**Input:** `role_ref`
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"role_ref":"ROLE_REF"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-team-control-role-v1/run'
+```
+
+The response adds `description` and the complete `grants` list. Each grant is an object with a `namespace` and a `key`.
+
+| `state` | Meaning |
+|---------|---------|
+| `active` | The role grants its permissions |
+| `reconciliation_required` | The role's stored data disagrees and needs [reconciliation](#reconcile-a-role) |
+| `disabled` | The role grants nothing |
+
+## Create a Role
+
+**Ability:** `mainwp/create-team-control-role-v1`<br />
+**Method:** POST
+
+| Input | Meaning |
+|-------|---------|
+| `display_name` | Plain text, 1 to 100 characters |
+| `description` | Plain text, up to 500 characters |
+| `grants` | Up to 10,000 unique `{"namespace","key"}` objects from the permissions list |
+| `catalog_generation` | Value from the permissions list |
+| `request_ref`, `dry_run`, `confirm`, `preview_token` | See [request rules](#request-rules) |
+
+Names and descriptions must be plain text with no HTML, line breaks, tabs, or repeated spaces. Otherwise the preview returns `invalid_input`.
+
+Preview the role:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"display_name":"Site Manager","description":"Manages assigned sites","grants":[{"namespace":"site","key":"7"}],"catalog_generation":"CATALOG_GENERATION","request_ref":"123e4567-e89b-42d3-a456-426614174950","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-team-control-role-v1/run'
+```
+
+Then send the same input with `"dry_run":false`, `"confirm":true`, and the returned `preview_token`. The completed response includes the new `role_ref`, `grant_count`, and `revision`.
+
+## Replace a Role
+
+**Ability:** `mainwp/replace-team-control-role-v1`<br />
+**Method:** POST
+
+Takes the same inputs as create, plus `role_ref` and `if_match`. The `grants` list replaces the role's complete grant set, so include every grant the role should keep.
+
+## Delete a Role
+
+**Ability:** `mainwp/delete-team-control-role-v1`<br />
+**Method:** POST
+
+| Input | Meaning |
+|-------|---------|
+| `role_ref` | Role to delete |
+| `reassignments` | One entry per user who has the role, each with `user_ref` and 1 to 20 `target_role_refs` |
+| `if_match` | Current role `revision` |
+
+List every current assignee. If the set is incomplete or changes before confirmation, the call returns `assignee_changed`. Pass an empty array when the role has no users.
+
+## List and Read Users
+
+**Ability:** `mainwp/list-team-control-users-v1`<br />
+**Method:** GET<br />
+**Input:** `limit` (1 to 100) and `after_user_ref` (cursor or `null`)
+
+Each user contains `user_ref`, `display_name`, `role_count`, `protected`, `note_present`, and `revision`.
+
+**Ability:** `mainwp/get-team-control-user-v1`<br />
+**Method:** GET<br />
+**Input:** `user_ref`
+
+The response adds `role_refs`, `effective_site_count`, `effective_group_count`, and `note`.
+
+A user is `protected` when they are an owner, a super admin, or hold `manage_options` through a role outside Team Control or a direct grant. Protected users can't be changed or deleted through these abilities.
+
+## Replace a User's Roles
+
+**Ability:** `mainwp/replace-team-control-user-roles-v1`<br />
+**Method:** POST
+
+| Input | Meaning |
+|-------|---------|
+| `user_ref` | User to change |
+| `role_refs` | 1 to 20 unique roles that replace the user's complete Team Control role set |
+| `if_match` | Current user `revision` |
+
+A user with several roles receives the combined permissions of all active roles.
+
+## Replace a User's Note
+
+**Ability:** `mainwp/replace-team-control-user-note-v1`<br />
+**Method:** POST
+
+Set `note` to plain text up to 2,000 characters, or `null` to clear it. Include `user_ref` and `if_match`.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"user_ref":"USER_REF","note":"Client team","if_match":"USER_REVISION","request_ref":"9b2f6c1e-3d4a-4e5b-8c7d-112233445566","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-team-control-user-note-v1/run'
+```
+
+## Delete a User
+
+**Ability:** `mainwp/delete-team-control-user-v1`<br />
+**Method:** POST
+
+Include `user_ref`, `reassign_to_user_ref` for the user who receives the deleted user's content, and `if_match`. Neither user can be protected.
+
+## Reconcile a Role
+
+**Ability:** `mainwp/reconcile-team-control-role-v1`<br />
+**Method:** POST
+
+Use this when a role's `state` is `reconciliation_required`, or to disable a role. Include `role_ref`, `if_match`, and a `strategy`:
+
+| `strategy` | Effect |
+|------------|--------|
+| `restore_wordpress_from_custom` | Rebuild the WordPress role from Team Control's saved data and activate the role |
+| `restore_custom_from_wordpress` | Copy the WordPress role name into Team Control and activate the role |
+| `disable_role` | Mark the role disabled so it grants nothing |
+
+A role disabled here shows a **Disabled** label in the Roles list. Opening it and clicking **Update Role** makes it active again with the permissions shown.
+
+## Errors
+
+| Code | Meaning |
+|------|---------|
+| `schema_unavailable` | The Team Control upgrade hasn't finished |
+| `authentication_required` | No authenticated user |
+| `access_denied` | The user isn't an eligible Team Control owner |
+| `invalid_input` | Input doesn't match the schema or the preview and confirm rules |
+| `role_not_found`, `user_not_found` | The reference doesn't match a current role or user |
+| `preview_conflict` | The preview token is stale or doesn't match the request |
+| `request_conflict` | The `request_ref` was already used for a different change |
+| `roles_defined_in_code` | The site defines its WordPress roles in code |
+| `stale_revision`, `catalog_changed`, `assignee_changed` | The target changed after preview |
+| `protected_action` | The target user is protected |
+| `delegation_denied`, `invalid_grants` | A grant is unavailable, duplicated, or malformed |
+| `invalid_note` | The note is longer than 2,000 characters |
+| `outcome_unknown` | Team Control couldn't prove whether the change committed. Read the target before retrying |
+
+Team Control validates input, references, and the previewed change during the permission check. WordPress reports errors from that check as HTTP 403, whatever their code. Check the error `code` rather than the HTTP status.
+
+---
+
+## Related Resources
+
+- [Team Control](/add-ons/agency/team-control-extension) - Roles, owners, and upgrade behavior
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and discovery

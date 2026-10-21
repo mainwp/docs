@@ -84,6 +84,8 @@ Dashboard 6.3 also provides inline credential creation under **MainWP > AI > Mai
 
 Authentication does not override the user's site access or Team Control permissions. Dashboard 6.3 checks the requested sites and the operation's required rights. For example, plugin updates need **Update Plugins**, site deletion needs **Delete Sites**, client changes need **Manage Clients**, and tag changes need **Manage Groups**. Multi-type update calls need the rights for each selected update type.
 
+Users with a Team Control role also need the **Use MainWP abilities and MCP** permission. See [Team Control](/add-ons/agency/team-control-extension#use-mainwp-abilities-and-mcp-permission) for the abilities it covers.
+
 Background jobs recheck their owner's permissions and site access when they execute. A queued job is not a guarantee that its originally selected sites or actions will still be permitted. Add-on abilities can require their own extension and operation permissions; see each Add-on's reference.
 
 ---

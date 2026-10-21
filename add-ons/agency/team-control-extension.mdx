@@ -14,6 +14,8 @@ addonType: extension
 - Defining permissions and allowed sites
 - Assigning roles to users
 - Managing role-based access control
+- Understanding Team Control owners
+- Upgrading roles from Team Control 5.1 and earlier
 
 ---
 
@@ -25,7 +27,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
@@ -53,12 +55,54 @@ addonType: extension
 
 Users without permission won't be able to use unselected actions or access certain MainWP Dashboard pages. Team Control extension allows you to create custom roles only on your MainWP Dashboard site. Roles created with the MainWP Team Control extension have effect only inside the MainWP Dashboard plugin. 
 
-If you need to limit access to certain WordPress admin sections, you will need to use a third-party plugin. Any role created by the extension is equivalent to the Administrator role outside of the MainWP Dashboard plugin.
+Starting with Team Control 5.2, a Team Control role gives its users only the WordPress `read` and `level_10` capabilities. `level_10` grants no WordPress capability. MainWP Dashboard checks it before it shows MainWP pages. Users with a Team Control role can open the MainWP pages their role permissions allow, but they don't get administrator access to other wp-admin screens.
+
+If a user has more than one active Team Control role, the user receives the combined permissions of all those roles, including sites, clients, and tags. Earlier versions used only the first matching role, so review users with multiple roles after updating.
 
 The Team Control screen has two tabs:
 
 - **Dashboard Users** - View users immediately, filter by one or more roles, search the users table, and apply bulk actions.
 - **Roles & Permissions** - Create roles, review role descriptions, see how many users have each role, and manage or delete roles.
+
+## Team Control owners
+
+Only a Team Control owner can create, edit, and delete roles, and assign roles to users. This applies to the Team Control page and to the [Team Control abilities](/api-reference/abilities-api/team-control).
+
+An administrator can be an owner when they:
+
+- Have the `manage_options` and `activate_plugins` capabilities
+- Hold no Team Control role
+- Are a super admin, on multisite
+
+When Team Control 5.2 is activated or updated and no owner is registered yet, every administrator who meets these requirements becomes an owner. An owner who is later demoted, or who receives a Team Control role, loses Team Control authority everywhere, including through the abilities.
+
+An administrator who is not an owner sees the names of the owners on the Team Control page. Other users see the message **Only a Team Control owner can manage roles and users.**
+
+### Add or remove an owner
+
+Owners are managed with WP-CLI on the Dashboard server. Run both commands as an administrator who is eligible to be an owner. The target user must also meet the owner requirements.
+
+<Steps>
+<Step title="Prepare the change">
+```bash
+wp mainwp team-control-owner prepare --action=add --user_id=<user ID> --user=<administrator login>
+```
+
+Use `--action=remove` to remove an owner. The command prints a confirmation token.
+</Step>
+<Step title="Apply the change within 10 minutes">
+```bash
+wp mainwp team-control-owner apply --confirmation=<token> --user=<administrator login>
+```
+
+The command prints `Protected owner registry updated.` when it succeeds. Team Control doesn't remove the last owner.
+</Step>
+<Step title="Reload wp-admin">
+If a role migration was waiting for an owner, it runs on the next admin page load.
+</Step>
+</Steps>
+
+Use the same commands to recover when all registered owners are deleted or demoted, or when the owner list fails its integrity check after you change the WordPress salts.
 
 ## Create a Custom Role
 
@@ -107,6 +151,9 @@ After the role is created, it appears in the **Roles & Permissions** table.
 <Step title="Set Allowed Child Sites">
 Use **Select by Site** or **Select by Tag** to choose the child sites this role can access.
 </Step>
+<Step title="Set API Access">
+Select whether users with this role can manage API keys and application passwords, and whether they can **Use MainWP abilities and MCP**.
+</Step>
 <Step title="Click the Update Role button">
 </Step>
 </Steps>
@@ -139,6 +186,28 @@ Select the new role, then click **Apply**.
 
 
 **Note:** If you'd like a user to have access through a site tag, grant the role access to that tag in **Allowed Child Sites** > **Select by Tag**.
+
+## Use MainWP abilities and MCP permission
+
+The **Use MainWP abilities and MCP** permission in the **API Access** section lets users with the role call MainWP [abilities](/api-reference/abilities-api/overview) over REST and through the [MCP server](/mcp-server/overview). Calls are limited to the role's own sites, clients, and tags.
+
+| MainWP Dashboard version | What the permission allows |
+|--------------------------|----------------------------|
+| 6.3 or later | Most single-site, client, tag, update, and knowledge abilities |
+| 6.2 to 6.2.3 | Only `list-sites`, `count-sites`, and `get-sites-basic` |
+
+These abilities stay unavailable to users with Team Control roles:
+
+- Batch abilities that act on many sites
+- Adding sites, adding tags, and `update-tag`
+- Team Control abilities
+- Abilities registered by other add-ons
+
+The update to 5.2 grants this permission to every migrated role, because their users could call abilities before the update. To remove it, edit the role, untick **Use MainWP abilities and MCP**, and click **Update Role**.
+
+## User notes
+
+Owners can add a note to each user from the **Dashboard Users** tab. Notes are stored as plain text and can be up to 2,000 characters long.
 
 ## Edit Custom Role
 
@@ -188,9 +257,68 @@ If any users currently have that role, choose a replacement role for each user i
 </Step>
 </Steps>
 
+## Upgrading from Team Control 5.1 and earlier
+
+<Warning>
+Back up the complete Dashboard database before you update. Downgrading the plugin doesn't restore removed WordPress capabilities or undo the migration. Restore the database backup if you need a full rollback.
+</Warning>
+
+Team Control 5.2 migrates roles created in earlier versions on the first admin page load after the update:
+
+- The role's WordPress capabilities are replaced with `read` and `level_10`. In 5.1, these roles carried administrator capabilities, so their users lose administrator access to wp-admin screens outside MainWP.
+- The role's saved MainWP permissions are kept, and the role stays active.
+- The role receives the **Use MainWP abilities and MCP** permission.
+
+Owners see a **Team Control roles were updated** notice that lists the migrated roles.
+
+Users with Team Control roles keep their MainWP access on the first request after the update, even if no administrator has opened wp-admin yet.
+
+### Roles on hold
+
+Team Control places a role on hold when it can't migrate the role safely. A role on hold grants no MainWP permissions. Team Control holds a role when:
+
+- The role name is longer than 100 characters
+- The role's WordPress role is missing
+- The role is a duplicate row of another role
+- The saved permissions can't be read, or there are more than 10,000 of them
+- The site defines its WordPress roles in code
+- The role was imported from another plugin in 5.1 and never saved in Team Control
+
+If Team Control couldn't rewrite a held role's WordPress role, that role keeps its old WordPress capabilities. The Roles list says so.
+
+A **Team Control roles are on hold** notice lists the held roles, both on MainWP pages and on other wp-admin screens. If you dismiss it, it stays hidden until the set of held roles changes.
+
+To release a held role:
+
+<Steps>
+<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+</Step>
+<Step title="Go to the Roles & Permissions tab">
+Held roles show an **On hold** label.
+</Step>
+<Step title="Restore or update the role">
+Click **Restore as saved** to bring the role back with its saved permissions. To change the permissions first, click **Edit Role / Manage Permissions**, adjust the permissions, and click **Update Role**.
+</Step>
+</Steps>
+
+**Restore as saved** is not offered when the saved permissions can't be read or exceed 10,000.
+
+When the update finds more than one stored row for the same role, the oldest row keeps the role. The other rows are kept as held copies that you can compare and delete. Team Control deletes nothing automatically.
+
+### When no administrator can be an owner
+
+If no administrator qualifies as an owner, for example because every administrator holds a Team Control role, the update upgrades its tables but changes no roles. Users with Team Control roles keep the MainWP access they had in 5.1 while the update waits.
+
+Administrators see a notice explaining what to do. Either remove the Team Control role from one administrator account and reload wp-admin, or [add an owner with WP-CLI](#add-or-remove-an-owner). The migration runs on the next admin page load after an owner exists.
+
+### Sites that define roles in code
+
+If your site defines its WordPress roles in code, Team Control can't create, change, or delete roles. The Roles page shows a message instead of applying changes.
+
 ---
 
 ## Related Resources
 
+- [Team Control Abilities](/api-reference/abilities-api/team-control) - Manage roles, users, and notes over REST and MCP
 - [White Label Extension](/add-ons/agency/white-label-extension) - Rebrand MainWP for clients
 - [Agency Add-ons](/add-ons/agency) - Browse agency add-ons
