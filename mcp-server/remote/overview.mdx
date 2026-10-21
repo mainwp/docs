@@ -30,7 +30,7 @@ Both can be used side by side. If your app can't connect remotely, the local ser
 - **PHP 8.1 or newer.** On older PHP the panel shows "Remote AI connections need PHP 8.1 or newer; this server runs" followed by your version, and nothing else loads.
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
 - **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the panel doesn't appear there.
-- **The activity log turned on.** Every AI app call is recorded, so the connector needs **Enable Network Activity logging** on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on. Reads keep working.
+- **The activity log turned on.** AI apps can only make changes while each change is recorded, so the connector can't be turned on until **Enable Network Activity logging** is on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on. Reads keep running, but they aren't recorded while the log is off.
 - **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
 - **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
 
@@ -85,8 +85,8 @@ The app opens your Dashboard in a browser. If you aren't signed in, WordPress as
 - where you return after deciding: "After you decide, you'll return to" followed by a host name
 - the account you're signed in as, with **Not you? Log out**
 - a Team Control line when your account is limited to some sites, because the app sees only what you can see
-- **What the app can do:** **View and make changes** or **View only**. Apps that ask only for view access show no choice.
-- **Approval policy:** **Standard** or **Strict**, plus **Hands-off** for users without Team Control limits. It appears only when the app asks to make changes. See [Approval Policies](/mcp-server/remote/approval-policies).
+- **What the app can do**: **View and make changes** or **View only**. Apps that ask only for view access show no choice.
+- **Approval policy**: **Standard** or **Strict**, plus **Hands-off** for users without Team Control limits. It appears only when the app asks to make changes. See [Approval Policies](/mcp-server/remote/approval-policies).
 
 Click **Approve** or **Deny**. The screen appears on every new connection; there is no "remember this app".
 

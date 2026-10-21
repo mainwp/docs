@@ -28,7 +28,7 @@ Jan and LM Studio can also use a connection token.
 
 **Sign-in details the Dashboard ships.** Claude, Claude Code, ChatGPT, VS Code, Codex CLI, Zed and Goose are known to the Dashboard by their published client IDs. You only add the MCP address.
 
-**Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. Their consent screen reads "Cursor, or another program on your computer using Cursor's settings", and the same for Gemini CLI.
+**Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. The consent screen names Cursor as "Cursor, or another program using Cursor's settings" and Gemini CLI as "Gemini CLI, or another program on your computer using Gemini CLI's settings".
 
 **Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** on under **Which apps can connect**, which it is by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning it off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
 
@@ -356,7 +356,7 @@ Open WebUI is a multi-user web app that returns to its own HTTPS address after s
   <Step title="Add the web app (administrators without Team Control limits)">
     In **API Access > AI Apps**, find **Web apps**. Enter an **App name** and the redirect URI your Open WebUI instance uses for MCP sign-in under **Redirect URIs, one per line (up to 3)**. Click **Add web app**.
 
-    Each redirect URI must be an exact `https://` address, with no wildcards, query string, `@`, `%`, backslashes or spaces.
+    Each redirect URI must be an exact `https://` address with no query string, fragment, wildcards, `@`, `%`, backslashes or spaces. Otherwise the panel shows "Each redirect URI must be an exact https:// address with no query strings, fragments, wildcards, @, %, backslashes or spaces."
   </Step>
   <Step title="Copy the client ID and secret">
     The panel shows the **Client ID** and the **Client secret** once, with "Copy the client secret now. It isn't shown again."

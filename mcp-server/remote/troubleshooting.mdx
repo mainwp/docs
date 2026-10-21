@@ -67,7 +67,8 @@ This `info` line always appears first.
 | --- | --- |
 | "Remote AI connections need PHP 8.1 or newer; this server runs" with your version | Ask your host to move the site to PHP 8.1 or newer. |
 | "Remote AI connections need WordPress 6.9 or newer." | Update WordPress. |
-| "Remote AI connections aren't available on multisite networks." | Use a single-site install for the Dashboard. |
+
+On a multisite network the connector doesn't load at all, so there's no panel and no self-test. Use a single-site install for the Dashboard.
 
 ### HTTPS site address
 
@@ -77,9 +78,9 @@ Change the site address in **Settings > General** (or the `WP_HOME` constant) to
 
 ### Activity log
 
-> Turn on the activity log first: every AI app call must be recorded.
+> Turn on the activity log first. AI apps can't make changes unless each change is recorded.
 
-Turn on **Enable Network Activity logging** under **MainWP Settings > Network Activity Settings**.
+Turn on **Enable Network Activity logging** under **MainWP Settings > Network Activity Settings**. This line blocks turning the connector on.
 
 ### Kill switch
 

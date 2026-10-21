@@ -149,9 +149,14 @@ For updates, your approval covers the exact items you saw. An update that appear
 
 ### Run it here instead
 
-Some apps can't call the tool again after you approve. After **Approve**, the page offers **Run it here instead**, which runs the approved action from the page, as you, without the app. The page shows the result, or "Started. The action runs in the background." for a large action. If the app calls the tool again later, it gets "Already run from the Dashboard:" followed by the result.
+Some apps can't call the tool again after you approve. After **Approve**, the page offers **Run it here instead**, which runs the approved action from the page, as you, without the app. Before it runs, the page checks the action again the same way the app's retry would. If the preview changed, nothing runs, the approval can't be used again, and the page shows "The sites or changes are no longer what you approved, so nothing ran. Ask your AI app to start again." Otherwise the page shows the result, or "Started. The action runs in the background." for a large action. If the app calls the tool again later, it gets "Already run from the Dashboard:" followed by the result.
 
-**Run it here instead** isn't offered for actions that carry a password or key, or for extension tools MainWP hasn't reviewed. Those run only when the app calls the tool again.
+**Run it here instead** isn't offered in these cases:
+
+- actions that carry a password or key, and extension tools MainWP hasn't reviewed. The Dashboard keeps no runnable copy of these.
+- actions from a tool that compares its preview, when the approved plan is an update plan or has more than one step. The page can't run that preview again, so the approval stays valid for the app's retry.
+
+In both cases the action runs only when the app calls the tool again.
 
 ### Large actions
 
@@ -159,4 +164,4 @@ An approved action over more than 10 sites runs as a background job, 10 sites at
 
 ## The activity log
 
-Every AI app call is written to the activity log. If **Enable Network Activity logging** is off, changes are refused with "Remote AI connections need the MainWP activity log. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on." Reads are unaffected.
+While **Enable Network Activity logging** is on, the Dashboard records every AI app call in the activity log. While it's off, read tools still run, but nothing records them. Every change is refused with "Changes from AI apps need the MainWP activity log, so each one is recorded. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."
