@@ -125,6 +125,16 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 **Local Path** does not count as offsite storage, even on a mounted drive, and cannot satisfy **Require an offsite-verified backup**.
 
+### Share a Bucket Between Sites
+
+You can use one private Amazon S3 or Backblaze B2 bucket for multiple Child Sites connected to the same MainWP Dashboard. For B2, select **S3 Compatible Storage** and enter the bucket's S3-compatible endpoint.
+
+MainWP stores each site's snapshots under separate paths in the bucket. The Dashboard uploads the backups and keeps the storage credentials; it does not send those credentials to Child Sites. Sharing a destination does not give a Child Site permission to browse or download another site's backups.
+
+For eligible restores of unencrypted backups, the Dashboard can send the Child Site temporary download links for the required backup files. These links expire after one hour and grant access only to the specified files. Encrypted backups are downloaded and decrypted on the Dashboard before being transferred to the Child Site.
+
+Keep the bucket private and do not share its credentials with Child Sites. Separate paths organize the backups but do not create independent storage permissions. Anyone with bucket-wide access can access the backups, and anyone with a temporary download link can use it while it remains valid.
+
 ### Encrypt Backup Archives
 
 Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
@@ -184,6 +194,21 @@ Check the result for each site, then confirm the task's **Next Run**.
 An incremental **chain** includes the initial full backup and the later incremental backups that depend on it. Keep the chain together so MainWP can restore the selected snapshot.
 
 The first incremental task run is full even when started with **Run Now**. If a Child Site lacks incremental support, MainWP takes full backups and records a note on the task. Keep MainWP Child updated and sync the site after updating.
+
+### Database and Disk Usage
+
+Built-in backups use database space for task and snapshot records, and disk space for backup files and file inventories. Incremental tracking does not create a database row for every site file.
+
+| Location | What is stored |
+| --- | --- |
+| Child Site database | Backup and restore task status, progress, and information needed to resume interrupted work |
+| Child Site disk | Backup archives, working files, and the file inventory used for incremental comparisons, including file paths, sizes, and modification times |
+| Dashboard database | Snapshot records, links between incremental snapshots, archive details, storage settings, upload and restore progress, upload chunk details, and run history |
+| Dashboard disk | Downloaded backup archives and file inventories, plus working files used during transfers and restores |
+
+Database usage varies with backup frequency, the number of snapshots and storage destinations, archive and upload chunk counts, and restore activity. There is no fixed database-space figure per site or backup.
+
+Retention removes backup files and their associated upload records, but keeps snapshot records so removed backups can appear in the removal history. Background cleanup removes run history older than 90 days. The **Storage cap (MB)** setting applies to backup files; it does not set a database size limit.
 
 ### Archive Format and Exclusions
 
