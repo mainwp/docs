@@ -14,6 +14,7 @@ addonType: extension
 - Defining permissions and allowed sites
 - Assigning roles to users
 - Managing role-based access control
+- Checking Team Control database tables
 
 ---
 
@@ -190,7 +191,29 @@ If any users currently have that role, choose a replacement role for each user i
 
 ---
 
+## Database Health Check
+
+Team Control 5.2 supplies its tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section. Look for rows titled **MainWP Team Control** that report missing tables, missing columns, or incorrect column definitions.
+
+Team Control registers six tables. Each name starts with your WordPress table prefix, such as `wp_`:
+
+| Table | Stores |
+|-------|--------|
+| `mainwp_roles` | Custom roles and their permissions |
+| `mainwp_team_control_receipts` | Saved results of completed Team Control requests, so a repeated request returns the same result |
+| `mainwp_team_control_transactions` | The state of role changes while they are in progress |
+| `mainwp_team_control_reconciliation` | Legacy roles that need review after an upgrade |
+| `mainwp_team_control_audit` | A record of who ran each Team Control action and its result |
+| `mainwp_team_control_previews` | Short-lived previews of changes, removed after they expire |
+
+To find these rows, type `team_control` or `mainwp_roles` in **Search system report** at the top of the page.
+
+If a check fails, see [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair tables, change roles, or check Child site databases.
+
+---
+
 ## Related Resources
 
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check Team Control's registered role, transaction, and audit tables
 - [White Label Extension](/add-ons/agency/white-label-extension) - Rebrand MainWP for clients
 - [Agency Add-ons](/add-ons/agency) - Browse agency add-ons
