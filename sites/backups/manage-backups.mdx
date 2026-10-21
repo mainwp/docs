@@ -1,16 +1,16 @@
 ---
-title: Native Backups
+title: MainWP Built-In Backups
 description: >-
   Back up and restore Child Sites directly from MainWP Dashboard. Configure
   schedules, incremental backups, storage destinations, encryption, and retention.
 ---
 
-Native Backups lets you back up and restore Child Sites directly from MainWP Dashboard, without a backup add-on or third-party backup plugin.
+MainWP Built-In Backups lets you back up and restore Child Sites directly from MainWP Dashboard, without a backup add-on or third-party backup plugin.
 
 MainWP Child creates the backup and sends it to your Dashboard. You can also store copies on remote storage or a mounted drive.
 
 <Info>
-This guide covers Native Backups in the MainWP 6.4 Release Candidate (RC). Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
+This guide covers built-in backups in the MainWP 6.4 Release Candidate (RC). Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
 </Info>
 
 To manage your hosting provider's backups, use [API Backups](/sites/backups/api-backups). For third-party backup plugins, see [Backup Add-ons](/add-ons/backups).
@@ -26,7 +26,7 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 ## Prerequisites
 
 - MainWP Dashboard 6.4 running PHP 8.3 or higher
-- MainWP Child with Native Backups support, running PHP 7.4 or higher
+- MainWP Child with built-in backup support, running PHP 7.4 or higher
 - A connected Child Site that syncs successfully
 - An administrator account to enable and configure backup settings
 - Enough free disk space on the Child Site and Dashboard for backup and restore files
@@ -37,11 +37,11 @@ Keep a separate backup of your MainWP Dashboard installation, including its data
 
 ## Find the Backup Screens
 
-Open **MainWP > Sites > Backups** after enabling Native Backups.
+Open **MainWP > Sites > Backups** after enabling built-in backups.
 
 | Screen | Use it for | Relative URL |
 | --- | --- | --- |
-| Top-right user menu > MainWP Settings > Backup Settings | Enable Native Backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
+| Top-right user menu > MainWP Settings > Backup Settings | Enable built-in backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
 | Backups > Manage Backups | View schedules, run tasks, and inspect errors | `/wp-admin/admin.php?page=ManageBackups` |
 | Backups > Add New | Create a scheduled backup task | `/wp-admin/admin.php?page=ManageBackupsAddNew` |
 | Backups > Storage | Connect and test storage destinations | `/wp-admin/admin.php?page=ManageBackupsStorage` |
@@ -52,10 +52,10 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 ## Create Your First Backup
 
 <Steps>
-<Step title="Enable Native Backups">
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Turn on **Enable native backups** and save.
+<Step title="Enable built-in backups">
+Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Enable built-in backups and save.
 
-If **Select primary backup system** is shown, select **Native backups**.
+If **Select primary backup system** is shown, select the built-in backup system.
 </Step>
 
 <Step title="Choose where to store the backup">
@@ -85,7 +85,7 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 
 Completed backups are stored in the Dashboard's private backup directory. Storage destinations receive additional copies. Keep enough free space on both the Dashboard and Child Site to create and process backups.
 
-When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-native-backup-files).
+When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
 <Steps>
 <Step title="Add a destination">
@@ -189,16 +189,16 @@ Enter **Custom excludes** as paths relative to the Child Site's WordPress direct
 
 ## Check Backup Health
 
-View **Backup Health** in **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) or **MainWP > Operations** (`/wp-admin/admin.php?page=mainwp_tab`). The summary appears when Native Backups is enabled and your account has permission to run backups.
+View **Backup Health** in **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) or **MainWP > Operations** (`/wp-admin/admin.php?page=mainwp_tab`). The summary appears when built-in backups are enabled and your account has permission to run backups.
 
-Each site is classified using its latest completed native snapshot:
+Each site is classified using its latest completed built-in backup snapshot:
 
 | Status | Meaning |
 | --- | --- |
 | Protected | The snapshot is no more than 24 hours old and its offsite copies are verified. |
 | At Risk | The snapshot is over 24 hours old but no more than 7 days old, or is no more than 24 hours old without verified offsite copies. |
 | Critical | The latest completed snapshot is more than 7 days old. |
-| No Backup | No completed native snapshot is recorded. |
+| No Backup | No completed built-in backup snapshot is recorded. |
 
 Click a status to filter Manage Sites to the matching sites. For **At Risk**, check the backup schedule and storage uploads. For **Critical** or **No Backup**, run a backup and confirm it completes.
 
@@ -319,7 +319,7 @@ In **top-right user menu > MainWP Settings > General Settings > Updates Settings
 
 Use this setting to require a recent backup before updating from **Manage Sites**.
 
-Native Backups accepts completed full, database-only, or incremental backups within the allowed age. Files-only backups do not qualify.
+Built-in backups accept completed full, database-only, or incremental backups within the allowed age. Files-only backups do not qualify.
 
 Enable **Require an offsite-verified backup** to also require verified copies on remote storage. Local Path destinations do not count as offsite storage. Wait for remote uploads to finish before retrying the update.
 
@@ -329,13 +329,13 @@ For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates
 
 | Symptom | What to check |
 | --- | --- |
-| Native Backup screens are missing | Enable Native Backups, check the primary backup system, and confirm your account has the relevant permissions |
+| Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
-| File backup is refused because content is outside the WordPress folder | Native Backups does not support this layout for file backups or restores. Use database-only tasks and your host's file backups. |
+| File backup is refused because content is outside the WordPress folder | Built-in backups do not support this layout for file backups or restores. Use database-only tasks and your host's file backups. |
 
 Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
 
@@ -381,7 +381,7 @@ To create and restore backups through your hosting provider, see [API Backups](/
 
 ## Self-Check Checklist
 
-- [ ] Native Backups is enabled and the test Child Site syncs successfully
+- [ ] Built-in backups are enabled and the test Child Site syncs successfully
 - [ ] A first backup completed and appears under Snapshots & Restore
 - [ ] The expected storage copies completed, including Offsite Verified when required
 - [ ] Scheduled tasks have the intended sites, destinations, exclusions, and retention
