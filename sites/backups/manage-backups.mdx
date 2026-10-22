@@ -220,6 +220,27 @@ Review the exclusion switches for known backup locations, known cache locations,
 
 Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`.
 
+### Database Dumps and the Clone Folder
+
+The database portion of a backup contains a separate `.sql.php` file for each table. Each file starts with `<?php exit(); ?>`, followed by SQL. The `.php` extension allows a PHP-enabled web server to run this guard and stop before displaying the database contents if the file is requested over HTTP. MainWP reads this format automatically during a restore.
+
+In a full backup archive, the database dump files are placed under `wp-content`. This location is part of MainWP's archive format. There is no setting to move them to the archive root or another subfolder.
+
+The `clone` folder contains `config.txt`, which holds metadata used by MainWP's backup/cloning format, including the original site URLs, WordPress path, database table prefix, and lists of plugins and themes. Built-in file restores skip this metadata file.
+
+### Performance on Larger Setups
+
+Backup work uses resources on both the Child Site's server and the MainWP Dashboard. The Child Site creates the database dump and archive. The Dashboard downloads and stores the backup, encrypts it when enabled, and uploads copies to the selected storage destinations. Remote storage still requires disk space and transfer bandwidth on the Dashboard.
+
+Completion times depend on database size, file count, archive size, server resources, and transfer speeds. Site count alone does not determine the resources your setup needs.
+
+- Create separate scheduled tasks for groups of sites and give them different start times. Spread backups throughout the day, especially for sites that share a server.
+- Start with a small, representative group that includes a larger site. Check backup and upload completion times, server load, free disk space, and bandwidth use on the Dashboard and Child Site servers before expanding to more sites.
+- Consider [incremental backups](#choose-a-backup-type) to reduce the file data saved after the initial full backup. Each run still includes a fresh database dump.
+- Review [archive formats and exclusions](#archive-format-and-exclusions) to avoid repeatedly archiving caches, old backups, and other folders you do not need to recover. Use [retention limits](#retention-and-cleanup) to control storage use.
+
+Keep [Dashboard cron](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) working so scheduled backups and background uploads can continue. Check that both backup creation and storage uploads finish within the time available before the next run.
+
 ## Check Backup Health
 
 View **Backup Health** in **MainWP > Sites > Manage Sites** (`/wp-admin/admin.php?page=managesites`) or **MainWP > Operations** (`/wp-admin/admin.php?page=mainwp_tab`). The summary appears when built-in backups are enabled and your account has permission to run backups.
