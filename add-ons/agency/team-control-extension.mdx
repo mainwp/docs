@@ -90,7 +90,7 @@ The Team Control screen has two tabs:
 
 Only registered **Team Control owners** can manage Team Control roles, users, and notes. An owner must retain WordPress administrator permissions and must not hold a Team Control custom role. You cannot delegate owner access through a custom role or the **Allowed Add-ons** list.
 
-When no owner registry exists, Team Control registers all eligible administrators as initial owners. On multisite, an owner must also be a super administrator. Creating an administrator after the registry exists does not automatically make that account an owner.
+When no owner registry exists, Team Control registers all eligible administrators as initial owners. Creating an administrator after the registry exists does not automatically make that account an owner.
 
 Keep at least one eligible owner account available. If Team Control reports that only an owner can manage roles and users, sign in with an existing owner or follow [Recover Owner Access](#recover-owner-access).
 
@@ -101,7 +101,7 @@ Keep at least one eligible owner account available. If Team Control reports that
 Keep the previous Team Control plugin files as well. The update changes saved roles and WordPress capabilities, so a plugin downgrade alone cannot undo it.
 </Step>
 <Step title="Confirm that an administrator can become an owner">
-Use an administrator account with no Team Control custom role. On multisite, use an eligible super administrator. If owners are already registered, confirm that at least one remains eligible.
+Use an administrator account with no Team Control custom role. If owners are already registered, confirm that at least one remains eligible.
 </Step>
 <Step title="Update Team Control and open the Dashboard as that administrator">
 Team Control migrates existing roles automatically when an eligible owner is available. Successfully migrated roles keep their saved MainWP permissions and lose their WordPress administrator capabilities.
@@ -152,7 +152,7 @@ If the **Team Control is waiting for an owner** notice appears, the update canno
 
 If no owner registry exists, remove the Team Control custom role from an administrator account while retaining its administrator role, then reload WordPress admin. If an existing owner became ineligible, restore that account's administrator access and remove any Team Control role assigned to it.
 
-If another administrator must become an owner, use WP-CLI on the Dashboard installation. The account running the command must have WordPress administrator permissions; on multisite, it must be a super administrator. The target account must have administrator permissions and no Team Control custom role.
+If another administrator must become an owner, use WP-CLI on the Dashboard installation. The account running the command must have WordPress administrator permissions. The target account must have administrator permissions and no Team Control custom role.
 
 1. Prepare the owner change. Replace `123` with the target user's ID and `admin-login` with the administrator running the command:
 
@@ -167,10 +167,6 @@ If another administrator must become an owner, use WP-CLI on the Dashboard insta
    ```
 
 3. Reload WordPress admin so any waiting migration can finish.
-
-<Note>
-On multisite, Team Control supports one MainWP Dashboard per network. Owner registration is network-wide, while roles and direct user permissions belong to the Dashboard site. Run recovery commands in the Dashboard site's context.
-</Note>
 
 ## Create a Custom Role
 
