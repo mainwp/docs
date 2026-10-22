@@ -1,0 +1,366 @@
+---
+title: Time Tracker Abilities
+sidebarTitle: "Time Tracker Abilities"
+description: >-
+  Manage tasks and buckets, start and pause timers, and complete tasks for billing through MainWP's Time Tracker abilities.
+---
+
+Time Tracker 5.2.0 adds twelve abilities for managing client work and recorded time. An ability is a named action available to connected tools through MainWP's [Abilities API](/api-reference/abilities-api/overview).
+
+A **bucket** groups work under an hourly rate. A **task** records a piece of work. Starting a task's timer creates a **session**, the time between starting and pausing that timer.
+
+## What You'll Learn
+
+- Find, create, edit, and archive tasks and buckets
+- Start a timer and stop it by pausing
+- Complete a paused task and save its billing details
+- Handle previews, repeat requests, and access restrictions
+
+## Before You Start
+
+Activate Time Tracker 5.2.0 or later on your MainWP Dashboard. The Dashboard needs WordPress 6.9 or later and MainWP Dashboard with Abilities API support. The Abilities API must be available when the extension loads.
+
+Use an authenticated administrator account with the WordPress `manage_options` permission, which allows administration of site settings. The account also needs access to the Time Tracker add-on and the operation permissions listed under each ability below.
+
+**Team Control grants alone do not allow a staff account without `manage_options` to use these abilities.** Team Control restrictions still apply to administrator accounts. Permission to view a task does not grant permission to edit it, track time, or complete it for billing.
+
+Client and site access also apply to every ability:
+
+- A task requires access to every site assigned to it and every current site belonging to its client.
+- A client-specific bucket requires access to every site belonging to every client assigned to that bucket.
+- A general bucket is available across clients. Access requires access to every current client's sites.
+- Changes check both the existing relationships and the proposed ones. Bucket changes also check affected tasks.
+
+Access is checked again when you retry a saved request. Losing permission or site access can block a retry from returning its earlier result.
+
+For direct API requests, use the [authentication guide](/api-reference/abilities-api/overview#authentication).
+
+## Read an Item Before Changing It
+
+Tasks and buckets have references such as `task_ref` and `bucket_ref`. These are 64-character identifiers returned by Time Tracker, not the numeric IDs shown elsewhere in the Dashboard. Use the exact returned values. Get a task reference from the task list and a bucket reference from the bucket list. A task detail result also includes its `client_ref` and `bucket_ref` when assigned.
+
+A `revision` identifies the version you read. Copy it into `if_match` for replacements and archives, or `task_revision` for timer actions and completion. MainWP rejects the change if the item no longer matches. Read it again and review the change before submitting a new request.
+
+The JSON examples below show the **input object**. Replace uppercase placeholders with actual references, revisions, or preview tokens. Every field shown is required, including fields set to `null`. Extra fields are rejected.
+
+For direct requests, use `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run` on your Dashboard. Replace `ABILITY_NAME` with the full name shown below. On MainWP Dashboard 6.2 or later, send GET input as JSON in `input_json`. For POST and DELETE, send a JSON body containing `{"input": YOUR_INPUT_OBJECT}`. See [input handling](/api-reference/abilities-api/overview#input-handling) for complete request examples.
+
+Replacements, archives, and completion use DELETE, including their previews. This follows [WordPress's method rules](https://developer.wordpress.org/reference/classes/wp_rest_abilities_v1_run_controller/validate_request_method/) for the abilities' registered settings.
+
+## Preview and Confirm a Change
+
+Replacing or archiving a task or bucket, and completing a task, require a preview first:
+
+1. Send the proposed input with `dry_run: true`, `confirm: false`, and `preview_token: null`.
+2. Review the response. `mode: "dry_run"` means the requested change has not been applied.
+3. Send the same selection, revision, and `request_ref` with `dry_run: false`, `confirm: true`, and the returned `preview_token`.
+
+A preview lasts **10 minutes** and belongs to the account that requested it. If it expires or the item, affected tasks, relationships, or billing settings change, request and review a fresh preview. A successful change returns `mode: "completed"`. For a replacement, that means the edit finished; it does not mean the task itself is completed.
+
+Creating tasks or buckets and starting or pausing timers act immediately. They do not accept preview or confirmation fields.
+
+## Repeat Requests and In-Progress Results
+
+Each change includes `request_ref`, a UUID used as a unique request label. Use a new label for each new action. To retry, use the **same account, ability, label, and original input**. MainWP returns the stored result when one exists instead of creating another item, adding time twice, or completing the same work again. Reusing a label with changed input returns `request_conflict`.
+
+Reads are safe to repeat and show the current saved information. Repeating an unconfirmed preview does not apply the proposed change. After a change succeeds, even a repeat of its preview can return the stored completed result. Check `mode`.
+
+These abilities do not return a queued `pending` success result:
+
+- `working` means the task's timer is running. Time tracking is in progress; the start request has finished.
+- `paused` means the timer is stopped. The task can be resumed or completed.
+- `completed` as a task state means the task has been completed. A completion through these abilities also saves a billing snapshot.
+- The Dashboard's **Pending payment** status is a separate billing label. It does not mean an ability request is still running.
+
+If you receive `lock_busy` (HTTP 409), another Time Tracker write is using the shared lock. Retry the original request, even if the other write concerned a different task. A busy response does not queue your request.
+
+If the connection drops or the result is `outcome_unknown`, retry the original request to recover its stored result. Do not choose a new request label to recover an uncertain outcome. If uncertainty remains, inspect the task or bucket before taking further action.
+
+## List Tasks
+
+**Ability:** `mainwp/list-time-tracker-tasks-v1`<br />
+**Method:** GET<br />
+**Permissions:** View tasks (`view_tasks`), plus the administrator and access requirements above.
+
+Example request: “Show up to 25 paused tasks for site 7.”
+
+```json
+{
+  "client_ref": null,
+  "site_id": 7,
+  "state": "paused",
+  "limit": 25,
+  "after_task_ref": null
+}
+```
+
+Use `null` for an unused client, site, or state filter. States are `paused`, `working`, and `completed`. The page size is 1 to 100. Results contain task references, titles, states, recorded seconds, site counts, and revisions.
+
+When `truncated` is `true`, pass `next_after_task_ref` as the next request's `after_task_ref`. Archived tasks are excluded. Items outside your access are omitted. An inconsistent client/site relationship or an archived bucket can cause the whole request to fail.
+
+Repeating this read is safe. A `working` result means the timer is running; `duration_seconds` is the saved duration, not a live ticking total.
+
+## Read One Task
+
+**Ability:** `mainwp/get-time-tracker-task-v1`<br />
+**Method:** GET<br />
+**Permissions:** View tasks (`view_tasks`), with access to the task, its client, and its bucket as described above.
+
+Example request: “Read the support task before I change it.”
+
+```json
+{
+  "task_ref": "TASK_REF"
+}
+```
+
+The result includes the description, client and bucket references, site IDs, state, recorded seconds, `active_session_ref`, and `revision`. Keep the session reference and revision for timer actions. Billing amounts are not included in this result.
+
+This read is safe to repeat. A non-null `active_session_ref` identifies the running timer session. If saved task details and time records no longer agree, the read returns `reconciliation_required`. Waiting alone does not repair those records.
+
+## Create a Task
+
+**Ability:** `mainwp/create-time-tracker-task-v1`<br />
+**Method:** POST<br />
+**Permissions:** View tasks and create tasks (`view_tasks`, `create_task`). The selected relationships must all be within your access.
+
+Example request: “Create a release review task for this client, using its support bucket and site 7.”
+
+```json
+{
+  "title": "Release review",
+  "description": "Check the client site after release",
+  "client_ref": "CLIENT_REF",
+  "bucket_ref": "BUCKET_REF",
+  "site_ids": [7],
+  "request_ref": "123e4567-e89b-42d3-a456-426614174970"
+}
+```
+
+Selected sites must belong to the selected client. The bucket must be general or include that client. An unassigned task can use `client_ref: null`, `bucket_ref: null`, and `site_ids: []`; a task without a client cannot have sites.
+
+The result returns the new `task_ref` and `revision`. The task starts **paused**, with zero recorded seconds. It is created immediately; there is no pending creation step. Retry with the same request label and input to return the saved result without creating another task.
+
+## Replace a Task's Details
+
+**Ability:** `mainwp/replace-time-tracker-task-v1`<br />
+**Method:** DELETE<br />
+**Permissions:** View tasks and edit tasks (`view_tasks`, `edit_task`), with access to both the old and new relationships.
+
+Example request: “Preview changing the paused release review task's description. Keep its client, bucket, and site.”
+
+```json
+{
+  "task_ref": "TASK_REF",
+  "title": "Release review",
+  "description": "Final review before handover",
+  "client_ref": "CLIENT_REF",
+  "bucket_ref": "BUCKET_REF",
+  "site_ids": [7],
+  "if_match": "TASK_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174971",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+Send all editable fields, including values you want to keep. The task must be paused. The replacement keeps recorded duration and billing values. Site changes update the allocation of recorded time to sites.
+
+Follow the preview and confirmation steps above. `removed_site_count` tells you how many sites the edit removes. Repeating the confirmed request returns its saved result. `mode: "dry_run"` is a preview awaiting your confirmation, not work running in the background.
+
+## Archive a Task
+
+**Ability:** `mainwp/archive-time-tracker-task-v1`<br />
+**Method:** DELETE<br />
+**Permissions:** View tasks and delete tasks (`view_tasks`, `delete_task`), with full task scope.
+
+Example request: “Preview archiving this finished task while keeping its time records.”
+
+```json
+{
+  "task_ref": "TASK_REF",
+  "if_match": "TASK_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174972",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+The task must be paused or completed and have no active timer. Archiving removes it from ability lists and blocks further ability changes. It preserves recorded time segments and billing evidence. It does not delete the existing Dashboard task.
+
+The preview reports `preserved_segment_count`. Confirming returns `archived: true`. Repeat requests do not archive or remove records twice. If you later archive its bucket too, a task archive retry can return `bucket_archived` instead of the earlier result; the stored time and billing records remain. A preview has not archived anything yet.
+
+## List Buckets
+
+**Ability:** `mainwp/list-time-tracker-buckets-v1`<br />
+**Method:** GET<br />
+**Permissions:** View buckets (`view_buckets`), with access to all associated clients' sites. Viewing rates also requires view billing (`view_billing`).
+
+Example request: “Show up to 25 buckets I can use.”
+
+```json
+{
+  "client_ref": null,
+  "limit": 25,
+  "after_bucket_ref": null
+}
+```
+
+Set `client_ref` to filter for a client; general buckets are included for that client. The page size is 1 to 100. Results include references, titles, client counts, active task counts, and revisions. Without view-billing permission, `rate_minor` and `currency` are `null`.
+
+When `truncated` is `true`, pass `next_after_bucket_ref` as the next `after_bucket_ref`. Archived buckets are excluded. Counts include accessible paused and working tasks, not completed tasks. Access restrictions can hide buckets or tasks from these results.
+
+This read is safe to repeat. An active task count is a count of unfinished tasks, not a count of pending API requests.
+
+## Create a Bucket
+
+**Ability:** `mainwp/create-time-tracker-bucket-v1`<br />
+**Method:** POST<br />
+**Permissions:** View buckets, create buckets, and manage billing (`view_buckets`, `create_bucket`, `manage_billing`), with the required client/site access.
+
+Example request: “Create a support bucket for this client at 125 US dollars per hour.”
+
+```json
+{
+  "title": "Support",
+  "description": "Client support work",
+  "general": false,
+  "client_refs": ["CLIENT_REF"],
+  "rate_minor": 12500,
+  "currency": "USD",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174973"
+}
+```
+
+`rate_minor` is the hourly price in hundredths of the currency: `12500` means USD 125.00. The currency must match the Dashboard's Time Tracker currency. A client-specific bucket needs at least one client. For a general bucket, use `general: true` and `client_refs: []`, with access to all current clients' sites.
+
+New buckets use monthly recurrence and an hour limit of zero. These abilities do not offer fields to change those settings. The bucket is created immediately. The result includes `bucket_ref`, `client_count`, and `revision`. Retrying the same input and request label returns that result without creating another bucket.
+
+## Replace a Bucket's Details
+
+**Ability:** `mainwp/replace-time-tracker-bucket-v1`<br />
+**Method:** DELETE<br />
+**Permissions:** View buckets, edit buckets, and manage billing (`view_buckets`, `edit_bucket`, `manage_billing`). Access must cover the existing and proposed clients and affected tasks, including relevant archived task relationships.
+
+Example request: “Preview raising this support bucket's hourly rate to USD 130.00.”
+
+```json
+{
+  "bucket_ref": "BUCKET_REF",
+  "title": "Support",
+  "description": "Client support work",
+  "general": false,
+  "client_refs": ["CLIENT_REF"],
+  "rate_minor": 13000,
+  "currency": "USD",
+  "if_match": "BUCKET_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174974",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+Send every editable field. The replacement retains recurrence and hour-limit settings. You can keep the existing currency or select the current Dashboard currency. Client assignment changes must remain compatible with dependent tasks; they cannot leave a task assigned to an excluded client.
+
+The preview returns `affected_task_count`. Confirm it using the returned token. Repeating the confirmed request returns the stored result. A preview alone does not change the rate or client assignments.
+
+## Archive a Bucket
+
+**Ability:** `mainwp/archive-time-tracker-bucket-v1`<br />
+**Method:** DELETE<br />
+**Permissions:** View buckets and delete buckets (`view_buckets`, `delete_bucket`). Access must cover the bucket, its assigned tasks, and any replacement bucket.
+
+Example request: “Preview retiring this bucket and moving its assigned tasks to the replacement bucket.”
+
+```json
+{
+  "bucket_ref": "BUCKET_REF",
+  "replacement_bucket_ref": "REPLACEMENT_BUCKET_REF",
+  "if_match": "BUCKET_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174975",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+If the bucket has assigned tasks available through the abilities, choose a different, active replacement bucket that accepts every affected task's client. This includes completed tasks that have not been archived. Use `replacement_bucket_ref: null` only when no such tasks need moving.
+
+The preview reports `reassigned_task_count`. Confirmation moves those assignments and archives the bucket for the abilities. Existing Dashboard records and billing snapshots remain. A repeat returns the saved result without moving tasks again. The preview itself has not moved or archived anything.
+
+## Start or Resume a Timer
+
+**Ability:** `mainwp/start-time-tracker-timer-v1`<br />
+**Method:** POST<br />
+**Permissions:** View tasks and track time (`view_tasks`, `track_time`), with full task scope.
+
+Example request: “Start tracking time on this paused support task.”
+
+```json
+{
+  "task_ref": "TASK_REF",
+  "task_revision": "TASK_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174976"
+}
+```
+
+The task must be paused with no active timer. The result returns `state: "working"`, `session_ref`, `started_at`, and a new `revision`. Keep the session reference and new revision for pausing.
+
+`working` means the timer has started, not that the request is pending. Repeating the same request returns the original start result without starting another session. To resume after a pause, use the latest task revision and a new request label.
+
+## Pause or Stop a Timer
+
+**Ability:** `mainwp/pause-time-tracker-timer-v1`<br />
+**Method:** POST<br />
+**Permissions:** View tasks and track time (`view_tasks`, `track_time`), with full task scope. **Only the account that started the active session may pause it through this ability.**
+
+Example request: “Stop this timer and save the time. Leave the task open.”
+
+```json
+{
+  "task_ref": "TASK_REF",
+  "session_ref": "ACTIVE_SESSION_REF",
+  "task_revision": "CURRENT_TASK_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174977"
+}
+```
+
+Pausing stops that exact session and adds its elapsed seconds to the task's recorded duration. The result returns `state: "paused"`, `segment_seconds` for this session, `duration_seconds` for the task total, and a new revision. The timer is stopped when this succeeds; there is no later processing step.
+
+Retrying the same request returns the saved pause result without adding the seconds twice. An old session reference cannot pause a later session. A session with an unusable start time, or one running for more than a year, returns `reconciliation_required` rather than recording an unreliable duration.
+
+There is **no separate stop ability**. Pause to stop timing without completing the task. To finish the task for billing, pause first and then use the completion ability below.
+
+## Complete a Task for Billing
+
+**Ability:** `mainwp/complete-time-tracker-task-v1`<br />
+**Method:** DELETE<br />
+**Permissions:** View tasks, view billing, and manage billing (`view_tasks`, `view_billing`, `manage_billing`), with full task scope.
+
+Example request: “Preview completing this paused task and saving its billing details.”
+
+```json
+{
+  "task_ref": "TASK_REF",
+  "task_revision": "PAUSED_TASK_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174978",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+The task must be paused with no active timer. The preview leaves it paused and returns `billing_snapshot_ref: null`. Confirm with the preview token to mark it completed and save a **billing snapshot**, a fixed record of duration, hourly rate, currency, rounding settings, and calculated total. The rate comes from its bucket; rounding follows its client settings.
+
+Success returns `mode: "completed"`, `state: "completed"`, a `billing_snapshot_ref`, and a new revision. Recorded seconds remain separate from the rounded time used for billing. Completion saves the calculated price on the task; it does not send an invoice or mark payment as received.
+
+Repeating the confirmed request returns the saved result without saving another snapshot. Only one snapshot is allowed per task, so reopening it elsewhere does not allow another completion snapshot through this ability. If the rate, rounding, or other preview details change before confirmation, preview again.
+
+## Related Resources
+
+- [Time Tracker guide](/add-ons/client/mainwp-time-tracker-extension) for Dashboard controls and settings
+- [Abilities API Overview](/api-reference/abilities-api/overview) for authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) for staff access settings
