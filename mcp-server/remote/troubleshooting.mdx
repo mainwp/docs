@@ -78,7 +78,7 @@ Change the site address in **Settings > General** (or the `WP_HOME` constant) to
 
 ### Activity log
 
-> Turn on the activity log first. AI apps can't make changes unless each change is recorded.
+> Turn on the activity log first. AI apps can't make changes or use tools MainWP hasn't reviewed unless each call is recorded.
 
 Turn on **Enable Network Activity logging** under **MainWP Settings > Network Activity Settings**. This line blocks turning the connector on.
 
@@ -202,7 +202,7 @@ Something answers `http://` requests to the MCP address with a success response.
 
 ### Counters for the last 24 hours
 
-> Last 24 hours: No Authorization header arrived: 3. Token rejected: 0.
+> Last 24 hours: requests without an Authorization header: 3; tokens rejected: 0.
 
 A count of requests without an `Authorization` header turns this line into a warning with "Requests that arrive without their Authorization header usually mean the web server or a proxy strips it." See [Authorization header](#authorization-header). Rejected tokens are usually expired or revoked connections that the app keeps trying.
 

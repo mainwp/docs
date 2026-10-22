@@ -86,7 +86,7 @@ Those are the changes that could send a site's keys to another address or run co
 Hands-off is offered only to users without Team Control limits. If the user gains limits later, the connection behaves as Standard until its policy is changed.
 
 <Warning>
-Hands-off gives up the one check that proves a person approved. The consent screen says: "Changes that would need your approval on this Dashboard only need a confirmation in the app, so MainWP can no longer check that a person approved them, and instructions hidden in site content could lead the app to make them." A post, comment or plugin description on a child site could contain such instructions.
+Hands-off gives up the one check that proves a person approved. The consent screen says: "Changes that would need your approval on this Dashboard only need a confirmation in the app. MainWP can no longer check that a person approved them, and instructions hidden in site content could lead the app to make them." A post, comment or plugin description on a child site could contain such instructions.
 </Warning>
 
 ## Change a connection's policy
@@ -164,4 +164,4 @@ An approved action over more than 10 sites runs as a background job, 10 sites at
 
 ## The activity log
 
-While **Enable Network Activity logging** is on, the Dashboard records every AI app call in the activity log. While it's off, read tools still run, but nothing records them. Every change is refused with "Changes from AI apps need the MainWP activity log, so each one is recorded. Turn it on in the Dashboard's settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."
+While **Enable Network Activity logging** is on, the Dashboard records every AI app call in the activity log. While it's off, the read tools MainWP has reviewed still run, but nothing records them. Changes and tools MainWP hasn't reviewed are refused with "Changes and tools MainWP hasn't reviewed need the MainWP activity log, so each call is recorded. Turn on Enable Network Activity logging under MainWP Settings > Network Activity Settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."

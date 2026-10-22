@@ -30,7 +30,7 @@ Both can be used side by side. If your app can't connect remotely, the local ser
 - **PHP 8.1 or newer.** On older PHP the panel shows "Remote AI connections need PHP 8.1 or newer; this server runs" followed by your version, and nothing else loads.
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
 - **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the panel doesn't appear there.
-- **The activity log turned on.** AI apps can only make changes while each change is recorded, so the connector can't be turned on until **Enable Network Activity logging** is on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses changes from AI apps until you turn it back on. Reads keep running, but they aren't recorded while the log is off.
+- **The activity log turned on.** AI apps can only make changes, or use tools MainWP hasn't reviewed, while each call is recorded, so the connector can't be turned on until **Enable Network Activity logging** is on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses those calls until you turn it back on. The read tools MainWP has reviewed keep running, but they aren't recorded while the log is off.
 - **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
 - **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
 
