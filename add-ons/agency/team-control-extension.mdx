@@ -2,18 +2,18 @@
 title: Team Control
 sidebarTitle: "Team Control"
 description: >-
-  The Team Control Extension allows you to create your team and arrange the
-  WordPress management tasks among your team members. With a few clicks you can
-  create your custom roles and set custom privileges to created roles.
+  Create custom team roles, control access to MainWP features and Child sites,
+  and understand the WordPress admin restrictions and role migration in Team Control 5.2.
 addonType: extension
 ---
 
 ## What You'll Learn
 
-- Creating custom roles for team members
-- Defining permissions and allowed sites
-- Assigning roles to users
-- Managing role-based access control
+- Understand WordPress admin access for custom roles in 5.2
+- Upgrade existing roles and resolve roles placed on hold
+- Create custom roles and assign them to team members
+- Define permissions, allowed add-ons, and allowed Child sites
+- Control access to MainWP abilities and MCP
 
 ---
 
@@ -25,17 +25,48 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
   data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
 />
+
 <Info>
 **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
 </Info>
 
-[MainWP Team Control Add-on](https://mainwp.com/add-on/team-control/) allows you to create custom roles for users on your Dashboard site. With the custom roles you create, you can limit access to specific MainWP Dashboard features, add-ons, and child sites. To create your MainWP Management team, you need to:
+[MainWP Team Control Add-on](https://mainwp.com/add-on/team-control/) lets you create custom roles for users on your MainWP Dashboard site. Limit each role to the MainWP features, add-ons, and Child sites its users need.
+
+<Warning>
+**Important change in Team Control 5.2: custom roles no longer have WordPress administrator access.**
+
+Users assigned a Team Control custom role can still access:
+
+- **MainWP Dashboard** pages, add-ons, and Child sites allowed by their role.
+- The **WordPress Dashboard** home page (`/wp-admin/index.php`).
+- Their own **Profile** page (`/wp-admin/profile.php`).
+
+The custom role no longer grants access to other WordPress admin sections on the Dashboard site, including Plugins, Themes, Users, and Settings. Earlier versions gave these roles administrator capabilities outside MainWP; 5.2 removes those capabilities from new and successfully migrated roles.
+</Warning>
+
+This restriction applies to the WordPress site hosting your MainWP Dashboard. It does not change user roles on connected Child sites. A separate WordPress role or direct user permission can still grant additional access; review accounts that have more than one role.
+
+![WordPress Dashboard for a Team Control custom-role user, with Dashboard, MainWP, and Profile in the sidebar](/images/add-ons/team-control-5-2-restricted-wordpress-admin.jpg)
+
+Other plugins may add their own pages for users with basic read access. Team Control custom roles do not grant the WordPress administrator capabilities those roles had in earlier versions.
+
+<Note>
+The **Access WP Admin** permission under **Role Permissions > Sites** controls opening a Child site's WordPress admin through MainWP. It does not restore access to WordPress admin sections on the Dashboard site.
+</Note>
+
+## Prerequisites
+
+- An active MainWP Dashboard and Team Control 5.2.0.
+- A [Team Control owner](#team-control-owners) account to manage roles and users.
+- Connected Child sites if you want to assign site access.
+
+Open **MainWP > Add-ons > Agency > Team Control** (`/wp-admin/admin.php?page=Extensions-Mainwp-Team-Control`). To set up your team:
 
 <Steps>
 <Step title="Create your custom role(s)">
@@ -44,21 +75,102 @@ addonType: extension
 </Step>
 <Step title="Create new users (optional)">
 </Step>
-<Step title="Assign the role to dashboard site users">
+<Step title="Assign the role to Dashboard site users">
 </Step>
 </Steps>
 
-
 ![Team Control Dashboard Users tab showing role filters and the users table](/images/add-ons/team-control-dashboard-users.png)
-
-Users without permission won't be able to use unselected actions or access certain MainWP Dashboard pages. Team Control extension allows you to create custom roles only on your MainWP Dashboard site. Roles created with the MainWP Team Control extension have effect only inside the MainWP Dashboard plugin. 
-
-If you need to limit access to certain WordPress admin sections, you will need to use a third-party plugin. Any role created by the extension is equivalent to the Administrator role outside of the MainWP Dashboard plugin.
 
 The Team Control screen has two tabs:
 
 - **Dashboard Users** - View users immediately, filter by one or more roles, search the users table, and apply bulk actions.
 - **Roles & Permissions** - Create roles, review role descriptions, see how many users have each role, and manage or delete roles.
+
+## Team Control Owners
+
+Only registered **Team Control owners** can manage Team Control roles, users, and notes. An owner must retain WordPress administrator permissions and must not hold a Team Control custom role. You cannot delegate owner access through a custom role or the **Allowed Add-ons** list.
+
+When no owner registry exists, Team Control registers all eligible administrators as initial owners. On multisite, an owner must also be a super administrator. Creating an administrator after the registry exists does not automatically make that account an owner.
+
+Keep at least one eligible owner account available. If Team Control reports that only an owner can manage roles and users, sign in with an existing owner or follow [Recover Owner Access](#recover-owner-access).
+
+## Upgrade to Team Control 5.2
+
+<Steps>
+<Step title="Back up the complete Dashboard database before updating">
+Keep the previous Team Control plugin files as well. The update changes saved roles and WordPress capabilities, so a plugin downgrade alone cannot undo it.
+</Step>
+<Step title="Confirm that an administrator can become an owner">
+Use an administrator account with no Team Control custom role. On multisite, use an eligible super administrator. If owners are already registered, confirm that at least one remains eligible.
+</Step>
+<Step title="Update Team Control and open the Dashboard as that administrator">
+Team Control migrates existing roles automatically when an eligible owner is available. Successfully migrated roles keep their saved MainWP permissions and lose their WordPress administrator capabilities.
+</Step>
+<Step title="Review the migration notices and Roles & Permissions">
+The **Team Control roles were updated** notice lists migrated roles. Review any roles marked **On hold**, and check each role's permissions, allowed add-ons, and allowed sites.
+</Step>
+<Step title="Review users with multiple Team Control roles">
+In 5.2, a user's permissions combine the grants from all their active Team Control roles, including site and tag access. Earlier versions could use only the first matching role, so these users may gain additional MainWP access after upgrading.
+</Step>
+</Steps>
+
+Automatically migrated roles also receive **Use MainWP abilities and MCP** to preserve their previous ability access. An owner can disable it per role under [API Access](#abilities-and-mcp-permissions).
+
+<Warning>
+Downgrading Team Control does not restore removed WordPress capabilities or reverse the role migration. Use the complete pre-update database backup and matching plugin files if a full rollback is required.
+</Warning>
+
+### Resolve Roles on Hold
+
+A role that cannot be migrated safely is marked **On hold** in **Roles & Permissions**. Held and disabled roles grant no MainWP permissions. Review the explanation beside the role before restoring or editing it.
+
+<Warning>
+Some held roles still have their pre-update WordPress capabilities because Team Control could not safely change their WordPress role. The Roles list identifies this condition. **On hold does not guarantee that WordPress administrator access has been removed.**
+</Warning>
+
+![Team Control Roles & Permissions showing an example Support Team role marked On hold and its Restore as saved button](/images/add-ons/team-control-5-2-held-role-restore.jpg)
+
+<Steps>
+<Step title="Open Team Control as an owner and select Roles & Permissions">
+Locate the role marked **On hold** and read its status message.
+</Step>
+<Step title="Choose how to recover the role">
+Where **Restore as saved** is available, click it to recover the stored permissions. Review the **Restore this role as saved?** confirmation, then click **Restore Role**.
+
+To change the permissions before reactivating a role, use **Edit Role / Manage Permissions**, review the available permissions, and click **Update Role**. If the WordPress role is missing or the saved data cannot be read, follow the role's message; editing may be unavailable.
+</Step>
+<Step title="Review the restored role's access">
+Confirm that the role is active and its permissions are appropriate. Check **Use MainWP abilities and MCP** separately; restoring a held role does not automatically add that permission if it was not saved.
+</Step>
+</Steps>
+
+**Restore as saved** preserves stored grants, including grants for sites, tags, or add-ons that no longer appear in the editor. **Update Role** saves the permissions currently shown in the form and removes grants that are no longer available there. Review any warning about omitted permissions before saving.
+
+### Recover Owner Access
+
+If the **Team Control is waiting for an owner** notice appears, the update cannot finish migrating roles. Until an eligible owner is available, unmigrated roles keep working as they did before the update, including their previous WordPress access.
+
+If no owner registry exists, remove the Team Control custom role from an administrator account while retaining its administrator role, then reload WordPress admin. If an existing owner became ineligible, restore that account's administrator access and remove any Team Control role assigned to it.
+
+If another administrator must become an owner, use WP-CLI on the Dashboard installation. The account running the command must have WordPress administrator permissions; on multisite, it must be a super administrator. The target account must have administrator permissions and no Team Control custom role.
+
+1. Prepare the owner change. Replace `123` with the target user's ID and `admin-login` with the administrator running the command:
+
+   ```bash
+   wp mainwp team-control-owner prepare --action=add --user_id=123 --user=admin-login
+   ```
+
+2. Apply the change within ten minutes using the returned confirmation token and the same administrator:
+
+   ```bash
+   wp mainwp team-control-owner apply --confirmation=CONFIRMATION_TOKEN --user=admin-login
+   ```
+
+3. Reload WordPress admin so any waiting migration can finish.
+
+<Note>
+On multisite, Team Control supports one MainWP Dashboard per network. Owner registration is network-wide, while roles and direct user permissions belong to the Dashboard site. Run recovery commands in the Dashboard site's context.
+</Note>
 
 ## Create a Custom Role
 
@@ -67,9 +179,9 @@ The Team Control screen has two tabs:
 To create a custom role,
 
 <Steps>
-<Step title="Log in to your MainWP Dashboard">
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
 </Step>
-<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+<Step title="Open Team Control">
 </Step>
 <Step title="Go to the Roles & Permissions tab">
 </Step>
@@ -90,9 +202,9 @@ After the role is created, it appears in the **Roles & Permissions** table.
 ## Define Role Permissions
 
 <Steps>
-<Step title="Log in to your MainWP Dashboard">
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
 </Step>
-<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+<Step title="Open Team Control">
 </Step>
 <Step title="Go to the Roles & Permissions tab">
 </Step>
@@ -102,9 +214,12 @@ After the role is created, it appears in the **Roles & Permissions** table.
 </Step>
 <Step title="Set MainWP Dashboard permissions">
 </Step>
+<Step title="Set API Access permissions">
+Review API key and application password permissions. Under **Abilities and MCP**, enable **Use MainWP abilities and MCP** only if this role needs that access.
+</Step>
 <Step title="Set Allowed Add-ons">
 </Step>
-<Step title="Set Allowed Child Sites">
+<Step title="Set Allowed Sites">
 Use **Select by Site** or **Select by Tag** to choose the child sites this role can access.
 </Step>
 <Step title="Click the Update Role button">
@@ -112,16 +227,36 @@ Use **Select by Site** or **Select by Tag** to choose the child sites this role 
 </Steps>
 
 
-After setting custom permissions, you are ready to assign this role to an existing user or to [create a new user](https://wordpress.org/documentation/article/users-add-new-screen/) with this role. By selecting permissions, add-ons, and child sites, you are allowing users with this role to use those actions only on the allowed sites. If you grant access through **Select by Tag**, the role can access the child sites that belong to those selected tags.
+After setting custom permissions, assign this role to an existing user or [create a new user](https://wordpress.org/documentation/article/users-add-new-screen/) with this role. Permissions determine which actions the role can perform; **Allowed Sites** determines where it can perform them. **Select by Tag** also grants access to Child sites that belong to the selected tags.
+
+### Backup Permissions
+
+The **Backups** permission group controls backup actions such as execution, restoration, downloads, and backup task management. On a Dashboard with Native Backups, this group appears when Native Backups is enabled. On older Dashboards, its visibility follows the legacy backup setting. **API Backups** remains a separate permission group.
+
+Native Backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
+
+### Abilities and MCP Permissions
+
+In the role editor, find **API Access > Abilities and MCP > Use MainWP abilities and MCP**. This permission allows restricted users to run an approved set of MainWP Dashboard abilities, including through the MainWP MCP Server. Their site access and operation permissions continue to apply.
+
+![Team Control Edit Role / Manage Permissions modal showing API Access and the checked Use MainWP abilities and MCP permission](/images/add-ons/team-control-5-2-abilities-mcp-permission.jpg)
+
+- On compatible Dashboards with ability scoping, the approved set includes scoped site, client, tag, update, and Native Backup operations. Site creation, tag creation or editing, and batch operations are excluded.
+- On MainWP Dashboard 6.2, 6.2.1, 6.2.2, and 6.2.3, restricted users can run only `list-sites`, `count-sites`, and `get-sites-basic`, limited to their allowed sites.
+- The permission does not grant access to Team Control's own management abilities or other add-ons' abilities.
+
+Owners can untick the permission and click **Update Role** to remove it from a role. If a user has several active Team Control roles, another role can still grant it.
+
+See [Abilities API Overview](/api-reference/abilities-api/overview) and [MainWP MCP Server](/mcp-server/overview) for platform and authentication setup. WordPress Abilities API support is required for these features.
 
 ## Assign Role to a User
 
 ![Team Control bulk action menu showing the Change role action and role selector](/images/add-ons/team-control-change-role-bulk-action.png)
 
 <Steps>
-<Step title="Log in to your MainWP Dashboard">
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
 </Step>
-<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+<Step title="Open Team Control">
 </Step>
 <Step title="Go to the Dashboard Users tab">
 The users table loads automatically when you open the tab.
@@ -138,14 +273,16 @@ Select the new role, then click **Apply**.
 </Steps>
 
 
-**Note:** If you'd like a user to have access through a site tag, grant the role access to that tag in **Allowed Child Sites** > **Select by Tag**.
+<Note>
+To grant access through a site tag, select that tag under **Allowed Sites > Select by Tag**. Users with several active Team Control roles receive the combined permissions of those roles. Team Control protects owner and administrator accounts from delegated role changes.
+</Note>
 
 ## Edit Custom Role
 
 <Steps>
-<Step title="Log in to your MainWP Dashboard">
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
 </Step>
-<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+<Step title="Open Team Control">
 </Step>
 <Step title="Go to the Roles & Permissions tab">
 </Step>
@@ -156,9 +293,12 @@ Use the table search, sorting, pagination, or the **Users** count column to revi
 </Step>
 <Step title="Set MainWP Dashboard permissions">
 </Step>
+<Step title="Set API Access permissions">
+Review **Use MainWP abilities and MCP**, API key permissions, and application password permissions.
+</Step>
 <Step title="Set Allowed Add-ons">
 </Step>
-<Step title="Set Allowed Child Sites">
+<Step title="Set Allowed Sites">
 Use **Select by Site** or **Select by Tag** to choose the child sites this role can access.
 </Step>
 <Step title="Click the Update Role button">
@@ -166,14 +306,14 @@ Use **Select by Site** or **Select by Tag** to choose the child sites this role 
 </Steps>
 
 
-By selecting permissions, add-ons, and child sites, you are allowing users with this role to use those actions only on the allowed sites.
+Updating a role replaces its previous permission set with the permissions submitted by the form. Review warnings about saved grants for removed sites, tags, or inactive add-ons before clicking **Update Role**.
 
 ## Delete Custom Role
 
 <Steps>
-<Step title="Log in to your MainWP Dashboard">
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
 </Step>
-<Step title="Go to the MainWP > Add-ons > Agency > Team Control page">
+<Step title="Open Team Control">
 </Step>
 <Step title="Go to the Roles & Permissions tab">
 </Step>
@@ -188,9 +328,22 @@ If any users currently have that role, choose a replacement role for each user i
 </Step>
 </Steps>
 
+## Team Control Abilities
+
+Team Control 5.2 registers 12 abilities in the `mainwp-team-control` category. They let an authenticated owner list available permissions, read and manage roles and users, update user notes, and reconcile roles that need recovery. These abilities require the WordPress Abilities API and MainWP Dashboard's abilities integration.
+
+Management access remains restricted to registered owners. Assigning **Use MainWP abilities and MCP** to a custom role does not authorize its users to manage Team Control.
+
+Changes through these abilities require a preview followed by confirmation. Automation must review the preview and use its returned confirmation token; it must also supply current revisions where the operation requires them. Full role replacements replace the prior permission set, rather than adding to it.
+
+Role and membership changes run one at a time and use database transactions. Team Control validates its table structure and uses InnoDB for its own tables. WordPress options and user metadata can only participate in rollback when their core tables also use transactional storage. After a failed change, review the reported role and membership state before retrying.
+
 ---
 
 ## Related Resources
 
 - [White Label Extension](/add-ons/agency/white-label-extension) - Rebrand MainWP for clients
 - [Agency Add-ons](/add-ons/agency) - Browse agency add-ons
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Platform requirements and authentication
+- [MainWP MCP Server](/mcp-server/overview) - Connect tools to your MainWP Dashboard
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check MainWP database tables
