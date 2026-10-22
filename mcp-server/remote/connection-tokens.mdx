@@ -13,7 +13,7 @@ A connection token is a connection like any other. It belongs to you, it has its
 
 <Steps>
   <Step title="Open the token form">
-    In **API Access > AI Apps**, find **Connect with a token**.
+    In **MainWP > AI > MainWP MCP > Connect directly**, find **Connect with a token**.
   </Step>
   <Step title="Pick the settings">
     - **Name**: up to 64 characters, so you can recognize the token later. The connection appears as `Connection token "<name>"`.
@@ -56,13 +56,13 @@ Many apps store the token in a plain-text configuration file. Anything that copi
 
 ## Expiry
 
-The Dashboard emails you 7 days before a token expires, with the subject "Your MainWP connection token expires soon" followed by the token's name. After the expiry date, the app's requests are refused with "This MainWP connection token has expired. Create a new one in API Access > AI Apps."
+The Dashboard emails you 7 days before a token expires, with the subject "Your MainWP connection token expires soon" followed by the token's name. After the expiry date, the app's requests are refused with "This MainWP connection token has expired. Create a new one in AI > MainWP MCP > Connect directly."
 
 To keep the app working, create a new token and replace the old one in the app's configuration. A token can't be extended.
 
 ## A token that can only view
 
-If the app tries a change with a **View only** token, the call fails with "This token can only view. Create a token with changes allowed in API Access > AI Apps." Create a new token with **View and make changes**, replace the old one in the app, and revoke the old token.
+If the app tries a change with a **View only** token, the call fails with "This token can only view. Create a token with changes allowed in AI > MainWP MCP > Connect directly." Create a new token with **View and make changes**, replace the old one in the app, and revoke the old token.
 
 ## Revoke a token
 

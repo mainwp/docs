@@ -25,11 +25,11 @@ Both can be used side by side. If your app can't connect remotely, the local ser
 
 ## Requirements
 
-- **A MainWP Dashboard version that includes Remote AI Connections.** Earlier versions don't have the **AI Apps** panel.
+- **A MainWP Dashboard version that includes Remote AI Connections.** Earlier versions don't have the **Connect directly** view on the MainWP MCP page.
 - **HTTPS site address.** The Dashboard's site address must start with `https://`. With an `http://` address the connector can't be turned on.
 - **PHP 8.1 or newer.** On older PHP the panel shows "Remote AI connections need PHP 8.1 or newer; this server runs" followed by your version, and nothing else loads.
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
-- **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the panel doesn't appear there.
+- **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the MainWP MCP page shows only the local server setup there.
 - **The activity log turned on.** AI apps can only make changes, or use tools MainWP hasn't reviewed, while each call is recorded, so the connector can't be turned on until **Enable Network Activity logging** is on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses those calls until you turn it back on. The read tools MainWP has reviewed keep running, but they aren't recorded while the log is off.
 - **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
 - **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
@@ -42,8 +42,8 @@ Port 443 is the safe choice. If your site address uses another port, the self-te
   <Step title="Turn on the activity log">
     Open **MainWP Settings > Network Activity Settings** from the top-right user menu and turn on **Enable Network Activity logging**. Save the settings.
   </Step>
-  <Step title="Open the AI Apps panel">
-    In MainWP Dashboard, open **API Access > AI Apps** (`/wp-admin/admin.php?page=RESTAPIRemoteMCP`). The **Remote AI connections** section shows whether the connector is on.
+  <Step title="Open Connect directly">
+    In MainWP Dashboard, open **MainWP > AI > MainWP MCP > Connect directly** (`/wp-admin/admin.php?page=mainwp-mcp&tab=direct`). The **Remote AI connections** section shows whether the connector is on.
   </Step>
   <Step title="Run the self-test">
     Click **Run the self-test**. Each line shows `pass`, `warn`, `fail` or `info`. Fix every `fail` line first. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line and its fix.

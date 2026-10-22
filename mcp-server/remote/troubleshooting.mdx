@@ -5,7 +5,7 @@ description: >-
   What each self-test line and each result of the check from the internet means, and how to fix the server, permalink and port problems behind them.
 ---
 
-Most failed connections never reach WordPress. A web server rule, a firewall or a proxy answers the app's request first, so the Dashboard has nothing to show. Two tools in **API Access > AI Apps** find these problems:
+Most failed connections never reach WordPress. A web server rule, a firewall or a proxy answers the app's request first, so the Dashboard has nothing to show. Two tools in **MainWP > AI > MainWP MCP > Connect directly** find these problems:
 
 - **Run the self-test** checks the Dashboard from the Dashboard itself. It makes requests to its own public addresses, so it sees what the server in front of WordPress does with them, but not what an app on the internet sees.
 - **Check from the internet** asks MainWP's checker to test your Dashboard from outside. It sends only your Dashboard's address, one request per click, and nothing is stored.

@@ -7,7 +7,7 @@ description: >-
 
 Each app below connects to your Dashboard's MCP address. Before you start, turn on remote AI connections and run the self-test, as described in the [overview](/mcp-server/remote/overview#turn-on-remote-ai-connections).
 
-The examples on this page use `https://your-dashboard.com`. The **Connect an app** section of **API Access > AI Apps** shows the same configurations with your Dashboard's real address, so copy from there when you can.
+The examples on this page use `https://your-dashboard.com`. The **Connect an app** section of **MainWP > AI > MainWP MCP > Connect directly** shows the same configurations with your Dashboard's real address, so copy from there when you can.
 
 <Note>
 App menus and settings screens change between versions. The configuration shown for each app comes from the Dashboard; if a menu label in the app differs from the one named here, look for the app's custom connector or MCP server settings.
@@ -354,7 +354,7 @@ Open WebUI is a multi-user web app that returns to its own HTTPS address after s
 
 <Steps>
   <Step title="Add the web app (administrators without Team Control limits)">
-    In **API Access > AI Apps**, find **Web apps**. Enter an **App name** and the redirect URI your Open WebUI instance uses for MCP sign-in under **Redirect URIs, one per line (up to 3)**. Click **Add web app**.
+    In **MainWP > AI > MainWP MCP > Connect directly**, find **Web apps**. Enter an **App name** and the redirect URI your Open WebUI instance uses for MCP sign-in under **Redirect URIs, one per line (up to 3)**. Click **Add web app**.
 
     Each redirect URI must be an exact `https://` address with no query string, fragment, wildcards, `@`, `%`, backslashes or spaces. Otherwise the panel shows "Each redirect URI must be an exact https:// address with no query strings, fragments, wildcards, @, %, backslashes or spaces."
   </Step>
@@ -441,7 +441,7 @@ If you connected with **View only** and the app tries a change, it gets a refusa
 - Claude, Claude Code and VS Code get a sign-in request for more access. Claude and VS Code ask you to sign in again. Claude Code tells you to run `/mcp` and sign in again.
 - ChatGPT gets "This connection can only view. Reconnect and allow changes."
 - Other apps get "Reconnect with changes allowed."
-- Connection tokens get "This token can only view. Create a token with changes allowed in API Access > AI Apps."
+- Connection tokens get "This token can only view. Create a token with changes allowed in AI > MainWP MCP > Connect directly."
 
 When you reconnect, pick **View and make changes** on the consent screen. To go the other way, use **Change to view only** on the connection in the panel; that takes effect on the app's next request.
 
