@@ -28,16 +28,19 @@ MainWP Dashboard 6.3 brings **Knowledge**, **MainWP MCP**, and **MainWP Control*
 | Page | Use it to | Dashboard path |
 |------|-----------|----------------|
 | **Knowledge** | Save agency, client, and site context, procedures, and work history; review records submitted by AI tools | **MainWP > AI > Knowledge** |
-| **MainWP MCP** | Connect an MCP-compatible AI assistant to your Dashboard | **MainWP > AI > MainWP MCP** |
+| **MainWP MCP** | Connect an AI assistant to your Dashboard, directly or through the local MCP server | **MainWP > AI > MainWP MCP** |
 | **MainWP Control** | Run MainWP operations from a terminal, scripts, scheduled jobs, or CI/CD pipelines | **MainWP > AI > MainWP Control** |
 
 Knowledge works in the Dashboard before you connect an assistant. Its menu opens **Review** by default; select **Agency** to manage shared records. Client and Site Knowledge remain on their respective client and site pages. See the [Knowledge guide](/dashboard/overview/mainwp-knowledge) for those workflows and permissions.
 
-MainWP MCP runs on the computer hosting your AI tool. MainWP Control runs on the computer or server hosting your terminal automation. The Dashboard pages guide setup; they do not install either program or run commands on your computer.
+The local MCP server runs on the computer hosting your AI tool. MainWP Control runs on the computer or server hosting your terminal automation. The Dashboard pages guide setup; they do not install either program or run commands on your computer.
 
 ## Connect an AI Assistant
 
-Open **MainWP > AI > MainWP MCP** and work through **Credentials**, **Connect**, **Test**, and **Finish**. Create an Application Password on the page, copy your configuration, and use the instructions for your AI client to finish the connection.
+Open **MainWP > AI > MainWP MCP**. The page has two tabs:
+
+- **Connect directly** connects Claude, ChatGPT and other known AI apps with nothing to install. Your Dashboard must be reachable over public HTTPS. See [Connect AI Apps to Your Dashboard](/mcp-server/remote/overview).
+- **Run the local server** works with private Dashboards and any MCP-compatible tool. Work through **Credentials**, **Connect**, **Test**, and **Finish**: create an Application Password on the page, copy your configuration, and use the instructions for your AI client to finish the connection.
 
 The Application Password success dialog also provides a **Connect an AI tool** panel with separate configurations for **Claude Code**, **Cursor**, and **VS Code**. See [MCP Quickstart](/mcp-server/quickstart#guided-setup-in-mainwp-dashboard) and [Application Passwords](/api-reference/rest-api/application-passwords#connect-an-ai-tool).
 
