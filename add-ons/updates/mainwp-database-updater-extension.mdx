@@ -2,20 +2,20 @@
 title: Database Updater
 sidebarTitle: "Database Updater"
 description: >-
-  MainWP Database Updater Extension is designed for updating the databases for
-  WooCommerce, Elementor, and Elementor Pro. With this extension, you can update
-  the databases of these plugins directly from inside the MainWP Dashboard.
+  Find and start database updates for WooCommerce, Elementor, and Elementor Pro from your MainWP Dashboard.
 addonType: extension
 ---
 
+Database Updater lets you find and start WooCommerce, Elementor, and Elementor Pro database updates from your MainWP Dashboard. Use it when these plugins need to update their stored data across your client sites. You can start the updates without opening each site's WordPress admin area.
+
+A plugin's database holds the data it saves on a site. A database update changes how that data is stored or used. It is separate from installing a new plugin version.
+
 ## What You'll Learn
 
-- Installing the Database Updater extension
-- Detecting database updates for WooCommerce, Elementor, and Elementor Pro
-- Updating databases on all sites or individually
-- Avoiding the need to access child site wp-admin
-
----
+- Install Database Updater
+- Check for database updates across your sites
+- Update one site or all sites listed for a plugin
+- Use a connected tool to check, preview, and approve updates
 
 <div
   id="addon-data"
@@ -32,7 +32,7 @@ addonType: extension
   data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/"
 />
 <Info>
-**Extension Add-on** - This add-on runs in MainWP Dashboard and supports database updates for WooCommerce, Elementor, and Elementor Pro installed on child sites.
+Database Updater is an add-on that runs in your MainWP Dashboard. The sites it manages need MainWP Child and the supported plugin you want to update.
 </Info>
 
 <iframe
@@ -44,56 +44,85 @@ addonType: extension
   allowFullScreen
 ></iframe>
 
-The Database Updater Extension detects available database updates for WooCommerce, Elementor, and Elementor Pro. This means that you no longer need to access the WordPress admin area of a child site to start these database updates.
-
-## Install the Database Updater Extension
+## Install Database Updater
 
 <Steps>
-<Step title="Go to your MainWP Dashboard">
+<Step title="Open Manage Add-ons">
+In your MainWP Dashboard, go to **Add-ons > Manage Add-ons**.
 </Step>
-<Step title="Go to Add-ons > Manage Add-ons">
+<Step title="Choose Database Updater">
+Click **Install Add-ons**. Find and select **Database Updater**.
 </Step>
-<Step title="Click the Install Add-ons button">
-</Step>
-<Step title="Locate the Database Updater extension and select it">
-</Step>
-<Step title="Click the Install Selected Add-ons button">
-</Step>
-<Step title="Activate the add-on after installation">
-Once the installation process is complete, click the **Activate Add-ons** button.
+<Step title="Install and activate">
+Click **Install Selected Add-ons**. When installation finishes, click **Activate Add-ons**.
 </Step>
 </Steps>
 
+## Find Sites That Need an Update
 
-## How to Update the Databases
+Open **Sites > Updates > Database**. You can also select **Add-ons > Database Updater** to open the same view.
 
-After you've installed the extension, a Database Updates tab becomes available. Open it from **Sites > Updates > Database**. You can also select **Add-ons > Database Updater**, which routes to the same view.
+The list uses information saved during a site sync. A **sync** asks MainWP Child for the site's latest information and saves it in your Dashboard. Sync your sites to refresh the list before deciding what to update.
 
-### Update databases on all child sites
+## Start a Database Update
+
+<Warning>
+Database updates change site data. Check that you have a usable backup before you start.
+</Warning>
+
+### Update all listed sites for one plugin
 
 <Steps>
-<Step title="Go to Sites > Updates > Database">
+<Step title="Open the database update list">
+Go to **Sites > Updates > Database**.
 </Step>
-<Step title="Click Update All for the plugin you want to update">
+<Step title="Choose the plugin">
+Click **Update All** for the plugin you want to update.
 </Step>
 </Steps>
 
-
-### Update databases on individual child sites
+### Update one site
 
 <Steps>
-<Step title="Go to Sites > Updates > Database">
+<Step title="Open the database update list">
+Go to **Sites > Updates > Database**.
 </Step>
-<Step title="Expand the plugin row and locate the desired site in the table">
+<Step title="Find the site">
+Expand the plugin row and find the site in the table.
 </Step>
-<Step title="Click the Update Now button next to the desired site">
+<Step title="Start its update">
+Click **Update Now** next to the site.
 </Step>
 </Steps>
 
----
+## Check the Status After an Update
+
+An accepted request stays pending until the next site sync refreshes the saved status. Acceptance means the site accepted the work. It does not confirm the database update finished.
+
+WooCommerce runs database update work in the background. Allow time for the plugin to process the update, then sync the site again. A sync refreshes the reported status. It does not prove every update step succeeded. If the update stays pending or the result is unclear, check the plugin's status and logs on that site.
+
+MainWP remembers requests for the same site, plugin, and target database version. The target version is the database version the plugin wants to reach. Repeating an accepted request does not send the same update again. An uncertain request is also blocked from sending again because work may already have started. Waiting or syncing does not reset that protection.
+
+## Use a Connected Tool
+
+Database Updater 5.2.0 adds three **abilities**, named actions a connected tool can use. They let you check saved database updates, preview your selection, and run an update after you confirm. Each request covers one site and supports WooCommerce, Elementor, and Elementor Pro.
+
+For example, ask your tool to check a client's site for database updates. Review a preview of the plugins you want to update. Check your backup before approving the update.
+
+All three actions need administrator-level rights. You also need access to Database Updater, permission to update plugins, and access to the selected site. **Team Control staff without administrator-level rights are blocked**, even if they can access the site. These limits also apply to checks and previews.
+
+The actions do not create or verify a backup. They also include saved updates for sites or plugins you have ignored in the Dashboard. Review your ignored-update choices before approving work.
+
+See [Database Updater Abilities](/api-reference/abilities-api/database-updater) for the full steps and examples.
 
 ## Related Resources
 
-- [Updates Add-ons](/add-ons/updates) - Browse all update tools
-- [Manage Updates](/sites/updates/manage-updates) - Core update management guide
-- [WooCommerce Status Extension](/add-ons/administrative/woocommerce-status-extension) - WooCommerce integration
+- [Updates Add-ons](/add-ons/updates) for other update tools
+- [Manage Updates](/sites/updates/manage-updates) for WordPress and plugin updates
+- [WooCommerce Status Extension](/add-ons/administrative/woocommerce-status-extension) for WooCommerce reports
+
+## Reference
+
+For connected tools, all three abilities require the WordPress `manage_options` permission. This allows administration of site settings. Access to Database Updater, the `update_plugins` operation, and the exact site are also checked. Team Control restrictions still apply to accounts with administrator-level rights.
+
+The [Database Updater abilities reference](/api-reference/abilities-api/database-updater#reference) lists the exact action names, request fields, results, and routes for connecting a tool.

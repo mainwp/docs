@@ -1,0 +1,164 @@
+---
+title: Database Updater Abilities
+sidebarTitle: "Database Updater Abilities"
+description: >-
+  Check and approve database updates for WooCommerce, Elementor, and Elementor Pro through a connected tool.
+---
+
+Database Updater helps you handle WooCommerce, Elementor, and Elementor Pro database updates from MainWP. Use it when one of these plugins needs to update the data it stores on a client site.
+
+A connected tool can check a site, show you the updates you selected, and send the update request after you approve it. MainWP calls these actions **abilities**. They update a plugin's stored data without installing a new plugin version.
+
+## What You'll Learn
+
+- Check a site's saved database updates
+- Preview and approve the updates you want
+- Understand pending updates, repeat requests, and staff permissions
+
+## Before You Start
+
+Activate Database Updater 5.2.0 or later on your MainWP Dashboard. The Dashboard site needs WordPress 6.9 or later and a MainWP Dashboard version that supports abilities. Each managed site needs MainWP Child and the plugin you want to update.
+
+Use an administrator account with access to Database Updater, permission to update plugins, and access to the selected site. These requirements apply to all three actions, including checks and previews.
+
+**Team Control staff without administrator-level rights are blocked**, even if they can access the site. An account with those rights must also meet Team Control's limits for the add-on, plugin updates, and selected site.
+
+## Check a Site's Database Updates
+
+Each check covers one site. To review several client sites, ask your connected tool to check each one separately.
+
+For example: “Check site 17 for WooCommerce, Elementor, and Elementor Pro database updates. Do not run any updates.”
+
+The check reads information already saved in your Dashboard. It does not contact the site. To refresh that information, **sync** the site first. A sync asks MainWP Child for the site's latest information and saves it in your Dashboard.
+
+The saved update information has no date or time. The check cannot tell you how recent it is. If the information is missing or unusable, sync and check again. Missing information does not mean the site is up to date.
+
+<Note>
+These actions include saved updates for sites and plugins you have ignored in the Dashboard. Review your ignored-update choices before approving work. The actions do not apply those choices for you.
+</Note>
+
+## Preview the Updates You Want
+
+Choose one to three plugins from the check result. A preview checks that the saved information still matches your selection. It does not contact the site, start an update, or reserve the work.
+
+For example: “Preview the WooCommerce database update for site 17. Leave Elementor and Elementor Pro unchanged.”
+
+Review the site and plugins before continuing. If the saved information changes, MainWP rejects the old selection. Check again and create a new preview before approving the update.
+
+## Approve and Run the Update
+
+<Warning>
+Database updates change site data. Check that you have a usable backup before approving an update. These actions do not create or verify a backup for you.
+</Warning>
+
+Once you have reviewed the preview and checked your backup, approve that selection.
+
+For example: “I have checked the backup. Run the WooCommerce database update for site 17 using the preview I approved.”
+
+You must confirm the update and state your backup decision. Saying that you checked a backup records your decision. MainWP does not check the backup itself. You can also preview the final request without sending an update.
+
+## Wait for the Update, Then Sync
+
+An accepted request means MainWP Child accepted the work. **It does not mean the database update finished.** WooCommerce runs its update work in the background. Elementor and Elementor Pro run their update steps through MainWP Child. These actions do not confirm that any plugin finished successfully.
+
+An accepted update stays **pending until the next site sync** refreshes the saved information. Allow time for the plugin to process the update, then sync the site and check again.
+
+A sync refreshes the reported status. It does not prove every update step succeeded. If an update stays pending, check the plugin's status and logs on the managed site.
+
+If only some plugins were accepted, review each plugin's result. If MainWP cannot confirm what happened, work may already have started. Check the site before taking further action.
+
+## Repeating a Request Is Safe
+
+MainWP remembers an update request for each site, plugin, and target database version. The target version is the database version the plugin wants to reach.
+
+Repeating an accepted request does not send the same update again. This applies through connected tools and the Dashboard. It also covers requests that select some of the same plugins or use a different request label.
+
+MainWP returns saved results for requests that were accepted or not accepted. A request still in progress, or with an uncertain outcome, is blocked from sending again. Some work may already have happened. Waiting, syncing, or changing the request label does not reset that protection. A later target database version counts as a separate update.
+
+This protection prevents duplicate requests. It does not retry a failed update or recover an interrupted one. Check the site when the outcome is uncertain.
+
+## Related Resources
+
+- [Database Updater](/add-ons/updates/mainwp-database-updater-extension) for installation and Dashboard controls
+- [Team Control](/add-ons/agency/team-control-extension) for staff access settings
+
+## Reference
+
+This section contains the exact names and request details for connecting a tool to MainWP. The **API** is the connection a tool uses to request these actions. Follow the [authentication guide](/api-reference/abilities-api/overview#authentication) to connect with an authorized account.
+
+All three abilities require the WordPress `manage_options` permission, which allows administration of site settings. They also check access to Database Updater, the `update_plugins` operation, and the exact site.
+
+### Check saved updates
+
+Ability: `mainwp/get-site-database-update-observations-v1`. Method: GET.
+
+```json
+{
+  "site_id": 17
+}
+```
+
+The result lists the plugins in `plugin_files` and their count in `update_count`. If `observation_status` is `available`, the saved information is usable. A zero count then means that saved information lists no updates. If it is `unavailable`, the saved information is missing or unusable. A zero count in that case does not mean the site is up to date.
+
+Keep the returned `observation_revision` for the preview. This is a reference to the saved information, so the next step can check it has not changed.
+
+### Preview a selection
+
+Ability: `mainwp/preview-site-database-update-dispatch-v1`. Method: GET. Here, “dispatch” means sending an update request to MainWP Child.
+
+```json
+{
+  "site_id": 17,
+  "plugin_files": ["woocommerce/woocommerce.php"],
+  "expected_observation_revision": "OBSERVATION_REVISION_FROM_CHECK"
+}
+```
+
+Replace the revision placeholder with the exact value returned by the check. The preview returns a `plan_revision`. This refers to the site, selected plugins, and saved information you reviewed. Keep it for confirmation.
+
+Use one to three of these exact values in `plugin_files`. Select only plugins listed by the check. Keep this order when selecting more than one:
+
+- WooCommerce: `woocommerce/woocommerce.php`
+- Elementor: `elementor/elementor.php`
+- Elementor Pro: `elementor-pro/elementor-pro.php`
+
+### Send a confirmed update
+
+Ability: `mainwp/dispatch-site-database-updates-v1`. Method: POST.
+
+```json
+{
+  "input": {
+    "site_id": 17,
+    "plugin_files": ["woocommerce/woocommerce.php"],
+    "expected_observation_revision": "OBSERVATION_REVISION_FROM_CHECK",
+    "plan_revision": "PLAN_REVISION_FROM_PREVIEW",
+    "backup_decision": "caller_verified_backup",
+    "request_ref": "123e4567-e89b-42d3-a456-426614174000",
+    "dry_run": false,
+    "confirm": true
+  }
+}
+```
+
+Replace both revision placeholders with the returned values. Keep the site and plugins from the preview. `request_ref` is a UUID, a unique request label used to match the reply to your request. Changing it does not bypass repeat-request protection.
+
+Use `caller_verified_backup` only after checking the backup yourself. The other allowed `backup_decision` is `proceed_without_extension_verified_backup`. It records your decision to proceed without an extension-verified backup. Neither value proves a backup exists.
+
+To check the final request without sending an update, set `dry_run` to `true` and omit `confirm` or set it to `false`. Execution requires `dry_run: false` and `confirm: true`.
+
+### Request routes
+
+The route is `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run` on your Dashboard. Replace `ABILITY_NAME` with the full ability name above. On MainWP Dashboard 6.2 or later, pass GET inputs as JSON in `input_json`. JSON is the text format shown in the examples. See [Abilities API input handling](/api-reference/abilities-api/overview#input-handling) for complete requests.
+
+### Result fields
+
+Check `dispatch_result` and each plugin's result in `items`:
+
+- `accepted`: MainWP Child accepted the update request.
+- `partially_accepted`: Some selected plugins were accepted. Review each plugin's result.
+- `not_accepted`: MainWP Child did not report acceptance.
+- `unknown`: MainWP could not confirm the outcome. Work may already have started.
+- `not_attempted`: This was a preview, so no update request was sent.
+
+`completion_known` remains `false`. Acceptance does not confirm completion.
