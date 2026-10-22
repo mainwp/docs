@@ -22,9 +22,9 @@ A connection with **View only** access can call read tools only. Every other tie
 
 For a confirm-tier call, the Dashboard runs the tool's preview where it has one, and otherwise lists what was asked. It returns `CONFIRMATION_REQUIRED` with the preview and a confirmation token. The app should show you the preview, wait for your reply, and call the tool again with the same arguments, `user_confirmed: true` and the token. The token is valid for 10 minutes and works once.
 
-Before it runs, the Dashboard checks which sites the call affects again. For tools that compare their preview, it also runs the preview again and compares the parts that describe the change. If either differs, it returns a new preview instead.
+Before it runs, the Dashboard checks again which sites the call affects. For tools that compare their preview, it also runs the preview again and compares the parts that describe the change. If either differs, it returns a new preview instead.
 
-The app sends that confirmation itself. So this tier proves the app passed the preview's token back; it doesn't prove that a person read the preview. Only the Dashboard tier proves that.
+The app sends that confirmation itself, so this tier proves the app passed the preview's token back, not that a person read the preview. Only the Dashboard tier proves that.
 
 ### Dashboard: your click on the approval page
 
@@ -120,7 +120,7 @@ The page, titled **Approve an action from an AI app**, shows:
 - the app and the date you connected it
 - the action
 - the sites it affects, and for an action on a client or tag, the sites it affects through them
-- the arguments the app sent, with passwords and keys shown only as supplied
+- the arguments the app sent; a password or key shows as "supplied", never its value
 - the line "Only approve if you just asked your AI app to do this."
 
 You must be signed in as the user who owns the connection. A signed-out visitor is sent to the login page first, and anyone else is refused.

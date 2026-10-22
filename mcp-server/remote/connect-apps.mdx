@@ -28,9 +28,9 @@ Jan and LM Studio can also use a connection token.
 
 **Sign-in details the Dashboard ships.** Claude, Claude Code, ChatGPT, VS Code, Codex CLI, Zed and Goose are known to the Dashboard by their published client IDs. You only add the MCP address.
 
-**Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. The consent screen names Cursor as "Cursor, or another program using Cursor's settings" and Gemini CLI as "Gemini CLI, or another program on your computer using Gemini CLI's settings".
+**Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. The panel and the consent screen name Cursor as "Cursor, or another program using Cursor's settings" and Gemini CLI as "Gemini CLI, or another program on your computer using Gemini CLI's settings", because any program can use those client IDs.
 
-**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** on under **Which apps can connect**, which it is by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning it off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
+**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** switched on under **Which apps can connect**; it is on by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning the switch off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
 
 **Signing in.** After you add the configuration, the app opens your Dashboard in a browser. Sign in if WordPress asks, review the consent screen, and click **Approve**. See [what the consent screen shows](/mcp-server/remote/overview#what-you-see-when-an-app-connects).
 
@@ -180,7 +180,7 @@ Add this to `~/.cursor/mcp.json`:
 }
 ```
 
-Then connect the **mainwp** server from Cursor's MCP settings. The `mainwp-cursor` client ID works with Cursor's desktop callback, `http://localhost:8787/callback`, and with its cloud agents' callback. It needs **Cursor (mainwp-cursor)** switched on under **Which apps can connect**.
+Then connect the **mainwp** server from Cursor's MCP settings. The `mainwp-cursor` client ID works with Cursor's desktop callback, `http://localhost:8787/callback`, and with its cloud agents' callback. It needs the Cursor switch (`mainwp-cursor`) on under **Which apps can connect**.
 
 ### Gemini CLI
 
@@ -200,7 +200,7 @@ Add this to `~/.gemini/settings.json`:
 }
 ```
 
-Then run `/mcp auth mainwp` in Gemini CLI. The client ID accepts callbacks of the form `http://localhost:<port>/oauth/callback` and needs **Gemini CLI (mainwp-gemini-cli)** switched on under **Which apps can connect**.
+Then run `/mcp auth mainwp` in Gemini CLI. The client ID accepts callbacks of the form `http://localhost:<port>/oauth/callback` and needs the Gemini CLI switch (`mainwp-gemini-cli`) on under **Which apps can connect**.
 
 ### Qwen Code
 
@@ -277,7 +277,7 @@ Add this MCP server in Jan:
 }
 ```
 
-Jan registers itself as an app on your computer, then opens the consent screen. If you prefer pasting a token, [create a connection token](/mcp-server/remote/connection-tokens) and use the configuration with a header that the panel shows with the token:
+Jan registers itself as an app on your computer, then opens the consent screen. If you prefer pasting a token, [create a connection token](/mcp-server/remote/connection-tokens) and use the header configuration the panel shows with the token:
 
 ```json
 {

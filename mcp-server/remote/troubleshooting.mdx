@@ -132,7 +132,7 @@ The self-test fetches the four forms of the well-known addresses and replays the
 | "…can't find this Dashboard's sign-in information." | `fail`, blocks turning the connector on |
 | "…may not connect: they reach this Dashboard only after another sign-in document, or without the document they ask for first." | `warn` |
 
-Each line names the affected apps. Other apps aren't judged yet, but they read the same addresses.
+Each line names the affected apps. The self-test doesn't judge other apps, but they read the same addresses.
 
 ### Subdirectory installs
 
@@ -285,4 +285,4 @@ If the checker can't run, or you run it too often, the panel shows "The check fr
 
 - Run the self-test and the check from the internet again after each change. Some hosts cache server rules for a few minutes.
 - If your host manages the web server, send them the failing lines and the rules on this page.
-- The [local MCP server](/mcp-server/clients) doesn't need the well-known addresses or a reachable Dashboard from the internet, only HTTPS from your computer, and works as a fallback.
+- The [local MCP server](/mcp-server/clients) works as a fallback. It needs only HTTPS from your computer, not the well-known addresses or a Dashboard reachable from the internet.
