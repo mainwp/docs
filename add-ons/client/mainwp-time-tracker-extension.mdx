@@ -133,6 +133,14 @@ Navigate to the Time Tracker **Logs** page, locate the running task, and from th
 
 The extension provides widgets on the individual site overview and client overview pages, displaying tasks related to the selected site or client. ![Time Tracker widget](/images/add-ons/time-tracker-widget.webp) It also adds a **Tasks** column to the Manage Sites and Manage Clients tables that shows in-progress and completed task counts. The in-progress count includes both paused and working tasks. ![Time tracker table column](/images/add-ons/time-tracker-table-column.webp)
 
+## Time Tracker Abilities API
+
+Time Tracker 5.2.0 adds twelve abilities for connected tools to manage tasks and buckets, start or pause timers, and complete paused tasks for billing. Pausing stops the timer; completing the task saves its billing details. Changes check that the item still matches the version you read, and repeat requests can return the saved result without doing the work twice.
+
+An administrator account is required. Time Tracker permissions still apply, as do Team Control restrictions on clients and sites. Replacements, archives, and completion require a preview before confirmation.
+
+See [Time Tracker Abilities](/api-reference/abilities-api/time-tracker) for each action, required permissions, examples, and how to handle busy responses.
+
 ## Time Tracker REST API
 
 The Time Tracker extension supports REST API for integration with the MainWP Browser Extension, allowing for seamless time tracking and management across platforms. All MainWP REST API calls, including full documentation and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Version 1 registers routes under `wp-json/mainwp/v1/time-tracker/...` when the MainWP REST API is enabled. Version 2 registers routes under `wp-json/mainwp/v2/time-tracker/...` for tasks, settings, clients, sites, and buckets. For authentication and key management, see [REST API Overview](/api-reference/rest-api/overview).
