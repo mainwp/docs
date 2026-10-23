@@ -72,7 +72,7 @@ Dates ending in `_at` are Unix timestamps, except `evaluated_at`, which is a UTC
 
 Both fields are required. `after_site_id` is a nonnegative integer; `per_page` is from 1 to 100. Returns `items`, `next_after_site_id`, `has_more`, `returned`, and a shared `evaluated_at`. Each item has the summary fields above, without its own `evaluated_at`.
 
-Only stored rows for allowed sites are listed, in ascending site-ID order. Pass `next_after_site_id` into the next request while `has_more` is `true`. Repeating a page has no side effects; stored data or permissions may change between reads.
+Only stored rows for allowed sites are listed, in ascending site-ID order. Pass `next_after_site_id` into the next request while `has_more` is `true`, even when `items` is empty. Deleted or inaccessible sites can leave an empty page. Repeating a page has no side effects; stored data or permissions may change between reads.
 
 ## Read Monitoring Policy
 
@@ -104,7 +104,7 @@ Read the policy first. All fields below are required; replace `REVISION_FROM_POL
 }
 ```
 
-`frequency_seconds` must be `86400`, `604800`, `1296000`, or `2592000` (daily, weekly, twice monthly, or monthly). The notification threshold is from 1 to 365 days. `manual_mode: true` prevents automatic provider lookups for the site. `overwrite_global: true` selects its individual settings.
+`frequency_seconds` must be `86400`, `604800`, `1296000`, or `2592000` (daily, weekly, twice monthly, or monthly). The notification threshold is from 0 to 365 days. Set it to `0` to disable expiry alerts. `manual_mode: true` prevents automatic provider lookups for the site. `overwrite_global: true` selects its individual settings.
 
 For global settings, use `site_id: 0`, set `overwrite_global` and `manual_mode` to `false`, and use an account with unrestricted site access. Global changes affect every site that inherits them.
 
@@ -193,7 +193,7 @@ A repeated execution can contact the provider again; `request_ref` does not prev
 }
 ```
 
-Supply 1 to 100 unique allowed site IDs. Preview eligibility first, then send `dry_run: false` and `confirm: true`. Manual-mode sites are not eligible. Checks run later through the Dashboard's scheduled tasks.
+Supply 1 to 100 unique allowed site IDs. Preview eligibility first, then send `dry_run: false` and `confirm: true`. The effective policy must enable automatic scheduling, and the configured interval must have elapsed. Manual-mode sites are not eligible. Checks run later through the Dashboard's scheduled tasks.
 
 Returns `status`, `request_id`, `selected_count`, `eligible_count`, `completion_known`, and `retry_safe`. Status is `preview`, `accepted`, `already_running`, `nothing_eligible`, `failed`, or `outcome_unknown`. `accepted` means the request was recorded, not that checks finished. `completion_known` is always `false`; no job ID is returned.
 
@@ -211,7 +211,7 @@ Repeated requests can return `already_running`, but they are not guaranteed to b
 }
 ```
 
-Supply 1 to 100 unique allowed site IDs. Preview first, then execute with `dry_run: false` and `confirm: true`. This requests a later check of notification eligibility using the stored profile and notification settings. It does not send an email during the API call.
+Supply 1 to 100 unique allowed site IDs. Preview first, then execute with `dry_run: false` and `confirm: true`. The effective policy must enable scheduling and use a threshold above zero. A successful stored lookup must have an expiry date within the threshold, and the alert suppression interval must have elapsed. This requests a later evaluation of those sites; it does not send an email during the API call.
 
 Returns the batch fields above plus `mail_attempted: false` and `delivery_known: false`. It can also return `notifications_disabled`. An accepted request proves neither completion nor email delivery. Repeating an execution can request another evaluation; do not replay it after an uncertain result.
 
