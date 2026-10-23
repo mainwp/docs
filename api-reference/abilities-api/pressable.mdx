@@ -1,0 +1,395 @@
+---
+title: Pressable Abilities
+sidebarTitle: "Pressable Abilities"
+description: Read Pressable site status, preview hosting changes, and track connection, mapping, refresh, site, and restore operations from MainWP.
+---
+
+The Pressable Integration provides eleven abilities in the `mainwp-pressable` category. An ability is a named action your connected tool can discover and run on your MainWP Dashboard. You can read saved hosting information, preview changes, and approve work that runs later.
+
+## Before You Start
+
+You need WordPress 6.9 or later on your Dashboard, MainWP Dashboard with Abilities API support and the GET `input_json` / DELETE JSON-body request bridges, and an active Pressable Integration build that includes these abilities. Discover the category to check your installation; the version label alone does not establish support.
+
+Use a WordPress administrator account with `manage_options`, access to the Pressable Integration, and access to the selected MainWP sites. Authenticate over HTTPS with a [WordPress Application Password](/api-reference/rest-api/application-passwords). Staff access to the Pressable page does not grant access to these endpoints: the current Application Password permission gate requires administrator rights, and Team Control's abilities bridge does not include Pressable abilities.
+
+The integration checks these additional rights, including during previews:
+
+| Actions | Additional permission |
+|---------|-----------------------|
+| All seven mutations below | Pressable **Manage Hosting** (`mainwp-pressable-extension-manage-hosting`) |
+| Replace/clear connection, refresh the account, create a site | Pressable **Manage Account** (`mainwp-pressable-extension-manage-account`) |
+| List unmapped sites, establish a mapping for an unmapped/conflicting site | Manage Account |
+| Change a mapped site or list its backups | Access to that MainWP site and its current mapping |
+| Restore | Access to both source and destination sites and mappings |
+| Read or manage an operation | The same WordPress user who requested it, with current access to its account and targets; account-level operations also require Manage Account |
+
+Permission checks run again before queued work contacts Pressable. A changed account, mapping, site identity, or permission can stop work that was previously accepted.
+
+Set `MAINWP_USERNAME` and `MAINWP_APPLICATION_PASSWORD` in your shell to your Dashboard username and Application Password. Keep their values out of shared scripts and logs.
+
+```bash
+curl -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
+  'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities?category=mainwp-pressable'
+```
+
+## Request Format and Confirmation
+
+Each endpoint is `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run`. Use **GET** for the four reads and **DELETE** for the seven mutations (actions that change data or request work). WordPress chooses DELETE because these abilities declare that they can change or destroy data, including refresh and connection actions. GET inputs go in `input_json`; DELETE requests use an `application/json` body containing an `input` object.
+
+```bash
+curl -G -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
+  --data-urlencode 'input_json={"page":1,"per_page":25}' \
+  'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities/mainwp/list-pressable-site-snapshots-v1/run'
+```
+
+The JSON examples below show the `input` object. For DELETE, wrap it as `{"input":{...}}`; do not put mutation inputs in the URL. Except for the older cached-status read, **every shown field is required**, even when its value is `null`. Extra fields are rejected. Use JSON integers and booleans, not quoted strings.
+
+| Term | Meaning |
+|------|---------|
+| `site_ref` | A 64-character lowercase hexadecimal reference from the site snapshot list. It identifies a Pressable site within the configured account, not a URL or MainWP site ID. |
+| `mainwp_site_id` | A positive integer identifying a child site already connected to MainWP. A mapping links it to a Pressable site. |
+| `account_generation` | A 64-character reference identifying the current connection. Replacing credentials invalidates the old account context. |
+| `snapshot_generation` | A 64-character reference identifying one saved set of observations. A snapshot here is hosting information, not a backup. |
+| `revision` / `if_match` | A 64-character value used to reject a change based on old state. Hosting-state and mapping revisions are different. |
+| `request_id` | A client-generated UUID identifying one intended mutation. Keep it for retries of that request. |
+| `operation_id` | A UUID used to track queued work. For refresh, state, lifecycle, and restore requests, it equals the submitted `request_id`. |
+
+Uppercase placeholders such as `SITE_REF_FROM_SNAPSHOT` must be replaced with values from your installation. Use a disposable test site for the examples. The UUIDs are examples; generate a new UUID for each new intended action.
+
+### Preview, then confirm
+
+All seven mutations use the same control fields:
+
+| Step | `dry_run` | `confirm` | `preview_token` |
+|------|-----------|-----------|-----------------|
+| Preview | `true` | `false` | `null` |
+| Approve the reviewed preview | `false` | `true` | Exact token returned by that preview |
+
+Resend every original field, including the same `request_id`, changing only these three control fields. Tokens expire after five minutes and are bound to the user, action, and checked state. Read and preview again after a stale-state or expired-token error. A connection replacement preview contacts Pressable to validate credentials; the other previews validate saved state without sending the requested provider action.
+
+For example, preview an account refresh:
+
+```json
+{
+  "scope": "account",
+  "site_ref": null,
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174001",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+After reviewing the result, confirm that same refresh:
+
+```json
+{
+  "scope": "account",
+  "site_ref": null,
+  "preview_token": "PREVIEW_TOKEN_FROM_RESPONSE",
+  "request_id": "123e4567-e89b-42d3-a456-426614174001",
+  "dry_run": false,
+  "confirm": true
+}
+```
+
+### Repeat requests and uncertain results
+
+Idempotency means recognizing a repeated request so it does not start another copy of the work. Stored operations or receipts identify requests by user, ability, and `request_id`. Reusing that ID with different action inputs returns `request_conflict`. Use the original ID and unchanged inputs when checking a lost response. A new ID represents new work.
+
+Replay still requires current authorization and account/target checks. A connection replay through REST can fail with `stale_generation` after the first change replaces or clears the account. Stored receipts and finished operations are retained for 30 days before cleanup; duplicate protection is not permanent. Even a request marked as a preview can return a saved response once that ID has already been executed.
+
+Queued requests return `mode: "accepted"`, `status: "queued"`, and HTTP **202**. That confirms recording, not completion. A repeated queued request returns its original acceptance shape even if work has since finished. Read the operation to learn its current status. Operation reads return HTTP **200**, including while work is queued or running.
+
+If a timeout, `outcome_unknown` error, or operation status `unknown` leaves the result uncertain, inspect the existing operation and Pressable state. Do not submit a new create, delete, or restore request to find out what happened. Reconciliation checks an existing operation's outcome; it does not blindly resend the original mutation.
+
+## Read the Older Local Cache
+
+**Ability:** `mainwp/list-pressable-cached-site-statuses-v1` · **Method:** GET
+
+```json
+{"page":1,"per_page":25}
+```
+
+Both inputs are optional: `page` defaults to `1` (range 1–1000), and `per_page` defaults to `50` (range 1–100). An omitted or `null` input also uses defaults. This reads the older local cache for allowed, connected MainWP sites without contacting Pressable.
+
+Returns `items`, `pagination`, and `provenance`. Each item contains `cache_record_id`, `mainwp_site_id`, `mainwp_site_name`, `mainwp_site_name_truncated`, `cached_state`, `cached_environment`, `cached_is_staging`, and `cached_cdn_enabled`. Names are limited to 255 characters; cached state and environment strings are limited to 10 and 64 characters.
+
+`pagination` contains `page`, `per_page`, `returned`, `total`, `total_pages`, `has_more`, and `truncated`. Increase `page` while `has_more` is true. Here, `truncated` means results exceed the 1000-page boundary. `provenance` contains `source: "mainwp_pressable_local_cache"`, `freshness: "unknown"`, `remote_verified: false`, and `extension_version: "5.1"`. These values describe this cache contract, not proof of a current provider check. Repeating the read has no side effects.
+
+## List Saved Site Snapshots
+
+**Ability:** `mainwp/list-pressable-site-snapshots-v1` · **Method:** GET
+
+```json
+{"page":1,"per_page":25}
+```
+
+Both fields are required. `page` is 1–1000; `per_page` is 1–100. Returns `account_generation`, `snapshot_generation`, `observed_at`, `stale`, `sites`, `next_after_site_ref`, and `truncated`.
+
+Each site contains `site_ref`, nullable `mainwp_site_id`, `state` (`active`, `disabled`, `creating`, `deleting`, or `unknown`), `environment` (`production`, `staging`, or `unknown`), nullable boolean `cdn_enabled`, `mapping_state` (`mapped`, `unmapped`, or `conflict`), and `revision` for hosting state. CDN means the content delivery network that serves cached site content.
+
+Results are sorted by `site_ref` and filtered by your site/account rights. Increase `page` when `truncated` is true. `next_after_site_ref` identifies the last returned reference when more results remain, but this ability accepts page numbers, not a cursor input.
+
+This is a repeatable local read. It does not contact Pressable. If no complete snapshot exists, configure the connection, preview and confirm an account refresh, poll its operation, then read again. Check `snapshot_generation` between pages and restart at page 1 if it changes. `stale: false` does not mean Pressable was contacted during this read.
+
+This list reads the account snapshot. A site-only refresh or site-state change can save newer site information without replacing that account snapshot. Before taking the next action with a hosting-state revision, complete an **account** refresh and read this list again. Otherwise its revision can be older than the state used to validate your change.
+
+## Replace or Clear the Connection
+
+**Ability:** `mainwp/replace-pressable-connection-v1` · **Method:** DELETE
+
+This changes the Dashboard's saved connection to Pressable. Preserve credentials in your credential manager if you may need to reconnect. They are write-only and are never returned by these abilities.
+
+```json
+{
+  "mode": "replace",
+  "client_id": "YOUR_PRESSABLE_CLIENT_ID",
+  "client_secret": "YOUR_PRESSABLE_CLIENT_SECRET",
+  "if_account_generation": null,
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174002",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+Use `if_account_generation: null` only when no account is configured. Otherwise use the current generation from the site snapshot list or trusted Dashboard connection state. `client_id` and `client_secret` must be nonempty strings of at most 128 and 512 characters. Pressable must validate the credentials and their `authorized owner` scope during both preview and confirmation.
+
+To clear the connection, use `mode: "clear"`, set both credential fields to `null`, and pass the current generation. Preview and confirm using the common flow. Clearing disconnects MainWP; it does not delete hosted sites. Replacing or clearing invalidates old snapshots, mappings, and pending account context. Refresh and check mappings after reconnecting.
+
+Returns `mode` (`dry_run` or `completed`), `request_id`, `configured`, nullable `account_generation`, `scope_state` (`valid` or `cleared`), and nullable `preview_token`. In a replacement preview, `configured` describes the existing connection, while `account_generation` describes the proposed connection. Confirmation reports the committed state and a null token.
+
+The stored receipt prevents a second connection change for the same request. Current-generation preflight can reject REST replay after the first change; inspect Dashboard connection state rather than changing the generation or request ID merely to bypass that rejection. Restoring a previous connection requires a new reviewed replacement with its credentials and the current generation.
+
+## Replace a Site Mapping
+
+**Ability:** `mainwp/replace-pressable-site-mapping-v1` · **Method:** DELETE
+
+A mapping links one Pressable site to one MainWP child site. It changes MainWP's association, not the hosted content. Access is required to the existing and proposed MainWP targets. A child site cannot be assigned to two Pressable sites.
+
+```json
+{
+  "site_ref": "SITE_REF_FROM_SNAPSHOT",
+  "mainwp_site_id": 12,
+  "if_match": "CURRENT_MAPPING_REVISION",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174003",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+Set `mainwp_site_id` to `null` to unmap. `if_match` must be the current **mapping** revision, or the server-derived missing-mapping revision for an initial mapping. The site list's `revision` is a hosting-state revision and cannot be substituted. These eleven abilities do not expose a separate mapping-revision read. A trusted server-side integration must supply it; use the Dashboard mapping workflow when your client cannot obtain it.
+
+Returns `mode` (`dry_run` or `completed`), `request_id`, `site_ref`, nullable `mainwp_site_id`, `mapping_state` (`mapped` or `unmapped`), `revision` for the proposed/committed mapping, and nullable `preview_token`. Keep the original `if_match` when confirming; do not replace it with the preview's proposed revision.
+
+Same-ID, same-input replay returns the saved receipt while target checks still pass. A new request with an old revision fails. To undo a mapping change, preview and confirm the previous association with a new request ID and the current mapping revision.
+
+## Refresh Saved Hosting Information
+
+**Ability:** `mainwp/refresh-pressable-snapshot-v1` · **Method:** DELETE
+
+```json
+{
+  "scope": "site",
+  "site_ref": "SITE_REF_FROM_SNAPSHOT",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174004",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+Use `scope: "account"` with `site_ref: null` for an account refresh, including the first refresh after connecting. A site refresh requires an authorized mapped site. Queued work reads Pressable and saves site/backup observations; it does not create a provider backup. WordPress scheduled tasks must run for queued work to progress.
+
+Returns `mode` (`dry_run` or `accepted`), `operation_id`, `scope`, `target_count` (1–10000), `status` (`validated` or `queued`), and nullable `preview_token`. The count describes the request's captured targets, with a minimum of one; it is not a count of completed provider reads.
+
+Same-ID replay returns the existing acceptance response. A new ID requests another refresh and may conflict with active work. Poll the operation before reading observations. A site-only refresh updates that site's saved information and backups; complete an account refresh before using the account-wide site list to obtain a new hosting-state revision. Refreshing again replaces observations; there is no rollback to a prior snapshot through these abilities.
+
+## Set Site, CDN, or Environment State
+
+**Ability:** `mainwp/replace-pressable-site-state-v1` · **Method:** DELETE
+
+Complete an account refresh and read the site's hosting-state `revision` from the site list first. Save its current settings if you may need to restore them. This example previews enabling CDN on an active test site while leaving its enabled state and environment unchanged.
+
+```json
+{
+  "site_ref": "SITE_REF_FROM_SNAPSHOT",
+  "desired_enabled": null,
+  "desired_cdn_enabled": true,
+  "desired_environment": null,
+  "if_match": "HOSTING_REVISION_FROM_SNAPSHOT",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174005",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+The three desired fields are nullable. Use a boolean for `desired_enabled` or `desired_cdn_enabled`, and `production` or `staging` for `desired_environment`. Set at least one; `null` leaves that setting unchanged. A disabled site must be enabled in a separate request before changing CDN or environment. Disabling cannot be combined with CDN or environment changes. Environment conversion also requires Pressable's conversion eligibility.
+
+Returns `mode` (`dry_run`, `accepted`, or `completed`), `operation_id`, `site_ref`, `changed`, `status` (`validated`, `queued`, or `unchanged`), and nullable `preview_token`. A confirmed request already matching the snapshot returns `completed`, `unchanged`, and `changed: false` without a provider write. For a change, the worker checks live state before sending any toggles and verifies the result afterward.
+
+Same-ID replay reuses the operation or unchanged receipt. A new request with the current revision and already matching values completes unchanged; stale revisions fail. Before another state change or restoring previous settings, complete an account refresh, read the new revision, and preview a new request with the desired values.
+
+## Create or Delete a Hosted Site
+
+**Ability:** `mainwp/manage-pressable-site-lifecycle-v1` · **Method:** DELETE
+
+Creation can incur hosting charges. Deletion is irreversible. Use a disposable site, keep a separate recoverable backup, and verify the target before confirmation.
+
+```json
+{
+  "action": "create",
+  "site_ref": null,
+  "site_name": "agency-test-site",
+  "php_version": null,
+  "environment": "staging",
+  "install_type": "INSTALL_TYPE_SUPPORTED_BY_PRESSABLE",
+  "datacenter_code": null,
+  "if_match": null,
+  "typed_confirmation": null,
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174006",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+For `create`, `site_name` is 4–63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit. Choose `production` or `staging`. `install_type` must match a saved Pressable install option (maximum 32 characters). Optional choices use explicit `null`: `php_version` (maximum 16 characters) and `datacenter_code` (maximum 16 characters). Non-null values must match Pressable's saved account options. A complete account refresh must have recorded these options and available capacity first. The site-list ability does not return the option lists; obtain choices from Pressable or the Dashboard workflow.
+
+For `delete`, use the following complete preview input. The confirmation text must be exactly `DELETE ` followed by that site's full reference, including during preview.
+
+```json
+{
+  "action": "delete",
+  "site_ref": "DISPOSABLE_SITE_REF",
+  "site_name": null,
+  "php_version": null,
+  "environment": null,
+  "install_type": null,
+  "datacenter_code": null,
+  "if_match": "HOSTING_REVISION_FROM_SNAPSHOT",
+  "typed_confirmation": "DELETE DISPOSABLE_SITE_REF",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174007",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+Returns `mode` (`dry_run` or `accepted`), `operation_id`, `action`, nullable `site_ref`, `risk` (`billable_site_creation` or `irreversible_site_deletion`), `status` (`validated` or `queued`), and nullable `preview_token`. Creation returns a null `site_ref` in the acceptance response. After completion, list snapshots to locate the new site; creation does not automatically connect it as a MainWP child site.
+
+Same-ID replay returns the existing operation, not another creation or deletion. A new ID can create another site or attempt another deletion. Poll and reconcile uncertainty before making a new request. Deleting a created test site requires its own reviewed delete request; there is no undo for a deleted hosted site through this API.
+
+## List Backup Points
+
+**Ability:** `mainwp/list-pressable-backup-points-v1` · **Method:** GET
+
+```json
+{
+  "site_ref": "SITE_REF_FROM_SNAPSHOT",
+  "limit": 25,
+  "after_restore_point_ref": null
+}
+```
+
+`limit` is 1–100. Returns `site_ref`, `snapshot_generation`, `observed_at`, `stale`, `restore_points`, `next_after_restore_point_ref`, and `truncated`. Each point contains `restore_point_ref`, `created_at`, `filesystem_available`, `database_available`, nullable `filesystem_size_bytes`, and nullable `database_size_bytes`. Non-null sizes are nonnegative integers. Filesystem means the site's files; database means its stored content and settings.
+
+This reads saved backup observations without contacting Pressable. For another page, pass `next_after_restore_point_ref` as `after_restore_point_ref` while `truncated` is true. References are sorted alphabetically, not by backup date. If the snapshot changes between pages, restart with a null cursor. A cursor absent from the current snapshot returns `restore_point_not_found`.
+
+Repeating the read has no side effects. Refresh the site and poll that operation if backup information is missing or old. `stale` and `observed_at` describe saved information, not a guarantee that a backup remains available at Pressable.
+
+## Restore a Backup
+
+**Ability:** `mainwp/restore-pressable-backup-v1` · **Method:** DELETE
+
+A restore overwrites destination content. Back up the destination separately before approving it. Select one backup point from the source site's saved list and verify which components are available. Both sites must belong to the current connection and have authorized MainWP mappings. Source and destination may be the same site.
+
+```json
+{
+  "source_site_ref": "SOURCE_SITE_REF",
+  "destination_site_ref": "DISPOSABLE_DESTINATION_SITE_REF",
+  "restore_point_ref": "RESTORE_POINT_REF_FROM_BACKUP_LIST",
+  "restore_filesystem": true,
+  "restore_database": true,
+  "typed_confirmation": "RESTORE DISPOSABLE_DESTINATION_SITE_REF",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174008",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+Set at least one restore flag to `true`. Both requested components must come from that single backup point; you cannot combine files and a database from different points. `typed_confirmation` must be exactly `RESTORE ` followed by the destination's full 64-character reference, including during preview. Review source, destination, and components before following the common confirmation flow.
+
+Returns `mode` (`dry_run` or `accepted`), `operation_id`, `source_site_ref`, `destination_site_ref`, `risk: "overwrites_destination_content"`, `status` (`validated` or `queued`), and nullable `preview_token`.
+
+Same-ID replay tracks the original restore. A new ID can overwrite the destination again. Never repeat an uncertain restore with a new ID. Poll or reconcile the existing operation and inspect the destination. Recovery requires a separate restore from your saved destination backup, with another preview and confirmation.
+
+## Read an Operation
+
+**Ability:** `mainwp/get-pressable-operation-v1` · **Method:** GET
+
+```json
+{"operation_id":"123e4567-e89b-42d3-a456-426614174008"}
+```
+
+Returns `operation_id`, `kind`, `status`, nullable `site_ref`, boolean `retryable`, nullable `error_code` (up to 64 characters), `accepted_at`, and nullable `finished_at`. Dates are UTC date-time strings. `kind` is `credential`, `mapping`, `refresh`, `site_state`, `site_create`, `site_delete`, `restore`, or `reconcile`. Connection and mapping calls normally return their result directly rather than a pollable job.
+
+| Status | Meaning |
+|--------|---------|
+| `queued`, `running` | Work is waiting or in progress. |
+| `succeeded` | The worker verified its completion conditions. |
+| `failed` | Work stopped with an error; inspect `error_code`. |
+| `unknown` | MainWP cannot establish the provider outcome. |
+| `cancelling` | Cancellation was requested while work was running. |
+| `cancelled` | MainWP stopped its work; this does not roll back an action already sent to Pressable. |
+
+This repeatable read does not contact Pressable or advance the job. Poll with the requesting user while scheduled tasks run. A `retryable` flag is information about the stored failure, not permission to create another destructive request. Missing, another user's, or no-longer-authorized operations return not found.
+
+## Cancel or Reconcile an Operation
+
+**Ability:** `mainwp/manage-pressable-operation-v1` · **Method:** DELETE
+
+Read the operation first. This example previews cancellation of the existing job:
+
+```json
+{
+  "operation_id": "123e4567-e89b-42d3-a456-426614174008",
+  "action": "cancel",
+  "preview_token": null,
+  "request_id": "123e4567-e89b-42d3-a456-426614174009",
+  "dry_run": true,
+  "confirm": false
+}
+```
+
+`cancel` can stop a queued request that has not been dispatched, or request cancellation of running work. Repeating cancellation while `cancelling` or `cancelled` is allowed. It cannot undo a provider action already sent. A queued operation with an existing provider-dispatch record cannot be cancelled through this transition.
+
+Use `action: "reconcile"` to check an uncertain provider outcome. It is accepted only for `unknown`, `failed`, or `cancelling` operations with supported saved provider state. It requeues checks of the same operation, not a fresh create/delete/restore submission. Other states return `state_conflict`.
+
+Returns `mode` (`dry_run`, `accepted`, or `completed`), `operation_id` for the existing job, `action`, `status` (`validated`, `queued`, `cancelling`, or `cancelled`), and nullable `preview_token`. Confirmation of a queued cancellation can complete immediately; reconciliation and running cancellation require further operation reads.
+
+Same-ID, same-action replay returns the saved management receipt. A new management request uses a new `request_id` but keeps the original `operation_id`. Its preview is tied to the operation's current state; read and preview again if that state changes. Cancellation and reconciliation do not restore previous site content or settings.
+
+## Errors
+
+Control errors use the `mainwp_pressable_` prefix. Check the returned code as well as HTTP status:
+
+| Suffix | Callback HTTP status | Next step |
+|--------|----------------------|-----------|
+| `invalid_input` | 400 | Check exact fields, types, nulls, references, and action-specific combinations. |
+| `access_denied` | 403 | Check administrator, integration, hosting/account, and site permissions. |
+| `site_not_found`, `operation_not_found`, `restore_point_not_found` | 404 | Check the reference and current access. Hidden and missing targets are not distinguished. |
+| `confirmation_required`, `stale_preview`, `stale_generation`, `stale_revision`, `request_conflict`, `state_conflict`, `lock_busy` | 409 | Read current state; preserve an existing request's identity and review a fresh preview where needed. |
+| `outcome_unknown` | 409 | Inspect the operation and provider state before deciding on another action. |
+| `snapshot_incomplete`, `restore_point_unavailable` | 412 | Refresh observations and verify the required backup components. |
+| `credential_unavailable`, `storage_unavailable` | 424 | Check connection/storage readiness and any unfinished migration. |
+
+These are callback statuses. WordPress can reject authentication, schema, or permission checks earlier, and can wrap a permission-callback error as HTTP 403. Do not assume every REST failure preserves the underlying callback status. Provider errors can also report authentication failure, unavailable service, or rate limiting.
+
+The older cached-status read additionally reports `mainwp_pressable_invalid_input` (400), `mainwp_pressable_access_denied` (403), or `mainwp_pressable_cache_unavailable`, `mainwp_pressable_cache_inconsistent`, and `mainwp_pressable_query_failed` (500) from its callback.
+
+See the [Pressable Integration guide](/add-ons/development/pressable-extension) for connection setup and the Dashboard workflow.
