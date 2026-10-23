@@ -1,0 +1,332 @@
+---
+title: Pro Reports Abilities
+sidebarTitle: "Pro Reports Abilities"
+description: >-
+  Create report definitions, schedule reports, request generation or sending, and check each site's outcome with MainWP Pro Reports abilities.
+---
+
+Pro Reports registers eleven abilities in the `mainwp-pro-reports` category. Use them to automate report preparation and sending from your MainWP Dashboard.
+
+A **definition** is a saved set of report settings. A **run** is one request to generate or send that report for a specific period. Each run keeps its own sites and recipients, so later changes apply to a new run.
+
+## Access and availability
+
+You need WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an active Pro Reports release that includes these abilities. The examples use Dashboard 6.2 or later for typed JSON input.
+
+Use an authenticated administrator account with `manage_options`, access to Pro Reports, and access to the report's sites. Creating, changing, generating, sending, trashing, or managing a run also requires **Pro Reports Management** permission. Team Control site restrictions still apply.
+
+An ability-created definition belongs to its creator. Reports shared with administrators through the existing editor retain that access. Other administrators can inspect a shared report's runs when their site permissions allow it. Only the user who requested a run can cancel or reconcile it.
+
+Authenticate with a WordPress [Application Password](/api-reference/rest-api/application-passwords). See the [Abilities API authentication guide](/api-reference/abilities-api/overview#authentication) for other supported methods.
+
+Discover the available abilities and full schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-pro-reports'
+```
+
+These abilities operate on delivery definitions. An older report can continue to use the existing editor and scheduler without appearing in the definitions list. Saving or generating it through the supported editor workflow can create its delivery definition.
+
+## Available abilities
+
+| Ability | Method | What it does |
+|---------|--------|--------------|
+| `mainwp/list-pro-report-definitions-v1` | GET | [List reports you can access](#list-report-definitions) |
+| `mainwp/get-pro-report-definition-v1` | GET | [Read one report's settings and revision](#read-a-report-definition) |
+| `mainwp/replace-pro-report-definition-v1` | DELETE | [Create or replace a complete definition](#create-or-replace-a-definition) |
+| `mainwp/trash-pro-report-definition-v1` | DELETE | [Trash an inactive report](#trash-a-definition) |
+| `mainwp/list-pro-report-catalog-v1` | GET | [List available sections, templates, or token names](#list-sections-and-templates) |
+| `mainwp/generate-pro-report-run-v1` | DELETE | [Queue report generation without email](#generate-without-sending) |
+| `mainwp/send-pro-report-run-v1` | DELETE | [Queue generation and email](#send-a-report) |
+| `mainwp/replace-pro-report-schedule-v1` | DELETE | [Set, pause, or disable a schedule](#set-a-schedule) |
+| `mainwp/get-pro-report-run-v1` | GET | [Check a run's current progress](#check-a-run) |
+| `mainwp/list-pro-report-deliveries-v1` | GET | [Check each site's result](#check-each-site) |
+| `mainwp/manage-pro-report-run-v1` | DELETE | [Cancel or check an uncertain outcome](#cancel-or-reconcile-a-run) |
+
+`DELETE` is the method WordPress selects for these six write abilities. It does not mean every call deletes a report. Use the method shown for each ability.
+
+## Request and retry rules
+
+All fields in each example are required, including fields set to JSON `null`. Extra properties are rejected. Use JSON numbers for site IDs and JSON booleans for flags.
+
+Read requests send a JSON object in the GET query parameter `input_json`. Write requests send an `application/json` body containing only `{"input":{...}}`. Do not put write inputs in the URL or combine these two formats.
+
+Every write uses this preview and confirmation flow:
+
+| Call | `dry_run` | `confirm` | `preview_token` |
+|------|-----------|-----------|-----------------|
+| Preview | `true` | `false` | `null` |
+| Confirm the same request | `false` | `true` | The token returned by the preview |
+
+Review the preview before confirming. Keep the same other fields, including `request_ref`. A preview does not save the proposed change or queue a run. If the report, sites, recipients, or proposed settings change, request a new preview.
+
+`request_ref` is a UUID you choose for one operation. Reuse it for an identical retry after a timeout. Reusing it for different work returns a conflict. A new UUID starts a new operation and can send another email. Definition and schedule changes return that UUID as `request_id`.
+
+`report_ref` and `revision` are 64-character values returned by the API. Send the current `revision` as `if_match` when changing a report or starting a run. This prevents an older request from replacing newer settings. A run has a UUID `run_id`; pass that value as `run_ref` when checking or managing it.
+
+The references in the examples show the required format. Replace them with returned values. Keep recipient addresses and subjects from your own configuration: definition reads do not return those private fields.
+
+For any write example below, save its JSON body as `request.json` and call the named ability:
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  --data-binary @request.json \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-pro-report-definition-v1/run'
+```
+
+## List report definitions
+
+**Ability:** `mainwp/list-pro-report-definitions-v1` (GET)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"limit":25,"after_report_ref":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-pro-report-definitions-v1/run'
+```
+
+The response contains `reports`, `next_after_report_ref`, and `truncated`. Each report includes its title, state, target count, schedule state, next run time, and revision. Recipient addresses and generated content are omitted.
+
+Use a `limit` from 1 to 100. While `truncated` is `true`, pass `next_after_report_ref` as `after_report_ref` to read the next page. A page can contain fewer results because access checks omit reports. Repeating this read creates no work.
+
+## Read a report definition
+
+**Ability:** `mainwp/get-pro-report-definition-v1` (GET)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"report_ref":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-pro-report-definition-v1/run'
+```
+
+This returns the selected sites and sections, template IDs, period mode, timezone, recipient mode and count, PDF setting, schedule summary, and current revision. `recipient_count` is the configured count per site. A send preview reports the total for that run.
+
+The subject, recipient addresses, template paths, and report body are not returned. Repeating the read does not generate or send a report.
+
+## List sections and templates
+
+**Ability:** `mainwp/list-pro-report-catalog-v1` (GET)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"kind":"report_templates","limit":100}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-pro-report-catalog-v1/run'
+```
+
+Choose `sections`, `report_templates`, `email_templates`, or `tokens` for `kind`. The response contains `items`, `truncated`, and `catalog_revision`. Each item has an ID, label, source, and availability flag. This reads the catalog without rendering templates or returning token values.
+
+Use returned IDs when creating a definition. `limit` can be 1 to 100; this ability has no continuation cursor. A legacy selection missing from the authoring catalog can still remain usable through the existing editor. Do not replace it with a different template merely because it is absent here.
+
+## Create or replace a definition
+
+**Ability:** `mainwp/replace-pro-report-definition-v1` (DELETE)
+
+Create a report with `report_ref: null` and `if_match: null`. To replace one, supply its returned reference and current revision. Replacement supplies the complete definition, not a partial update.
+
+```json
+{
+  "input": {
+    "report_ref": null,
+    "if_match": null,
+    "title": "Monthly client report",
+    "site_ids": [7],
+    "section_ids": ["updates", "backups"],
+    "report_template_id": "modern",
+    "email_template_id": "minimal",
+    "period_mode": "previous_period",
+    "timezone": "America/New_York",
+    "recipient_mode": "site_client",
+    "recipient_addresses": [],
+    "subject_template": "Monthly website report",
+    "attach_pdf": true,
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4501",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+Select 1 to 100 sites and 1 to 50 section IDs. Check the catalog for template and section IDs. A subject is required when authoring through this ability; the existing editor also supports older reports with empty subjects.
+
+`site_client` resolves each site's client recipient when a run is accepted. Send an empty `recipient_addresses` array for this mode. `explicit_review` sends each selected site's report to the explicit addresses you supply, up to 20 per site. Those addresses are write-only.
+
+The preview returns proposed counts and a revision. A confirmed request returns `mode: "completed"`, `report_ref`, `created`, and the saved `revision`. An identical retry with the same `request_ref` returns the recorded result. A new UUID with `report_ref: null` creates another report. New definitions start without a schedule.
+
+## Trash a definition
+
+**Ability:** `mainwp/trash-pro-report-definition-v1` (DELETE)
+
+```json
+{
+  "input": {
+    "report_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "if_match": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4502",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+A report with active work cannot be trashed. When confirmed, it leaves the report list and detail views. The response includes `retained_until`; retained records are cleaned up after the retention period. Retry the same confirmed request with the same UUID to recover its recorded result.
+
+## Generate without sending
+
+**Ability:** `mainwp/generate-pro-report-run-v1` (DELETE)
+
+```json
+{
+  "input": {
+    "report_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "if_match": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "period_mode": "explicit",
+    "period_start": "2026-09-01",
+    "period_end": "2026-09-30",
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4503",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+Use `explicit` with inclusive `YYYY-MM-DD` dates, up to 366 days apart. For `previous_period`, send both dates as `null`; this selects the previous calendar month in the report's timezone.
+
+Confirmation returns `mode: "accepted"`, `status: "queued"`, and `run_id`. Scheduled tasks generate the files afterward. This call sends no email. An identical retry keeps the same run. Use a new UUID only when you want another generation.
+
+## Send a report
+
+**Ability:** `mainwp/send-pro-report-run-v1` (DELETE)
+
+```json
+{
+  "input": {
+    "report_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "if_match": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "period_mode": "previous_period",
+    "period_start": null,
+    "period_end": null,
+    "send_mode": "normal",
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4504",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+`normal` uses the report's recipient settings. `test_to_actor` sends only to the Dashboard notification email address, with client recipients and copies omitted. Despite its name, it does not choose the authenticated user's profile email address.
+
+The preview reports the target sites, total recipient count, and reporting period. Confirmation queues generation and mail handoff; it does not mean a message has reached an inbox. The run keeps its accepted recipients even if client details change later.
+
+If a request times out, retry the same request UUID or check its known run. Starting another run with a new UUID can send duplicate client reports. A manual run does not replace the regular scheduled run.
+
+## Set a schedule
+
+**Ability:** `mainwp/replace-pro-report-schedule-v1` (DELETE)
+
+This example previews a monthly report on day 1 at 09:00 in New York:
+
+```json
+{
+  "input": {
+    "report_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "desired_state": "active",
+    "cadence": "monthly",
+    "weekday": null,
+    "month_day": 1,
+    "local_time": "09:00",
+    "timezone": "America/New_York",
+    "if_match": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4505",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+| Desired schedule | Required values |
+|------------------|-----------------|
+| Daily | `cadence: "daily"`, `weekday: null`, `month_day: null`, and a local time |
+| Weekly | `cadence: "weekly"`, `weekday` from 1 (Monday) to 7 (Sunday), `month_day: null`, and a local time |
+| Monthly | `cadence: "monthly"`, `weekday: null`, `month_day` from 1 to 31, and a local time |
+| Paused | `desired_state: "paused"` with the recurrence values you want to retain |
+| Disabled | `desired_state: "disabled"` with `cadence`, `weekday`, `month_day`, and `local_time` all `null` |
+
+The confirmed response returns the saved state, next run time, and new revision. Repeating the same confirmed request UUID returns that result. Scheduling does not send immediately; keep your existing WordPress or server cron runner working. Do not use repeated manual send requests as a replacement for a schedule.
+
+## Check a run
+
+**Ability:** `mainwp/get-pro-report-run-v1` (GET)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"run_ref":"fd17a128-cf81-4f21-86e4-82efb14a4504"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-pro-report-run-v1/run'
+```
+
+This is the current progress read. Repeating it does not advance or restart the job.
+
+| `status` | Meaning |
+|----------|---------|
+| `queued` | Waiting for a worker |
+| `running` | Work is in progress |
+| `succeeded` | The requested work completed; email acceptance still does not prove inbox delivery |
+| `partial` | Some sites completed and others did not |
+| `failed` | The run did not complete successfully |
+| `unknown` | A previous mail handoff has no confirmed outcome |
+| `cancelling` | Cancellation was requested while work was active |
+| `cancelled` | The run was cancelled |
+
+The response includes counts for `total`, `generated`, `accepted`, `failed`, `unknown`, and `cancelled`, plus the period and timestamps. `finished_at: null` means there is no recorded finish time. Inspect per-site results when counts indicate a partial failure or an uncertain result.
+
+## Check each site
+
+**Ability:** `mainwp/list-pro-report-deliveries-v1` (GET)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"run_ref":"fd17a128-cf81-4f21-86e4-82efb14a4504","limit":25,"after_site_id":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-pro-report-deliveries-v1/run'
+```
+
+Each delivery contains `site_id`, `artifact_state`, `mail_state`, `attempt_count`, `error_code`, and `finished_at`. No recipient addresses, report bodies, or file paths are exposed. Repeating this read does not resend anything.
+
+`artifact_state: "pending"` means generation has not completed. `mail_state: "queued"` can mean waiting or an active handoff; read the run's status as well. `accepted` means the local mail system accepted the message. `delivered` requires a confirmed delivery result from a mail integration. `unknown` means sending may already have happened, so do not blindly request another send.
+
+Use a `limit` from 1 to 100. While `truncated` is `true`, pass `next_after_site_id` as `after_site_id` for the next page.
+
+## Cancel or reconcile a run
+
+**Ability:** `mainwp/manage-pro-report-run-v1` (DELETE)
+
+```json
+{
+  "input": {
+    "run_ref": "fd17a128-cf81-4f21-86e4-82efb14a4504",
+    "action": "cancel",
+    "preview_token": null,
+    "request_ref": "fd17a128-cf81-4f21-86e4-82efb14a4506",
+    "dry_run": true,
+    "confirm": false
+  }
+}
+```
+
+Use `cancel` for a queued, running, or cancelling run. It stops work that has not been sent; it cannot recall an accepted email. An active handoff remains available for later outcome checks.
+
+`reconcile` means checking an earlier result. Use it for a failed, partial, or unknown run. It asks an available mail integration for an outcome and closes work that was never attempted. It does not regenerate files or send another email. Without a confirmed result, the outcome can remain unknown.
+
+Retry the same action with the same request UUID after a timeout. The mutation response is an acknowledgment; its returned `status` can still be `queued` after a previous request. Use [Check a run](#check-a-run) for current progress.
+
+## Handling a rejected request
+
+A stale revision means the saved report changed. Read it again and preview your request against its new revision. A conflict can mean another run is active or the request UUID was reused for different work. Do not work around it by starting repeated sends.
+
+Invalid client addresses block that site's delivery. A bad site can fail while the other sites continue. Read the per-site results before correcting configuration and requesting new work. A storage error does not confirm whether a report was saved or sent. Use the same request UUID when recovering from an uncertain response.
+
+For the editor and template setup, see the [Pro Reports guide](/add-ons/agency/pro-reports-extension-overview).
