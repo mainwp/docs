@@ -14,8 +14,10 @@ Use a WordPress administrator account with `manage_options`, permission to use D
 
 Team Control staff accounts currently cannot use these add-on abilities through the Dashboard's Abilities API permission gate. Granting access to the Domain Monitor page alone does not grant API access.
 
+Set `MAINWP_USERNAME` and `MAINWP_APPLICATION_PASSWORD` in your shell to your WordPress username and Application Password. Keep their values out of shared scripts and logs.
+
 ```bash
-curl -u 'USERNAME:APPLICATION_PASSWORD' \
+curl -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
   'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities?category=mainwp-domain-monitor'
 ```
 
@@ -28,7 +30,7 @@ Each ability has a REST endpoint at `/wp-json/wp-abilities/v1/abilities/ABILITY_
 GET examples use MainWP Dashboard’s `input_json` query parameter to preserve JSON number and boolean types. POST requests use a JSON body with an `input` object. Use JSON integers for site IDs, JSON booleans for flags, and only the documented fields. A site ID refers to a site already connected to MainWP; it cannot be replaced with an arbitrary domain or URL.
 
 ```bash
-curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+curl -G -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
   --data-urlencode 'input_json={"site_id":12}' \
   'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities/mainwp/get-site-domain-expiry-summary-v1/run'
 ```
