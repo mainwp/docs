@@ -232,4 +232,6 @@ WordPress can return its own authentication or schema errors before the ability 
 
 The [existing Domain Monitor REST v2 routes](/api-reference/rest-api/extensions#domain-monitor) remain available: `GET /mainwp/v2/domain-monitor/profiles`, `GET /mainwp/v2/domain-monitor/profiles/{id_or_domain}`, and `POST`, `PUT`, or `PATCH /mainwp/v2/domain-monitor/{id_or_domain}`. They use MainWP REST authentication and their existing response formats. They are separate from the nine Abilities API endpoints and do not accept the ability input objects above.
 
+Legacy clients can also use `GET /mainwp/v1/domain-monitor/domain_profile` and `GET /mainwp/v1/domain-monitor/domain_check` with MainWP's legacy consumer-key authentication. Both accept `site_id`; profile reads can use `all` instead to list allowed sites. Profiles return a `results` object keyed by site ID. Checks return the existing `SUCCESS` or `error` response. For example, `/mainwp/v1/domain-monitor/domain_profile?site_id=12` reads one allowed site's stored profile. Hidden and missing exact-site requests return the same 404 error body. Each repeated legacy check can contact a provider again.
+
 See the [Domain Monitor guide](/add-ons/monitoring/mainwp-domain-monitor-extension) for the normal Dashboard workflow.
