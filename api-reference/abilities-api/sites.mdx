@@ -7,6 +7,10 @@ description: >-
 
 MainWP registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
 
+<Note>
+In an upcoming Dashboard change, site abilities can access only sites owned by the calling WordPress user when per-user mode is enabled (`mainwp_is_single_user` is `false`). This also applies to administrators, site deletion, and plugin lists. Lists omit other users' sites; direct requests return the same missing-site error as an unknown site, with the ability's usual response format. Team Control permissions can limit access further, but cannot grant access to another user's sites. Default single-user installations are unchanged.
+</Note>
+
 ## What You'll Learn
 
 - Listing, filtering, and retrieving site information
@@ -184,9 +188,13 @@ curl -X POST -u 'admin:xxxx' \
 | `http_pass` | string | No | — | HTTP Auth password |
 | `adminpassword` | string | No | - | WordPress administrator password. Required when Password Authentication is enabled on the child site |
 | `uniqueid` | string | No | - | Unique Security ID from MainWP Child. Required when Unique Security ID is enabled or Password Authentication is disabled |
-| `ssl_verify` | boolean | No | true | Verify SSL certificate |
+| `verify_certificate` | integer | No | 2 | `0` turns certificate verification off, `1` requires it, and `2` uses the Dashboard's global setting |
 
 MainWP Child requires at least one connection authentication method. Provide `adminpassword`, `uniqueid`, or both according to the child site's MainWP Child settings.
+
+<Note>
+In an upcoming Dashboard change, omitting `verify_certificate` uses the Dashboard's global certificate setting during registration and later connections. Explicit choices are saved for that site. Existing sites keep their saved settings. Use `verify_certificate` for this ability; `ssl_verify` is not an accepted input name.
+</Note>
 
 **Response:**
 

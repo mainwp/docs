@@ -45,6 +45,10 @@ In MainWP Dashboard 6.3, preview `run-updates-v1` and `update-all-v1` with `dry_
 
 Queued jobs run under the requesting user's permissions. MainWP rechecks site access, operation permissions, and applicable update holds before executing updates. If access changes after a job is queued, review its errors and skipped items before retrying. Check individual results even when a job's status is `completed`.
 
+<Note>
+In an upcoming Dashboard change, bulk and all-sites selections in per-user mode (`mainwp_is_single_user` is `false`) include only sites owned by the requesting WordPress user, including administrators. Team Control permissions can narrow that selection further, but cannot add another user's sites. Default single-user installations are unchanged.
+</Note>
+
 ## Response Patterns
 
 ### Immediate Response (≤200 sites)
