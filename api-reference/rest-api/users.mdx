@@ -74,6 +74,10 @@ curl -X POST \
 
 ### Update admin password for selected sites
 
+<Note>
+In an upcoming Dashboard change, [per-user ownership rules](/api-reference/rest-api/overview#permission-scope) limit `/users/update-admin-password` to sites owned by the key's WordPress user. Team Control permissions can narrow this selection further. Selecting all sites does not include another user's sites.
+</Note>
+
 ```bash
 curl -X PUT \
   -H "Authorization: Bearer YOUR_API_KEY" \

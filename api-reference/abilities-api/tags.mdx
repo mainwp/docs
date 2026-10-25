@@ -7,6 +7,10 @@ description: >-
 
 MainWP registers 7 tag management abilities into the WordPress Abilities API framework. Tags (also called groups) help organize sites for filtering and batch operations.
 
+<Note>
+In an upcoming Dashboard change, tag abilities can access only tags owned by the calling WordPress user when per-user mode is enabled (`mainwp_is_single_user` is `false`). Lists omit other users' tags. Reading, updating, or deleting another user's tag returns the same missing-tag error as an unknown tag, with the ability's usual response format. Team Control permissions can limit access further, but cannot grant access to another user's tags. Default single-user installations are unchanged, and administrators follow the same ownership rule in per-user mode.
+</Note>
+
 ## What You'll Learn
 
 - Listing, filtering, and retrieving tag information

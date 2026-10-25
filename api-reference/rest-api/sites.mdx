@@ -15,6 +15,10 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 `{id_or_domain}` accepts either a numeric site ID or a site domain.
 
+<Note>
+In an upcoming Dashboard change, the [per-user ownership rules](/api-reference/rest-api/overview#permission-scope) apply to all site routes, including plugin lists and bulk operations. For example, if user B owns site `12`, user A's key requesting `/sites/12/plugins` receives that route's normal not-found response. Lists omit site `12` for user A.
+</Note>
+
 ## Route Matrix
 
 ### Global Site Routes
@@ -83,6 +87,12 @@ When adding or editing sites, use the expected JSON types instead of relying on 
 | `groupids` | Add and edit | Comma-separated tag IDs in a string, such as `"3,7"` |
 
 Omitting `force_use_ipv4` when adding a site uses the global setting for the connection attempt. Invalid values, such as `3` for `force_use_ipv4` or `null` for `ssl_verify`, return HTTP 400. Check the error response for the affected parameter and correct it before retrying. Site creation inside `/sites/batch` and global `/batch` uses the same connection input validation.
+
+<Note>
+In an upcoming Dashboard change, omitting `ssl_verify` when adding a site uses the Dashboard's global certificate setting during registration and later connections. Send `"ssl_verify": true` to require verification or `"ssl_verify": false` to turn it off. Explicit choices are saved for that site. Existing sites keep their saved settings.
+
+The legacy REST v1 add-site endpoint follows the same omission rule. For v1 JSON requests, send `"ssl_verify": 1` to require verification or `"ssl_verify": 0` to turn it off.
+</Note>
 
 ### Update Site Tags
 

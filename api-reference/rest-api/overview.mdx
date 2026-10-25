@@ -81,6 +81,10 @@ Choose one or more permissions based on the endpoints you plan to call.
 <Step title="Optional: enable v1 compatibility">
 If your integration requires `/mainwp/v1`, enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret in the same creation flow.
 
+<Note>
+In an upcoming Dashboard change, only unrestricted Dashboard administrators can enable v1 compatibility. Team Control users can still create v2 keys when their role allows it.
+</Note>
+
 ![Add API key with v1 compatibility enabled](/images/api-reference/rest-api-add-key-v1-compatibility.png)
 </Step>
 <Step title="Save and store credentials">
@@ -103,6 +107,12 @@ This table reflects v2 permission behavior.
 |---|---|---|
 | Read | GET | Fetch data |
 | Write & Delete | POST, PUT, PATCH, DELETE | Create, update, and remove resources |
+
+<Note>
+In an upcoming Dashboard change, REST v2 requests on per-user installations can access only sites and tags owned by the key's WordPress user, including administrators. Per-user mode means `mainwp_is_single_user` is set to `false`; default single-user installations are unchanged. Team Control permissions can limit access further, but cannot grant access to another user's records.
+
+Lists omit other users' records. Direct requests for those records return the same error code, HTTP status, and response format as a missing record on that route. Bulk and all-sites operations select only owned sites that the user can access.
+</Note>
 
 ---
 
@@ -179,6 +189,10 @@ MainWP still supports legacy v1 endpoints (`/wp-json/mainwp/v1/`) for backward c
 In the UI flow (**MainWP Dashboard > API Access > API Keys > Add API Keys**), you can enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret along with the v2 Bearer token.
 
 The v2 API key endpoints create and manage v2 keys and do not create legacy v1 credentials.
+
+<Note>
+In an upcoming Dashboard change, enabling v1 compatibility or editing legacy v1 keys requires an unrestricted Dashboard administrator. Legacy keys apply across the whole Dashboard. Existing keys are unchanged.
+</Note>
 
 ```bash
 curl -u "CONSUMER_KEY:CONSUMER_SECRET" \
