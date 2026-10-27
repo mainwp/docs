@@ -7,7 +7,7 @@ description: >-
 
 MainWP Built-In Backups lets you back up and restore Child Sites directly from MainWP Dashboard, without a backup add-on or third-party backup plugin.
 
-MainWP Child creates the backup and sends it to your Dashboard. You can also store copies on remote storage or a mounted drive.
+MainWP Child creates the backup archive. Your MainWP Dashboard downloads it, stores it locally, and uploads copies to the selected storage destinations. Backups do not upload directly from the Child Site to cloud storage.
 
 <Info>
 This guide covers built-in backups in the MainWP 6.4 Release Candidate (RC). Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
@@ -85,7 +85,7 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 
 ## Configure Storage
 
-Completed backups are stored in the Dashboard's private backup directory. Storage destinations receive additional copies. Keep enough free space on both the Dashboard and Child Site to create and process backups.
+Completed backups are stored in the Dashboard's private backup directory, organized by Child Site. Storage destinations receive copies uploaded by the Dashboard. A **Local Path** destination also refers to a path on the Dashboard server. Keep enough free space on both the Dashboard and Child Site to create and process backups.
 
 When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
@@ -218,7 +218,7 @@ For large sites, use **Tar GZip**. MainWP can switch large Zip backups to Tar GZ
 
 Review the exclusion switches for known backup locations, known cache locations, non-WordPress folders, and ZIP archives. Excluding old backup archives avoids repeatedly backing up earlier backups. Do not exclude files you expect to recover.
 
-Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`.
+Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`. To exclude the standard WordPress uploads folder, use `wp-content/uploads`. To exclude only a form upload folder, enter that folder's actual relative path. Excluded files will not be available from that backup during restore.
 
 ### Database Dumps and the Clone Folder
 
@@ -262,7 +262,7 @@ A recent backup stored only locally shows **At Risk**. **Protected** confirms ba
 
 ## Check Backup Status
 
-Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last Run**, **Next Run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last Run**, **Next Run**, destinations, and errors. Hover over **Last run reported errors** or **Last run notes** to read the details. These badges show tooltips; they do not open a copyable log. Use [Export Diagnostics](#export-diagnostics) for a downloadable report.
 
 Starting a task with **Run Now** opens a progress window. Use **View Progress** or **View Result** to inspect the run. Closing the progress window leaves the backup running.
 
@@ -273,8 +273,6 @@ For an on-demand backup, use **View progress** on **Snapshots & Restore** to reo
 Use the task's action menu to **Edit**, **Pause**, **Resume**, or **Delete** it. When deleting a task, clear **Also delete this task's snapshots** if you want to keep its backups. This option is selected by default.
 
 A later **Clean Up** for the site deletes these retained snapshots and their cloud copies. See [Retention and Cleanup](#retention-and-cleanup).
-
-For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
 
 On **Snapshots & Restore**, select a site and check **Available from** and the upload details.
 
@@ -291,6 +289,14 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 
 The **Test Restore** column shows automatic restore test results. MainWP periodically tests selected backups in a temporary environment on the Dashboard, leaving the live Child Site unchanged. **Couldn't test here** can indicate missing database permissions on the Dashboard host. Test a restore on a staging site as well.
 
+### Backup Notification Emails
+
+Review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
+
+Scheduled backup alerts normally go to the WordPress profile email of the account that last saved the task. To change that account's address, sign in as that user and open **WordPress Users > Profile** (`/wp-admin/profile.php`). A previously saved MainWP notification address from an older setup can take precedence. There is no separate recipient list for backup alerts on Backup Settings, and the recipient lists on Email Settings do not control these alerts.
+
+The failure alert covers errors while executing the scheduled backup task. A later failure during a remote upload does not trigger that alert; also check the snapshot's upload status.
+
 ### Download a Backup
 
 Click **Download** beside a snapshot when its archive is available on the Dashboard.
@@ -299,7 +305,7 @@ Incremental backups cannot be downloaded as one archive. Use **Restore** to rest
 
 ## Retention and Cleanup
 
-Each scheduled task has its own retention settings, applied per site.
+Each scheduled task has its own **Backup Retention** settings, applied separately to each Child Site. For example, **Keep last** set to seven is a separate count for each site in that task, not a shared total across all selected sites. Another task for the same site has its own policy.
 
 ![Backup Retention settings showing Keep last, age and storage limits, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
 
@@ -309,11 +315,21 @@ Each scheduled task has its own retention settings, applied per site.
 | Remove backups older than (days) | Makes older backups or chains eligible for removal |
 | Storage cap (MB) | Removes older backups or chains when their combined size exceeds the cap |
 | Start a new chain after (backups) | Creates a new full base after an incremental chain reaches this length, including its initial full backup |
-| Remove cloud copies too | Also removes the corresponding copies from the task's storage destinations |
+| Remove cloud copies too | Also deletes the corresponding remote copies when task retention removes a backup |
 
-Leave a retention limit blank or enter zero for no limit. Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
+When task retention removes a backup, it removes the Dashboard's backup files. Enable **Remove cloud copies too** to include the corresponding remote copies in that cleanup. If it is off, the remote copies remain.
+
+Leave a retention limit blank or enter zero for no limit. Each enabled limit can make older backups eligible for removal. For example, **Keep last** set to seven can remove an older backup before a 30-day age limit is reached. For age-based cleanup alone, leave **Keep last** and **Storage cap (MB)** blank. The age limit is a cleanup threshold, not a guaranteed minimum storage period.
+
+Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
 
 For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
+
+<Note>
+**Backups on server** and **Backups on remote storage** are legacy fields retained from the older backup system. "Server" refers to the MainWP Dashboard server. These fields are not separate global retention policies for completed built-in backups; use each task's retention settings or **On-demand backups to keep** instead.
+
+**Backups on server** still applies to cleanup of older backup files that are not protected by completed snapshots or active runs. There is no separate Legacy Backups mode to enable.
+</Note>
 
 On **Snapshots & Restore**:
 
@@ -403,9 +419,15 @@ A database-only restore may also stop on these sites because the safety backup i
 
 ### Export Diagnostics
 
-Enable **Backup run diagnostics** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`), save, and reproduce the problem.
+Export diagnostics from **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
-Click **Export diagnostics data** and include the export in your support request, along with the task, backup type, storage provider, and exact error. Diagnostics are stored on the Dashboard for two weeks.
+1. Enable **Backup run diagnostics** and click **Save Settings**. The **Export diagnostics data** button appears after saving.
+2. If diagnostics was not enabled when the problem occurred, run the affected backup task again to record it. If it was already enabled, you can export the existing data.
+3. Click **Export diagnostics data** to download the report to your computer. Attach the downloaded file to your support request with the task name, backup type, storage provider, and time of the failed run.
+
+The report normally downloads as a ZIP. Extract it and open `tasks.json` in a text editor to read the stored task errors under `backup_errors` and notes under `backup_notices`. Detailed run events are in the `events/` folder as `.jsonl` files. If ZIP support is unavailable on the Dashboard, the report downloads as a JSON file instead.
+
+This is a diagnostics package for troubleshooting, not an on-screen log viewer. Detailed run logs are recorded only while diagnostics is enabled and are kept on the Dashboard for up to two weeks.
 
 {/* Keep incoming links to the former API guide usable after its content moves. */}
 <div id="backup-add-ons" />

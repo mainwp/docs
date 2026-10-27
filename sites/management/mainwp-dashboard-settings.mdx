@@ -177,15 +177,18 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
     - **On-demand backups to keep** (Default: 5; minimum: 1): Sets how many Back Up Now snapshots to keep per site.
     - **Encrypt backup archives**: Encrypts new backup archives before upload. Set and safely store a recovery passphrase first.
     - **Backup recovery passphrase**: Lets you recover the backup encryption key. Initial setup asks for your WordPress password; changes require the current passphrase.
-    - **Backup run diagnostics**: Records detailed backup and restore progress locally. Enable it before reproducing a problem, then use **Export diagnostics data** for support.
+    - **Backup run diagnostics**: Records detailed backup and restore progress locally. After enabling it and saving, use **Export diagnostics data** to download a report. See [Export Diagnostics](/sites/backups/manage-backups#export-diagnostics).
     - **Archive format**: Sets the global archive format; individual sites or tasks can override it.
     - **Auto detect maximum file descriptors on child sites**: Automatically detects how many files MainWP can open at once when creating a ZIP backup.
     - **Maximum file descriptors fallback value**: Provides a manual limit when automatic detection is unavailable.
     - **Load files in memory before zipping**: Reads files into memory before adding them to a ZIP archive.
     - **Send email when backup fails**: Enables backup failure emails.
     - **Send email when backup starts**: Enables backup start emails.
+    - **Execute backup tasks in chunks**: Lets the scheduler work through multi-site backup tasks in smaller batches. This setting does not split backup archives into smaller files.
 
-    Set retention for scheduled backups on each task. The **Backups on server** and **Backups on remote storage** fields apply to Legacy Backups. See [Retention and Cleanup](/sites/backups/manage-backups#retention-and-cleanup).
+    For built-in backups, use **On-demand backups to keep** for Back Up Now and each task's **Backup Retention** settings for scheduled backups. Task retention applies separately to each Child Site. **Backups on server** and **Backups on remote storage** are legacy fields from the older backup system. See [Retention and Cleanup](/sites/backups/manage-backups#retention-and-cleanup) for their scope and the settings to use.
+
+    For backup notification recipients and which failures trigger alerts, see [Backup Notification Emails](/sites/backups/manage-backups#backup-notification-emails).
   </Accordion>
 
   <Accordion title="Email Settings" icon="envelope">
