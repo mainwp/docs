@@ -3,16 +3,16 @@ title: Restart the MainWP Quick Setup Wizard
 description: Access the MainWP Quick Setup Wizard from the top-right profile menu to rerun initial setup steps.
 ---
 
-The Quick Setup Wizard guides you through MainWP's initial configuration, including system checks, connecting child sites, adding clients, and setting up monitoring. If you skipped the wizard during installation or need to reconfigure your settings, you can restart it at any time.
+The Quick Setup Wizard guides you through connecting your first child site and reviewing its updates and monitoring status. It also links to optional client setup. If you skipped the wizard during installation or need to reconfigure your settings, you can restart it at any time.
 
 ## What You Will Accomplish
 
 By completing these steps, you will launch the Quick Setup Wizard and be able to:
 
-- Review system requirements
-- Connect your first child site
-- Add your first client
-- Configure uptime and health monitoring settings
+- Connect your first child site or import sites from a CSV file
+- Review system requirements if a server check fails
+- Review the connected site's updates and uptime monitoring status
+- Optionally assign the site to a client and enable guided tours
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ Click the profile image in the top-right corner, then select **MainWP Tools**.
 <Step title="Start the wizard">
 Click the **Start Quick Setup Wizard** button.
 
-The Quick Setup Wizard start screen appears. Continue through each step using the wizard navigation buttons.
+The Welcome step appears and asks **How do you want to start?** Choose **Connect my first site** or **Import a CSV** to continue.
 </Step>
 </Steps>
 
@@ -38,7 +38,6 @@ If you prefer, you can open the wizard directly by visiting `admin.php?page=main
 
 - **Reconfiguring after initial setup**: You skipped certain steps during first-time setup and want to complete them now
 - **Onboarding a team member**: Walking someone through the configuration process on a shared Dashboard
-- **Reviewing system requirements**: Checking that your server still meets MainWP requirements after hosting changes
 
 ## Troubleshooting
 
@@ -50,8 +49,8 @@ If you prefer, you can open the wizard directly by visiting `admin.php?page=main
 
 ## Self-Check
 
-- [ ] Quick Setup Wizard introduction screen displays after clicking the button
-- [ ] You can navigate through wizard steps using the wizard navigation buttons
+- [ ] The Welcome step displays after clicking the button
+- [ ] You can continue to the Add Site step
 
 ## Next Steps
 

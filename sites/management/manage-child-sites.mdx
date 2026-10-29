@@ -396,7 +396,7 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Issue | Description | Fix Action |
 |-------|-------------|------------|
 | WordPress Version | Checks whether WordPress core is up to date | **Update WordPress** |
-| PHP Version | Checks whether PHP is version 8.0 or later; this is a fixed check, not a live support-status lookup | No direct action in this table |
+| PHP Version | Checks whether the site's PHP version is on a supported PHP branch and includes the latest security release for that branch | No direct action in this table |
 | PHP Error Reporting | Checks whether PHP error reporting is disabled | **Disable PHP Error Reporting** / **Reenable PHP Error Reporting** |
 | Database Error Reporting | Checks whether database error reporting is disabled | **Disable DB Error Reporting** / **Reenable DB Error Reporting** |
 | SSL Protocol | Checks whether SSL is enabled | No direct action in this table |
@@ -407,6 +407,20 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Inactive Themes | Checks for inactive themes | **Manage Themes** |
 
 ![Security Issues table](/images/dashboard/sites-management-7c13e2.png)
+
+### PHP version check
+
+Starting with MainWP Dashboard 6.4, the PHP Version check compares each site's PHP version with release data from PHP.net. MainWP Dashboard caches this data and refreshes it every six hours, so the check does not contact PHP.net for each site.
+
+The check shows one of these results:
+
+| Result | What to do |
+|--------|------------|
+| PHP meets the current security release baseline | No action needed |
+| Update to a newer version, or confirm backported security fixes with your host | Upgrade PHP to the listed security release or newer. Some hosts backport security fixes to older builds, so confirm with your host before changing versions. |
+| PHP is not listed as a supported stable branch | The PHP branch no longer receives security support. Contact your host to upgrade PHP. |
+| Security release information is currently unavailable | MainWP Dashboard could not load PHP.net release data. The check retries automatically. |
+| PHP version could not be verified | Sync the site to update its details |
 
 <Note>
 MainWP Dashboard 5.4 removed outdated Site Hardening checks. Some current checks are informational and do not include a **Fix** button; available actions appear only when applicable.

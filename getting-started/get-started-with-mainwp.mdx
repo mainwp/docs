@@ -93,56 +93,51 @@ Go to **WP Admin > Plugins** and activate MainWP Dashboard.
   allowFullScreen
 ></iframe>
 
-The Quick Setup Wizard launches after a new MainWP Dashboard installation. It guides you through this sequence:
+The Quick Setup Wizard launches after a new MainWP Dashboard installation. Starting with MainWP Dashboard 6.4, the wizard is shorter. It focuses on connecting your first site and then shows that site's updates and monitoring status.
 
-1. Welcome
-2. Introduction
-3. System Check
-4. Add Site
-5. Add Client
-6. Monitoring
-7. Setup Complete
+The wizard follows this sequence:
 
-You can skip from the Welcome step using **Skip the Setup Wizard**, and start it again later from **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`) using **Start Quick Setup Wizard**.
+1. **Welcome** - Choose how to start
+2. **Add Site** - Connect one site or import sites from a CSV file
+3. **Site Summary** - Review updates and monitoring for your connected site
+
+MainWP shows the **System Check** step only when a server requirement check fails. Client setup and guided tours are optional, and you open them from the Site Summary step.
+
+To skip the wizard, click **Skip setup, I'll add sites later** on the Welcome step. You can start it again later from **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`) using **Start Quick Setup Wizard**.
 
 ### Welcome
 
-![Quick Setup Wizard introduction screen](/images/getting-started/setup-wizard-intro.jpg)
+The Welcome step asks **How do you want to start?** Choose one option:
 
-Start the wizard with **Start the MainWP Quick Setup Wizard** or skip to the Dashboard with **Skip the Setup Wizard**.
-
-### Introduction
-
-The Introduction step includes a **MainWP Guided Tours** option (enabled by default). Click **Let's Go!** to continue.
+- **Connect my first site** (recommended) - Add one WordPress site. MainWP checks the site and guides you through installing MainWP Child.
+- **Import a CSV** - Upload a CSV file with each site's address and an administrator login.
 
 ### System Check
 
-MainWP verifies server requirements needed to connect Child sites. If any checks fail, [resolve the issues](/troubleshooting/resolve-system-requirement-issues) before continuing.
+If your server fails a requirement needed to connect Child Sites, MainWP opens the System Check step before Add Site. [Resolve the issues](/troubleshooting/resolve-system-requirement-issues), then click **Next to Add Site**. If all checks pass, MainWP skips this step.
 
 ### Add Site
 
-Choose whether to connect a single site or multiple sites.
-
 <Tabs>
-<Tab title="Single Site">
-1. Select **Single Site**
-2. Enter the site URL and administrator username
-3. Configure authentication:
-   - **Administrator password** - Default connection method. Enter the child site's administrator password when **Require Password Authentication** is enabled.
-   - **Unique Security ID** - Enter the Security ID when **Require Unique Security ID** is enabled.
-4. Optionally set a Site Title
-5. Enable **Confirm that the MainWP Child plugin is activated on the site(s) you wish to connect**
-6. Click **Connect Site and Proceed**
+<Tab title="Connect my first site">
+1. Enter the **Site URL** and **Administrator username**.
+2. Wait while MainWP checks the site. The checklist confirms **Site reachable** and **MainWP Child installed and active**.
+3. If MainWP Child is missing or inactive, click **Open the site's Plugins page**, install and activate MainWP Child, then click **Check again**. MainWP keeps checking while the page is open.
+4. Enter the **Administrator password**. Your Dashboard uses the password once to set up a secure key with the site. MainWP does not save the password or send it to MainWP.com.
+5. Optional: Click **Advanced options** to choose the connection authentication method, enter a **Unique Security ID**, or set a site title.
+6. Click **Connect site**.
 
 <Note>
-MainWP Child requires at least one connection authentication method: **Require Password Authentication**, **Require Unique Security ID**, or both. You cannot disable both methods. Authentication options can be found in MainWP Child settings: `your-child-site.com/wp-admin/options-general.php?page=mainwp_child_tab`
+MainWP Child requires at least one connection authentication method: **Require Password Authentication**, **Require Unique Security ID**, or both. The authentication options in **Advanced options** must match the MainWP Child settings on the site: `your-child-site.com/wp-admin/options-general.php?page=mainwp_child_tab`
 </Note>
 </Tab>
-<Tab title="Multiple Sites">
-1. Select **Multiple Sites**
-2. Enter site information in the table, or upload a CSV file
-3. Enable **Confirm that the MainWP Child plugin is activated on the site(s) you wish to connect**
-4. Click **Connect Sites and Proceed**
+<Tab title="Import a CSV">
+1. Click **Upload the CSV file** and select your file. Download the sample CSV from the same field to see the expected format.
+2. Click **Connect sites**.
+
+MainWP uses each administrator password once to set up a secure key with its site. MainWP does not save the passwords or send them to MainWP.com.
+
+To connect a single site instead, click **Connect one site instead**.
 
 For details, see:
 - [Connect Multiple Sites](/sites/management/manage-child-sites#connect-multiple-sites)
@@ -150,37 +145,33 @@ For details, see:
 </Tab>
 </Tabs>
 
-### Add Client
+Click **Skip for now** to go to the Site Summary without connecting a site.
 
-Create client profiles to associate with your sites.
+### Site Summary
 
-**Single client:** Enter Client Name (required), plus optional email, photo, and phone. Add additional contacts using **Additional Contact Information**.
+The Site Summary shows **Your first site is connected** with the site's details. When you import several sites, it shows the number of connected sites instead.
 
-**Multiple clients:** Switch to the Multiple Clients tab and enter Client Name and Email for each imported site. Sites with matching client name and email are merged into a single client profile.
+The summary includes these tiles:
 
-### Monitoring
+| Tile | What it shows |
+|------|---------------|
+| **WordPress** | The site's WordPress version and whether an update is available |
+| **Updates** | Waiting plugin, theme, translation, and WordPress updates. Shows **Awaiting first sync** until the first sync finishes. |
+| **Uptime monitoring** | Whether uptime monitoring is on and who receives alert emails. Click **Turn off** to disable monitoring. |
+| **Daily digest** | Appears when daily digest emails are enabled |
 
-Configure:
+On a new installation, MainWP turns on uptime monitoring with a 60-minute check interval and enables Site Health monitoring with a threshold of 80. Change these defaults in [Uptime Monitoring](/sites/management/uptime-monitoring) and [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings).
 
-- **Enable Uptime Monitoring** and the check interval
-- **Enable Site Health monitoring** and the health threshold
+From the Site Summary, you can also:
 
-For full configuration details, see:
+- Click **Update everything now** to install all waiting updates on the connected site. MainWP asks you to confirm first. Make sure you have a recent backup.
+- Click **Review updates first** or **View updates** to review updates before installing them.
+- Click **Assign this site to a client** to open the Add Client step. Create a single client or, for imported sites, enter a client name and email for each site. Sites with matching client name and email are merged into one client profile.
+- Click **Connect Claude or Cursor** to set up [MainWP MCP](/mcp-server/overview). This link appears for administrators when the REST API is available.
+- Click **Add another site** to connect more sites.
+- Select **Show me a guided tour of MainWP** to enable guided tours.
 
-- [Uptime Monitoring](/sites/management/uptime-monitoring)
-- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings)
-
-Click **Save and Finish!** to complete setup.
-
-### Setup Complete
-
-Your MainWP Dashboard is ready. Click **Go to Dashboard**.
-
-<Note>
-- Restart the wizard anytime from **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`) using **Start Quick Setup Wizard**
-- Use **Continue Without Adding Sites** or **Continue Without Creating Clients** to skip optional steps
-- Use **Back to ...** buttons to adjust previous steps
-</Note>
+Click **Go to Dashboard** to finish setup.
 
 ## Install MainWP Child
 
@@ -314,7 +305,7 @@ For other results, see the [full list of HTTP Status Codes](/troubleshooting/con
 
 ## Protect Your Connected Sites
 
-After connecting your first Child Site, set up its backups. The MainWP 6.4 Release Candidate (RC) includes [MainWP Built-In Backups](/sites/backups/manage-backups) for creating, scheduling, and restoring backups directly through MainWP Dashboard and MainWP Child. Start with a backup and restore test on a staging site.
+After connecting your first Child Site, set up its backups. MainWP 6.4 includes [MainWP Built-In Backups](/sites/backups/manage-backups) (beta) for creating, scheduling, and restoring backups directly through MainWP Dashboard and MainWP Child. Start with a backup and restore test on a staging site.
 
 You can also use [API Backups](/sites/backups/api-backups) with a supported hosting provider or an existing [backup add-on](/add-ons/backups).
 
