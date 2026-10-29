@@ -365,6 +365,14 @@ If the restore finished on the Child Site but the Dashboard cannot reconnect, cl
 
 After a failed database restore, resolve the reported database problem before removing maintenance mode.
 
+### Restore From the Command Line
+
+If WordPress Admin or the Dashboard is unavailable, you can restore a built-in backup directly on the Child Site server with WP-CLI. This path does not create a safety backup. See [Restore a Built-In Backup](/advanced/miscellaneous/mainwp-wp-cli-commands#restore-a-built-in-backup).
+
+```bash
+wp mainwp-child backup restore backup-1718900000.zip --type=full --yes
+```
+
 <Accordion title="Restoring a WooCommerce store">
 Restoring a database normally replaces orders, customers, and other data with the snapshot's version.
 

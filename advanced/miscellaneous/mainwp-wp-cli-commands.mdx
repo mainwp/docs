@@ -6,13 +6,14 @@ description: >-
   handle updates, and automate WordPress management tasks from the command line.
 ---
 
-MainWP includes WP-CLI integration for managing your MainWP Dashboard and configuring MainWP Child connection authentication from the command line. This enables automation, scripting, and advanced management workflows.
+MainWP includes WP-CLI integration for managing your MainWP Dashboard, configuring MainWP Child connection authentication, and restoring built-in backups on a Child Site from the command line. This enables automation, scripting, and advanced management workflows.
 
 ## What You'll Learn
 
 - Available WP-CLI commands for site management
 - How to sync, update, and manage sites via command line
 - How to configure MainWP Child password authentication for a WordPress user
+- How to restore a built-in backup on a Child Site from the command line
 - Example automation scripts
 
 ## Prerequisites
@@ -303,6 +304,57 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
     <Note>
     The username is required. A final value of `1` disables password authentication, while `0` enables it. Omitting the final value defaults to disabling password authentication, so use an explicit value in scripts.
     </Note>
+
+    ## Restore a Built-In Backup
+
+    Use `wp mainwp-child backup restore` to restore a [MainWP Built-In Backups](/sites/backups/manage-backups) archive when WordPress Admin or the MainWP Dashboard is unavailable. The command uses the same restore engine as the Dashboard and requires MainWP Child 6.4 or later.
+
+    ```bash
+    wp mainwp-child backup restore <archive> [--type=<full|db|files>] [--bundle=<dir>] [--yes]
+    ```
+
+    | Option | Description |
+    | --- | --- |
+    | `<archive>` | The archive file name, such as `backup-1718900000.zip`. For an encrypted bundle, use the archive file name recorded in the bundle's manifest. |
+    | `--type` | What to restore: `full` (default), `db`, or `files`. |
+    | `--bundle` | Directory containing a downloaded encrypted offsite copy: `manifest.json`, `manifest.json.hmac`, and the encrypted archive file or chunks. |
+    | `--yes` | Confirms a restore that overwrites the live database. Required for `full` and `db`. |
+
+    <Warning>
+    The command does not create a safety backup before restoring. Make sure you have a separate backup of the current site before running a `full` or `db` restore.
+    </Warning>
+
+    ### Restore a Local Archive
+
+    The archive must be in the Child Site's MainWP backup directory, a folder named `backup-` followed by a site-specific string under `wp-content/uploads/mainwp/`. If the file is missing, MainWP Child returns `Archive not found in the backup directory`.
+
+    ```bash
+    wp mainwp-child backup restore backup-1718900000.zip --type=full --yes
+    ```
+
+    The command prints each restore phase and finishes with `Success: Restore completed.`
+
+    ### Restore an Encrypted Offsite Copy
+
+    If the local copy is gone and your backups use [archive encryption](/sites/backups/manage-backups#encrypt-backup-archives), download the snapshot's files from your storage destination into a directory on the Child Site server. Provide your backup recovery passphrase in the `MAINWP_BACKUP_PASSPHRASE` environment variable, then pass the directory with `--bundle`:
+
+    ```bash
+    IFS= read -r -s MAINWP_BACKUP_PASSPHRASE
+    export MAINWP_BACKUP_PASSPHRASE
+    wp mainwp-child backup restore backup-1718900000.zip --type=db --yes \
+      --bundle=/home/recover/4/37
+    unset MAINWP_BACKUP_PASSPHRASE
+    ```
+
+    MainWP Child decrypts the archive into the backup directory and then restores it. A wrong passphrase stops the restore before any site content changes.
+
+    <Note>
+    The `--passphrase=<passphrase>` option also works with `--bundle`, but it exposes the passphrase in process lists and shell history. Use the environment variable instead.
+    </Note>
+
+    ### If the Restore Fails
+
+    The command prints the error message and error code. If the site is left in maintenance mode, the command shows a warning. After investigating, delete the `.maintenance` file in the WordPress root directory to bring the site back online.
   </Tab>
 </Tabs>
 
@@ -353,6 +405,7 @@ Replace site IDs with your actual child site IDs. You can find site IDs by runni
 - [ ] Site IDs identified for site-specific commands
 - [ ] WP-CLI available on the server hosting the child site before using `wp mainwp-child`
 - [ ] Unique Security ID configured before disabling password authentication
+- [ ] Separate backup available before running `wp mainwp-child backup restore` with `--type=full` or `--type=db`
 
 ---
 
