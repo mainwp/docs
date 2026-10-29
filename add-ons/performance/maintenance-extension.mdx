@@ -15,6 +15,7 @@ addonType: extension
 - Pausing, resuming, and bulk-managing schedules
 - Understanding schedule status and target counts
 - What remains from the legacy 404 email alerts feature
+- Reading schedules through the Abilities API
 
 ## Prerequisites
 
@@ -219,6 +220,12 @@ The legacy **404 Email Alerts** feature is no longer part of the standard Mainte
 
 If you already use an older setup that still exposes 404 alerts, you can continue managing the notification email address and selected sites from that legacy screen.
 
+## Abilities API
+
+MainWP Maintenance adds two read-only abilities for automation and AI tools. Use them to list stored schedules, or to read one schedule with its accessible target sites and the sites that failed during its last run. They do not run cleanup, contact child sites, or change schedules.
+
+See [Maintenance Abilities](/api-reference/abilities-api/maintenance) for permissions, examples, and response fields.
+
 ---
 
 ## Related Resources
@@ -226,3 +233,4 @@ If you already use an older setup that still exposes 404 alerts, you can continu
 - [Performance Add-ons](/add-ons/performance) - Browse all performance tools
 - [Database Updater](/add-ons/updates/mainwp-database-updater-extension) - Database update management
 - [Advanced Uptime Monitor](/add-ons/monitoring/advanced-uptime-monitor-extension) - Monitor site uptime
+- [Maintenance Abilities](/api-reference/abilities-api/maintenance) - Read schedules through the Abilities API
