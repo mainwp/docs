@@ -1,0 +1,184 @@
+---
+title: WordPress SEO Abilities
+sidebarTitle: "WordPress SEO Abilities"
+description: >-
+  List and read saved Yoast SEO settings templates and their recorded site applications with the MainWP WordPress SEO Abilities API.
+---
+
+The MainWP WordPress SEO Extension registers two read-only abilities in the `mainwp-wordpress-seo` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to audit the Yoast SEO settings templates saved in the extension, check which sites a template was applied to, and review a fixed set of key settings without opening the **Settings Templates** tab.
+
+## What You'll Learn
+
+- List saved Yoast SEO settings templates with pagination
+- Read one template's recorded site applications and settings summary
+- Understand which settings are returned and which text is masked
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- An Abilities-enabled release of the WordPress SEO Extension, active on MainWP Dashboard
+- At least one settings template imported in **MainWP > Add-ons > Content Operations > WordPress SEO > Settings Templates**
+- An authenticated user with `manage_options` and access to the WordPress SEO Extension
+
+Team Control restrictions apply. The extension permission is checked on every call. Site entries appear only for sites the user can access.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-wordpress-seo-templates-v1` | GET | List saved templates with site counts and the last recorded application time |
+| `mainwp/get-wordpress-seo-template-v1` | GET | Read one template, its accessible site applications, and a settings summary |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-wordpress-seo'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. They read data stored on MainWP Dashboard only. They do not apply templates, sync sites, or contact Child sites.
+
+---
+
+## List Templates
+
+**Ability:** `mainwp/list-wordpress-seo-templates-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-wordpress-seo-templates-v1/run'
+```
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, starting at `1` |
+| `per_page` | integer | No | `20` | Templates per page, from `1` to `100` |
+
+Both parameters are optional. Extra input properties are rejected.
+
+**Example response:**
+
+```json
+{
+  "templates": [
+    {
+      "id": 3,
+      "title": "Agency default",
+      "description": "Standard Yoast SEO setup for client sites",
+      "site_count": 4,
+      "hidden_site_count": 1,
+      "last_applied": "2026-10-20T14:32:10Z"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `templates` | Templates on the requested page |
+| `total` | Total number of saved templates |
+| `id` | Template ID; pass it to the get ability |
+| `title`, `description` | Template title and description as plain text |
+| `site_count` | Number of sites you can access that have a recorded application of this template |
+| `hidden_site_count` | Number of sites with a recorded application that you cannot access |
+| `last_applied` | Latest recorded application time across the sites you can access, in UTC ISO 8601 format, or `null` |
+
+## Get a Template
+
+**Ability:** `mainwp/get-wordpress-seo-template-v1`<br />
+**Method:** GET
+
+The only input is the required `id`, a positive integer template ID from the list ability.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"id":3}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-wordpress-seo-template-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "id": 3,
+  "title": "Agency default",
+  "description": "Standard Yoast SEO setup for client sites",
+  "site_count": 1,
+  "hidden_site_count": 0,
+  "last_applied": "2026-10-20T14:32:10Z",
+  "sites": [
+    {
+      "site_id": 1,
+      "name": "Client Site",
+      "applied": "2026-10-20T14:32:10Z"
+    }
+  ],
+  "settings_summary": [
+    { "group": "wpseo", "key": "enable_xml_sitemap", "value": "1" },
+    { "group": "wpseo_titles", "key": "separator", "value": "sc-dash" },
+    { "group": "wpseo_social", "key": "opengraph", "value": "1" }
+  ]
+}
+```
+
+The response includes the list fields plus:
+
+| Field | Description |
+|-------|-------------|
+| `sites` | One entry per accessible site with a recorded application: `site_id`, site `name`, and the latest `applied` time in UTC or `null` |
+| `settings_summary` | Selected settings from the stored template as `group`, `key`, and string `value` entries |
+
+<Note>
+Application times record when MainWP Dashboard applied the template to a site. They do not confirm the site's current Yoast SEO settings, which may have changed since.
+</Note>
+
+### Settings summary
+
+The summary never returns the full imported settings. It includes only these settings when they are present in the template:
+
+| Group | Keys |
+|-------|------|
+| `wpseo` | `enable_xml_sitemap`, `enable_admin_bar_menu`, `enable_text_link_counter` |
+| `wpseo_titles` | `title-home-wpseo`, `metadesc-home-wpseo`, `noindex-author-wpseo`, `noindex-date-wpseo`, `breadcrumbs-enable`, `separator` |
+| `wpseo_social` | `opengraph`, `twitter`, `twitter_card_type` |
+
+All values are returned as strings exactly as stored in the template, such as `"1"` or `"on"`. Yoast variables such as `%%sitename%%` stay readable.
+
+`settings_summary` is an empty array when the template contains none of these keys. It is `null` when the stored settings cannot be read, for example when they are malformed or larger than 1 MB.
+
+## Masked Values
+
+Both abilities mask sensitive-looking text in every returned string, including titles, descriptions, site names, and setting values. Masked text is replaced with `[redacted]`. This applies to:
+
+- Credentials, such as passwords, tokens, API keys, and Bearer or Basic authorization values
+- URLs, domain names, and file paths
+- Email addresses
+
+Webmaster verification codes and other settings outside the summary list are never returned. Open the template in the extension to view its full content.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). WordPress SEO can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options` or access to the WordPress SEO Extension |
+| `mainwp_template_not_found` | 404 | No saved template matches the requested `id` |
+
+## Related Resources
+
+- [Yoast SEO](/add-ons/posts-pages/yoast-seo-extension) - Import and apply Yoast SEO settings templates
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Look up site details by site ID

@@ -16,6 +16,7 @@ thirdPartyPlugin: Yoast SEO
 - Exporting and importing SEO settings templates
 - Publishing posts and pages with custom SEO settings
 - Managing Yoast SEO across your network
+- Reading saved settings templates through MainWP Abilities
 
 ---
 
@@ -231,10 +232,17 @@ Once the WordPress SEO Extension and Yoast SEO plugin are installed on your Main
 </Step>
 </Steps>
 
+## MainWP Abilities
+
+The WordPress SEO Extension registers two read-only abilities: `mainwp/list-wordpress-seo-templates-v1` and `mainwp/get-wordpress-seo-template-v1`. Use them to list saved settings templates, see which accessible sites each template was applied to, and review a summary of key Yoast SEO settings.
+
+These abilities read data stored on your MainWP Dashboard. They do not apply templates or contact child sites. They require WordPress 6.9 or later, `manage_options`, and access to the extension. See the [WordPress SEO Abilities reference](/api-reference/abilities-api/wordpress-seo) for permissions, request examples, and response fields.
+
 ---
 
 ## Related Resources
 
 - [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
+- [WordPress SEO Abilities](/api-reference/abilities-api/wordpress-seo) - List and read saved settings templates
 - [SEOPress Extension](/add-ons/posts-pages/seopress-extension) - Alternative SEO integration
 - [Manage Posts](/sites/content/manage-posts) - Post management guide
