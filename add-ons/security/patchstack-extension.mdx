@@ -159,6 +159,19 @@ Navigate to **MainWP \> Sites \> Security \> Patchstack Integration \> Settings*
 | Email notifications           | Toggle alerts and customize recipients/templates through **MainWP \> Settings \> Email Settings** |
 | Per-site overrides            | Let specific clients use different API keys, schedules, or notification preferences               |
 
+## MainWP Abilities
+
+The Abilities-enabled Patchstack release registers five read-only abilities. Use them to let AI assistants, MCP clients, or automation tools read saved Patchstack data:
+
+- Connection status: API key presence, sync schedule, plan allowance, and last sync
+- Per-site mapping and protection flags
+- Per-site cached vulnerability counts and paginated vulnerability summaries
+- Account-wide site and vulnerability totals
+
+These abilities read only data saved by earlier syncs. They never contact Patchstack or return your API key. Run **Sync Patchstack Data** first when you need current results. They require WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an administrator with access to the add-on.
+
+See the [Patchstack Abilities reference](/api-reference/abilities-api/patchstack) for inputs, responses, and errors.
+
 ---
 
 ## Related Resources
@@ -166,3 +179,4 @@ Navigate to **MainWP \> Sites \> Security \> Patchstack Integration \> Settings*
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include Patchstack stats in reports
+- [Patchstack Abilities](/api-reference/abilities-api/patchstack) - Read cached Patchstack data programmatically

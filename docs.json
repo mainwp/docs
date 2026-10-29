@@ -367,6 +367,7 @@
                   "api-reference/abilities-api/custom-dashboard",
                   "api-reference/abilities-api/google-search-console",
                   "api-reference/abilities-api/matomo",
+                  "api-reference/abilities-api/patchstack",
                   "api-reference/abilities-api/woocommerce-shortcuts"
                 ]
               },
