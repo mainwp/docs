@@ -170,23 +170,24 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   <Accordion title="Backup Settings" icon="hard-drive">
     **Page:** **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`)
 
-    Configure [MainWP Built-In Backups](/sites/backups/manage-backups) for connected Child Sites. These settings are available in the MainWP 6.4 Release Candidate (RC).
+    Configure [MainWP Built-In Backups](/sites/backups/manage-backups) for connected Child Sites in MainWP 6.4 and later.
 
     - **Select primary backup system** (when other backup methods are available): Selects built-in backups or an integrated backup method.
-    - **Built-in backups**: Enable backup creation, scheduling, and restores.
+    - **Enable Built-In Backups**: Enables backup creation, scheduling, and restores. Turn it on to show the built-in backup settings. If another backup system is selected, switch the primary system to **Built-In Backups**.
+    - **Leftover backup files to keep** (Default: 1; zero keeps all): Sets how many older downloaded files to keep in each site's backup folder on the Dashboard when they are not protected by completed snapshots or active runs.
     - **On-demand backups to keep** (Default: 5; minimum: 1): Sets how many Back Up Now snapshots to keep per site.
-    - **Encrypt backup archives**: Encrypts new backup archives before upload. Set and safely store a recovery passphrase first.
-    - **Backup recovery passphrase**: Lets you recover the backup encryption key. Initial setup asks for your WordPress password; changes require the current passphrase.
+    - **Encrypt backup archives**: Encrypts new backup archives before upload. Turn it on to show the recovery passphrase fields, set a passphrase, and save.
+    - **Backup recovery passphrase**: Lets you recover the backup encryption key. Use at least 12 characters; 20 or more is recommended. Initial setup asks for your WordPress password; changes require the current passphrase. Store it separately from the Dashboard.
     - **Backup run diagnostics**: Records detailed backup and restore progress locally. After enabling it and saving, use **Export diagnostics data** to download a report. See [Export Diagnostics](/sites/backups/manage-backups#export-diagnostics).
-    - **Archive format**: Sets the global archive format; individual sites or tasks can override it.
-    - **Auto detect maximum file descriptors on child sites**: Automatically detects how many files MainWP can open at once when creating a ZIP backup.
-    - **Maximum file descriptors fallback value**: Provides a manual limit when automatic detection is unavailable.
-    - **Load files in memory before zipping**: Reads files into memory before adding them to a ZIP archive.
+    - **Archive format** (Default: Tar GZip): Sets the global archive format; individual sites or tasks can override it.
+    - **Auto detect maximum file descriptors on child sites** (Zip only): Automatically detects how many files MainWP can open at once when creating a ZIP backup.
+    - **Maximum file descriptors fallback value** (Zip only): Provides a manual limit when automatic detection is unavailable.
+    - **Load files in memory before zipping** (Zip only): Reads files into memory before adding them to a ZIP archive.
     - **Send email when backup fails**: Enables backup failure emails.
     - **Send email when backup starts**: Enables backup start emails.
     - **Execute backup tasks in chunks**: Lets the scheduler work through multi-site backup tasks in smaller batches. This setting does not split backup archives into smaller files.
 
-    For built-in backups, use **On-demand backups to keep** for Back Up Now and each task's **Backup Retention** settings for scheduled backups. Task retention applies separately to each Child Site. **Backups on server** and **Backups on remote storage** are legacy fields from the older backup system. See [Retention and Cleanup](/sites/backups/manage-backups#retention-and-cleanup) for their scope and the settings to use.
+    Use **On-demand backups to keep** for Back Up Now and each task's **Backup Retention** settings for scheduled backups. Task retention applies separately to each Child Site. **Leftover backup files to keep** only controls leftover files on the Dashboard. On a task, **Remove local archives after upload** can remove new Dashboard archives after verified uploads; each storage destination also has **Minimum retention (days)** to protect its copies from automatic cleanup. See [Retention and Cleanup](/sites/backups/manage-backups#retention-and-cleanup).
 
     For backup notification recipients and which failures trigger alerts, see [Backup Notification Emails](/sites/backups/manage-backups#backup-notification-emails).
   </Accordion>

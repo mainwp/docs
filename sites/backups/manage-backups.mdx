@@ -10,7 +10,7 @@ MainWP Built-In Backups lets you back up and restore Child Sites directly from M
 MainWP Child creates the backup archive. Your MainWP Dashboard downloads it, stores it locally, and uploads copies to the selected storage destinations. Backups do not upload directly from the Child Site to cloud storage.
 
 <Info>
-This guide covers built-in backups in the MainWP 6.4 Release Candidate (RC). Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
+MainWP Built-In Backups is available in MainWP 6.4 and later. Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
 </Info>
 
 To manage your hosting provider's backups, use [API Backups](/sites/backups/api-backups). For third-party backup plugins, see [Backup Add-ons](/add-ons/backups).
@@ -53,9 +53,9 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 
 <Steps>
 <Step title="Enable built-in backups">
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Enable built-in backups and save.
+Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
-If **Select primary backup system** is shown, select the built-in backup system.
+If **Select primary backup system** is shown, select **Built-In Backups**. Turn on **Enable Built-In Backups** and click **Save Settings**.
 </Step>
 
 <Step title="Choose where to store the backup">
@@ -85,7 +85,7 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 
 ## Configure Storage
 
-Completed backups are stored in the Dashboard's private backup directory, organized by Child Site. Storage destinations receive copies uploaded by the Dashboard. A **Local Path** destination also refers to a path on the Dashboard server. Keep enough free space on both the Dashboard and Child Site to create and process backups.
+Completed backups are stored in the Dashboard's private backup directory, organized by Child Site. Storage destinations receive copies uploaded by the Dashboard. A **Local Path** destination also refers to a path on the Dashboard server. Keep enough free space on both the Dashboard and Child Site to create and process backups, even when using [Remove local archives after upload](#retention-and-cleanup).
 
 When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
@@ -125,6 +125,8 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 **Local Path** does not count as offsite storage, even on a mounted drive, and cannot satisfy **Require an offsite-verified backup**.
 
+Set **Minimum retention (days)** on a destination to protect its copies from automatic cleanup for a minimum period. The default is zero, which disables this protection. See [Minimum Retention at a Destination](#minimum-retention-at-a-destination).
+
 ### Share a Bucket Between Sites
 
 You can use one private Amazon S3 or Backblaze B2 bucket for multiple Child Sites connected to the same MainWP Dashboard. For B2, select **S3 Compatible Storage** and enter the bucket's S3-compatible endpoint.
@@ -139,8 +141,9 @@ Keep the bucket private and do not share its credentials with Child Sites. Separ
 
 Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
 
-1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
-2. Enable **Encrypt backup archives** and save.
+1. Turn on **Encrypt backup archives** to show the **Backup recovery passphrase** fields.
+2. Set a recovery passphrase. The first setup also asks for your WordPress password. Use at least 12 characters; a long, unique passphrase of 20 characters or more is recommended. Store it separately from the Dashboard.
+3. Click **Save Settings** and confirm that encryption remains enabled.
 
 ![Backup Settings with archive encryption enabled and fields for the current and new recovery passphrases.](/images/sites/built-in-backups/backup-encryption.jpg)
 
@@ -284,6 +287,7 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 | Partially Uploaded | Some configured remote copies completed, but others have not |
 | Upload Failed / Re-enter Credentials | Inspect the error and test or update the affected storage connection |
 | Offsite Verified | All remote uploads for this snapshot completed and passed verification |
+| Damaged Archive | A backup archive failed an integrity check. Review the reported error and create a new full backup. |
 
 **Offsite Verified** includes remote file size checks. It does not confirm that the backup can restore the site.
 
@@ -307,17 +311,20 @@ Incremental backups cannot be downloaded as one archive. Use **Restore** to rest
 
 Each scheduled task has its own **Backup Retention** settings, applied separately to each Child Site. For example, **Keep last** set to seven is a separate count for each site in that task, not a shared total across all selected sites. Another task for the same site has its own policy.
 
-![Backup Retention settings showing Keep last, age and storage limits, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
+![Backup Retention settings in dark mode, including count, age and storage limits, Remove local archives after upload, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
 
 | Setting | Effect |
 | --- | --- |
 | Keep last | Retains the selected number of backups or complete incremental chains |
 | Remove backups older than (days) | Makes older backups or chains eligible for removal |
 | Storage cap (MB) | Removes older backups or chains when their combined size exceeds the cap |
+| Remove local archives after upload | Removes Dashboard archives from new backups after every selected destination has a verified upload; requires at least one remote destination |
 | Start a new chain after (backups) | Creates a new full base after an incremental chain reaches this length, including its initial full backup |
 | Remove cloud copies too | Also deletes the corresponding remote copies when task retention removes a backup |
 
 When task retention removes a backup, it removes the Dashboard's backup files. Enable **Remove cloud copies too** to include the corresponding remote copies in that cleanup. If it is off, the remote copies remain.
+
+Enable **Remove local archives after upload** to save disk space on the Dashboard after uploads finish. It applies to new backups created by the task, including runs started with **Run Now**, and leaves existing backup archives unchanged. MainWP keeps the file inventories needed for incremental backups. Snapshots whose archives are available only remotely show **Remote only** and can still be restored, but cannot be downloaded through the Dashboard. Normal task retention still applies.
 
 Leave a retention limit blank or enter zero for no limit. Each enabled limit can make older backups eligible for removal. For example, **Keep last** set to seven can remove an older backup before a 30-day age limit is reached. For age-based cleanup alone, leave **Keep last** and **Storage cap (MB)** blank. The age limit is a cleanup threshold, not a guaranteed minimum storage period.
 
@@ -326,9 +333,7 @@ Scheduled retention keeps the newest complete, restorable backup or chain for ea
 For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
 
 <Note>
-**Backups on server** and **Backups on remote storage** are legacy fields retained from the older backup system. "Server" refers to the MainWP Dashboard server. These fields are not separate global retention policies for completed built-in backups; use each task's retention settings or **On-demand backups to keep** instead.
-
-**Backups on server** still applies to cleanup of older backup files that are not protected by completed snapshots or active runs. There is no separate Legacy Backups mode to enable.
+**Leftover backup files to keep** in **Backup Settings** controls cleanup of older downloaded files in each site's backup folder on the Dashboard. It applies to files that are not protected by completed snapshots or active runs. The default is one; zero keeps all leftover files. It does not limit completed snapshots or copies at storage destinations.
 </Note>
 
 On **Snapshots & Restore**:
@@ -342,6 +347,14 @@ On **Snapshots & Restore**:
 
 Use the Dashboard controls for cleanup. Do not delete individual incremental chain files or the entire Child Site `wp-content/uploads/mainwp` directory. That directory can contain other MainWP data and encryption material.
 </Warning>
+
+### Minimum Retention at a Destination
+
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and add or edit a destination. Set **Minimum retention (days)** to the minimum time its copies should remain before automatic cleanup can remove them. Set it to zero to disable this protection.
+
+The period starts when the upload is verified. For older backups without a recorded upload time, MainWP uses the snapshot's creation time. Task count, age, and storage limits do not override this minimum. A protected snapshot can also keep its incremental chain from being removed automatically.
+
+Manual deletion can override the minimum. Review the confirmation before deleting a snapshot or its cloud copies.
 
 ## Restore a Backup
 
