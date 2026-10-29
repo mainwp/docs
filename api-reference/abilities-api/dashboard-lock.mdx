@@ -1,0 +1,145 @@
+---
+title: Dashboard Lock Abilities
+sidebarTitle: "Dashboard Lock Abilities"
+description: >-
+  Read stored Dashboard Lock redirect, IP restriction, and HTTP Basic Authentication settings with the MainWP Dashboard Lock Abilities API.
+---
+
+MainWP Dashboard Lock registers two read-only abilities in the `mainwp-dashboard-lock` category. Both use the `mainwp/` namespace and report the settings saved on your MainWP Dashboard site.
+
+<Note>
+These abilities require the Dashboard Lock release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+## What You'll Learn
+
+- Check which Dashboard Lock protections have stored settings
+- Read the stored redirect URL, exclusions, and IP allowlists
+- Confirm whether HTTP Basic Authentication credentials are stored without exposing them
+- Understand what these reads do not verify
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` example below
+- Dashboard Lock with Abilities API support, active and enabled in MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Dashboard Lock Add-on
+
+Team Control restrictions apply. Authenticate with an [Application Password](/api-reference/rest-api/application-passwords) or another method described in the [Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## When to use these abilities
+
+Use these reads to audit Dashboard Lock settings from scripts, monitoring tools, or AI assistants without opening **MainWP > Add-ons > Security > Dashboard Lock**. For example, you can confirm that a redirect URL and an IP allowlist are saved across several Dashboards.
+
+Both abilities only read the stored settings. They do not inspect `.htaccess` or `.htpasswd` files, so they cannot confirm that locks are applied on the server or that your server supports them. To change or remove locks, use the [Dashboard Lock settings page](/add-ons/security/dashboard-lock-extension).
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-dashboard-lock-status-v1` | GET | Summarize which Dashboard Lock settings are stored |
+| `mainwp/get-dashboard-lock-configuration-v1` | GET | Read the stored redirect, exclusion, and IP settings, plus credential presence |
+
+Both abilities are marked read-only, non-destructive, and idempotent. Discover their complete input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-dashboard-lock'
+```
+
+Neither ability takes parameters. Omit the input, send `null`, or send an empty object `{}`. Any input property, including `site_id`, is rejected. These abilities read Dashboard settings only and do not apply to Child sites.
+
+## Get Dashboard Lock Status
+
+**Ability:** `mainwp/get-dashboard-lock-status-v1`<br />
+**Method:** GET
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-dashboard-lock-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "source": "dashboard_stored_configuration",
+  "frontend_redirect_configured": true,
+  "redirect_exclusions_configured": true,
+  "ipv4_access_restriction_configured": true,
+  "ipv6_access_restriction_stored": false,
+  "wp_admin_basic_auth_credentials_stored": true,
+  "wp_login_basic_auth_credentials_stored": false
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `source` | Always `dashboard_stored_configuration`; the response reads saved Dashboard Lock settings |
+| `frontend_redirect_configured` | A frontend redirect URL is saved |
+| `redirect_exclusions_configured` | At least one slug is saved in **Exclude slugs from the redirection** |
+| `ipv4_access_restriction_configured` | At least one IPv4 address is saved in **Allow Login from IP** |
+| `ipv6_access_restriction_stored` | At least one IPv6 address is saved; this does not mean IPv6 restriction is enforced |
+| `wp_admin_basic_auth_credentials_stored` | Both a username and a password are saved for the **Admin area lock** |
+| `wp_login_basic_auth_credentials_stored` | Both a username and a password are saved for the **Login page lock** |
+
+## Get Dashboard Lock Configuration
+
+**Ability:** `mainwp/get-dashboard-lock-configuration-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-dashboard-lock-configuration-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "redirect_url": "https://example.com/",
+  "redirect_exclusions": ["/sample-page/"],
+  "ipv4_allowlist": ["203.0.113.10", "198.51.100.25"],
+  "ipv6_allowlist": [],
+  "wp_admin_basic_auth": {
+    "username_configured": true,
+    "credential_configured": true
+  },
+  "wp_login_basic_auth": {
+    "username_configured": false,
+    "credential_configured": false
+  }
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `redirect_url` | The saved frontend redirect URL, or an empty string if none is saved |
+| `redirect_exclusions` | Saved redirect exclusion slugs, one entry per line from the settings page |
+| `ipv4_allowlist` | Saved IPv4 addresses allowed to log in |
+| `ipv6_allowlist` | Saved IPv6 addresses |
+| `wp_admin_basic_auth` | Credential presence for the **Admin area lock** |
+| `wp_login_basic_auth` | Credential presence for the **Login page lock** |
+
+List fields drop blank lines and surrounding whitespace. Each Basic Authentication object contains:
+
+- `username_configured`: a username is saved.
+- `credential_configured`: both a username and a password are saved.
+
+Usernames and passwords are never returned, and stored passwords are not decrypted. Treat the redirect URL and IP allowlists as sensitive, because they reveal how your Dashboard is protected.
+
+## Errors
+
+| Error | HTTP status | Next step |
+|-------|-------------|-----------|
+| Authentication error | 401 | Authenticate the request |
+| `mainwp_permission_denied` | 403 | Use an administrator account with `manage_options` and access to the Dashboard Lock Add-on |
+
+Other MainWP Dashboard permission errors can also be returned. See the [Abilities API overview](/api-reference/abilities-api/overview) for details.
+
+## Related Resources
+
+- [Dashboard Lock Add-on](/add-ons/security/dashboard-lock-extension) - Configure and remove redirects, IP restrictions, and locks
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, discovery, and request formats
+- [Application Passwords](/api-reference/rest-api/application-passwords) - Create credentials for API requests
