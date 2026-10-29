@@ -13,6 +13,7 @@ addonType: extension
 - Setting up subscription expiration notifications
 - Automating cost tracking during plugin/theme uploads
 - Configuring notification thresholds and recipients
+- Reading Assistant status and upcoming renewals through the Abilities API
 
 ---
 
@@ -78,6 +79,12 @@ When installing plugins or themes via ZIP upload, Cost Tracker Assistant streaml
 ![Cost Tracker automation](/images/add-ons/cost-tracker-plugin-upload.png)
 
 This eliminates the need to navigate to Cost Tracker separately after each purchase.
+
+## Abilities API
+
+Cost Tracker Assistant adds two read-only WordPress abilities. One reports whether the Assistant, renewal alerts, and the notification email are enabled, plus the alert schedule. The other lists active costs inside the renewal alert window and shows which ones are due for an alert. Use them to monitor renewals from scripts, automation tools, or the MainWP MCP Server. They do not send emails or change settings.
+
+See [Cost Tracker Assistant Abilities](/api-reference/abilities-api/cost-tracker-assistant) for requirements, permissions, and request examples.
 
 ## Requirements
 
