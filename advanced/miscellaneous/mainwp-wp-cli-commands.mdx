@@ -154,14 +154,43 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
 
     ### Site Management
 
-    **Add a new site:**
+    **Add a site with a Unique Security ID:**
 
     ```bash
     wp mainwp site --add-site --site-url=http://site.com --name=sitename --admin=adminuser --uniqueid=xxxxx
     ```
 
+    **Add a site with the administrator password:**
+
+    Starting with MainWP Dashboard 6.4, use `--adminpassword` when the child site requires Password Authentication. This is the default MainWP Child setting.
+
+    ```bash
+    wp mainwp site --add-site --site-url=https://site.com --name=sitename --admin=adminuser --adminpassword='your-password'
+    ```
+
+    | Option | Description |
+    |--------|-------------|
+    | `--site-url` | Child site URL (required) |
+    | `--name` | Site name shown in MainWP Dashboard (required) |
+    | `--admin` | Child site administrator username (required) |
+    | `--adminpassword` | Child site administrator password, when MainWP Child requires Password Authentication |
+    | `--uniqueid` | Unique Security ID, when MainWP Child requires it |
+    | `--ssl_verify` | `1` or `2` verifies the HTTPS certificate. `0` turns off certificate verification. |
+
+    When you pass `--adminpassword`, MainWP verifies the HTTPS certificate by default:
+
+    - The site URL must use `https://`. MainWP rejects an `http://` URL unless you add `--ssl_verify=0`.
+    - If certificate verification fails, the error tells you to fix the site certificate. Add `--ssl_verify=0` only if you accept an unverified connection.
+    - `--adminpassword` needs a value. Use `--adminpassword=<password>`.
+
+    MainWP replaces the password with `[redacted]` in the command output.
+
+    <Warning>
+    `--ssl_verify=0` sends the password without certificate verification. Over `http://`, the password is sent without TLS protection. Use it only on trusted networks.
+    </Warning>
+
     <Note>
-    The CLI add-site command supports `--uniqueid` but does not accept an administrator password flag. Use this command when the child site requires Unique Security ID. If the child site requires Password Authentication, add the site through MainWP Dashboard or REST API with `adminpassword`.
+    Quote the password so your shell does not interpret special characters. Commands typed in a terminal can be saved in your shell history.
     </Note>
 
     **Sync, reconnect, disconnect, or remove:**
