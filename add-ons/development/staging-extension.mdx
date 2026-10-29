@@ -32,6 +32,7 @@ thirdPartyPlugin: WP Staging
 - Updating and deleting staging sites
 - Running updates on staging sites first
 - Publishing staging changes through WP Staging Pro
+- Reading stored staging clones and settings through the Abilities API
 
 ---
 
@@ -231,6 +232,12 @@ To run updates on your child sites,
 
 After selecting **Staging sites**, updates will be performed only on staging sites. After you verify that everything is ok on the staging sites, you can run updates on your production sites.
 
+## Abilities API
+
+The Abilities-enabled Staging release adds two read-only WordPress abilities. Use them to list Child Sites with stored staging clones and to read one site's clones, effective saved settings, and override status. These abilities read Dashboard data only. They do not contact Child Sites, create or delete staging sites, or save settings.
+
+See [Staging Abilities](/api-reference/abilities-api/staging) for requirements, permissions, request examples, and response fields.
+
 ---
 
 ## Related Resources
@@ -238,3 +245,4 @@ After selecting **Staging sites**, updates will be performed only on staging sit
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Clone Extension](/add-ons/development/clone-extension) - Clone sites between servers
 - [Manage Updates](/sites/updates/manage-updates) - Understanding update management
+- [Staging Abilities](/api-reference/abilities-api/staging) - Read stored staging clones and settings
