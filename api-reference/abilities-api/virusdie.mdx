@@ -1,0 +1,217 @@
+---
+title: Virusdie Abilities
+sidebarTitle: "Virusdie Abilities"
+description: >-
+  Read stored Virusdie site status and scan report summaries through MainWP Abilities without contacting Virusdie.
+---
+
+The Virusdie Integration registers four read-only abilities in the `mainwp-virusdie` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them when an AI assistant, the [MainWP MCP Server](/mcp-server/overview), or an automation script needs to check which sites are connected to Virusdie, whether the firewall and automatic cleanup are enabled, and what the latest stored scans found.
+
+## What You'll Learn
+
+- List accessible sites with their stored Virusdie state
+- Read one site's connection, firewall, automatic cleanup, and last scan
+- List and read stored scan report summaries
+- Handle pagination and errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- The [Virusdie Integration](/add-ons/security/mainwp-virusdie-extension), active in MainWP Dashboard, in a version that includes Abilities support
+- An authenticated WordPress user with `manage_options` and access to the Virusdie Add-on
+- Access to the selected MainWP site for site-specific calls
+
+The abilities are registered only when the Dashboard provides the WordPress Abilities API and MainWP Abilities support. On older WordPress or Dashboard versions, the Add-on runs without them.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## What these abilities do and don't do
+
+- They read data already stored on your Dashboard. They make no Virusdie API calls and don't start scans. Run a scan from the Virusdie page, the [WP-CLI command](/add-ons/security/mainwp-virusdie-extension#scan-via-wp-cli-command), or the [REST endpoint](/add-ons/security/mainwp-virusdie-extension#scan-via-rest-api) first.
+- They never return your Virusdie API key, passwords, or raw provider data. `api_key_set` only reports whether a key is saved.
+- Reports contain only scan counters. Per-file details and vulnerability lists are not stored by the Add-on, so the abilities don't return them.
+- All four declare `readonly`, non-destructive, and idempotent annotations, so MCP clients can call them without confirmation.
+
+## Permissions
+
+Every call checks the Dashboard's base Abilities permission and access to the Virusdie Add-on. Team Control restrictions apply.
+
+- `mainwp/list-virusdie-sites-v1` silently excludes sites you can't access. The `total` count reflects only accessible sites.
+- The three site-specific abilities check access to the requested `site_id` before reading any stored data.
+- `mainwp/get-virusdie-report-v1` also verifies that the report belongs to the requested site.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-virusdie-sites-v1` | GET | List accessible sites and their stored Virusdie state |
+| `mainwp/get-virusdie-site-v1` | GET | Read one site's stored connection, settings, and last scan |
+| `mainwp/list-virusdie-reports-v1` | GET | List one site's stored scan report summaries |
+| `mainwp/get-virusdie-report-v1` | GET | Read one stored scan report for a site |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-virusdie'
+```
+
+## Input and pagination
+
+| Input | Type | Used by | Meaning |
+|-------|------|---------|---------|
+| `site_id` | integer, minimum 1 | Site and report abilities (required) | MainWP Dashboard site ID |
+| `report_id` | integer, minimum 1 | `get-virusdie-report-v1` (required) | Stored report ID from the report list |
+| `page` | integer, minimum 1 | Both list abilities | Result page, default `1` |
+| `per_page` | integer, 1-100 | Both list abilities | Results per page, default `20` |
+
+Both list abilities return `items`, `page`, `per_page`, and `total`. A page beyond the last result returns an empty `items` array with the full `total`. Times use ISO 8601 UTC, such as `2026-10-28T19:35:00Z`, or `null` when no scan is stored.
+
+Scan status values are:
+
+| Value | Meaning |
+|-------|---------|
+| `clean` | No threats were found |
+| `infected` | Threats were found |
+| `not-synced` | Virusdie reported a sync error for the site |
+| `unknown` | No recognized scan result is stored |
+
+## List Virusdie Sites
+
+**Ability:** `mainwp/list-virusdie-sites-v1`<br />
+**Method:** GET<br />
+**Input:** Optional `page` and `per_page`
+
+Returns every MainWP site you can access, including sites not connected to Virusdie.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-virusdie-sites-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "items": [
+    {
+      "site_id": 1,
+      "url": "https://example.com/",
+      "connected": false,
+      "api_key_set": false,
+      "firewall": false,
+      "automatic_cleanup": false,
+      "last_scan_at": null,
+      "last_scan_result": "unknown"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+| Site field | Meaning |
+|------------|---------|
+| `site_id` | MainWP Dashboard site ID |
+| `url` | Site URL without credentials, query string, or fragment |
+| `connected` | Whether the site has a stored Virusdie connection |
+| `api_key_set` | Whether the Dashboard has a Virusdie API key saved |
+| `firewall` | Whether the stored firewall setting is enabled |
+| `automatic_cleanup` | Whether stored automatic cleanup is enabled |
+| `last_scan_at` | Time of the last stored scan, or `null` |
+| `last_scan_result` | Status of the latest stored report |
+
+## Get a Virusdie Site
+
+**Ability:** `mainwp/get-virusdie-site-v1`<br />
+**Method:** GET<br />
+**Input:** `site_id`
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-virusdie-site-v1/run'
+```
+
+The response is a single site object with the same fields as a list item.
+
+## List Virusdie Reports
+
+**Ability:** `mainwp/list-virusdie-reports-v1`<br />
+**Method:** GET<br />
+**Input:** `site_id`, optional `page` and `per_page`
+
+Returns stored scan summaries for one site, newest first. A site that isn't connected to Virusdie returns an empty list.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-virusdie-reports-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "items": [
+    {
+      "report_id": 42,
+      "scanned_at": "2026-10-28T19:35:00Z",
+      "status": "infected",
+      "infected_files": 2,
+      "cleaned_files": 2,
+      "checked_files": 1840
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+| Report field | Meaning |
+|--------------|---------|
+| `report_id` | Stored report ID |
+| `scanned_at` | Scan time, or `null` |
+| `status` | Stored scan status |
+| `infected_files` | Infected files detected, excluding vulnerability counts |
+| `cleaned_files` | Files treated by Virusdie |
+| `checked_files` | Files checked during the scan |
+
+## Get a Virusdie Report
+
+**Ability:** `mainwp/get-virusdie-report-v1`<br />
+**Method:** GET<br />
+**Input:** `site_id` and `report_id`
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"report_id":42}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-virusdie-report-v1/run'
+```
+
+The response contains the same fields as a report list item, plus `truncated`. Because stored reports contain only counters, `truncated` is always `false`.
+
+A report that doesn't exist, or that belongs to a different site, returns `mainwp_virusdie_not_found`.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_permission_denied` | 403 | Check that the user has Dashboard Abilities permission (`manage_options`) |
+| `mainwp_virusdie_access_denied` | 403 | Check that the Virusdie Add-on is active and the user has access to it |
+| `mainwp_access_denied` | 403 | Check that the user can access the requested site |
+| `mainwp_virusdie_not_found` | 404 | Verify the site ID, or list the site's reports to find a valid `report_id` |
+
+Unauthenticated requests return HTTP 401 from WordPress.
+
+## Related Resources
+
+- [Virusdie Integration](/add-ons/security/mainwp-virusdie-extension) - Setup, scanning, firewall, and automatic cleanup
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [MainWP MCP Server](/mcp-server/overview) - Call abilities from AI assistants
