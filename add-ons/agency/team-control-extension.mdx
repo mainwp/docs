@@ -225,11 +225,15 @@ Use **Select by Site** or **Select by Tag** to choose the child sites this role 
 
 After setting custom permissions, assign this role to an existing user or [create a new user](https://wordpress.org/documentation/article/users-add-new-screen/) with this role. Permissions determine which actions the role can perform; **Allowed Sites** determines where it can perform them. **Select by Tag** also grants access to Child sites that belong to the selected tags.
 
+In MainWP Dashboard 6.4, staff with **Manage Posts** or **Manage Pages** can use the corresponding bulk content tools within MainWP, subject to their site access and action permissions. This does not grant access to the Dashboard site's WordPress Posts or Pages sections.
+
+Only unrestricted Dashboard administrators can create or edit legacy REST API v1 keys. Granting API key permissions to a Team Control role does not grant access to these legacy keys.
+
 ### Backup Permissions
 
 The **Backups** permission group controls backup actions such as execution, restoration, downloads, and backup task management. On a Dashboard with built-in backups, this group appears when built-in backups are enabled. On older Dashboards, its visibility follows the legacy backup setting. **API Backups** remains a separate permission group.
 
-Native Backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
+Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
 
 ### Abilities and MCP Permissions
 
@@ -237,7 +241,7 @@ In the role editor, find **API Access > Abilities and MCP > Use MainWP abilities
 
 ![Team Control Edit Role / Manage Permissions modal showing API Access and the checked Use MainWP abilities and MCP permission](/images/add-ons/team-control-5-2-abilities-mcp-permission.jpg)
 
-- On compatible Dashboards with ability scoping, the approved set includes scoped site, client, tag, update, and Native Backup operations. Site creation, tag creation or editing, and batch operations are excluded.
+- On compatible Dashboards with ability scoping, the approved set includes scoped site, client, tag, update, and built-in backup operations. Site creation, tag creation or editing, and batch operations are excluded.
 - On MainWP Dashboard 6.2, 6.2.1, 6.2.2, and 6.2.3, restricted users can run only `list-sites`, `count-sites`, and `get-sites-basic`, limited to their allowed sites.
 - The permission does not grant access to Team Control's own management abilities or other add-ons' abilities.
 

@@ -8,7 +8,7 @@ description: >-
 
 API Backups connects MainWP Dashboard to your hosting provider's backup service. Create and restore backups without installing a backup plugin on your Child Sites. Your provider creates and stores the backups.
 
-To create backups with MainWP and choose your own storage destinations, see [MainWP Built-In Backups](/sites/backups/manage-backups) in the MainWP 6.4.
+To create backups with MainWP and choose your own storage destinations, see [MainWP Built-In Backups](/sites/backups/manage-backups) in MainWP 6.4 and later.
 
 ## What You'll Learn
 
@@ -48,6 +48,8 @@ To create backups with MainWP and choose your own storage destinations, see [Mai
 ## Connect API Backups
 
 Open **top-right user menu > MainWP Settings > API Backups Settings** (`/wp-admin/admin.php?page=SettingsApiBackups`) and enter the credentials required by your provider. For Cloudways, use an **Access Token**; existing connections can continue using the legacy **Account Email** and **API Key** fields.
+
+If MainWP reports that replacement credentials could not be saved, the previous values remain in use. Correct the save error and retry before assuming the provider connection has changed. This applies to global API Backups settings and per-site provider credentials.
 
 ![Animation showing API Backups settings with API key entry fields for cloud providers](/images/dashboard/sites-backups-273419.gif)
 
@@ -213,7 +215,7 @@ See [Kinsta's downloadable backup documentation](https://kinsta.com/docs/wordpre
 
 <Steps>
 <Step title="Navigate to API Backups">
-Go to **MainWP > Sites > Backups > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
+Go to **MainWP > Sites > Backup Integrations > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
 </Step>
 <Step title="Create the backup">
 Locate the site and click **Backup** from the ellipsis menu.
@@ -230,7 +232,7 @@ Backup duration depends on site size and host speed.
 
 <Steps>
 <Step title="Navigate to API Backups">
-Go to **MainWP > Sites > Backups > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
+Go to **MainWP > Sites > Backup Integrations > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
 </Step>
 <Step title="Select sites and start the backups">
 Select the sites and click **Backup Selected Sites**.
@@ -243,7 +245,7 @@ Select the sites and click **Backup Selected Sites**.
 
 <Steps>
 <Step title="Navigate to API Backups">
-Go to **MainWP > Sites > Backups > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
+Go to **MainWP > Sites > Backup Integrations > API Backups** (`/wp-admin/admin.php?page=ManageApiBackups`).
 </Step>
 <Step title="Manage backups">
 Locate the site and click **Manage Backups** from the ellipsis menu.

@@ -26,7 +26,7 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 ## Prerequisites
 
 - MainWP Dashboard 6.4 running PHP 8.3 or higher
-- MainWP Child with built-in backup support, running PHP 7.4 or higher
+- The matching MainWP Child 6.4 release or later, running PHP 7.4 or higher
 - A connected Child Site that syncs successfully
 - An administrator account to enable and configure backup settings
 - Enough free disk space on the Child Site and Dashboard for backup and restore files
@@ -414,6 +414,12 @@ Enable **Require an offsite-verified backup** to also require verified copies on
 
 For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates/does-mainwp-have-safe-updates).
 
+## Automate Backups
+
+MainWP Dashboard 6.4 includes 32 [backup abilities](/api-reference/abilities-api/backups) for reading status, managing tasks and destinations, running backups, and restoring snapshots. Use the WordPress Abilities API directly or connect an assistant through the [MainWP MCP Server](/mcp-server/overview).
+
+Actions support a preview before confirmation. Backup and restore jobs continue in the background, so follow their progress until completion.
+
 ## Troubleshooting and Limitations
 
 | Symptom | What to check |
@@ -428,7 +434,7 @@ For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates
 
 Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
 
-A database-only restore may also stop on these sites because the safety backup includes files. Keep an independent backup and follow the error message before retrying without the safety backup.
+Database-only backups and restores remain supported. A database-only restore can stop before making changes if **Create a safety backup first** is enabled, because that safety backup includes files. Keep an independent database backup, then restart the database-only restore with **Create a safety backup first** turned off.
 
 ### Export Diagnostics
 
