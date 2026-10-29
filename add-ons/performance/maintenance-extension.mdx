@@ -211,6 +211,12 @@ Use bulk actions when you need to update multiple schedules at once.
   </Step>
 </Steps>
 
+## Database Health Check
+
+Version 5.2 supplies its schedules table and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the add-on active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_maintenance_schedule` to find the Maintenance table and check for a missing table, missing columns, or incorrect column definitions.
+
+Run this check when scheduled tasks are missing, schedule statuses or failure details don't save, or MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair schedules or check Child site databases.
+
 ## 404 Email Alerts (Legacy)
 
 #### **Feature retired for new users since version 4.1**
@@ -226,3 +232,4 @@ If you already use an older setup that still exposes 404 alerts, you can continu
 - [Performance Add-ons](/add-ons/performance) - Browse all performance tools
 - [Database Updater](/add-ons/updates/mainwp-database-updater-extension) - Database update management
 - [Advanced Uptime Monitor](/add-ons/monitoring/advanced-uptime-monitor-extension) - Monitor site uptime
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database table and column definitions
