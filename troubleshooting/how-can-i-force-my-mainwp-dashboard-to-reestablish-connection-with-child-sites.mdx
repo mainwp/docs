@@ -1,18 +1,19 @@
 ---
-title: Force reconnection with child sites
+title: Re-establish Connections with Child Sites
 description: >-
-  Use the Force Reconnect tool in MainWP to regenerate OpenSSL keys and
-  reestablish secure connections with all child sites when experiencing
-  connection issues.
+  Use Re-establish Connections in MainWP Tools to reset the connection user's
+  sessions on child sites. Learn when to reset signing keys separately.
 ---
 
-The Force Reconnect tool regenerates the key pairs used to sign and verify Dashboard-to-Child requests and forces all child sites to re-authenticate. Use this when you experience persistent connection issues that other troubleshooting steps haven't resolved.
+Use **Re-establish Connections** in MainWP Tools when MainWP Support asks you to reset sessions for the administrator account used to connect child sites. The tool sends a signed request to each available child site to end that account's WordPress sessions.
+
+To replace signing keys, use the separate **Reset OpenSSL Key Pair** tool.
 
 ## What You'll Learn
 
-- When to use Force Reconnect
-- How to trigger the reconnection process
-- What happens during reconnection
+- When to use Re-establish Connections
+- How to reset the connection user's sessions
+- Which tool replaces signing key pairs
 
 ## Prerequisites
 
@@ -22,61 +23,53 @@ The Force Reconnect tool regenerates the key pairs used to sign and verify Dashb
 
 ---
 
-## When to Use Force Reconnect
+## When to Use Re-establish Connections
 
-Use this tool when:
-
-- Multiple child sites suddenly show connection errors
-- You've migrated your Dashboard to a new server or domain
-- SSL/TLS configuration has changed on your Dashboard
-- Connection issues persist after resolving firewall or server problems
-- OpenSSL keys may have become corrupted or out of sync
+Use this tool only when MainWP Support recommends a session reset while troubleshooting a connection issue.
 
 <Warning>
-Force Reconnect affects all child sites. The Dashboard will temporarily lose connection with sites while regenerating keys. Sites will reconnect automatically during the next sync.
+This ends all WordPress sessions for the MainWP connection user on each affected child site. Anyone signed in with that account must sign in again.
 </Warning>
 
 ---
 
-## Force Reconnection
+## Re-establish Connections
 
 <Steps>
 <Step title="Navigate to MainWP Tools">
 Go to **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
 </Step>
-<Step title="Find Force Reconnect">
+<Step title="Find the connection tool">
 Locate the **Force your MainWP Dashboard to establish a new connection** option.
 </Step>
 <Step title="Click the button">
-Click the **Force Reconnect** button.
+Click **Re-establish Connections** and confirm the action when prompted.
 </Step>
 <Step title="Wait for completion">
-The Dashboard regenerates OpenSSL keys and marks all child sites for reconnection. This process runs automatically.
+Wait for the progress window to finish and check for site-specific errors.
 </Step>
 <Step title="Verify connections">
-Go to **MainWP > Sites > Manage Sites** and verify that sites are reconnecting. You can manually sync individual sites to speed up the process.
+Go to **MainWP > Sites > Manage Sites**, sync the affected sites, and confirm they respond successfully.
 </Step>
 </Steps>
 
 ---
 
-## What Happens During Reconnection
+## What the Tool Does
 
-1. **Key regeneration** - The Dashboard creates new OpenSSL public/private key pairs
-2. **Site marking** - All child sites are flagged for reconnection
-3. **Automatic sync** - During the next sync cycle, each child site receives the new public key
-4. **Re-authentication** - Child sites verify the new keys and reestablish secure communication
+1. MainWP Dashboard sends signed session-reset requests to available child sites.
+2. MainWP Child destroys all WordPress sessions for the current MainWP connection user.
+3. Users signed in with that account must sign in again.
 
-The process is automatic once triggered. Sites reconnect during their normal sync schedule or when you manually sync them.
+Existing signing key pairs remain in use. **Reset OpenSSL Key Pair** is the separate Tools action for generating replacement keys. See the [MainWP Tools reference](/sites/management/mainwp-dashboard-settings) for the available actions.
 
 ---
 
 ## Self-Check Checklist
 
-- [ ] Force Reconnect button clicked
-- [ ] Dashboard shows sites are reconnecting
-- [ ] Previously problematic sites now connect successfully
-- [ ] Sync operations complete without errors
+- [ ] MainWP Support recommended the session reset
+- [ ] Re-establish Connections completed without errors
+- [ ] Child sites respond to sync requests
 
 ---
 

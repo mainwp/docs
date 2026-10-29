@@ -48,7 +48,7 @@ If sync operations cause availability issues for other sites on the same server:
 
 ## Sync Request Security
 
-With the default OpenSSL connection method, MainWP Dashboard generates a 2048-bit RSA public/private key pair for each child site using `openssl_pkey_new()`. The public key is stored on the child site; the private key is stored encrypted on MainWP Dashboard.
+With the default OpenSSL connection method, MainWP Dashboard generates a 2048-bit RSA public/private key pair for each child site using `openssl_pkey_new()`. The public key is stored on the child site, and MainWP Dashboard stores the private key. New connections have their private keys encrypted automatically. For connections created before version 5.3, complete the [private-key encryption steps](/advanced/openssl-keys-encryption) if you have not already done so.
 
 OpenSSL signs requests using SHA-256 by default. PHPSecLib is an alternative you select in the global or per-site [connection settings](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl).
 
