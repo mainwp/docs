@@ -98,6 +98,12 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 
 ![Animated screenshot demonstrating bulk actions menu for multiple sites](/images/add-ons/04394bef107f.gif)
 
+## Team Control compatibility
+
+The Jetpack Protect Integration respects access restrictions configured by the [Team Control Add-on](/add-ons/agency/team-control-extension). Team members see the Jetpack Protect site page and the **Jetpack Protect** Dashboard widget only when their role includes Jetpack Protect in its **Allowed Add-ons** list. Users whose role does not include it do not see either one.
+
+To grant access, edit the role in **MainWP > Add-ons > Agency > Team Control** and select Jetpack Protect under **Allowed Add-ons**.
+
 ## Jetpack Protect REST API
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
