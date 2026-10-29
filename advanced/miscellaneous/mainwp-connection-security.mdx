@@ -49,6 +49,19 @@ Unique Security ID can be used as an alternative or additional authentication ch
 
 The MainWP Child plugin includes a connection timeout to minimize exposure. After activation, if no connection is established within the specified time (in minutes), the plugin automatically deactivates itself. This prevents idle plugins from remaining accessible.
 
+Set the limit in **Set Connection Timeout** at **WordPress Admin > Settings > MainWP Child > Settings**. The default is 20 minutes. Enter `0` to turn off the timeout.
+
+While the site is not connected, the MainWP Child activation notice in WordPress Admin shows:
+
+- **Site URL** and **Administrator username** fields with **Copy** buttons, so you can paste them into the Dashboard's Add Site form
+- A live countdown of the minutes left before MainWP Child deactivates itself
+
+When the countdown reaches zero, MainWP Child deactivates on the next WordPress Admin request unless the site was connected first. Reload the page to check. If the plugin was deactivated, reactivate it from the **Plugins** page to start a new connection window. After reactivation, the notice explains that the plugin switched itself off because no Dashboard connected within the time limit.
+
+<Note>
+The countdown is not shown when the timeout is turned off or when MainWP Child is loaded as a must-use plugin, because the plugin does not deactivate itself in those cases.
+</Note>
+
 ### Disconnect Site Option
 
 The Disconnect Site feature allows you to clear all connection data for a Child Site directly from the Dashboard. Use this when:
