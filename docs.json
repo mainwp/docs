@@ -353,6 +353,7 @@
                   "api-reference/abilities-api/overview",
                   "api-reference/abilities-api/sites",
                   "api-reference/abilities-api/updates",
+                  "api-reference/abilities-api/backups",
                   "api-reference/abilities-api/clients",
                   "api-reference/abilities-api/tags",
                   "api-reference/abilities-api/batch-operations"
@@ -470,7 +471,8 @@
                   "customization/add-a-custom-tab-to-the-add-site-screen",
                   "customization/how-to-add-wp-admin-button-to-the-main-navigation-bar",
                   "customization/how-to-change-the-default-page-after-logging-into-wordpress",
-                  "customization/how-to-create-a-new-column-in-the-manage-sites-table"
+                  "customization/how-to-create-a-new-column-in-the-manage-sites-table",
+                  "customization/retrieve-site-access-query-conditions"
                 ]
               },
               {

@@ -9,8 +9,6 @@ description: >-
 
 This notice appears in the WordPress admin area when the MainWP Child plugin is installed and activated but not connected to any MainWP Dashboard.
 
-![MainWP Child plugin not connected notice displayed in WordPress admin](/images/faq/child-activated-not-connected.png)
-
 ## What You'll Learn
 
 - Why this notice appears
@@ -36,6 +34,16 @@ The notice displays in two situations:
 | Disconnected site | The site was previously connected but lost its connection (after plugin deactivation, site migration, or Dashboard changes) |
 
 The plugin is designed to communicate with a MainWP Dashboard. Until connected, it displays this reminder to complete the setup.
+
+---
+
+## Connection Window in MainWP Child 6.4
+
+MainWP Child 6.4 shows the remaining connection time in this notice. By default, the plugin switches itself off if no Dashboard connects within 20 minutes. You can adjust **Connection Timeout** in **Settings > MainWP Child** (`/wp-admin/options-general.php?page=mainwp_child_tab`).
+
+If the window expires, activate MainWP Child again from **Plugins > Installed Plugins** (`/wp-admin/plugins.php`) and connect the site from your Dashboard. After reactivation, the notice explains why the plugin switched off and shows the new connection window.
+
+The [Quick Setup Wizard](/getting-started/get-started-with-mainwp#add-site) also checks whether MainWP Child is ready and shows the remaining connection time while you connect.
 
 ---
 

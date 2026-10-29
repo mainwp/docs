@@ -167,7 +167,7 @@ Add a new MainWP child site.
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"url":"https://newsite.example.com","admin":"admin","name":"New Site","uniqueid":"xxxxx"}}' \
+  -d '{"input":{"url":"https://newsite.example.com","admin_username":"admin","name":"New Site","uniqueid":"xxxxx"}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/add-site-v1/run'
 ```
 
@@ -176,17 +176,20 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `url` | string | Yes | — | Site URL |
-| `admin` | string | Yes | — | Admin username on child site |
-| `name` | string | No | — | Display name for the site |
+| `admin_username` | string | Yes | - | Admin username on child site |
+| `name` | string | Yes | - | Display name for the site |
 | `client_id` | integer | No | — | Associate with a client |
-| `tags` | array | No | — | Array of tag IDs to assign |
+| `tag_ids` | array | No | - | Array of tag IDs to assign |
 | `http_user` | string | No | — | HTTP Auth username |
 | `http_pass` | string | No | — | HTTP Auth password |
 | `adminpassword` | string | No | - | WordPress administrator password. Required when Password Authentication is enabled on the child site |
 | `uniqueid` | string | No | - | Unique Security ID from MainWP Child. Required when Unique Security ID is enabled or Password Authentication is disabled |
-| `ssl_verify` | boolean | No | true | Verify SSL certificate |
+| `verify_certificate` | integer | No | 2 | `0` disables verification, `1` verifies, `2` uses the global setting |
+| `ssl_version` | integer | No | 0 | cURL SSL version selection; `0` uses automatic detection |
 
 MainWP Child requires at least one connection authentication method. Provide `adminpassword`, `uniqueid`, or both according to the child site's MainWP Child settings.
+
+Keep certificate verification enabled and use HTTPS when connecting with an administrator password. Leave `ssl_version` at `0` unless your host requires a specific cURL SSL version.
 
 **Response:**
 

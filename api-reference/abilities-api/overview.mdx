@@ -2,12 +2,12 @@
 title: Abilities API Overview
 sidebarTitle: "Abilities API Overview"
 description: >-
-  MainWP Dashboard 6.3 registers 70 abilities into WordPress Core's Abilities API framework for programmatic site management, Knowledge, and automation.
+  MainWP Dashboard 6.4 registers 102 abilities for site management, updates, backups, Knowledge, and automation through the WordPress Abilities API.
 ---
 
 The WordPress Abilities API is a **WordPress Core feature** (available in WordPress 6.9+) that provides a standardized registry for capabilities across the WordPress ecosystem. Any plugin can register discrete actions ("abilities") with defined input/output schemas, making functionality discoverable by external systems.
 
-MainWP Dashboard 6.3 registers 70 abilities into this framework across six categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface. Earlier Dashboard versions expose a smaller catalog.
+MainWP Dashboard 6.4 registers 102 abilities into this framework across seven categories. This integration enables AI agents, automation platforms, and external tools to discover what MainWP can do and execute those capabilities through a consistent interface. Earlier Dashboard versions expose a smaller catalog.
 
 ## What You'll Learn
 
@@ -140,8 +140,12 @@ MainWP registers these categories:
 | `mainwp-tags` | 7 | Tag/group management |
 | `mainwp-batch` | 1 | Batch operation monitoring |
 | `mainwp-knowledge` | 7 | Agency, client, and site Knowledge reads and record management |
+| `mainwp-backups` | 32 | Built-in backup tasks, snapshots, restores, storage, and settings |
 
 <CardGroup cols={2}>
+  <Card title="Backup Abilities" icon="database" href="/api-reference/abilities-api/backups">
+    Discover backup status, preview changes, run tasks, and monitor restores.
+  </Card>
   <Card title="Sites Abilities" icon="server" href="/api-reference/abilities-api/sites">
     30 abilities for site management
   </Card>
@@ -163,7 +167,7 @@ MainWP registers these categories:
 
 ## Add-on Abilities
 
-MainWP Add-ons can register additional abilities alongside the 70 Dashboard abilities in version 6.3. These appear only when the relevant Add-on is active.
+MainWP Add-ons can register additional abilities alongside the 102 Dashboard abilities in version 6.4. These appear only when the relevant Add-on is active.
 
 | Add-on | Category | Abilities | Reference |
 |--------|----------|-----------|-----------|
