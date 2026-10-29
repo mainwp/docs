@@ -14,6 +14,7 @@ addonType: extension
 - Viewing detailed certificate information
 - Scheduling automated SSL checks
 - Overwriting general settings for individual sites
+- Reading certificate status through MainWP Abilities
 
 ---
 
@@ -189,6 +190,14 @@ wp mainwp-ssl-monitor info 2,5
 wp mainwp-ssl-monitor info --all
 ```
 
+## SSL Monitor Abilities API
+
+SSL Monitor registers three read-only MainWP abilities in the `mainwp-ssl-monitor` category. Use them to list stored certificate summaries for your monitored HTTPS sites, read one site's certificate details and automatic check times, and read a site's effective notification threshold and check schedule. These abilities return stored data only. They do not run certificate checks.
+
+The abilities require WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an SSL Monitor release with Abilities support. The user needs `manage_options`, access to the SSL Monitor Add-on, and access to each site.
+
+See [SSL Monitor Abilities](/api-reference/abilities-api/ssl-monitor) for request examples, response fields, status values, and error handling.
+
 ## SSL Monitor REST API
 
 All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). For more details about enabling the MainWP REST API and managing keys, see [REST API Overview](/api-reference/rest-api/overview).
@@ -201,3 +210,4 @@ All MainWP REST API calls, including full documentation and examples, are public
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
 - [Domain Monitor](/add-ons/monitoring/mainwp-domain-monitor-extension) - Track domain expiration
 - [Advanced Uptime Monitor](/add-ons/monitoring/advanced-uptime-monitor-extension) - Monitor site uptime
+- [SSL Monitor Abilities](/api-reference/abilities-api/ssl-monitor) - Read stored certificate status and monitoring settings
