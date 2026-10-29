@@ -102,6 +102,12 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
+## Database Health Check
+
+The Jetpack Protect Integration supplies its site status and scan results tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair tables or scan your Child Sites for vulnerabilities.
+
 ## Quick Start with Jetpack Protect
 
 The integration works in tandem with the Jetpack Protect plugin on your Child Sites. Both the integration and the plugin are free to download and use.
