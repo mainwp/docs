@@ -1,19 +1,20 @@
 ---
 title: How secure is the MainWP plugin?
 description: >-
-  MainWP uses OpenSSL encrypted communication between Dashboard and Child Sites.
-  Sites can only connect to one Dashboard at a time, passwords are not stored,
-  and regular penetration tests are performed via PatchStack and HackerOne.
+  MainWP signs requests between MainWP Dashboard and MainWP Child. Learn how
+  HTTPS protects traffic and how to report vulnerabilities through Patchstack.
 ---
 
 MainWP implements multiple security measures to protect communication between your Dashboard and child sites.
 
 ## Security Measures
 
-- **Encrypted communication**: MainWP Dashboard and child sites communicate using OpenSSL encryption. If OpenSSL is unavailable or misconfigured, MainWP uses PHPSecLib as a fallback.
+- **Signed requests**: MainWP Dashboard creates a 2048-bit RSA key pair for each child site and signs requests with that site's private key. OpenSSL uses SHA-256 by default. MainWP Child verifies signatures with the corresponding public key.
+- **Encrypted transport**: Use HTTPS URLs for your child sites to encrypt requests and responses in transit. SSL certificate verification is enabled by default and can be configured globally or per site.
+- **Signing library**: OpenSSL is the default. PHPSecLib is an alternative you select in the global or per-site [connection settings](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl).
 - **Single Dashboard lock**: A child site can only connect to one MainWP Dashboard at a time. Once connected, the site cannot be added to another Dashboard without first disconnecting it.
 - **No password storage**: WordPress passwords are not stored on the MainWP Dashboard.
-- **Regular security testing**: Penetration tests are performed through white hat security programs on PatchStack and HackerOne.
+- **Vulnerability reporting**: Security researchers can report vulnerabilities in MainWP Dashboard and MainWP Child through Patchstack. See [MainWP's vulnerability disclosure program](https://mainwp.com/white-hat-reward/) for reporting links and policy.
 - **In-house development**: All features are developed internally.
 - **Self-hosted architecture**: MainWP Dashboard runs on your own server, giving you complete control over security and privacy.
 
