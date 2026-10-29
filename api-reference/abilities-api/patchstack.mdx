@@ -1,0 +1,265 @@
+---
+title: Patchstack Abilities
+sidebarTitle: "Patchstack Abilities"
+description: >-
+  Read cached Patchstack connection status, site protection state, vulnerability counts, and vulnerability summaries through MainWP Abilities.
+---
+
+<Note>
+These abilities require the Patchstack Integration release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled Patchstack Integration registers five read-only abilities in the `mainwp-patchstack` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Every ability reads data the add-on already saved during its normal syncs. None of them contact Patchstack, change settings, or start a sync. To get newer data, run a sync from the [Patchstack screens](/add-ons/security/patchstack-extension) first.
+
+## What You'll Learn
+
+- Check whether a Patchstack API key is saved and when the account last synced
+- Read one site's Patchstack mapping and protection flags
+- Read cached vulnerability counts and paginated vulnerability summaries for a site
+- Read account-wide site and vulnerability totals
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- The Abilities-enabled Patchstack Integration, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Patchstack add-on
+- Dashboard access to the target site for site-specific calls
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+These abilities are limited to administrators. Users without `manage_options` are refused even when Team Control or a scoped API key would otherwise grant access.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-patchstack-connection-v1` | GET | Read API key presence, sync schedule, plan allowance, and last account sync |
+| `mainwp/get-site-patchstack-state-v1` | GET | Read one site's mapping, override, and protection flags |
+| `mainwp/get-site-patchstack-observation-v1` | GET | Read one site's cached security status and severity counts |
+| `mainwp/list-site-patchstack-vulnerabilities-v1` | GET | Read a page of cached vulnerability summaries for one site |
+| `mainwp/get-patchstack-account-observation-v1` | GET | Read cached account-wide site and severity totals |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-patchstack'
+```
+
+All five abilities are annotated `readonly: true`, `destructive: false`, and `idempotent: true`.
+
+## Request Rules
+
+- Global abilities (connection and account) take no input. Omit the input or send an empty object.
+- Site abilities require `site_id`, a positive MainWP site ID such as `1`. Find IDs with the [Sites abilities](/api-reference/abilities-api/sites).
+- Inputs reject extra properties.
+- Times are ISO 8601 UTC strings, such as `2026-10-28T23:46:53Z`. A time is `null` when the add-on has no saved value.
+- Responses never include the saved API key or other credentials. Key presence is reported only as the `api_key_set` boolean.
+
+---
+
+## Read Connection Status
+
+**Ability:** `mainwp/get-patchstack-connection-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-patchstack-connection-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "api_key_set": true,
+  "connected": true,
+  "schedule": "daily",
+  "plan_limit": 25,
+  "last_sync": "2026-10-28T23:46:53Z"
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `api_key_set` | `true` when a Patchstack API key is saved |
+| `connected` | `true` when a key is saved, an account sync has completed, and no API key error is stored |
+| `schedule` | Saved **Patchstack API sync frequency**, or `disabled` |
+| `plan_limit` | Saved **Plan allowance (sites)** value, or `0` |
+| `last_sync` | Time of the last cached account sync, or `null` |
+
+`connected` reflects cached evidence from earlier syncs. It is not a live check of your Patchstack account.
+
+## Read a Site's Patchstack State
+
+**Ability:** `mainwp/get-site-patchstack-state-v1`<br />
+**Method:** GET<br />
+**Input:** `site_id` (required)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-patchstack-state-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "mapped": true,
+  "override": false,
+  "active": true,
+  "installed": true,
+  "firewall_enabled": true,
+  "last_sync": "2026-10-28T23:40:12Z"
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `mapped` | The site is linked to a Patchstack site |
+| `override` | The site uses per-site override settings |
+| `active` | The Patchstack plugin was reported active on the child site |
+| `installed` | The Patchstack plugin was reported installed on the child site |
+| `firewall_enabled` | The Patchstack firewall was reported enabled |
+| `last_sync` | Time of the site's last sync, or `null` |
+
+A site the add-on has not linked returns `false` for every flag and `null` for `last_sync`.
+
+## Read a Site's Security Observation
+
+**Ability:** `mainwp/get-site-patchstack-observation-v1`<br />
+**Method:** GET<br />
+**Input:** `site_id` (required)
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-patchstack-observation-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "status": "vulnerable",
+  "counts": {
+    "total": 3,
+    "high": 1,
+    "medium": 2,
+    "low": 0
+  },
+  "last_checked": "2026-10-28T23:40:12Z"
+}
+```
+
+`status` is one of:
+
+| Status | Meaning |
+|--------|---------|
+| `not_checked` | No cached Patchstack results exist for this site |
+| `no_vulnerabilities` | The last cached check found no vulnerabilities |
+| `vulnerable` | The last cached check found one or more vulnerabilities |
+
+`counts` contains the `total`, `high`, `medium`, and `low` vulnerability counts. `last_checked` is the time of the cached check, or `null`.
+
+## List a Site's Vulnerabilities
+
+**Ability:** `mainwp/list-site-patchstack-vulnerabilities-v1`<br />
+**Method:** GET
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id` | Yes | MainWP site ID |
+| `page` | No | Page number, starting at `1` (default `1`) |
+| `per_page` | No | Results per page, from `1` to `100` (default `20`) |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1,"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-site-patchstack-vulnerabilities-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "items": [
+    {
+      "component": "Example Plugin",
+      "type": "Cross Site Scripting (XSS)",
+      "score": 6.5,
+      "fixed_in": "2.4.1",
+      "patched": true
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+| Item field | Meaning |
+|------------|---------|
+| `component` | Name of the affected plugin, theme, or core component |
+| `type` | Vulnerability type |
+| `score` | Cached vulnerability score, or `null` when unavailable |
+| `fixed_in` | Version that fixes the issue, or an empty string when unknown |
+| `patched` | `true` when a Patchstack virtual patch covers the vulnerability |
+
+`total` is the number of cached vulnerabilities for the site. Increase `page` until you have read `total` items. A page beyond the last result returns an empty `items` array.
+
+## Read Account Totals
+
+**Ability:** `mainwp/get-patchstack-account-observation-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-patchstack-account-observation-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "sites_total": 12,
+  "sites_connected": 10,
+  "counts": {
+    "total": 8,
+    "high": 2,
+    "medium": 4,
+    "low": 2
+  },
+  "last_sync": "2026-10-28T23:46:53Z"
+}
+```
+
+`sites_total` and `sites_connected` come from the last cached account sync. `counts` uses the same `total`, `high`, `medium`, and `low` fields as the site observation. `last_sync` is `null` when no account sync is saved.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Dashboard permission and site errors, such as `mainwp_permission_denied` and `mainwp_site_not_found`, pass through unchanged. Patchstack can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_patchstack_invalid_input` | 400 | Missing or invalid `site_id`, `page`, or `per_page` |
+| `mainwp_patchstack_forbidden` | 403 | The user lacks `manage_options` or access to the Patchstack add-on |
+
+Unauthenticated requests return HTTP 401. Through the REST route, an unknown site ID returns HTTP 403 because WordPress wraps permission failures.
+
+## Related Resources
+
+- [Patchstack](/add-ons/security/patchstack-extension) - Connect your account, sync data, and view threats
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs
