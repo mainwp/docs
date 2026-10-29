@@ -6,7 +6,7 @@ description: >-
   connection issues.
 ---
 
-The Force Reconnect tool regenerates the OpenSSL encryption keys used for Dashboard-to-child communication and forces all child sites to re-authenticate. Use this when you experience persistent connection issues that other troubleshooting steps haven't resolved.
+The Force Reconnect tool regenerates the key pairs used to sign and verify Dashboard-to-Child requests and forces all child sites to re-authenticate. Use this when you experience persistent connection issues that other troubleshooting steps haven't resolved.
 
 ## What You'll Learn
 
@@ -84,4 +84,4 @@ The process is automatic once triggered. Sites reconnect during their normal syn
 
 - [Troubleshoot Connection Problems](/troubleshooting/potential-issues) - Diagnose connection issues
 - [Connection Test Status Codes](/troubleshooting/connection-test-results-status-codes) - Interpret error codes
-- [OpenSSL Keys Encryption](/advanced/openssl-keys-encryption) - How MainWP encryption works
+- [OpenSSL Key Encryption](/advanced/openssl-keys-encryption) - Private key encryption at rest

@@ -1,12 +1,11 @@
 ---
 title: How MainWP Syncs with Child Sites
 description: >-
-  Learn how MainWP Dashboard communicates with Child Sites via HTTPS requests
-  using cURL. Understand the sync process, OpenSSL encryption, and asymmetric
-  cryptography that secures the connection between your Dashboard and sites.
+  Learn how MainWP Dashboard syncs data with MainWP Child using cURL requests,
+  digital signatures, and HTTPS for transport encryption.
 ---
 
-MainWP Dashboard communicates with child sites by executing HTTPS requests using [cURL](https://www.php.net/manual/en/intro.curl.php). Each sync request contains three required parameters:
+MainWP Dashboard communicates with child sites using [cURL](https://www.php.net/manual/en/intro.curl.php). Use HTTPS URLs to encrypt traffic in transit. Each sync request includes the following parameters:
 
 | Parameter | Purpose |
 |-----------|---------|
@@ -16,7 +15,7 @@ MainWP Dashboard communicates with child sites by executing HTTPS requests using
 
 ## Example Sync Request
 
-```
+```text
 https://childsite.com/wp-admin/admin-ajax.php?user=demouser&function=stats&mainwpsignature=dgTOIUbQyBWvCh0pNhnwmxmHoeayfg34...
 ```
 
@@ -49,23 +48,19 @@ If sync operations cause availability issues for other sites on the same server:
 
 ## Sync Request Security
 
-When MainWP Dashboard first connects to a child site, it generates a 2048-bit public/private key pair using the `openssl_pkey_new()` function. The public key is stored on the child site; the private key is stored on the Dashboard.
+With the default OpenSSL connection method, MainWP Dashboard generates a 2048-bit RSA public/private key pair for each child site using `openssl_pkey_new()`. The public key is stored on the child site; the private key is stored encrypted on MainWP Dashboard.
+
+OpenSSL signs requests using SHA-256 by default. PHPSecLib is an alternative you select in the global or per-site [connection settings](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl).
 
 | Step | Function | Location |
 |------|----------|----------|
 | Sign request | `openssl_sign()` | MainWP Dashboard |
 | Verify request | `openssl_verify()` | MainWP Child plugin |
 
-The Dashboard signs each request with the private key. The Child plugin verifies the signature using the public key. Requests with invalid signatures are rejected.
+MainWP Dashboard signs each request with the site's private key. MainWP Child verifies the signature using the corresponding public key. Requests with invalid signatures are rejected.
 
 ## How Asymmetric Cryptography Works
 
-Asymmetric encryption uses key pairs where one key encrypts data and only the other key can decrypt it.
+Asymmetric cryptography uses a related private key and public key. MainWP uses this key pair for digital signatures: MainWP Dashboard holds the private key used to sign requests, and MainWP Child holds the public key used to verify them.
 
-**Example:** John wants to send sensitive data to Alice.
-1. John encrypts the data using Alice's public key
-2. Only Alice has the corresponding private key
-3. Only Alice can decrypt the data back to its original form
-4. Even if someone intercepts the encrypted data, they cannot read it without Alice's private key
-
-MainWP uses this principle: the Dashboard signs requests with its private key, and child sites verify them with the corresponding public key. This ensures requests genuinely come from your authorized Dashboard.
+A signature authenticates a request but does not hide its contents. HTTPS encrypts the requests and responses in transit. SSL certificate verification is enabled by default and can be configured globally or per site.

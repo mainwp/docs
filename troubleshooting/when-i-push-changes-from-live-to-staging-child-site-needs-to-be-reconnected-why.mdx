@@ -9,7 +9,7 @@ description: >-
   deactivate/reactivate the Child plugin to reconnect.
 ---
 
-When you push changes between a live site and its staging copy (or vice versa), the MainWP connection often breaks. This happens because the synchronization process copies the encryption key that MainWP uses to identify the connection.
+When you push changes between a live site and its staging copy (or vice versa), the MainWP connection often breaks. This happens because the synchronization process copies the public key that MainWP Child uses to verify requests from your MainWP Dashboard.
 
 ## What You'll Learn
 
@@ -21,13 +21,13 @@ When you push changes between a live site and its staging copy (or vice versa), 
 
 ## Why This Happens
 
-MainWP uses OpenSSL encryption to secure communication between your Dashboard and child sites. When a child site connects to your Dashboard:
+MainWP uses digital signatures to authenticate requests from MainWP Dashboard. When a child site connects to your Dashboard:
 
-1. The Dashboard generates a unique public key
+1. MainWP Dashboard generates a unique public/private key pair for the site
 2. This key is stored in the child site's database as `mainwp_child_pubkey` (in the `wp_options` table)
-3. All subsequent communication uses this key for encryption
+3. MainWP Child uses this public key to verify requests signed by the matching private key on MainWP Dashboard
 
-When you sync databases between live and staging, the staging plugin copies the `mainwp_child_pubkey` value from one site to the other. This overwrites the correct key, and the connection breaks because the key no longer matches what the Dashboard expects.
+When you sync databases between live and staging, the staging plugin copies the `mainwp_child_pubkey` value from one site to the other. This overwrites the correct public key, so MainWP Child can no longer verify requests signed with the private key that MainWP Dashboard holds for that site.
 
 ---
 
@@ -46,7 +46,7 @@ Select the **Advanced** tab.
 </Step>
 <Step title="Add exclusion">
 In the database exclusion section, add:
-```
+```text
 mainwp_child_pubkey
 ```
 </Step>
@@ -132,6 +132,6 @@ Return to your MainWP Dashboard and reconnect the child site using the same proc
 
 ## Related Resources
 
-- [OpenSSL Keys Encryption](/advanced/openssl-keys-encryption) - How MainWP encryption works
+- [OpenSSL Key Encryption](/advanced/openssl-keys-encryption) - Private key encryption at rest
 - [Reconnecting Child Sites](/getting-started/child-plugin-5-2-1-reconnecting-child-sites-with-unique-security-id) - Reconnection process
 - [Staging Extension](/add-ons/development/staging-extension) - MainWP's built-in staging solution
