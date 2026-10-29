@@ -1,0 +1,189 @@
+---
+title: Staging Abilities
+sidebarTitle: "Staging Abilities"
+description: >-
+  Read stored staging clones and effective saved Staging settings for your MainWP sites with the MainWP Staging Abilities API.
+---
+
+The MainWP Staging Add-on registers two read-only abilities in the `mainwp-staging` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to find which Child Sites have staging clones, check whether each clone is connected to your Dashboard, and review the Staging settings that apply to a site. They are available in the Abilities-enabled Staging release.
+
+## What You'll Learn
+
+- List Child Sites that have stored staging clones
+- Read one site's clones and effective saved settings
+- Tell whether a site overrides the general settings
+- Interpret clone-to-Dashboard mappings
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` example below
+- An Abilities-enabled release of the [Staging Add-on](/add-ons/development/staging-extension), active in MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Staging Add-on
+- Access to the selected MainWP site for site-specific calls
+
+Team Control restrictions apply. The list returns only sites you can access. A site-specific call for a site you cannot access returns the same `mainwp_site_not_found` error as a site that does not exist.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-staging-sites-v1` | GET | List accessible Child Sites that have stored staging clones |
+| `mainwp/get-site-staging-v1` | GET | Read one site's stored clones, effective saved settings, and override flag |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-staging'
+```
+
+Both abilities are marked read-only and idempotent. They read data the Dashboard already stored. They do not contact Child Sites, check for WP Staging, refresh clone lists, or sync sites.
+
+## List Staging Sites
+
+**Ability:** `mainwp/list-staging-sites-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-staging-sites-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 1,
+      "name": "Example Store",
+      "url": "https://example.com/",
+      "clone_count": 1,
+      "clones": [
+        {
+          "clone_id": "staging",
+          "clone_url": "https://example.com/staging",
+          "staging_site_id": 7,
+          "staging_site_exists": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+The list includes only accessible sites with at least one stored clone. Sites without clones are omitted. When no site qualifies, `sites` is an empty array.
+
+| Field | Meaning |
+|-------|---------|
+| `site_id` | Dashboard ID of the production Child Site |
+| `name` | Site name in MainWP Dashboard |
+| `url` | Production site URL |
+| `clone_count` | Number of stored clones for the site |
+| `clones` | Stored clones for the site |
+
+Each clone contains:
+
+| Field | Meaning |
+|-------|---------|
+| `clone_id` | WP Staging clone identifier |
+| `clone_url` | URL of the staging clone |
+| `staging_site_id` | Dashboard ID of the site added for this clone, or `null` when no mapping is stored |
+| `staging_site_exists` | `true` when `staging_site_id` still matches a site in your Dashboard |
+
+A `staging_site_exists` value of `false` with a non-null `staging_site_id` means the mapped staging site was removed from your Dashboard.
+
+## Get Site Staging
+
+**Ability:** `mainwp/get-site-staging-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-staging-v1/run'
+```
+
+`site_id` is required and must be a positive integer. No other input properties are accepted.
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "name": "Example Store",
+  "url": "https://example.com/",
+  "clone_count": 1,
+  "clones": [
+    {
+      "clone_id": "staging",
+      "clone_url": "https://example.com/staging",
+      "staging_site_id": 7,
+      "staging_site_exists": true
+    }
+  ],
+  "override": true,
+  "settings": {
+    "queryLimit": 10000,
+    "querySRLimit": 5000,
+    "fileLimit": 50,
+    "maxFileSize": 8,
+    "batchSize": 2,
+    "cpuLoad": "low",
+    "delayRequests": 0,
+    "disableAdminLogin": false,
+    "debugMode": false,
+    "optimizer": true,
+    "unInstallOnDelete": false,
+    "checkDirectorySize": false
+  }
+}
+```
+
+The response includes the same site and clone fields as the list, plus `override` and `settings`. A site without clones returns `clone_count: 0` and an empty `clones` array.
+
+`override` is `true` when the site has **Override General Settings** enabled. In that case, `settings` contains the site's own saved settings. Otherwise, `settings` contains the saved general settings.
+
+`settings` includes only values that were saved. Missing values are omitted rather than filled with the defaults shown in the Dashboard. When no settings were saved, `settings` is an empty object (`{}`).
+
+| Setting | Type | Dashboard setting |
+|---------|------|-------------------|
+| `queryLimit` | integer | DB copy query limit |
+| `querySRLimit` | integer | DB search & replace limit |
+| `fileLimit` | integer | File copy limit |
+| `maxFileSize` | integer | Maximum file size (MB) |
+| `batchSize` | integer | File copy batch size |
+| `cpuLoad` | string | CPU load priority: `low`, `medium`, or `high` |
+| `delayRequests` | integer | Delay Between Requests |
+| `disableAdminLogin` | boolean | Disable admin authorization |
+| `debugMode` | boolean | Debug mode |
+| `optimizer` | boolean | Optimizer |
+| `unInstallOnDelete` | boolean | Remove data on uninstall? |
+| `checkDirectorySize` | boolean | Check directory size |
+
+Responses never include passwords, keys, tokens, database prefixes, or other stored settings.
+
+## Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_permission_denied` | 403 | Check `manage_options` and access to the Staging Add-on |
+| `mainwp_site_not_found` | 404 | Verify the site exists and you have access to it |
+
+Unauthenticated requests return HTTP 401. MainWP Dashboard can also return its standard authentication and site-access errors.
+
+<Note>
+These abilities do not create, update, or delete staging sites. They also do not save settings or refresh clone data from Child Sites. Use the [Staging Add-on](/add-ons/development/staging-extension) in your Dashboard for those tasks.
+</Note>
+
+## Related Resources
+
+- [Staging Add-on](/add-ons/development/staging-extension) - Create, update, and delete staging sites
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Clone Abilities](/api-reference/abilities-api/clone) - Read and manage stored Clone policy
