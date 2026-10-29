@@ -1,0 +1,198 @@
+---
+title: WP Rocket Abilities
+sidebarTitle: "WP Rocket Abilities"
+description: >-
+  List sites with stored WP Rocket data and read each site's saved WP Rocket feature settings with the MainWP WP Rocket Abilities API.
+---
+
+The WP Rocket Integration registers two read-only abilities in the `mainwp-wp-rocket` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- List sites that have stored WP Rocket data on your Dashboard
+- Read the saved WP Rocket feature switches that apply to one site
+- Tell whether a site uses its own settings or the global settings
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A WP Rocket Integration release with Abilities support, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the WP Rocket Integration
+- Access to each site you want to read
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Team Control restrictions also apply. Both abilities check the user's access to the WP Rocket Integration. The list returns only sites the user can access, and the settings read checks access to the requested site. Users without `manage_options` are denied even if Team Control grants them the Add-on.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-wp-rocket-sites-v1` | GET | List accessible sites with stored WP Rocket data |
+| `mainwp/get-wp-rocket-site-settings-v1` | GET | Read the saved WP Rocket feature settings that apply to one site |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-wp-rocket'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`.
+
+<Note>
+These abilities read what MainWP Dashboard has stored. They do not contact child sites or WP Rocket, sync sites, save settings, or clear or preload cache. The results show saved Dashboard settings, not a live query of WP Rocket on the child site. To change settings or clear cache, use the [WP Rocket Integration](/add-ons/performance/rocket-extension) pages.
+</Note>
+
+---
+
+## List WP Rocket Sites
+
+**Ability:** `mainwp/list-wp-rocket-sites-v1`<br />
+**Method:** GET
+
+Use this to find which sites have WP Rocket data on your Dashboard, whether WP Rocket is active, and whether a site overrides the global settings.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-wp-rocket-sites-v1/run'
+```
+
+The input is optional. Omit it, pass `null`, or pass an object with any of these properties. Extra properties are rejected.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, starting at `1` |
+| `per_page` | integer | No | `20` | Sites per page, from `1` to `100` |
+| `site_id` | integer | No | None | Return only this site |
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 1,
+      "name": "Client Store",
+      "wp_rocket_active": true,
+      "uses_site_settings": false,
+      "has_stored_settings": true
+    },
+    {
+      "site_id": 4,
+      "name": "Agency Blog",
+      "wp_rocket_active": true,
+      "uses_site_settings": true,
+      "has_stored_settings": true
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 2,
+  "truncated": false
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `sites` | Sites on this page, sorted by ascending site ID |
+| `total` | Number of accessible sites with stored WP Rocket data |
+| `truncated` | `true` when more sites remain after this page |
+| `site_id` | MainWP site ID |
+| `name` | Site name from MainWP Dashboard. Empty when the name looks like a URL or email address |
+| `wp_rocket_active` | Whether WP Rocket was active on the site when last recorded |
+| `uses_site_settings` | Whether **Override general settings** is enabled for the site |
+| `has_stored_settings` | Whether the site has readable site-specific settings saved |
+
+While `truncated` is `true`, request the next `page`. A page beyond the last one returns an empty `sites` array with the normal `total`.
+
+Only sites with stored WP Rocket data appear. A site you can access that is not listed can still be read with [Get WP Rocket Site Settings](#get-wp-rocket-site-settings), which then returns the global settings. When you pass a `site_id` that does not exist, or that you cannot access, the ability returns a standard Dashboard error.
+
+## Get WP Rocket Site Settings
+
+**Ability:** `mainwp/get-wp-rocket-site-settings-v1`<br />
+**Method:** GET
+
+Use this to check which WP Rocket features are switched on for a site, for example before troubleshooting caching or auditing configuration across clients.
+
+The only input is the required `site_id`. Supply a positive integer such as `1`, or its decimal string form such as `"1"`. Extra properties are rejected.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-wp-rocket-site-settings-v1/run'
+```
+
+**Example response (shortened):**
+
+```json
+{
+  "site_id": 1,
+  "source": "global",
+  "wp_rocket_active": true,
+  "minify_css": true,
+  "minify_js": true,
+  "defer_all_js": true,
+  "delay_js": false,
+  "lazyload": true,
+  "cdn": false,
+  "do_cloudflare": false,
+  "remove_unused_css": false,
+  "cache_lifespan": 10,
+  "cache_lifespan_unit_seconds": 3600
+}
+```
+
+The full response always contains every field listed below.
+
+### Settings source
+
+`source` tells you which saved settings the response reflects:
+
+| Value | Meaning |
+|-------|---------|
+| `site` | **Override general settings** is enabled for the site and readable site settings are saved |
+| `global` | The site uses the general settings from **MainWP > Add-ons > Performance > Rocket** |
+
+If the override is enabled but no readable site settings are saved, the response falls back to `global`. `wp_rocket_active` reflects the site's stored record and is `false` when the site has none.
+
+### Cache lifespan
+
+`cache_lifespan` is the saved lifespan number, and `cache_lifespan_unit_seconds` is its unit: `3600` for hours or `86400` for days. Multiply them to get the lifespan in seconds. A `cache_lifespan` of `0` means cache never expires. Either field is `null` when the value is missing or invalid.
+
+### Feature switches
+
+Each feature field is a boolean. A switch that was never saved returns `false`.
+
+| Area | Fields |
+|------|--------|
+| File optimization | `minify_css`, `optimize_css_delivery`, `async_css`, `remove_unused_css`, `minify_js`, `minify_concatenate_js`, `defer_all_js`, `delay_js`, `delay_js_execution_safe_mode` |
+| Media | `lazyload`, `lazyload_css_bg_img`, `lazyload_iframes`, `lazyload_youtube`, `image_dimensions`, `host_fonts_locally`, `cache_webp` |
+| Cache | `cache_logged_user` |
+| Preload | `manual_preload`, `automatic_preload`, `sitemap_preload`, `preload_links` |
+| Database | `database_revisions`, `database_auto_drafts`, `database_trashed_posts`, `database_spam_comments`, `database_trashed_comments`, `database_expired_transients`, `database_all_transients`, `database_optimize_tables`, `schedule_automatic_cleanup` |
+| CDN and Heartbeat | `cdn`, `control_heartbeat` |
+| Add-ons | `analytics_enabled`, `varnish_auto_purge`, `do_cloudflare`, `cloudflare_devmode`, `cloudflare_auto_settings`, `cloudflare_protocol_rewrite`, `sucury_waf_cache_sync` |
+
+The response contains only these switches and the cache lifespan. It never returns API keys, email addresses, Cloudflare zone details, CDN hostnames, URLs, cookies, user agents, or exclusion lists.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). These abilities can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_rocket_invalid_input` | 400 | Missing or invalid `site_id`, `page`, or `per_page` |
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options`, WP Rocket Integration access, or access to the site |
+| `mainwp_site_not_found` | 404 | The requested site does not exist or is not accessible |
+| `mainwp_rocket_storage_error` | 500 | Stored WP Rocket data could not be read |
+
+## Related Resources
+
+- [WP Rocket Integration](/add-ons/performance/rocket-extension) - Manage WP Rocket settings and clear cache
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs
