@@ -15,6 +15,7 @@ addonType: integration
 - Running performance audits on child sites
 - Getting your Google PageSpeed Insights API key
 - Understanding Lighthouse scores and reports
+- Reading stored scores through MainWP Abilities
 
 ---
 
@@ -185,6 +186,20 @@ For legacy REST API v1 requests, use `POST` for `/wp-json/mainwp/v1/lighthouse/a
 
 Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
+## MainWP Abilities
+
+The Lighthouse Add-on registers two read-only abilities in the `mainwp-lighthouse` category:
+
+- `mainwp/get-lighthouse-overview-v1` returns API key presence, schedule settings, the number of tracked sites, and the latest desktop and mobile audit times.
+- `mainwp/list-lighthouse-site-results-v1` returns paginated desktop and mobile scores, audit times, and schedule and exclusion flags for each accessible site. You can filter by site.
+
+Use them to read stored Lighthouse data from scripts, reports, or AI tools. Both require `manage_options`, access to the Lighthouse Add-on, and Dashboard access to each site. They do not run audits, change settings, or return the API key. See the [Lighthouse Abilities reference](/api-reference/abilities-api/lighthouse) for request examples and response fields.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-lighthouse-overview-v1/run'
+```
+
 ## Get the Google PageSpeed Insights API Key
 
 <Steps>
@@ -211,5 +226,6 @@ Navigate to [https://developers.google.com/speed/docs/insights/v5/get-started](h
 ## Related Resources
 
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
+- [Lighthouse Abilities](/api-reference/abilities-api/lighthouse) - Read the overview and stored site scores
 - [Cache Control](/add-ons/performance/cache-control-extension) - Performance optimization
 - [WP Rocket Integration](/add-ons/performance/rocket-extension) - Advanced caching tools
