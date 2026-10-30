@@ -1,0 +1,301 @@
+---
+title: Time Tracker Abilities
+sidebarTitle: "Time Tracker Abilities"
+description: >-
+  List, create, edit, and archive Time Tracker tasks and buckets, start and pause timers, and complete tasks with a billing snapshot through MainWP Abilities.
+---
+
+MainWP Time Tracker 5.2.0 registers twelve abilities in the `mainwp-time-tracker` category. All use the `mainwp/` namespace on your MainWP Dashboard. Use them to automate task, bucket, and timer workflows from scripts, AI agents, or the [MainWP MCP Server](/mcp-server/overview). The Time Tracker Dashboard pages and [REST API](/add-ons/client/mainwp-time-tracker-extension#time-tracker-rest-api) remain available.
+
+## What You'll Learn
+
+- List and read tasks and buckets
+- Create, edit, and archive tasks and buckets
+- Start and pause a task timer
+- Complete a task and freeze its billing values
+- Handle revisions, previews, retries, and errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support, active when Time Tracker loads; use version 6.2 or later for the `input_json` and DELETE examples below
+- [Time Tracker](/add-ons/client/mainwp-time-tracker-extension) 5.2.0 or later, active in MainWP Dashboard
+- An authenticated MainWP Dashboard administrator with access to the Time Tracker Add-on
+- The Time Tracker permissions listed for each ability, and access to the related clients and sites
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Permissions
+
+Each ability requires the Dashboard administrator capability and the Time Tracker permissions below. Team Control grants alone do not bypass the administrator requirement. Every request also checks the user's current access to the task's client and to every site attached to the task.
+
+| Ability | Required Time Tracker permissions |
+|---------|-----------------------------------|
+| List tasks, get task | View tasks |
+| Create task | View tasks, Create task |
+| Replace task | View tasks, Edit task |
+| Archive task | View tasks, Delete task |
+| List buckets | View buckets |
+| Create bucket, replace bucket | View buckets, Create bucket or Edit bucket, Manage billing |
+| Archive bucket | View buckets, Delete bucket |
+| Start timer, pause timer | View tasks, Track time |
+| Complete task | View tasks, View billing, Manage billing |
+
+Bucket lists return `rate_minor` and `currency` as `null` unless the user also has **View billing**.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-time-tracker-tasks-v1` | GET | List task summaries |
+| `mainwp/get-time-tracker-task-v1` | GET | Read one task with its client, bucket, and sites |
+| `mainwp/create-time-tracker-task-v1` | POST | Create a paused task |
+| `mainwp/replace-time-tracker-task-v1` | DELETE | Preview or replace a task's details and relationships |
+| `mainwp/archive-time-tracker-task-v1` | DELETE | Preview or archive an inactive task |
+| `mainwp/list-time-tracker-buckets-v1` | GET | List bucket summaries |
+| `mainwp/create-time-tracker-bucket-v1` | POST | Create a bucket |
+| `mainwp/replace-time-tracker-bucket-v1` | DELETE | Preview or replace a bucket's details, rate, and clients |
+| `mainwp/archive-time-tracker-bucket-v1` | DELETE | Preview or archive a bucket after moving its tasks |
+| `mainwp/start-time-tracker-timer-v1` | POST | Start the timer on a paused task |
+| `mainwp/pause-time-tracker-timer-v1` | POST | Pause the active timer and record the segment |
+| `mainwp/complete-time-tracker-task-v1` | DELETE | Preview or complete a paused task and save its billing snapshot |
+
+WordPress selects DELETE for the replace, archive, and complete abilities because they are marked destructive and idempotent. Send their input as a JSON body, as described in [DELETE requests](/api-reference/abilities-api/overview#executing-abilities).
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-time-tracker'
+```
+
+## Request Rules
+
+Every input property is required and extra properties are rejected. Pass JSON `null` for an optional value you don't want to set.
+
+`task_ref`, `bucket_ref`, `client_ref`, `session_ref`, and revisions are opaque 64-character lowercase hexadecimal values returned by the abilities. They stay valid when WordPress authentication salts rotate. Don't substitute the numeric task, bucket, or client IDs shown in the Dashboard. `site_ids` uses positive MainWP site IDs.
+
+Each write requires a UUID `request_ref`. Reuse it only for an identical retry of the same action by the same user. Time Tracker rechecks your current permissions and scope before it returns the stored result of a retry. Use a new UUID for a different request.
+
+Revisions protect against overwriting newer changes. Pass the current `revision` as `if_match` or `task_revision`. If the record changed since you read it, Time Tracker returns `generation_changed`. Read it again and review the change.
+
+### Preview and confirm
+
+The replace, archive, and complete abilities use a two-step flow:
+
+| Step | `dry_run` | `confirm` | `preview_token` | Effect |
+|------|-----------|-----------|-----------------|--------|
+| Preview | `true` | `false` | `null` | Validate the change and return a `preview_token` without saving |
+| Execute | `false` | `true` | Token from the preview | Apply the previewed change |
+
+Send the execute request with the same `request_ref` and inputs used for the preview. The token is bound to your user account and to the previewed state, and expires after 10 minutes. If anything changed in between, Time Tracker returns `preview_changed`. Request a new preview.
+
+Setting both flags to `true` returns `invalid_input`. Setting both to `false` returns `confirmation_required`.
+
+## List and Read Tasks
+
+### List tasks
+
+**Ability:** `mainwp/list-time-tracker-tasks-v1`<br />
+**Method:** GET
+
+| Input | Meaning |
+|-------|---------|
+| `client_ref` | Filter by client, or `null` |
+| `site_id` | Filter by MainWP site ID, or `null` |
+| `state` | `paused`, `working`, `completed`, or `null` for all |
+| `limit` | 1-100 |
+| `after_task_ref` | Cursor from `next_after_task_ref`, or `null` for the first page |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"client_ref":null,"site_id":7,"state":null,"limit":50,"after_task_ref":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-time-tracker-tasks-v1/run'
+```
+
+Each task contains `task_ref`, `title`, `state`, `duration_seconds`, `site_count`, and `revision`. Continue with `next_after_task_ref` when `truncated` is `true`. A task appears only when you can access its client and all of its sites.
+
+### Get a task
+
+**Ability:** `mainwp/get-time-tracker-task-v1`<br />
+**Method:** GET<br />
+**Input:** `task_ref`
+
+The response contains `task_ref`, `title`, `description`, `client_ref`, `bucket_ref`, `site_ids`, `state`, `duration_seconds`, `active_session_ref`, and `revision`. `active_session_ref` is set while the timer is running. Use it to pause the timer.
+
+## Create, Replace, and Archive Tasks
+
+### Create a task
+
+**Ability:** `mainwp/create-time-tracker-task-v1`<br />
+**Method:** POST
+
+| Input | Meaning |
+|-------|---------|
+| `title` | 1-256 characters |
+| `description` | Up to 4000 characters |
+| `client_ref` | Client reference, or `null` |
+| `bucket_ref` | Bucket reference, or `null` |
+| `site_ids` | Up to 1000 unique MainWP site IDs |
+| `request_ref` | UUID identifying this request |
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"title":"Release review","description":"QA pass","client_ref":null,"bucket_ref":null,"site_ids":[7],"request_ref":"123e4567-e89b-42d3-a456-426614174970"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-time-tracker-task-v1/run'
+```
+
+The new task starts in the `paused` state. The response contains `request_id`, `task_ref`, `state`, and `revision`. A bucket that isn't a general bucket requires a client that belongs to it. Otherwise, Time Tracker returns `invalid_relationship`.
+
+### Replace a task
+
+**Ability:** `mainwp/replace-time-tracker-task-v1`<br />
+**Method:** DELETE
+
+Send the complete new `title`, `description`, `client_ref`, `bucket_ref`, and `site_ids`, plus `task_ref`, `if_match`, and the [preview and confirm](#preview-and-confirm) fields. Only paused tasks can be replaced. Duration and billing values are preserved, and site time allocations are refreshed when the site list changes.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"task_ref":"TASK_REF","title":"Release review","description":"Final QA","client_ref":null,"bucket_ref":null,"site_ids":[7],"if_match":"TASK_REVISION","request_ref":"123e4567-e89b-42d3-a456-426614174971","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-time-tracker-task-v1/run'
+```
+
+The response contains `mode` (`dry_run` or `completed`), `request_id`, `task_ref`, `removed_site_count`, `revision`, and `preview_token`. Review `removed_site_count` before confirming.
+
+### Archive a task
+
+**Ability:** `mainwp/archive-time-tracker-task-v1`<br />
+**Method:** DELETE
+
+Required inputs are `task_ref`, `if_match`, and the preview and confirm fields. The task must be paused or completed, with no running timer. The response contains `mode`, `request_id`, `task_ref`, `archived`, `preserved_segment_count`, and `preview_token`. Recorded time segments are kept.
+
+## List, Create, Replace, and Archive Buckets
+
+### List buckets
+
+**Ability:** `mainwp/list-time-tracker-buckets-v1`<br />
+**Method:** GET
+
+Inputs are `client_ref` (or `null`), `limit` (1-100), and `after_bucket_ref` (or `null`). Each bucket contains `bucket_ref`, `title`, `general`, `client_count`, `active_task_count`, `rate_minor`, `currency`, and `revision`. Continue with `next_after_bucket_ref` when `truncated` is `true`.
+
+`rate_minor` is the hourly rate in the currency's minor unit. For example, `12500` in `USD` is $125.00 per hour.
+
+### Create a bucket
+
+**Ability:** `mainwp/create-time-tracker-bucket-v1`<br />
+**Method:** POST
+
+| Input | Meaning |
+|-------|---------|
+| `title` | 1-256 characters |
+| `description` | Up to 4000 characters |
+| `general` | `true` for a general bucket available to all clients |
+| `client_refs` | Client references. Must be empty for a general bucket and non-empty otherwise |
+| `rate_minor` | Hourly rate in minor units |
+| `currency` | Three-letter code that matches the currency in Time Tracker settings, such as `USD` |
+| `request_ref` | UUID identifying this request |
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"title":"Support","description":"Client support","general":true,"client_refs":[],"rate_minor":12500,"currency":"USD","request_ref":"123e4567-e89b-42d3-a456-426614174973"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-time-tracker-bucket-v1/run'
+```
+
+The response contains `request_id`, `bucket_ref`, `client_count`, and `revision`. New buckets use monthly recurrence and no hour limit. Change those settings on the [Buckets page](/add-ons/client/mainwp-time-tracker-extension#buckets-page).
+
+### Replace a bucket
+
+**Ability:** `mainwp/replace-time-tracker-bucket-v1`<br />
+**Method:** DELETE
+
+Send `bucket_ref`, the complete `title`, `description`, `general`, `client_refs`, `rate_minor`, and `currency` fields, `if_match`, and the preview and confirm fields. Recurrence and hour-limit settings are kept. Time Tracker checks that tasks already assigned to the bucket still match its clients. The response contains `mode`, `request_id`, `bucket_ref`, `affected_task_count`, `revision`, and `preview_token`.
+
+### Archive a bucket
+
+**Ability:** `mainwp/archive-time-tracker-bucket-v1`<br />
+**Method:** DELETE
+
+Required inputs are `bucket_ref`, `replacement_bucket_ref`, `if_match`, and the preview and confirm fields. If the bucket has tasks, set `replacement_bucket_ref` to another bucket. Every task must be compatible with the replacement, either because it is a general bucket or because it includes the task's client. Use `null` only when the bucket has no tasks.
+
+The response contains `mode`, `request_id`, `bucket_ref`, `reassigned_task_count`, `archived`, and `preview_token`.
+
+## Track Time
+
+### Start a timer
+
+**Ability:** `mainwp/start-time-tracker-timer-v1`<br />
+**Method:** POST
+
+Required inputs are `task_ref`, `task_revision`, and `request_ref`. The task must be paused with no running timer.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"task_ref":"TASK_REF","task_revision":"TASK_REVISION","request_ref":"123e4567-e89b-42d3-a456-426614174976"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/start-time-tracker-timer-v1/run'
+```
+
+The response contains `request_id`, `task_ref`, `session_ref`, `state` (`working`), `started_at`, and the new `revision`.
+
+### Pause a timer
+
+**Ability:** `mainwp/pause-time-tracker-timer-v1`<br />
+**Method:** POST
+
+Required inputs are `task_ref`, `session_ref` from the start response or task read, the current `task_revision`, and `request_ref`. Only the user who started the timer can pause it through this ability.
+
+The response contains `request_id`, `task_ref`, `session_ref`, `segment_ref`, `segment_seconds`, the total `duration_seconds`, `state` (`paused`), and the new `revision`.
+
+## Complete a Task
+
+**Ability:** `mainwp/complete-time-tracker-task-v1`<br />
+**Method:** DELETE
+
+Required inputs are `task_ref`, `task_revision`, and the preview and confirm fields. The task must be paused. Completion freezes the billing values, including rate, currency, and rounding, in a billing snapshot that later setting changes don't alter.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"task_ref":"TASK_REF","task_revision":"TASK_REVISION","request_ref":"123e4567-e89b-42d3-a456-426614174978","dry_run":false,"confirm":true,"preview_token":"PREVIEW_TOKEN"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/complete-time-tracker-task-v1/run'
+```
+
+The response contains `mode`, `request_id`, `task_ref`, `duration_seconds`, `billing_snapshot_ref`, `state` (`completed` after execution), `revision`, and `preview_token`.
+
+## Handle Errors and Retries
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `invalid_input` | 400 | Check required fields, types, limits, and extra properties |
+| `access_denied` | 403 | Check administrator access and Time Tracker permissions |
+| `task_not_found`, `client_not_found` | 404 | Check the reference and your client and site access |
+| `confirmation_required` | 409 | Set `dry_run` or `confirm` |
+| `active_timer_conflict` | 409 | Read the task; start requires a paused task and pause requires the active session |
+| `state_conflict` | 409 | Read the task state before retrying |
+| `request_conflict` | 409 | Use a new UUID for a different request |
+| `lock_busy` | 409 | Another Time Tracker write is in progress; retry the identical request |
+| `reconciliation_required` | 409 | Resolve the task data in the Dashboard before retrying |
+| `task_archived`, `bucket_archived` | 410 | The record is archived; select an active record |
+| `generation_changed` | 412 | Read the current revision and review the change |
+| `preview_changed` | 412 | Request a new preview |
+| `invalid_relationship` | 422 | Check client, bucket, site, and replacement-bucket compatibility |
+| `invalid_money` | 422 | Check the rate and currency |
+| `schema_unavailable`, `storage_unavailable` | 503 | Check that the Time Tracker database is installed and resolve database errors |
+| `outcome_unknown` | 503 | Read the current state before retrying |
+
+A timeout doesn't prove that nothing changed. Read the task or bucket first, then retry with the same `request_ref` and request body.
+
+<Note>
+- A list request fails as a whole if one item has a drifted client or site relationship or an archived bucket.
+- Tasks with custom legacy states aren't supported by these abilities.
+- A working task with a missing or future start time can't be changed through the abilities.
+</Note>
+
+## Related Resources
+
+- [Time Tracker](/add-ons/client/mainwp-time-tracker-extension) - Buckets, tasks, settings, and payment statuses
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) - Assign Time Tracker permissions
