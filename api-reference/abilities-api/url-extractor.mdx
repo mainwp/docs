@@ -1,0 +1,326 @@
+---
+title: URL Extractor Abilities
+sidebarTitle: "URL Extractor Abilities"
+description: >-
+  Manage saved templates, collect URLs across managed sites, check progress, and download stored results as text or CSV.
+---
+
+URL Extractor provides ten abilities for collecting post and page URLs from your managed sites. An ability is a named action that a connected tool can request through MainWP's [Abilities API](/api-reference/abilities-api/overview).
+
+For example, ask: “List my URL Extractor templates, collect published page URLs from sites 7 and 12, then prepare a CSV when the run finishes.”
+
+## What You'll Learn
+
+- Create, read, replace, and delete saved output templates
+- Start an extraction and check its progress
+- Read stored results and download text or CSV files
+- Understand permissions, repeat requests, and unfinished work
+
+## Before You Start
+
+Activate URL Extractor with Abilities API support on your MainWP Dashboard. The Dashboard needs the WordPress Abilities API and MainWP's Abilities runtime. Each selected site needs a connected MainWP Child that supports URL Extractor's paged queries. See the [URL Extractor guide](/add-ons/posts-pages/url-extractor-extension) for installation and Dashboard controls.
+
+All ten abilities require an authenticated account with the WordPress `manage_options` permission, which allows administration of site settings, and access to URL Extractor. **Team Control staff without that administrator-level permission cannot use these abilities.** Team Control restrictions still apply to accounts that have it.
+
+The following URL Extractor permissions control individual actions:
+
+- **View Templates:** list and read templates.
+- **Manage Templates:** create, replace, and delete templates. Private templates belong to their owner. Shared templates are visible to other users with template access; managing them also requires `manage_options`.
+- **Extract Published Posts:** start runs, check their progress, read results, and create exports. You must have access to every site selected for the run.
+- **Extract Non-Public Posts:** also required when a run includes private, draft, pending, scheduled, or trashed content. It is required again when checking that run, reading its results, or creating its exports.
+
+Runs and exports belong to the account that requested them. Another administrator cannot use your run reference to read your results. Access is checked again during background work and on later ability requests. Losing access can stop work or make a run unavailable.
+
+### Existing Templates After an Update
+
+Old templates are migrated automatically. No user action is needed. Compatible templates become shared templates available to the abilities. Older templates that cannot be converted are kept unchanged; they are not included in the abilities' template list. An informational notice explains this after migration finishes. You do not need to edit or delete those originals to finish migration.
+
+While migration is still in progress, abilities can return `storage_unavailable`. This means the abilities' saved data is not ready; it is separate from an extraction waiting to run.
+
+## Inputs and Repeat Requests
+
+The JSON examples below show each ability's input object. For direct requests, use `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run` on your Dashboard, replacing `ABILITY_NAME` with the full name shown below. On Dashboard 6.2 or later, send GET inputs through `input_json`. For POST and DELETE, wrap the object in `{"input": {...}}` in a JSON body. See [authentication](/api-reference/abilities-api/overview#authentication) and [input handling](/api-reference/abilities-api/overview#input-handling).
+
+Include every field shown, including fields set to `null`. Extra fields are rejected. Replace uppercase placeholders such as `TEMPLATE_REF` with exact values from earlier responses. References and revisions are values returned in responses; keep them unchanged.
+
+`request_ref` is a UUID, a unique label for one request. Keep the same label and inputs when retrying the same request with the same account. Changing the inputs under an existing label returns `request_conflict`. Use a new label for a different action. This protection lasts while the saved request record remains available.
+
+Reads are safe to repeat. Template changes finish in their response; they do not return a pending job. Only extraction runs continue in the background. Export creation returns a ready download link or an error if the run is not ready.
+
+## List Templates
+
+**Ability:** `mainwp/list-url-extractor-templates-v1`<br />
+**Method:** GET
+
+Lists your private templates and shared templates. Requires **View Templates** and the common account permissions above. Repeating this read is safe.
+
+Example request: “Show my available URL Extractor templates.”
+
+```json
+{
+  "audience": null,
+  "limit": 25,
+  "after_template_ref": null
+}
+```
+
+Use `audience: "private"` or `"shared"` to narrow the list. Each entry includes its title, `template_ref`, `audience`, `token_count`, and `revision`. A token is a placeholder, such as `[post.url]`, replaced with a value from each result.
+
+`limit` accepts 1 to 100. When `truncated` is `true`, more templates are available. Pass `next_after_template_ref` as `after_template_ref` to read the next page.
+
+## Read One Template
+
+**Ability:** `mainwp/get-url-extractor-template-v1`<br />
+**Method:** GET
+
+Reads one template's title, audience, output format, separator, tokens, and revision. Requires **View Templates**. You can read your private templates and shared templates. Repeating the read is safe.
+
+Example request: “Show the format saved in my URL list template.”
+
+```json
+{
+  "template_ref": "TEMPLATE_REF"
+}
+```
+
+Keep the returned `revision` if you want to replace or delete the template. For a text export, pass this revision as `template_generation`.
+
+## Create a Template
+
+**Ability:** `mainwp/create-url-extractor-template-v1`<br />
+**Method:** POST
+
+Saves an output format and separator. Requires **Manage Templates**. Choose `private` for your own use or `shared` for users with template access. Creating a shared template also requires `manage_options`.
+
+Example request: “Save a private template with each post title and URL on its own line.”
+
+```json
+{
+  "title": "URL list",
+  "audience": "private",
+  "format": "[post.title] [post.url]",
+  "separator": "\n",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174001"
+}
+```
+
+The response returns `template_ref` and `revision`. An identical retry with the same `request_ref` returns the saved response without creating another template. A duplicate title for the same owner and audience is rejected, including differences in letter case.
+
+Supported tokens are `[post.title]`, `[post.url]`, `[post.date]`, `[post.status]`, `[post.author]`, `[post.website.url]`, and `[post.website.name]`. You can mix them with plain text. Unknown tokens or unmatched square brackets are rejected. An empty separator puts each entry on a new line.
+
+Titles allow up to 100 characters. The format allows up to 4,000 UTF-8 bytes and 100 token uses; the separator allows up to 16 bytes. A byte is a unit of stored text; some characters use several bytes.
+
+## Replace a Template
+
+**Ability:** `mainwp/replace-url-extractor-template-v1`<br />
+**Method:** DELETE
+
+Replaces the title, audience, format, and separator together. Requires **Manage Templates**. You can change your private templates. Changing a shared template or making one shared also requires `manage_options`.
+
+First read the template's current revision, then preview your replacement. This preview checks the proposed change without saving it.
+
+Example request: “Preview changing my URL list template to show only URLs.”
+
+```json
+{
+  "template_ref": "TEMPLATE_REF",
+  "title": "URL list",
+  "audience": "private",
+  "format": "[post.url]",
+  "separator": "\n",
+  "if_match": "TEMPLATE_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174002",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+To save, repeat these values with `dry_run: false`, `confirm: true`, and the returned `preview_token`. Keep the same `request_ref` and `if_match`. The response has `mode: "completed"` and the new `revision`.
+
+Previews are safe to repeat. An identical retry of a confirmed request returns its saved result without replacing the template again. If the template or preview no longer matches, read it again and make a new preview.
+
+## Delete a Template
+
+**Ability:** `mainwp/delete-url-extractor-template-v1`<br />
+**Method:** DELETE
+
+Previews or deletes a template. Requires **Manage Templates** and ownership for a private template. Deleting a shared template also requires `manage_options`.
+
+Example request: “Check whether I can delete this old URL list template.”
+
+```json
+{
+  "template_ref": "TEMPLATE_REF",
+  "if_match": "TEMPLATE_REVISION",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174003",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+The preview returns `active_run_count`, `deleted: false`, and a `preview_token`. Deletion is blocked while an active run uses the template. To delete it, keep the reference, revision, and request label; set `dry_run: false`, `confirm: true`, and use the returned token.
+
+A successful confirmation returns `deleted: true`. Repeating the preview is safe. An identical retry of the confirmed request returns its saved result, even after deletion. If the template or its use changes before confirmation, preview again.
+
+## Start an Extraction Run
+
+**Ability:** `mainwp/start-url-extractor-run-v1`<br />
+**Method:** POST
+
+Starts collecting post or page details from an explicit list of managed sites. Requires **Extract Published Posts**, access to every selected site, and **Extract Non-Public Posts** if you select any status other than `publish`.
+
+Example request: “Collect published page URLs from sites 7 and 12.”
+
+```json
+{
+  "site_ids": [7, 12],
+  "post_types": ["page"],
+  "statuses": ["publish"],
+  "keyword": null,
+  "date_from": null,
+  "date_to": null,
+  "post_id": null,
+  "author_id": null,
+  "page_size": 50,
+  "request_ref": "123e4567-e89b-42d3-a456-426614174004"
+}
+```
+
+Choose `post`, `page`, or both in `post_types`. Status choices are `publish`, `private`, `draft`, `pending`, `future` (scheduled), and `trash`. Here, `pending` means a post awaiting review. It does not describe the extraction's progress.
+
+You can filter by a keyword, dates in `YYYY-MM-DD` form, a post ID, or an author ID. Leave unused filters as `null`. You cannot combine `post_id` and `author_id`. If both dates are supplied, the end must be no earlier than the start and no more than 365 days later.
+
+One run accepts 1 to 100 sites. `page_size` accepts 1 to 100 records per Child request; it is not the total result limit. A run stores at most 10,000 records and reads at most 100 pages per site. A limit can leave results incomplete, so check the run's state and `truncated` value.
+
+The response returns `run_ref`, `site_count`, `query_generation`, and `state`, normally `queued`. Keep `run_ref` to check progress. **Accepted means waiting for background work, not finished.** WordPress scheduled tasks on the Dashboard process the run. If it stays queued, check that scheduled tasks are running.
+
+An identical retry with the same `request_ref` returns the existing run without creating a second one. A fresh label starts a new run. Changing site membership later does not add sites to an accepted run.
+
+## Check Run Progress
+
+**Ability:** `mainwp/get-url-extractor-run-v1`<br />
+**Method:** GET
+
+Reads the progress of a run you started. Requires **Extract Published Posts**, current access to all its sites, and **Extract Non-Public Posts** for a non-public run. Repeating this read is safe; it does not start the extraction.
+
+Example request: “Has my extraction finished, and did every site succeed?”
+
+```json
+{
+  "run_ref": "RUN_REF"
+}
+```
+
+The response includes `site_count`, `succeeded_sites`, `failed_sites`, `record_count`, `truncated`, and `generation`. Pass `generation` as `run_generation` when creating an export.
+
+| State | Meaning |
+|-------|---------|
+| `queued` | Accepted and waiting for background processing |
+| `running` | Processing has started; counts and stored results may still change |
+| `complete` | Every selected site succeeded without truncation |
+| `partial` | At least one site succeeded, but some work failed or hit a limit |
+| `failed` | No site finished successfully; this does not prove there are no matching posts |
+| `expired` | Saved result content has been removed by scheduled cleanup |
+
+Queued and running work is still pending completion. Check again before treating results as a full report. A run with no matching posts can still be `complete` with `record_count: 0`.
+
+Scheduled cleanup removes stored results after they have been finished for 24 hours. Run summaries are removed later, after seven days. Download what you need before the results expire.
+
+## Read Stored Results
+
+**Ability:** `mainwp/list-url-extractor-records-v1`<br />
+**Method:** GET
+
+Reads details already collected for your run. It does not fetch fresh content from the sites. Requires **Extract Published Posts**, current access to all the run's sites, and **Extract Non-Public Posts** for a non-public run. Repeating a read is safe.
+
+Example request: “Show the first 25 results from my extraction.”
+
+```json
+{
+  "run_ref": "RUN_REF",
+  "limit": 25,
+  "after_record_ref": null
+}
+```
+
+Each record includes its reference, site and post IDs, title, URL, date, status, author, website URL, and website name. A URL can be `null` if it cannot be safely returned. Post bodies are not included.
+
+`limit` accepts 1 to 100. When `truncated` is `true` here, there is another page of stored records. Pass `next_after_record_ref` as `after_record_ref`. This page flag is different from the run's `truncated` flag, which means extraction hit a limit.
+
+While a run is queued or running, an empty page or `truncated: false` does not prove collection is finished. Check run progress first for a final report. The returned `run_generation` identifies the run's current results and can change as work continues.
+
+## Create a Text Export
+
+**Ability:** `mainwp/create-url-extractor-text-export-v1`<br />
+**Method:** POST
+
+Builds a text file from stored results using a saved template. Requires **Extract Published Posts**, ownership of the run, current access to every selected site, and **Extract Non-Public Posts** for a non-public run. The template must be your private template or a shared template.
+
+Example request: “Prepare my finished URL list as a text file using this template.”
+
+```json
+{
+  "run_ref": "RUN_REF",
+  "run_generation": "GENERATION_FROM_RUN",
+  "template_ref": "TEMPLATE_REF",
+  "template_generation": "REVISION_FROM_TEMPLATE",
+  "allow_partial": false,
+  "request_ref": "123e4567-e89b-42d3-a456-426614174005"
+}
+```
+
+Read the run and template first and use their current generation and revision. If either changes, read it again before requesting an export. The response returns a `download_url`, `expires_at`, `record_count`, `partial`, and file size in `bytes`.
+
+Queued, running, failed, and expired runs cannot be exported. A partial or truncated run requires `allow_partial: true`. This explicitly accepts an incomplete file; it does not finish or retry the extraction.
+
+An identical retry with the same request label returns the existing export link. It does not extend its expiry or allow a second download. Use a new label to create a new export when needed.
+
+## Create a CSV Export
+
+**Ability:** `mainwp/create-url-extractor-csv-export-v1`<br />
+**Method:** POST
+
+Builds a CSV file for a spreadsheet, using the fields you select in their listed order. It does not need a template. Requires **Extract Published Posts**, ownership of the run, current access to all selected sites, and **Extract Non-Public Posts** for a non-public run.
+
+Example request: “Prepare a CSV with the site name, page title, and URL from my finished run.”
+
+```json
+{
+  "run_ref": "RUN_REF",
+  "run_generation": "GENERATION_FROM_RUN",
+  "fields": ["website_name", "title", "url"],
+  "allow_partial": false,
+  "request_ref": "123e4567-e89b-42d3-a456-426614174006"
+}
+```
+
+Choose one to seven distinct fields: `title`, `url`, `date`, `status`, `author`, `website_url`, and `website_name`. Values that could be treated as spreadsheet formulas are escaped. `formula_cells_escaped` reports how many cells were changed for this protection.
+
+The response provides the same download details as a text export. The run must be `complete` or `partial`; incomplete results require `allow_partial: true`. An identical retry returns the same export without creating a new file or renewing the link.
+
+## Download an Export
+
+Text and CSV exports are ready when their creation response returns. Each file is limited to 16 MiB (16,777,216 bytes). If a file is too large, narrow your extraction or reduce the text format or selected CSV fields.
+
+Open the returned `download_url` while signed into the Dashboard as the account that created the export. That account must still have the common account permissions and **Extract Published Posts**. A link alone does not grant another person access.
+
+**The link expires ten minutes after creation and permits one download.** Opening it consumes that download. Reusing it returns `artifact_gone` (HTTP 410) while the export record remains stored. A used or expired file needs a new export request with a new `request_ref`.
+
+The download uses the prepared file. To reflect later changes on your sites, start a new extraction and export its results.
+
+## Common Problems
+
+- **`access_denied`:** check account, add-on, and operation permissions. Non-public content needs the extra permission even when you are only checking an existing run.
+- **`run_not_found`:** check that you are using the run owner's account and still have access to all selected sites.
+- **`run_not_ready`:** check progress. Queued and running work must finish before export; failed and expired runs need a new extraction.
+- **`partial_not_ready`:** review incomplete results, then set `allow_partial: true` only if you want that incomplete export.
+- **`stale_revision`, `preview_drift`, `run_changed`, or `template_changed`:** read the current values and repeat the preview or export with those values.
+- **`storage_unavailable`:** saved data or migration is not ready. If it persists after the automatic migration, ask your Dashboard administrator to check the add-on's storage.
+
+## Related Resources
+
+- [URL Extractor](/add-ons/posts-pages/url-extractor-extension) for Dashboard controls and output templates
+- [Abilities API Overview](/api-reference/abilities-api/overview) for authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) for staff access settings
