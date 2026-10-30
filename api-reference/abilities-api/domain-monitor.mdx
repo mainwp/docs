@@ -1,0 +1,239 @@
+---
+title: Domain Monitor Abilities
+sidebarTitle: "Domain Monitor Abilities"
+description: Read stored domain information, manage monitoring settings, and request domain checks or expiry-alert evaluations from your MainWP Dashboard.
+---
+
+Domain Monitor provides nine abilities in the `mainwp-domain-monitor` category. An ability is a named action that your automation can discover and run. All nine run on your Dashboard server.
+
+## Before You Start
+
+You need WordPress 6.9 or later, MainWP Dashboard 6.2 or later with Abilities API support, and an active Domain Monitor release that includes these abilities. Discover the category below to check whether your installation supports them.
+
+Use a WordPress administrator account with `manage_options`, permission to use Domain Monitor, and access to the selected MainWP sites. Authenticate with a [WordPress Application Password](/api-reference/rest-api/application-passwords). Team Control extension and site restrictions are checked again when the action runs. Changing global settings also requires unrestricted access to all sites.
+
+Team Control staff accounts currently cannot use these add-on abilities through the Dashboard's Abilities API permission gate. Granting access to the Domain Monitor page alone does not grant API access.
+
+Set `MAINWP_USERNAME` and `MAINWP_APPLICATION_PASSWORD` in your shell to your WordPress username and Application Password. Keep their values out of shared scripts and logs.
+
+```bash
+curl -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
+  'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities?category=mainwp-domain-monitor'
+```
+
+Domain information comes from stored profiles or external RDAP/WHOIS services. RDAP and WHOIS are services that publish domain registration information. Their data can be missing or out of date; a result does not prove ownership or renewal.
+
+## Request Format
+
+Each ability has a REST endpoint at `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run`. Use **GET** for the four read abilities and **POST** for the five actions that change data or request work. These endpoints run the same permission checks and code as calling the ability directly.
+
+GET examples use MainWP Dashboard’s `input_json` query parameter to preserve JSON number and boolean types. POST requests use a JSON body with an `input` object. Use JSON integers for site IDs, JSON booleans for flags, and only the documented fields. A site ID refers to a site already connected to MainWP; it cannot be replaced with an arbitrary domain or URL.
+
+```bash
+curl -G -u "${MAINWP_USERNAME}:${MAINWP_APPLICATION_PASSWORD}" \
+  --data-urlencode 'input_json={"site_id":12}' \
+  'https://your-dashboard.example/wp-json/wp-abilities/v1/abilities/mainwp/get-site-domain-expiry-summary-v1/run'
+```
+
+The following examples show each ability's `input` object. For POST requests, wrap it as `{"input":{...}}`.
+
+### Revisions and Confirmation
+
+A `revision` is a 64-character value returned by a read. It identifies the stored state you read. Pass it back as `expected_revision` when replacing settings or a profile, or checking one domain. A conflict means that state changed; read it again before deciding what to do.
+
+Use a preview before manual profile replacement, single-domain checks, or either batch request:
+
+| Action | `dry_run` | `confirm` |
+|--------|-----------|-----------|
+| Preview without changing data or requesting work | `true` | Omitted or `false` |
+| Execute after reviewing the preview | `false` | `true` |
+
+Do not send both flags as `true`. Policy replacement does not use these flags; it requires the current revision and all policy fields.
+
+`request_ref` is a UUID (version 1 through 5) supplied by your client. Use version 4 for new requests, such as `123e4567-e89b-42d3-a456-426614174000`. It lets you correlate a request with its response. It is not a job ID or a key that prevents duplicate work. Never automatically repeat a provider lookup or batch request after a timeout or an `outcome_unknown` response.
+
+## Read One Domain Summary
+
+**Ability:** `mainwp/get-site-domain-expiry-summary-v1` · **Method:** GET
+
+```json
+{"site_id":12}
+```
+
+Returns `site_id`, `profile_status`, `domain_name`, `source`, `lifecycle`, `expires_at`, `last_checked_at`, `freshness`, `revision`, and `evaluated_at`. `profile_status` is `absent`, `available`, or `invalid`. `source` is `manual`, `provider`, or `unavailable`. `lifecycle` is `unavailable`, `valid`, `expiring`, or `expired`; `freshness` is `unknown`, `fresh`, or `stale`.
+
+Dates ending in `_at` are Unix timestamps, except `evaluated_at`, which is a UTC date-time string. A zero timestamp means unavailable. This read does not contact a provider. You can repeat it safely; the lifecycle may change as time passes.
+
+## List Domain Summaries
+
+**Ability:** `mainwp/list-domain-expiry-summaries-v1` · **Method:** GET
+
+```json
+{"after_site_id":0,"per_page":25}
+```
+
+Both fields are required. `after_site_id` is a nonnegative integer; `per_page` is from 1 to 100. Returns `items`, `next_after_site_id`, `has_more`, `returned`, and a shared `evaluated_at`. Each item has the summary fields above, without its own `evaluated_at`.
+
+Only stored rows for allowed sites are listed, in ascending site-ID order. Pass `next_after_site_id` into the next request while `has_more` is `true`, even when `items` is empty. Deleted or inaccessible sites can leave an empty page. Repeating a page has no side effects; stored data or permissions may change between reads.
+
+## Read Monitoring Policy
+
+**Ability:** `mainwp/get-domain-monitor-policy-v1` · **Method:** GET
+
+```json
+{"site_id":12}
+```
+
+Use `site_id: 0` for global settings, or a positive allowed site ID for that site's effective settings. Returns `scope`, `site_id`, `use_schedule`, `frequency_seconds`, `notification_threshold_days`, `overwrite_global`, `manual_mode`, `effective_source`, `policy_status`, and `revision`.
+
+`effective_source` tells you whether the site uses global or individual settings. `policy_status` is `valid`, `normalized_legacy`, or `invalid`. You can repeat this stored read safely.
+
+## Replace Monitoring Policy
+
+**Ability:** `mainwp/replace-domain-monitor-policy-v1` · **Method:** POST
+
+Read the policy first. All fields below are required; replace `REVISION_FROM_POLICY_READ` with its returned `revision`. Try changes on a test site first. Save the old policy if you need to restore it, and obtain a fresh revision before restoring.
+
+```json
+{
+  "site_id": 12,
+  "use_schedule": true,
+  "frequency_seconds": 604800,
+  "notification_threshold_days": 14,
+  "overwrite_global": true,
+  "manual_mode": false,
+  "expected_revision": "REVISION_FROM_POLICY_READ"
+}
+```
+
+`frequency_seconds` must be `86400`, `604800`, `1296000`, or `2592000` (daily, weekly, twice monthly, or monthly). The notification threshold is from 0 to 365 days. Set it to `0` to disable expiry alerts. `manual_mode: true` prevents automatic provider lookups for the site. `overwrite_global: true` selects its individual settings.
+
+For global settings, use `site_id: 0`, set `overwrite_global` and `manual_mode` to `false`, and use an account with unrestricted site access. Global changes affect every site that inherits them.
+
+Returns `status`, `scope`, `site_id`, `previous_revision`, `revision`, and `scheduler_status`. Status is `applied`, `unchanged`, `applied_scheduler_unknown`, or `outcome_unknown`. Scheduler status is `not_applicable`, `unchanged`, `reconciled`, or `unknown`.
+
+Replacing an already matching policy returns `unchanged` when the revision is current. An old revision returns a conflict. If scheduling or the outcome is unknown, read back the policy and inspect scheduled tasks before taking another action.
+
+## Read a Detailed Domain Profile
+
+**Ability:** `mainwp/get-site-domain-profile-v1` · **Method:** GET
+
+```json
+{"site_id":12}
+```
+
+Returns `site_id`, `profile_status`, `source`, `profile`, and `revision`. The profile contains the registration fields listed below, plus `last_checked_at`. Empty strings, zero dates, or empty lists represent unavailable information.
+
+This response can contain registrar contact information. Keep it out of shared logs. It reads stored data without contacting a provider and is safe to repeat.
+
+## Replace a Manual Domain Profile
+
+**Ability:** `mainwp/replace-site-manual-domain-profile-v1` · **Method:** POST
+
+The site must already use manual mode. Read its detailed profile, preserve the old values for rollback, then preview a complete replacement using its current revision. All 14 profile fields are required; omitted fields are not preserved.
+
+```json
+{
+  "site_id": 12,
+  "profile": {
+    "domain_name": "example.com",
+    "registry_domain_id": "",
+    "registrar_whois_server": "",
+    "registrar_url": "",
+    "registrar": "",
+    "registrar_iana_id": "",
+    "registrar_abuse_contact_email": "",
+    "registrar_abuse_contact_phone": "",
+    "updated_at": 0,
+    "created_at": 0,
+    "expires_at": 0,
+    "statuses": [],
+    "name_servers": [],
+    "dnssec": ""
+  },
+  "expected_revision": "REVISION_FROM_PROFILE_READ",
+  "dry_run": true
+}
+```
+
+Use Unix timestamps for dates, up to six unique `statuses`, and up to four unique `name_servers`. Discover the input schema for field-length limits. The total profile is limited to 32 KiB. The stored WHOIS server is metadata, not a lookup target.
+
+Returns `status`, `site_id`, `preview`, `previous_revision`, and `revision`. `preview` contains `ready`, `changed`, `field_count`, and `sensitive_fields_present`; it does not echo private profile values. After reviewing a ready preview, send the same desired profile with `dry_run: false` and `confirm: true`.
+
+Status is `preview`, `applied`, `unchanged`, or `outcome_unknown`. A repeated replacement with a fresh revision and identical data returns `unchanged`; a stale revision can conflict. Read back an uncertain result before deciding whether another write is needed. Restore old values through the same preview and confirmation process with a fresh revision.
+
+## Check One Domain
+
+**Ability:** `mainwp/check-site-domain-v1` · **Method:** POST
+
+Read the site's summary or detailed profile to obtain its revision. The site must use automatic mode.
+
+```json
+{
+  "site_id": 12,
+  "expected_revision": "REVISION_FROM_SUMMARY_OR_PROFILE_READ",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174000",
+  "dry_run": true
+}
+```
+
+The preview derives the domain from the managed site's URL without contacting a provider. To run the lookup, send `dry_run: false` and `confirm: true`. The Dashboard queries RDAP, falls back to a supported WHOIS service when needed, and stores a validated result.
+
+Returns `status`, `request_id`, `site_id`, `domain_name`, `provider`, `persistence`, `result_code`, `revision`, and `authoritative`. Status is `preview`, `checked`, `failed`, or `outcome_unknown`; `authoritative` is always `false`. `persistence` is `not_attempted`, `stored`, `unchanged`, `not_stored`, or `unknown`. A `checked` status with `stored` or `unchanged` confirms the saved profile. A `failed` result can report `rate_limited`, `unsupported_tld`, `invalid_response`, `provider_unavailable`, or `persistence_failed`.
+
+A repeated execution can contact the provider again; `request_ref` does not prevent this. Do not retry an uncertain result automatically. Read the stored profile first. Provider checks replace automatic observations; they do not change a manual profile.
+
+## Request a Batch of Domain Checks
+
+**Ability:** `mainwp/request-domain-check-batch-v1` · **Method:** POST
+
+```json
+{
+  "site_ids": [12, 13],
+  "request_ref": "123e4567-e89b-42d3-a456-426614174000",
+  "dry_run": true
+}
+```
+
+Supply 1 to 100 unique allowed site IDs. Preview eligibility first, then send `dry_run: false` and `confirm: true`. The effective policy must enable automatic scheduling, and the configured interval must have elapsed. Manual-mode sites are not eligible. Checks run later through the Dashboard's scheduled tasks.
+
+Returns `status`, `request_id`, `selected_count`, `eligible_count`, `completion_known`, and `retry_safe`. Status is `preview`, `accepted`, `already_running`, `nothing_eligible`, `failed`, or `outcome_unknown`. `accepted` means the request was recorded, not that checks finished. `completion_known` is always `false`; no job ID is returned.
+
+Repeated requests can return `already_running`, but they are not guaranteed to be deduplicated. Follow `retry_safe` and do not replay an uncertain execution. Read site summaries later to inspect stored observations.
+
+## Request Expiry-Alert Evaluation
+
+**Ability:** `mainwp/request-domain-expiry-alert-evaluation-v1` · **Method:** POST
+
+```json
+{
+  "site_ids": [12, 13],
+  "request_ref": "123e4567-e89b-42d3-a456-426614174000",
+  "dry_run": true
+}
+```
+
+Supply 1 to 100 unique allowed site IDs. Preview first, then execute with `dry_run: false` and `confirm: true`. The effective policy must enable scheduling and use a threshold above zero. A successful stored lookup must have an expiry date within the threshold, and the alert suppression interval must have elapsed. This requests a later evaluation of those sites; it does not send an email during the API call.
+
+Returns the batch fields above plus `mail_attempted: false` and `delivery_known: false`. It can also return `notifications_disabled`. An accepted request proves neither completion nor email delivery. Repeating an execution can request another evaluation; do not replay it after an uncertain result.
+
+## Errors and Existing REST Routes
+
+Errors use the `mainwp_domain_monitor_` prefix:
+
+| Suffix | HTTP status | Meaning |
+|--------|-------------|---------|
+| `invalid_input` | 400 | A field, confirmation, or value is invalid |
+| `authentication_required` | 401 | Sign in with an authorized WordPress account |
+| `access_denied` | 403 | Your account cannot run this action |
+| `site_not_found` | 404 | The site is missing or outside your allowed scope |
+| `conflict`, `busy` | 409 | State changed or another operation holds the required lock |
+| `read_failed`, `write_failed`, `runtime_unavailable` | 500 | State, persistence, or the required runtime could not be verified; read back before retrying a write |
+
+WordPress can return its own authentication or schema errors before the ability runs. A missing site and a site outside your allowed scope return the same not-found response once the ability's base permission check succeeds.
+
+The [existing Domain Monitor REST v2 routes](/api-reference/rest-api/extensions#domain-monitor) remain available: `GET /mainwp/v2/domain-monitor/profiles`, `GET /mainwp/v2/domain-monitor/profiles/{id_or_domain}`, and `POST`, `PUT`, or `PATCH /mainwp/v2/domain-monitor/{id_or_domain}`. They use MainWP REST authentication and their existing response formats. They are separate from the nine Abilities API endpoints and do not accept the ability input objects above.
+
+Legacy clients can also use `GET /mainwp/v1/domain-monitor/domain_profile` and `GET /mainwp/v1/domain-monitor/domain_check` with MainWP's legacy consumer-key authentication. Both accept `site_id`; profile reads can use `all` instead to list allowed sites. When stored data exists, profile responses contain a `results` object keyed by site ID. An allowed site with no stored profile can return an empty JSON array. Checks return the existing `SUCCESS` or `error` response. For example, `/mainwp/v1/domain-monitor/domain_profile?site_id=12` reads one allowed site's stored profile. Hidden and missing exact-site requests return the same 404 error body. Each repeated legacy check can contact a provider again.
+
+See the [Domain Monitor guide](/add-ons/monitoring/mainwp-domain-monitor-extension) for the normal Dashboard workflow.
