@@ -124,7 +124,7 @@ Choose **Use as default destination** or **Make Default** to preselect a destina
 
 | Provider | Details to enter |
 | --- | --- |
-| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable Path style addressing when your service requires it. |
+| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable [Path style addressing](#s3-bucket-names-with-dots) when your service requires it. |
 | Google Cloud Storage | Bucket, HMAC access key, and HMAC secret from your storage interoperability settings. |
 | Dropbox | App key, App secret, and an optional Folder. Register the exact Redirect URI shown in MainWP in your Dropbox app, then use Connect Dropbox. The app needs `files.content.write`, `files.content.read`, and `files.metadata.read` permissions. |
 | SFTP | Host, Port, Username, and an existing absolute Directory path. Use a Password or a PEM Private key. When a private key is supplied, Password is its passphrase. |
@@ -136,6 +136,27 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 Set **Minimum retention (days)** on a destination to protect its copies from automatic cleanup for a minimum period. The default is zero, which disables this protection. See [Minimum Retention at a Destination](#minimum-retention-at-a-destination).
 
+### S3 Bucket Names with Dots
+
+By default, MainWP places the bucket name before the storage endpoint in the request hostname. If the bucket name contains a dot, such as `example.com`, HTTPS requests can fail with an SSL certificate hostname mismatch.
+
+For Amazon S3 or Wasabi buckets containing dots, enable **Path style addressing**. This places the bucket name in the URL path instead. Other S3-compatible services may have different addressing requirements; follow your provider's guidance.
+
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`), configure the destination, enable **Path style addressing**, then click **Test Connection & Save**.
+
+For example, use these settings for a Wasabi bucket in `eu-central-1`:
+
+| Field | Example |
+| --- | --- |
+| Endpoint | `https://s3.eu-central-1.wasabisys.com` |
+| Region | `eu-central-1` |
+| Bucket | `example.com` |
+| Path style addressing | Enabled |
+
+The **Endpoint** must match the bucket's region. Enter the bucket name in the separate **Bucket** field; do not include it in the endpoint. Check [Wasabi's regional service URLs](https://docs.wasabi.com/docs/service-urls-for-wasabis-storage-regions) for your bucket's region.
+
+For background, see [Amazon S3's dotted-bucket certificate limitation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) and [Wasabi's path-style recommendation](https://docs.wasabi.com/apidocs/rest-api-introduction).
+
 ### Share a Bucket Between Sites
 
 You can use one private Amazon S3 or Backblaze B2 bucket for multiple Child Sites connected to the same MainWP Dashboard. For B2, select **S3 Compatible Storage** and enter the bucket's S3-compatible endpoint.
@@ -145,6 +166,22 @@ MainWP stores each site's snapshots under separate paths in the bucket. The Dash
 For eligible restores of unencrypted backups, the Dashboard can send the Child Site temporary download links for the required backup files. These links expire after one hour and grant access only to the specified files. Encrypted backups are downloaded and decrypted on the Dashboard before being transferred to the Child Site.
 
 Keep the bucket private and do not share its credentials with Child Sites. Separate paths organize the backups but do not create independent storage permissions. Anyone with bucket-wide access can access the backups, and anyone with a temporary download link can use it while it remains valid.
+
+### Understand the Cloud Backup Layout
+
+MainWP organizes cloud copies by Child Site ID and snapshot ID, rather than the site's name. For example, `12/34/` contains snapshot 34 for Child Site 12.
+
+Inside a snapshot folder, you may see:
+
+| Item | Purpose |
+| --- | --- |
+| `chunks/` | Backup data split into hashed `.bin` files. The default chunk size is 4 MiB, approximately 4.2 MB. |
+| `files/` | Small backup files uploaded whole instead of split into chunks. |
+| `manifest.json` | Archive names, site and snapshot details, and the information needed to reconstruct the backup from its chunks. |
+
+Splitting larger archives into chunks lets interrupted uploads resume. A large backup can produce many chunk files; seeing `.bin` files instead of a ZIP or Tar GZip archive is expected. The **Backup file name** tokens do not change these numbered cloud folders or hashed chunk names.
+
+Use [Snapshots & Restore](#restore-a-backup) to find backups by site and date and restore a completed remote copy. For a downloadable archive, see [Download a Backup](#download-a-backup).
 
 ### Encrypt Backup Archives
 
@@ -460,6 +497,7 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
+| S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
