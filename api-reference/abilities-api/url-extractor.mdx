@@ -1,0 +1,317 @@
+---
+title: URL Extractor Abilities
+sidebarTitle: "URL Extractor Abilities"
+description: >-
+  Manage URL Extractor templates, run extractions across authorized Child sites, read stored records, and create one-use TXT and CSV exports.
+---
+
+URL Extractor 5.1 registers ten abilities in the `mainwp-url-extractor` category. They use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities to automate the same work you do on the [URL Extractor](/add-ons/posts-pages/url-extractor-extension) page: save output formats as templates, collect post and page URLs from Child sites, and export the results.
+
+## What You'll Learn
+
+- Manage private and shared extraction templates
+- Start an extraction run and track its progress
+- Page through stored records
+- Create one-use TXT and CSV downloads
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support
+- URL Extractor 5.1 or later, active in MainWP Dashboard
+- An authenticated user with access to the URL Extractor Add-on
+- Completed template migration (see [Template migration](#template-migration))
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+### Permissions
+
+URL Extractor 5.1 adds four extension permissions. With [Team Control](/add-ons/agency/team-control-extension), assign them to custom roles to limit what each role can do.
+
+| Permission | Grants |
+|------------|--------|
+| **URL Extractor: View Templates** | List and read templates |
+| **URL Extractor: Manage Templates** | Create, replace, and delete templates |
+| **URL Extractor: Extract Published Posts** | Start runs, read runs and records, and create exports |
+| **URL Extractor: Extract Non-Public Posts** | Include any status other than `publish` in a run |
+
+Creating or changing a `shared` template also requires the WordPress `manage_options` capability. Every run also checks the user's access to each selected site.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-url-extractor-templates-v1` | GET | List template summaries visible to you |
+| `mainwp/get-url-extractor-template-v1` | GET | Read one template and its current revision |
+| `mainwp/create-url-extractor-template-v1` | POST | Create a private or shared template |
+| `mainwp/replace-url-extractor-template-v1` | DELETE | Preview or replace a template |
+| `mainwp/delete-url-extractor-template-v1` | DELETE | Preview or delete a template |
+| `mainwp/start-url-extractor-run-v1` | POST | Start an extraction across selected sites |
+| `mainwp/get-url-extractor-run-v1` | GET | Read a run's state and progress |
+| `mainwp/list-url-extractor-records-v1` | GET | Page through a run's records |
+| `mainwp/create-url-extractor-text-export-v1` | POST | Create a one-use TXT download using a template |
+| `mainwp/create-url-extractor-csv-export-v1` | POST | Create a one-use CSV download from selected fields |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-url-extractor'
+```
+
+All ten abilities are marked idempotent. Replace and delete are marked destructive, so WordPress runs them with **DELETE**, including for previews.
+
+Every input property in each schema is required. Send `null` for optional filters you do not use. Write abilities take a `request_ref` UUID. Reuse the same `request_ref` to retry a request safely. Use a new UUID for each new change.
+
+## Typical workflow
+
+<Steps>
+<Step title="Start a run">
+Call `start-url-extractor-run-v1` with the sites and filters. Save the returned `run_ref`.
+</Step>
+<Step title="Wait for the run to finish">
+Call `get-url-extractor-run-v1` until `state` is `complete`, `partial`, `failed`, or `expired`. Save the returned `generation`.
+</Step>
+<Step title="Read or export the results">
+Page through records with `list-url-extractor-records-v1`, or create a TXT or CSV export with the run's `generation`.
+</Step>
+<Step title="Download the file">
+Open the returned `download_url` once, before `expires_at`.
+</Step>
+</Steps>
+
+## Manage templates
+
+A template stores the **Output format** and **Separator** values used for TXT exports. Templates use the same tokens as the URL Extractor page: `[post.title]`, `[post.url]`, `[post.date]`, `[post.status]`, `[post.author]`, `[post.website.url]`, and `[post.website.name]`.
+
+| Field | Rules |
+|-------|-------|
+| `title` | 1 to 100 characters, unique among templates you can see |
+| `audience` | `private` (only you) or `shared` (all users who can view templates) |
+| `format` | 1 to 4,000 characters, up to 100 tokens |
+| `separator` | Up to 16 characters |
+
+Each template has a `template_ref` and a `revision`. The revision changes whenever the template changes.
+
+### List templates
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"audience":null,"limit":50,"after_template_ref":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-url-extractor-templates-v1/run'
+```
+
+Set `audience` to `private`, `shared`, or `null` for both. `limit` accepts 1 to 100. When `truncated` is `true`, pass `next_after_template_ref` as `after_template_ref` to read the next page.
+
+### Create a template
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"title":"URL list","audience":"private","format":"[post.title] [post.url]","separator":"\n","request_ref":"123e4567-e89b-42d3-a456-426614174990"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-url-extractor-template-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "request_ref": "123e4567-e89b-42d3-a456-426614174990",
+  "template_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "audience": "private",
+  "token_count": 2,
+  "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}
+```
+
+### Replace or delete a template
+
+Replace and delete use a two-step preview and confirm flow:
+
+1. Send the request with `dry_run: true`, `confirm: false`, and `preview_token: null`. Set `if_match` to the template's current `revision`.
+2. Review the response, then send the same request with `dry_run: false`, `confirm: true`, and the returned `preview_token`.
+
+If the template changes between the two steps, the confirm request fails with HTTP 412. Read the template again and repeat the preview.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"template_ref":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","if_match":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","request_ref":"123e4567-e89b-42d3-a456-426614174991","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-url-extractor-template-v1/run'
+```
+
+The replace ability takes the same confirmation fields plus `title`, `audience`, `format`, and `separator`. It replaces all four values.
+
+## Start an extraction run
+
+A run collects posts and pages from up to 100 sites in the background. MainWP Dashboard stores the results so you can read and export them later.
+
+| Field | Rules |
+|-------|-------|
+| `site_ids` | 1 to 100 unique MainWP site IDs |
+| `post_types` | `post`, `page`, or both |
+| `statuses` | One or more of `publish`, `private`, `draft`, `pending`, `future`, `trash` |
+| `keyword` | Up to 200 characters, or `null` |
+| `date_from`, `date_to` | `YYYY-MM-DD`, or `null` |
+| `post_id`, `author_id` | Positive integer, or `null` |
+| `page_size` | 1 to 100 posts per Child request |
+| `request_ref` | UUID for this request |
+
+Any status other than `publish` requires the **URL Extractor: Extract Non-Public Posts** permission.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids":[7],"post_types":["post"],"statuses":["publish"],"keyword":null,"date_from":"2026-01-01","date_to":"2026-08-10","post_id":null,"author_id":null,"page_size":50,"request_ref":"123e4567-e89b-42d3-a456-426614174992"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/start-url-extractor-run-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "request_ref": "123e4567-e89b-42d3-a456-426614174992",
+  "run_ref": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "state": "queued",
+  "site_count": 1,
+  "query_generation": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}
+```
+
+## Track a run
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"run_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-url-extractor-run-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "run_ref": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "state": "complete",
+  "site_count": 1,
+  "succeeded_sites": 1,
+  "failed_sites": 0,
+  "record_count": 1,
+  "truncated": false,
+  "generation": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+}
+```
+
+| State | Meaning |
+|-------|---------|
+| `queued` | Waiting to start |
+| `running` | Collecting records from Child sites |
+| `complete` | All sites finished successfully |
+| `partial` | Finished, but some sites failed or results were truncated |
+| `failed` | No usable results |
+| `expired` | The run is no longer available |
+
+A run stores up to 10,000 records. `truncated: true` means MainWP Dashboard stopped collecting after reaching a limit. Only the user who started a run can read or export it.
+
+## Read records
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"run_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","limit":50,"after_record_ref":null}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-url-extractor-records-v1/run'
+```
+
+Each record includes `site_id`, `post_id`, `title`, `url`, `date`, `status`, `author`, `website_url`, and `website_name`. When `truncated` is `true`, pass `next_after_record_ref` as `after_record_ref` to read the next page.
+
+## Create exports
+
+Exports turn a finished run into a TXT or CSV file. Pass the run's current `generation` as `run_generation`. If the run changes after you read it, the export fails with HTTP 412.
+
+Exports from a `partial` or truncated run, or from a run with failed sites, require `allow_partial: true`. Without it, the request fails with `partial_not_ready`.
+
+### TXT export
+
+The TXT export formats each record with a saved template. Pass the template's `revision` as `template_generation`.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"run_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","run_generation":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","template_ref":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","template_generation":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","allow_partial":false,"request_ref":"123e4567-e89b-42d3-a456-426614174993"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-url-extractor-text-export-v1/run'
+```
+
+### CSV export
+
+The CSV export writes one column per selected field. Choose 1 to 7 of `title`, `url`, `date`, `status`, `author`, `website_url`, and `website_name`.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"run_ref":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","run_generation":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","fields":["title","url"],"allow_partial":false,"request_ref":"123e4567-e89b-42d3-a456-426614174994"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/create-url-extractor-csv-export-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "request_ref": "123e4567-e89b-42d3-a456-426614174994",
+  "artifact_ref": "2222222222222222222222222222222222222222222222222222222222222222",
+  "download_url": "https://your-dashboard.com/wp-admin/admin-post.php?action=mainwp_url_extractor_download&artifact_ref=2222...&download_nonce=bbbb...",
+  "expires_at": "2026-08-10T10:10:00Z",
+  "record_count": 1,
+  "partial": false,
+  "bytes": 40,
+  "formula_cells_escaped": 0
+}
+```
+
+To protect spreadsheet users, MainWP Dashboard prefixes cell values that start with a formula character with an apostrophe. `formula_cells_escaped` reports how many cells it changed.
+
+### Download an export
+
+Each export can be downloaded once. The link expires 10 minutes after it is created. An export file can be up to 16 MB.
+
+- **In a browser:** Open `download_url` while logged in to MainWP Dashboard as the user who created the export. You do not need a REST nonce.
+- **From a script:** Send an authenticated GET request to the REST download endpoint with the `artifact_ref`.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' -o mainwp-url-extractor.csv \
+  'https://your-dashboard.com/wp-json/mainwp/v2/url-extractor-download/2222222222222222222222222222222222222222222222222222222222222222'
+```
+
+Downloads still require the **URL Extractor: Extract Published Posts** permission. A used or expired link returns HTTP 410. Create a new export to download the file again.
+
+## Template migration
+
+When you update to URL Extractor 5.1, MainWP Dashboard copies your saved templates to the new template storage in the background. Templates keep their original owner. Older templates that cannot be converted, for example because of a duplicate title or values outside the new limits, are left unchanged.
+
+When migration finishes with unconverted templates, administrators see this notice:
+
+> MainWP URL Extractor: Compatible saved templates are available. Some older templates could not be converted and have been kept unchanged. No action is needed.
+
+You do not need to edit or delete old templates. Until migration finishes, abilities return `storage_unavailable` (HTTP 503). The **Preview Output** workflow on the URL Extractor page keeps working during migration.
+
+## Handle errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `invalid_input` | 400 or 422 | Check the input against the ability's schema and field rules |
+| `access_denied` | 403 | Check URL Extractor permissions, `manage_options` for shared templates, and site access |
+| `template_not_found`, `run_not_found`, `site_not_found`, `artifact_not_found` | 404 | Verify the reference or site ID and that you can access it |
+| `request_conflict`, `duplicate_title`, `template_in_use`, `lock_busy`, `lease_unavailable` | 409 | Use a new `request_ref` or title, or retry later |
+| `run_not_ready` | 409 | Wait until the run is `complete` or `partial` |
+| `partial_not_ready` | 409 | Set `allow_partial: true` to export partial results |
+| `artifact_gone` | 410 | The download was used or expired; create a new export |
+| `stale_revision`, `preview_drift`, `target_drift`, `run_changed`, `template_changed` | 412 | Read the template or run again and retry with current values |
+| `artifact_too_large` | 413 | Narrow the run with fewer sites or tighter filters |
+| `storage_unavailable` | 503 | Wait for template migration to finish, or check the Add-on and database |
+
+MainWP Dashboard also returns its own authentication errors, including HTTP 401 for unauthenticated requests.
+
+## Related Resources
+
+- [URL Extractor](/add-ons/posts-pages/url-extractor-extension) - Extract and export URLs from the Dashboard
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) - Assign Add-on permissions to custom roles
