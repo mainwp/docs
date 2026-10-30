@@ -14,6 +14,8 @@ addonType: extension
 - Detecting database updates for WooCommerce, Elementor, and Elementor Pro
 - Updating databases on all sites or individually
 - Avoiding the need to access child site wp-admin
+- Understanding update results and repeated requests
+- Automating database updates with the Abilities API
 
 ---
 
@@ -25,7 +27,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-database-updater-extension/"
   data-owned-by="Jestart LLC"
@@ -90,10 +92,30 @@ After you've installed the extension, a Database Updates tab becomes available. 
 </Step>
 </Steps>
 
+### Understand update results
+
+Before sending an update, MainWP Dashboard checks your permissions, your access to the site, and the stored list of available database updates. If the list changed since the page loaded, MainWP shows **The available database updates changed. Refresh the site data and reload this page.** Sync the site and reload the page before trying again.
+
+After you click an update button, each row shows the result:
+
+- **Yellow clock** - MainWP Child accepted the update and started or queued it. Hover over the icon to see **Update started; sync the site to verify completion.** The plugin stays listed as pending until a later sync refreshes the site's data.
+- **Red cross** or an error message - MainWP Child did not accept the update, or the request failed.
+
+During **Update All**, each site shows its worst result. A site with any failed plugin shows a red cross.
+
+<Note>
+MainWP Dashboard records one update request for each site, plugin, and target database version. Clicking an update button again, or requesting the same update through the Abilities API, reuses the recorded result instead of sending the update again. If an earlier request is still in progress or its result is unknown, MainWP shows **The update request has already been sent; its outcome is not confirmed.** Sync the site and check the plugin on the child site. When the plugin reports a newer target database version, you can update it again.
+</Note>
+
+## Automate database updates with the Abilities API
+
+Database Updater 5.2.0 adds three abilities to the [MainWP Abilities API](/api-reference/abilities-api/overview). Use them to read the stored database update list for a site, preview the update, and send a confirmed update from scripts or AI agents. See [Database Updater Abilities](/api-reference/abilities-api/database-updater).
+
 ---
 
 ## Related Resources
 
 - [Updates Add-ons](/add-ons/updates) - Browse all update tools
 - [Manage Updates](/sites/updates/manage-updates) - Core update management guide
+- [Database Updater Abilities](/api-reference/abilities-api/database-updater) - Automate database updates
 - [WooCommerce Status Extension](/add-ons/administrative/woocommerce-status-extension) - WooCommerce integration
