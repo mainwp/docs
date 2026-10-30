@@ -73,6 +73,14 @@ Set the path where you want to upload your file(s).
 
 The file that already exists with the same name in the same directory **will be overwritten.** File names are sanitized before upload, so spaces and certain special characters in file names can be replaced with dashes. Enter the destination path exactly as you want MainWP Child to create it.
 
+## Staged Deployments with the Abilities API
+
+Upload a file once through File Uploader, then use its eight abilities to preview and send the staged copy to your Child sites. A staged copy is the saved file on your Dashboard. Each site gets its own preview and deployment request. You can check progress and request rollback if you need to undo a completed file change.
+
+The Dashboard needs a File Uploader build with these abilities. Destination sites need a MainWP Child version with the new upload protocol (v2). Administrator permissions are required; Team Control access to the Add-on alone is insufficient. Staging allows up to 50 MiB per file, 100 files and 500 MiB per user. Your host can set a lower per-file limit. Plugin, theme, and must-use plugin destinations are blocked when `DISALLOW_FILE_EDIT` is enabled on the Dashboard.
+
+See [File Uploader Abilities](/api-reference/abilities-api/file-uploader) for all eight actions, permission requirements, examples, progress states, and the 24-hour rollback window.
+
 ## Supported File Types
 
 -   .php

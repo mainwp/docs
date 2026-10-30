@@ -1,0 +1,263 @@
+---
+title: File Uploader Abilities
+sidebarTitle: "File Uploader Abilities"
+description: >-
+  Check upload limits, manage your staged files, preview and send files to Child sites, and roll back a deployment with File Uploader abilities.
+---
+
+File Uploader provides eight abilities in the `mainwp-file-uploader` category. Upload a file once to your Dashboard, preview where it will go, then send it to your sites. If needed, request a rollback to undo a completed file change.
+
+A **staged file** is the saved copy on your Dashboard. A **deployment** sends that copy to one destination on one Child site. You can reuse the same staged file for several sites, with a separate preview and start request for each site.
+
+## What You'll Learn
+
+- Check staging limits and find your staged files
+- Preview a destination before sending a file
+- Track a deployment and request a rollback
+- Handle waiting results and repeated requests
+
+## Prerequisites and Permissions
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support
+- An active File Uploader build that includes these eight abilities
+- A MainWP Child version that supports the new file upload protocol (v2) on each destination site
+- An authenticated Dashboard administrator with `manage_options` and access to the File Uploader Add-on
+
+These abilities require administrator permissions, including reads. Team Control staff cannot use them with File Uploader access alone. Team Control restrictions still apply. Preview, start, status, and rollback also require **Edit Sites** permission and access to the selected site. In a Dashboard that separates sites by user, the site must belong to you.
+
+Preview, start, and rollback require additional WordPress permissions for the destination:
+
+| Destination | Required permissions |
+|-------------|----------------------|
+| Uploads or languages | `update_plugins` |
+| Plugins or must-use plugins | `update_plugins` and `edit_plugins` |
+| Themes | `update_themes` and `edit_themes` |
+
+Must-use plugins are plugins WordPress loads automatically from `wp-content/mu-plugins`. Plugin, theme, and must-use plugin destinations require `confirm_code: true`. When `DISALLOW_FILE_EDIT` is enabled on the Dashboard, WordPress denies the editing permissions and blocks these destinations. The confirmation field does not bypass permissions.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or another [WordPress authentication method](/api-reference/abilities-api/overview#authentication). Older File Uploader builds may not list these abilities. An older Child without protocol v2 cannot handle these deployments.
+
+## Upload Once, Preview, Then Send
+
+1. Upload through the [File Uploader page](/add-ons/development/file-uploader-extension#upload-files-to-child-sites). These abilities work with copies already staged by that screen; they do not accept file contents or create uploads.
+2. List your staged files and keep the returned `object_ref`, the file's reference number.
+3. Preview one site and destination. Review whether an existing file will be overwritten.
+4. Start with the returned `preview_token` and the same file, site, destination, and code confirmation.
+5. Keep the returned `operation_ref`, the reference for that job. Read its status until the result is known.
+6. If needed, request rollback while its requirements still hold.
+
+Destinations must include a filename under `wp-content/uploads/`, `wp-content/languages/`, `wp-content/plugins/`, `wp-content/themes/`, or `wp-content/mu-plugins/`. Use a path such as `wp-content/uploads/agency-notice.txt`, relative to the site's WordPress folder. PHP, other server-executable files, and server configuration files are blocked in uploads.
+
+Preview, start, and rollback cannot proceed for a suspended site, an offline site, or a site with sync errors. Status remains readable for an existing job if you still have permission to its site.
+
+### Limits You May Encounter
+
+- **50 MiB per file.** Your Dashboard host's PHP upload and request-size limits can lower this. MiB measures file size; 50 MiB is 52,428,800 bytes.
+- **100 staged files and 500 MiB total per user.** These are your saved staging limits, not a separate allowance for each site.
+- **24 hours for unused staging.** Unreferenced files have a 24-hour retention period. Once the last job releases a file, that period starts again. Check `expires_at` and keep the staged copy if you may need rollback.
+- **Five minutes to confirm a preview.** If the preview expires or the destination changes, preview again and review it before starting.
+- **24 hours to request rollback after completion.** The staged file and the Child's retained rollback data must still be available, and the destination must still match the deployed file.
+
+## Available Abilities
+
+| Ability | Purpose |
+|---------|---------|
+| `mainwp/get-file-uploader-policy-v1` | Read staging limits and destination types |
+| `mainwp/list-staged-file-objects-v1` | List your staged files |
+| `mainwp/get-staged-file-object-v1` | Read details for one of your staged files |
+| `mainwp/delete-staged-file-object-v1` | Delete one unused staged file |
+| `mainwp/preview-file-deployment-v1` | Check one destination without changing its files |
+| `mainwp/start-file-deployment-v1` | Queue a previewed file deployment |
+| `mainwp/get-file-deployment-status-v1` | Read a deployment or rollback job's progress |
+| `mainwp/rollback-file-deployment-v1` | Queue an undo of a completed deployment |
+
+The JSON examples below show the ability's input. Replace sample references with returned values. Revision values, preview tokens, and SHA-256 values are 64-character strings; the repeated letters below are placeholders. A SHA-256 value is a fingerprint used to check that file contents match.
+
+For REST calls, use `/wp-json/wp-abilities/v1/abilities/{ability-name}/run` on your Dashboard. Read-only abilities use GET with `input_json`; start and rollback use POST, and delete uses DELETE. For POST and DELETE, wrap the example in `{"input": ...}`. See [request formats](/api-reference/abilities-api/overview) for authentication and complete examples.
+
+### Read Staging Policy
+
+**Ability:** `mainwp/get-file-uploader-policy-v1`
+
+Ask: "What are my file upload limits, and where can I send files?"
+
+```json
+{}
+```
+
+Returns the effective per-file size limit, per-user file count and total size limits, allowed destination types, and staging and rollback retention periods. It does not contact a Child site. The destination list describes supported locations; your permissions can still block a location.
+
+**Who can use it:** An administrator with File Uploader access. No site selection is needed; Team Control Add-on restrictions still apply.
+
+**Repeating it:** Safe. It only reads policy and does not return a pending job.
+
+### List Your Staged Files
+
+**Ability:** `mainwp/list-staged-file-objects-v1`
+
+Ask: "Show my staged files that are ready to send."
+
+```json
+{"state":"ready","limit":10}
+```
+
+Returns `objects` with each file's reference, size, file type, SHA-256 fingerprint, state, expiry, and revision. It returns details about the saved files, not their contents or filenames. You can only list your own files, even as an administrator.
+
+Omit `state` to include all states. `ready` means no job currently holds the file; `in_use` means at least one job holds it; `expired` means it has been marked for removal. These describe the staged copy, not whether a deployment succeeded.
+
+The default page contains up to 50 files; `limit` accepts 1 to 100. If `truncated` is `true`, pass both fields in the returned `next` object (`after_created_at` and `after_object_ref`) to read the next page. Keep the same state filter.
+
+**Who can use it:** An administrator with File Uploader access, subject to Team Control Add-on restrictions. Results are limited to the signed-in user's files.
+
+**Repeating it:** Safe. This is a read. An `in_use` file can still be sent to another site, but cannot be deleted while a job holds it.
+
+### Read One Staged File
+
+**Ability:** `mainwp/get-staged-file-object-v1`
+
+Ask: "Check this staged file before I send or delete it."
+
+```json
+{"object_ref":"123e4567-e89b-42d3-a456-426614174100"}
+```
+
+Returns an `object` with the same details as the list, including `active_references` (how many jobs hold the file) and `revision`. Use that revision as `if_match` when deleting. A revision is a value you copy back to confirm which saved file you mean.
+
+**Who can use it:** An administrator with File Uploader access who owns the staged file. Team Control Add-on restrictions apply. Another user's file is reported as not found.
+
+**Repeating it:** Safe. It only reads details. `in_use` means a job still holds the staged copy; use deployment status to check that job's outcome.
+
+### Delete a Staged File
+
+**Ability:** `mainwp/delete-staged-file-object-v1`
+
+Ask: "Delete my unused staged copy."
+
+```json
+{
+  "object_ref":"123e4567-e89b-42d3-a456-426614174100",
+  "if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "confirm":true,
+  "request_ref":"123e4567-e89b-42d3-a456-426614174101"
+}
+```
+
+Permanently deletes the Dashboard's staged copy. It requires the current revision, explicit confirmation, and zero active references. The state must be `ready` or `expired`. It does not remove a file already sent to a Child site. Deleting the staged copy can prevent rollback, so keep it until you no longer need that option.
+
+**Who can use it:** An administrator with File Uploader access who owns the file. Team Control Add-on restrictions apply.
+
+**Repeating it:** The same input and `request_ref` can safely return the saved deletion result for up to 30 days. A `request_ref` is a unique request reference in UUID format, as shown above. Keep it for retries and use a new one for a different action. Reusing it with changed input causes a conflict. Success returns `status: "deleted"`; a file held by a job cannot be deleted yet.
+
+### Preview a Deployment
+
+**Ability:** `mainwp/preview-file-deployment-v1`
+
+Ask: "Preview sending this notice to site 1. Tell me if it will replace a file."
+
+```json
+{
+  "object_ref":"123e4567-e89b-42d3-a456-426614174100",
+  "site_id_or_domain":1,
+  "relative_destination":"wp-content/uploads/agency-notice.txt",
+  "confirm_code":false
+}
+```
+
+Checks the destination on one Child site without changing its files. You can identify the site by its MainWP site ID or domain. Review `will_overwrite`, `target_exists`, and `rollback_available`. Keep the returned `preview_token` and `expires_at` for the start request. This check does not reserve the destination.
+
+**Who can use it:** The staged file's owner must have administrator permissions and File Uploader access. Edit Sites, site access, Team Control restrictions, and the destination permissions above also apply. Code destinations require `confirm_code: true` even for preview.
+
+**Repeating it:** Safe; no deployment starts. Each preview checks current conditions and can return a new token. There is no pending deployment to track until you start it.
+
+### Start a Deployment
+
+**Ability:** `mainwp/start-file-deployment-v1`
+
+Ask: "Send the notice to site 1 using the preview I approved."
+
+```json
+{
+  "object_ref":"123e4567-e89b-42d3-a456-426614174100",
+  "site_id_or_domain":1,
+  "relative_destination":"wp-content/uploads/agency-notice.txt",
+  "confirm_code":false,
+  "preview_token":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "request_ref":"123e4567-e89b-42d3-a456-426614174102"
+}
+```
+
+Queues the exact previewed file change. All six fields are required. The preview must still be valid for the file, site, destination, and code confirmation. Changes since the preview can cause a conflict.
+
+**Who can use it:** The staged file's owner needs the same permissions as preview. This includes administrator, File Uploader, Edit Sites, site access, and destination permissions, subject to Team Control restrictions. Permissions are checked again when the queued job runs.
+
+**Repeating it:** This ability is not marked safe to repeat unconditionally. An identical `request_ref` and input can return the saved acceptance, but authorization checks run before that lookup. A retry can fail after completion or preview expiry. Do not create a new request reference to get around that refusal; read status first.
+
+Success returns `status: "requested"` and `operation_ref`. The job is waiting for background processing through WordPress scheduled tasks (WP-Cron). It has not yet confirmed a successful file change. Keep the operation reference and use the next ability to check progress.
+
+### Check Deployment or Rollback Status
+
+**Ability:** `mainwp/get-file-deployment-status-v1`
+
+Ask: "Has this file deployment finished?"
+
+```json
+{"operation_ref":"123e4567-e89b-42d3-a456-426614174103"}
+```
+
+Reads the saved progress of a job you own without contacting the Child site. For a rollback, use the `rollback_operation_ref` returned by the rollback request as this input's `operation_ref`.
+
+**Who can use it:** The job's owner, with administrator, File Uploader, Edit Sites, and site-access permissions. Team Control restrictions apply. Another user's job is reported as not found.
+
+**Repeating it:** Safe. Read it again while work is pending. A status read does not start or advance the job.
+
+| `status` | What it means |
+|----------|---------------|
+| `requested` | Accepted and waiting for background processing |
+| `running` | Processing has begun; no final result is confirmed yet |
+| `completed` | The deployment's file contents were verified against the staged copy |
+| `failed` | The deployment reported a failure; inspect `code` |
+| `unknown` | MainWP cannot confirm the outcome yet; a later background check may resolve it |
+| `rolled_back` | The rollback job completed |
+| `rollback_failed` | The rollback reported a failure; inspect `code` |
+
+"Pending" or an in-progress indicator means wait for a confirmed result. It does not mean the file is already on the site. If a job stays `requested`, check that your Dashboard's scheduled tasks are running. After an `unknown` result or lost response, check status and the site's file before requesting another change.
+
+A completed deployment returns `sha256`, the deployed file's fingerprint. Keep it for rollback. The status record can remain for 30 days, longer than the staged copy. `rollback_available: true` reflects the completion time window; rollback can still be refused if the staged copy is gone, the destination changed, or the Child's rollback data is unavailable.
+
+### Roll Back a Deployment
+
+**Ability:** `mainwp/rollback-file-deployment-v1`
+
+Ask: "Undo this completed deployment if the site's file has not changed since."
+
+```json
+{
+  "operation_ref":"123e4567-e89b-42d3-a456-426614174103",
+  "if_current_sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "confirm":true,
+  "request_ref":"123e4567-e89b-42d3-a456-426614174104"
+}
+```
+
+Use the original deployment's operation reference and its completed status's `sha256` as `if_current_sha256`. All four fields are required. The site is checked to confirm the file still matches. Rollback restores the previous file, or removes the deployed file if none existed before. It undoes that file change only, not effects caused by running uploaded code.
+
+Request it within 24 hours of deployment completion. Keep the matching staged copy, and ensure the Child still has the rollback data. A later edit to the destination prevents rollback from overwriting that edit.
+
+**Who can use it:** The original job's owner must have administrator permissions and File Uploader access. Edit Sites, site access, Team Control restrictions, and destination permissions also apply. Code destinations still require the relevant editing permissions; the original code confirmation is reused.
+
+**Repeating it:** As with start, matching requests can return a saved acceptance, but current authorization checks can reject a retry after rollback has finished. Check status before repeating or creating another request.
+
+Success returns `status: "requested"` and a new `rollback_operation_ref`. This means the undo is queued. Read status with that new reference until it reports `rolled_back`, `rollback_failed`, or another outcome requiring attention.
+
+## When a Request Is Refused
+
+Read the error before retrying. A permission error needs an administrator to check Add-on, site, and destination access. A stale preview needs a fresh preview and review. An expired staged file needs to be uploaded again. A busy or changed destination needs another check before you approve a change.
+
+An `outcome_unknown` error can mean MainWP could not confirm the saved request or schedule its work. It does not prove nothing happened. If you received an operation reference, check status with it. If you lost the response and have no operation reference, inspect the destination and resolve the error before starting a new request.
+
+## Related Resources
+
+- [File Uploader Add-on](/add-ons/development/file-uploader-extension) - Upload files and choose destinations
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, discovery, and request formats
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find the MainWP site ID to use in a request
