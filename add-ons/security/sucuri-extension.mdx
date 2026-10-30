@@ -70,6 +70,25 @@ Locate the site that you want to check and click the **Scan Now** button
 </Step>
 </Steps>
 
+### When a scan cannot connect
+
+If your MainWP Dashboard cannot reach the Sucuri scanner, the scan fails and shows this message:
+
+```text
+Could not connect to the Sucuri scanner securely (SSL certificate check failed or connection error). Please try again later.
+```
+
+A failed connection does not change your **Verify SSL Certificate** setting. MainWP keeps SSL certificate verification on for later scans and does not retry the scan with verification turned off. The message does not include technical connection details.
+
+To resolve the failure:
+
+- Wait a few minutes and click **Scan Now** again.
+- If the scan keeps failing, confirm that your Dashboard server can make outbound HTTPS connections and has an up-to-date CA certificate bundle.
+
+<Note>
+Earlier versions of the add-on could turn off **Verify SSL Certificate** automatically after a failed connection. If you upgraded from one of those versions, open **Reports & Settings** and confirm the setting matches your preference. The add-on does not switch the setting back on for you.
+</Note>
+
 
 ## Previous Child Site Reports and Settings
 
@@ -89,7 +108,7 @@ At the bottom of the page, you will find the Sucuri Scanner section.
 
 From here, you can:
 
-- Choose whether to **Verify SSL Certificate** for Sucuri scan requests. This setting applies to all sites.
+- Choose whether to **Verify SSL Certificate** for Sucuri scan requests. This setting applies to all sites. Failed scans do not change it.
 - **Show** and **Delete** any of the previous reports
 - Set to be **reminded** if you don't scan this child site (Never, 1 Day, 1 Week, 1 Month).
 
