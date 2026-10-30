@@ -146,6 +146,22 @@ For eligible restores of unencrypted backups, the Dashboard can send the Child S
 
 Keep the bucket private and do not share its credentials with Child Sites. Separate paths organize the backups but do not create independent storage permissions. Anyone with bucket-wide access can access the backups, and anyone with a temporary download link can use it while it remains valid.
 
+### Understand the Cloud Backup Layout
+
+MainWP organizes cloud copies by Child Site ID and snapshot ID, rather than the site's name. For example, `12/34/` contains snapshot 34 for Child Site 12.
+
+Inside a snapshot folder, you may see:
+
+| Item | Purpose |
+| --- | --- |
+| `chunks/` | Backup data split into hashed `.bin` files. The default chunk size is 4 MiB, approximately 4.2 MB. |
+| `files/` | Small backup files uploaded whole instead of split into chunks. |
+| `manifest.json` | Archive names, site and snapshot details, and the information needed to reconstruct the backup from its chunks. |
+
+Splitting larger archives into chunks lets interrupted uploads resume. A large backup can produce many chunk files; seeing `.bin` files instead of a ZIP or Tar GZip archive is expected. The **Backup file name** tokens do not change these numbered cloud folders or hashed chunk names.
+
+Use [Snapshots & Restore](#restore-a-backup) to find backups by site and date and restore a completed remote copy. For a downloadable archive, see [Download a Backup](#download-a-backup).
+
 ### Encrypt Backup Archives
 
 Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
