@@ -1,0 +1,280 @@
+---
+title: Database Updater Abilities
+sidebarTitle: "Database Updater Abilities"
+description: >-
+  Read stored database update observations, preview a dispatch, and send confirmed WooCommerce, Elementor, and Elementor Pro database updates with the MainWP Database Updater Abilities API.
+---
+
+MainWP Database Updater 5.2.0 registers three abilities in the `mainwp-database-updater` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to check which supported plugins on a child site have a pending database update, preview the work, and then send a confirmed update request to MainWP Child. They support the same plugins as the extension: WooCommerce, Elementor, and Elementor Pro.
+
+## What You'll Learn
+
+- Read the stored database update observation for one site
+- Create a revision-bound dispatch preview
+- Dispatch confirmed database updates and interpret the acceptance result
+- Understand how repeated requests are handled
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- Database Updater 5.2.0 or later, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options`, access to the Database Updater extension, the `update_plugins` Dashboard right, and access to the target site
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Team Control permissions also apply. Every call checks access to the extension, the `update_plugins` right, and access to the requested site.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-site-database-update-observations-v1` | GET | Read the stored database update observation and its revision for one site |
+| `mainwp/preview-site-database-update-dispatch-v1` | GET | Create a plan revision for selected plugins without contacting the site |
+| `mainwp/dispatch-site-database-updates-v1` | POST | Preview with `dry_run`, or send confirmed database updates to MainWP Child |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-database-updater'
+```
+
+All calls require `site_id`: a positive integer such as `17`, or its decimal string form such as `"17"`. These abilities reject extra input properties.
+
+`plugin_files` accepts one to three of these values, without duplicates, in this order:
+
+1. `woocommerce/woocommerce.php`
+2. `elementor/elementor.php`
+3. `elementor-pro/elementor-pro.php`
+
+A selection in a different order returns `mainwp_database_updater_invalid_input`.
+
+<Note>
+Observations come from the data MainWP Dashboard stored at the last sync. They do not apply the Dashboard's site or per-plugin ignore settings. Check those settings before you dispatch updates.
+</Note>
+
+## Recommended Workflow
+
+<Steps>
+<Step title="Read the observation">
+Call `get-site-database-update-observations-v1` and keep `observation_revision`.
+</Step>
+<Step title="Preview the plan">
+Call `preview-site-database-update-dispatch-v1` with the plugins to update and the observation revision. Keep `plan_revision`.
+</Step>
+<Step title="Confirm your backup decision">
+Back up the site, or decide to proceed without a backup. The extension does not verify backups.
+</Step>
+<Step title="Dispatch">
+Call `dispatch-site-database-updates-v1` with `dry_run: false` and `confirm: true`.
+</Step>
+<Step title="Sync the site">
+Sync the site later to confirm the database update completed.
+</Step>
+</Steps>
+
+If the stored observation changes at any step, for example after a sync, the next call returns `mainwp_database_updater_observation_conflict`. Start again from the first step.
+
+---
+
+## Read Stored Observations
+
+**Ability:** `mainwp/get-site-database-update-observations-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":17}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-database-update-observations-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 17,
+  "source": "dashboard_stored_database_update_observation",
+  "observation_status": "available",
+  "observation_revision": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "freshness_known": false,
+  "observed_at": null,
+  "update_count": 1,
+  "plugin_files": ["woocommerce/woocommerce.php"]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `observation_status` | `available` when the stored data is valid; `unavailable` otherwise |
+| `observation_revision` | Opaque 64-character revision of the stored data. Pass it to the preview and dispatch abilities |
+| `freshness_known` | Always `false`. The stored data has no timestamp |
+| `observed_at` | Always `null` |
+| `update_count` | Number of supported plugins with a pending database update, from `0` to `3` |
+| `plugin_files` | Supported plugins with a pending database update |
+
+This read does not contact MainWP Child. Sync the site first if you need current data.
+
+## Preview a Dispatch
+
+**Ability:** `mainwp/preview-site-database-update-dispatch-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `site_id` | integer | Yes | The site ID |
+| `plugin_files` | array | Yes | One to three plugins from the current observation |
+| `expected_observation_revision` | string | Yes | `observation_revision` from the observation read |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":17,"plugin_files":["woocommerce/woocommerce.php"],"expected_observation_revision":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/preview-site-database-update-dispatch-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "status": "preview",
+  "site_id": 17,
+  "plugin_files": ["woocommerce/woocommerce.php"],
+  "observation_revision": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "plan_revision": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+  "freshness_known": false,
+  "backup_status": "not_verified_by_extension",
+  "would_dispatch": true
+}
+```
+
+`plan_revision` binds the site, the selected plugins, and the observation revision. The preview does not contact MainWP Child, check backups, or reserve the update.
+
+Each selected plugin must appear in the current observation's `plugin_files`. Otherwise, the call returns `mainwp_database_updater_observation_conflict`.
+
+---
+
+## Dispatch Database Updates
+
+**Ability:** `mainwp/dispatch-site-database-updates-v1`<br />
+**Method:** POST
+
+<Warning>
+Database updates change the site's database and cannot be undone through MainWP. The extension does not check for a backup. Back up the site before dispatching.
+</Warning>
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `site_id` | integer | Yes | The site ID |
+| `plugin_files` | array | Yes | The same selection used for the preview |
+| `expected_observation_revision` | string | Yes | The observation revision used for the preview |
+| `plan_revision` | string | Yes | `plan_revision` from the preview |
+| `backup_decision` | string | Yes | `caller_verified_backup` or `proceed_without_extension_verified_backup`. Records your decision only |
+| `request_ref` | string | Yes | A UUID you generate. MainWP echoes it as `request_id` for correlation |
+| `dry_run` | boolean | Yes | `true` revalidates and previews. `false` sends the update |
+| `confirm` | boolean | No | Omit or set to `false` when `dry_run` is `true`. Must be `true` when `dry_run` is `false` |
+
+Any other combination of `dry_run` and `confirm` returns `mainwp_database_updater_invalid_input`.
+
+Run a dry run first:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":17,"plugin_files":["woocommerce/woocommerce.php"],"expected_observation_revision":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef","plan_revision":"abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789","backup_decision":"caller_verified_backup","request_ref":"123e4567-e89b-42d3-a456-426614174000","dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/dispatch-site-database-updates-v1/run'
+```
+
+A dry run returns `status: "preview"`, `dispatch_result: "not_attempted"`, and `would_dispatch` for each plugin.
+
+Then send the update with `dry_run: false` and `confirm: true`:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":17,"plugin_files":["woocommerce/woocommerce.php"],"expected_observation_revision":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef","plan_revision":"abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789","backup_decision":"caller_verified_backup","request_ref":"123e4567-e89b-42d3-a456-426614174000","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/dispatch-site-database-updates-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "status": "settled",
+  "request_id": "123e4567-e89b-42d3-a456-426614174000",
+  "site_id": 17,
+  "dispatch_result": "accepted",
+  "items": [
+    { "plugin_file": "woocommerce/woocommerce.php", "outcome": "accepted" }
+  ],
+  "backup_decision": "caller_verified_backup",
+  "completion_known": false,
+  "completion_status": "not_observed",
+  "post_observation_status": "not_requested"
+}
+```
+
+Before sending, MainWP Dashboard repeats the permission, observation, and plan checks.
+
+### Response fields
+
+| `status` | Meaning |
+|----------|---------|
+| `preview` | Dry run. Nothing was sent |
+| `settled` | MainWP Child returned a recognized response |
+| `outcome_unknown` | The request may have reached the site, but the result could not be confirmed |
+
+| `dispatch_result` | Meaning |
+|-------------------|---------|
+| `not_attempted` | Dry run |
+| `accepted` | MainWP Child accepted every selected plugin |
+| `partially_accepted` | MainWP Child accepted some selected plugins |
+| `not_accepted` | MainWP Child accepted none of the selected plugins |
+| `unknown` | The result could not be confirmed |
+
+Each entry in `items` has an `outcome` of `would_dispatch`, `accepted`, `not_accepted`, or `unknown`.
+
+`completion_known` is always `false`. Acceptance means MainWP Child started or queued the update. It does not confirm the plugin finished its database migration. Accepted plugins stay listed as pending until a later sync refreshes the site's data.
+
+`post_observation_status` describes how MainWP Dashboard handled the site data returned by MainWP Child:
+
+| Value | Meaning |
+|-------|---------|
+| `not_requested` | No update was stored. Used for dry runs and when at least one plugin was accepted |
+| `stored` | Nothing was accepted, and the returned site data was stored |
+| `store_failed` | Nothing was accepted, and the returned site data could not be stored |
+| `unknown` | The result could not be confirmed |
+
+### Repeated requests
+
+MainWP Dashboard records one dispatch receipt for each site, plugin, and target database version. The receipt is shared by Abilities API calls and by **Update** buttons in the Dashboard.
+
+- If an earlier request for the same target was accepted or not accepted, a repeat returns that recorded result. MainWP Child is not contacted again.
+- If an earlier request is still in progress or its result is unknown, a repeat returns `status: "outcome_unknown"`. MainWP does not resend the update, because the site may already have applied or queued it.
+- `request_ref` is for correlation only. A new `request_ref` does not allow a resend.
+- When a plugin reports a newer target database version, you can dispatch it independently.
+
+Receipts do not expire. After an `outcome_unknown` result, sync the site and check the plugin on the child site before taking further action.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Database Updater can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_database_updater_invalid_input` | 400 | Invalid site ID, plugin selection, revision, UUID, or `dry_run` and `confirm` combination |
+| `mainwp_database_updater_authentication_required` | 401 | The request is not authenticated |
+| `mainwp_database_updater_access_denied` | 403 | Extension access, the `update_plugins` right, or site access was denied |
+| `mainwp_database_updater_site_not_found` | 404 | The requested site could not be found |
+| `mainwp_database_updater_observation_conflict` | 409 | The stored observation changed, or a selected plugin is not in it. Read the observation again |
+| `mainwp_database_updater_dispatch_refused` | 409 | MainWP Dashboard refused the dispatch before contacting the site, for example because the site is suspended |
+| `mainwp_database_updater_runtime_unavailable` | 500 | The dispatch could not start, including when the dispatch receipt could not be recorded |
+
+## Related Resources
+
+- [Database Updater](/add-ons/updates/mainwp-database-updater-extension) - Install the extension and update databases from the Dashboard
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs and sync sites
