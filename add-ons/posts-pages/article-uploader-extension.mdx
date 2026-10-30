@@ -14,6 +14,7 @@ addonType: extension
 - Importing articles from CSV files
 - CSV file format and structure
 - Publishing imported content to sites
+- Reading staged articles through MainWP Abilities
 
 ---
 
@@ -93,6 +94,10 @@ After a successful upload, ![Uploaded articles list with Publish, Edit, and Dele
 </Step>
 </Steps>
 
+<Note>
+After publishing, Article Uploader removes an article from the table when at least one child site accepts it. If no selected child site accepts the article, it stays in the table so you can retry.
+</Note>
+
 
 ### Edit Articles
 
@@ -136,6 +141,10 @@ After successful import, the extension will show you the imported articles so yo
 Use the Publish action under an Article Title or select multiple articles and use the Publish action from the bulk actions menu.
 </Step>
 </Steps>
+
+<Note>
+After publishing, Article Uploader removes an article from the table when at least one child site accepts it. If no selected child site accepts the article, it stays in the table so you can retry.
+</Note>
 
 
 ### Edit Articles
@@ -246,8 +255,20 @@ For TXT uploads, the extension uses the first line of the file as the article ti
 
 ---
 
+## MainWP Abilities
+
+The Abilities-enabled Article Uploader release adds two read-only abilities for staged articles:
+
+- `mainwp/list-article-uploader-articles-v1` lists uploaded and imported articles that are waiting to be published
+- `mainwp/get-article-uploader-article-v1` reads one staged article with a masked plain-text excerpt of up to 300 characters
+
+Use them to review staged articles from an AI assistant or script before you publish them. Both require `manage_options` and access to Article Uploader. Target sites you cannot access are counted but not named. The abilities do not upload, import, publish, drip, or delete articles. See the [Article Uploader Abilities reference](/api-reference/abilities-api/article-uploader) for request examples and response fields.
+
+---
+
 ## Related Resources
 
+- [Article Uploader Abilities](/api-reference/abilities-api/article-uploader) - List and read staged articles
 - [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
 - [Post Plus Extension](/add-ons/posts-pages/post-plus-extension) - Draft management and randomization
 - [Manage Posts](/sites/content/manage-posts) - Post management guide

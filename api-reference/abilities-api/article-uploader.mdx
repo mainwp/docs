@@ -1,0 +1,189 @@
+---
+title: Article Uploader Abilities
+sidebarTitle: "Article Uploader Abilities"
+description: >-
+  List and read articles staged in MainWP Article Uploader, with accessible target sites and a masked plain-text excerpt.
+---
+
+<Note>
+These abilities require the upcoming Article Uploader release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled Article Uploader release registers two read-only abilities in the `mainwp-article-uploader` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to review articles that are waiting in the **Upload Articles** or **Import Articles** tables before you publish them. They do not upload, import, edit, publish, drip, or delete articles.
+
+## What You'll Learn
+
+- List staged articles with pagination and an optional source filter
+- Read one staged article with a short plain-text excerpt
+- Interpret target sites, hidden sites, and masked text
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- An Article Uploader build that registers these abilities, active on MainWP Dashboard
+- An authenticated user with `manage_options` and access to the Article Uploader Add-on
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Team Control restrictions apply to target sites. A response names only the sites you can access. Other selected sites are counted in `hidden_site_count`.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-article-uploader-articles-v1` | GET | List a page of uploaded and imported staged articles |
+| `mainwp/get-article-uploader-article-v1` | GET | Read one staged article with a masked excerpt |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-article-uploader'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. They reject extra input properties.
+
+---
+
+## List Staged Articles
+
+**Ability:** `mainwp/list-article-uploader-articles-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, starting at `1` |
+| `per_page` | integer | No | `20` | Articles per page, from `1` to `100` |
+| `source` | string | No | Both | `upload` for the **Upload Articles** table or `import` for the **Import Articles** table |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20,"source":"import"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-article-uploader-articles-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "articles": [
+    {
+      "id": 5,
+      "title": "Spring maintenance checklist",
+      "type": "post",
+      "source": "import",
+      "author": "editor",
+      "categories": "News, Guides",
+      "tags": "maintenance",
+      "modified": "2026-10-29T12:15:00+00:00",
+      "target": {
+        "sites": [
+          { "site_id": 1, "name": "Client Site One" }
+        ],
+        "hidden_site_count": 1
+      },
+      "group_count": 0,
+      "drip_enabled": false
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+Articles are sorted by last modified time, newest first. `total` is the number of staged articles that match the `source` filter. The list includes staged articles in any post status.
+
+## Get One Staged Article
+
+**Ability:** `mainwp/get-article-uploader-article-v1`<br />
+**Method:** GET
+
+The only input is the required `id`: the article's positive integer ID in MainWP Dashboard. Use an `id` from the list response.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"id":5}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-article-uploader-article-v1/run'
+```
+
+The response contains the same fields as a list item, plus `excerpt`:
+
+```json
+{
+  "id": 5,
+  "title": "Spring maintenance checklist",
+  "type": "post",
+  "source": "import",
+  "author": "editor",
+  "categories": "News, Guides",
+  "tags": "maintenance",
+  "modified": "2026-10-29T12:15:00+00:00",
+  "target": "all",
+  "group_count": 0,
+  "drip_enabled": false,
+  "excerpt": "Review plugin updates, confirm backups, and check uptime reports before the season starts."
+}
+```
+
+The ability reads only articles staged by Article Uploader. Other Dashboard posts and pages return `mainwp_post_not_found`, even when the ID exists.
+
+---
+
+## Response Fields
+
+| Field | Meaning |
+|-------|---------|
+| `id` | Article ID in MainWP Dashboard |
+| `title` | Plain-text article title |
+| `type` | `post` or `page` |
+| `source` | `upload` for uploaded TXT files, or `import` for imported TXT or CSV files |
+| `author` | Author from the import file, or an empty string |
+| `categories` | Categories from the import file, or an empty string |
+| `tags` | Tags from the import file, or an empty string |
+| `modified` | Last modified time in ISO 8601 GMT, or `null` when unavailable |
+| `target` | `"all"` for all sites, or an object with `sites` and `hidden_site_count` |
+| `group_count` | Number of selected site tags (groups) |
+| `drip_enabled` | Whether the article has a saved drip marker |
+| `excerpt` | Get only. Plain-text excerpt of up to 300 characters |
+
+When `target` is an object, `sites` lists the selected sites you can access, with `site_id` and `name`. `hidden_site_count` counts selected sites you cannot access. Their IDs and names are not returned.
+
+`drip_enabled` reports only the saved marker. Dripping an article removes it from the staged tables, so a dripping article no longer appears in these results.
+
+## Excerpts and Masked Text
+
+The excerpt is built from the stored article body. Shortcodes and HTML are removed before the text is shortened to 300 characters. The response never includes the full body, HTML, or raw metadata.
+
+Before returning any text field, Article Uploader replaces sensitive-looking values with `[redacted]`:
+
+- URLs, domain names, query strings, and file paths
+- Email addresses, except in `author`
+- API keys, tokens, private keys, and `key=value` credentials
+- Any field that contains `Basic` or `Bearer` followed by another word. The whole field is replaced.
+
+Masking is intentionally broad. Ordinary text such as "Basic SEO tips" is fully redacted. A passage without spaces that contains a URL or path, such as some CJK text, can also be redacted as one value. Open the article in Article Uploader to review its full content.
+
+<Note>
+These abilities read stored data on MainWP Dashboard only. They do not contact Child sites, read upload folders, or change posts, metadata, or settings.
+</Note>
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Article Uploader can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options` or access to Article Uploader |
+| `mainwp_post_not_found` | 404 | No staged Article Uploader article has this ID |
+
+Unauthenticated requests return HTTP 401 from MainWP Dashboard before the ability runs.
+
+## Related Resources
+
+- [Article Uploader](/add-ons/posts-pages/article-uploader-extension) - Upload, import, edit, and publish articles
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Look up site IDs returned in `target`
