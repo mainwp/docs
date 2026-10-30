@@ -13,7 +13,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-time-tracker-extension/"
   data-owned-by="Jestart LLC"
@@ -27,6 +27,7 @@ addonType: extension
 - Configuring timer modes and rounding
 - Understanding payment statuses
 - Using the Time Tracker REST API
+- Automating Time Tracker with Abilities
 
 ---
 
@@ -136,6 +137,14 @@ The extension provides widgets on the individual site overview and client overvi
 ## Time Tracker REST API
 
 The Time Tracker extension supports REST API for integration with the MainWP Browser Extension, allowing for seamless time tracking and management across platforms. All MainWP REST API calls, including full documentation and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Version 1 registers routes under `wp-json/mainwp/v1/time-tracker/...` when the MainWP REST API is enabled. Version 2 registers routes under `wp-json/mainwp/v2/time-tracker/...` for tasks, settings, clients, sites, and buckets. For authentication and key management, see [REST API Overview](/api-reference/rest-api/overview).
+
+## Time Tracker Abilities
+
+Time Tracker 5.2.0 adds twelve abilities to the MainWP Abilities API. Use them to list, create, edit, and archive tasks and buckets, start and pause timers, and complete tasks from scripts, AI agents, or the [MainWP MCP Server](/mcp-server/overview).
+
+Each ability requires a MainWP Dashboard administrator and the matching Time Tracker permission, such as **Track time** for timers or **Manage billing** for buckets and task completion. Requests also check access to the task's client and sites. Changes to tasks, buckets, and completion support a preview step before they're applied.
+
+See [Time Tracker Abilities](/api-reference/abilities-api/time-tracker) for inputs, examples, and error codes.
 
 ---
 
