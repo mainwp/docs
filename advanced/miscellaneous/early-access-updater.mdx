@@ -146,7 +146,7 @@ If a new Early Access version is available, this link forces a fresh update chec
 
 ### Roll Back Child Plugins on Sites to Latest Stable Release
 
-Reinstalls the stable WordPress.org version of MainWP Child on all eligible sites.
+Reinstalls the stable WordPress.org version of MainWP Child on all eligible sites. Use this button when you want to roll back your whole network. To roll back a single site, use the per-site option instead.
 
 ---
 
@@ -169,10 +169,13 @@ Runs the same action as the global updater but affects only that single site. A 
 
 Reverts the site back to the stable MainWP Child plugin from WordPress.org.
 
+This action affects only the site you are viewing. Your other child sites keep their current MainWP Child version. If the Dashboard can't identify a valid site you have access to, it refuses the request with **No available sites to perform this action.** and makes no changes.
+
 ---
 
 ## What to Expect During Updates
 
+- Updating MainWP Child to a pre-release version and rolling it back both require permission to install plugins in MainWP Dashboard. Users without this permission see **No available sites to perform this action.**
 - Manual **Check for updates** links are available on both global and per-site pages
 - If an Early Access version of MainWP Child is available and Early Access is enabled, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
 - When the Early Access Extension license is active, plugin row meta will include a **Check for updates now** link
