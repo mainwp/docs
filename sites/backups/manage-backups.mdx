@@ -380,6 +380,8 @@ MainWP can use an available local or completed remote copy. For incremental back
 A full or incremental restore replaces files and database content. A database restore changes the database only; a files-only restore leaves the database in place.
 
 Changes made after the snapshot may be lost. Review any warnings before proceeding.
+
+See [How Files and Database Tables Are Restored](#how-files-and-database-tables-are-restored) for cleanup rules and exceptions.
 </Step>
 
 <Step title="Keep the safety backup enabled">
@@ -394,6 +396,28 @@ Confirm **I understand this replaces the current site content**, then click **St
 Wait for **Restore completed**, then click **Visit site**. Check key pages, sign-in, and other site functions. Review any warnings and the **Recent restores** list.
 </Step>
 </Steps>
+
+### How Files and Database Tables Are Restored
+
+MainWP restores the snapshot in place. It does not delete the entire site and database before restoring.
+
+**Files:** MainWP restores the backed-up files, then compares the site against a file inventory saved automatically with the backup. It removes files that are absent from that inventory within the backup's scope, with these exceptions:
+
+- `wp-config.php` and `wp-content/object-cache.php`
+- MainWP Child and MainWP's data and backup directories
+- Existing `mu-plugins` files that are absent from the backup
+- Paths excluded from the backup, symbolic links, and certain files required by the site's configuration
+- Files that could not be archived during the backup
+
+Files-only restores also keep additional files in the uploads directory because the current database remains in use.
+
+If the backup's file inventory is unavailable or cannot be verified, MainWP skips the additional-file cleanup and displays a warning. Review restore warnings even when the restore completes.
+
+**Database tables:** MainWP replaces restored tables with the backup's version instead of merging their contents with current rows. Existing tables that are absent from the backup are not automatically deleted.
+
+<Warning>
+A built-in restore is not a complete site wipe or a guaranteed malware cleanup. Malicious files or database tables can remain in preserved or excluded areas.
+</Warning>
 
 ### Cancel or Roll Back a Restore
 
