@@ -70,6 +70,20 @@ The Time Tracker Extension allows users to track the work they do for their clie
 
 The Buckets Page allows for the creation and management of buckets, showing details like hours, recurrence, and pricing. Users can view detailed usage of buckets and edit or delete them as needed. ![Time Tracker Manage buckets](/images/add-ons/time-tracker-buckets-page.png)
 
+### Deleting a bucket
+
+When you delete a bucket that has an hourly price, the delete dialog shows a **Move tracked time to** field. Select another bucket to keep the tracked time from priced tasks, or select **None** to delete the bucket without moving anything.
+
+When you select a destination bucket, Time Tracker does the following:
+
+- Moves each task that has a total price into the destination bucket.
+- Recalculates each moved task's tracked time as the task's total price divided by the destination bucket's hourly price.
+- Applies the deleted bucket's hourly price to the destination bucket if the destination has no hourly price.
+- Adds the clients of the moved tasks to the destination bucket, unless the destination is a general bucket. The destination keeps its existing clients.
+- Records the move in the destination bucket's history.
+
+If Time Tracker can't update the destination bucket, it shows **Update bucket failed. Please try again.** and stops before moving any tasks. The bucket you tried to delete is kept, so you can retry the deletion. The same error appears if neither bucket has an hourly price.
+
 ### **Settings**
 
 Navigate to **Add-ons > Time Tracker > Settings**
