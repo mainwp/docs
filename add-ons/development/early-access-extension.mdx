@@ -12,6 +12,7 @@ addonType: extension
 - Enabling Early Access updates for MainWP Dashboard and MainWP Child
 - Using the MainWP Lab cards for early feature previews
 - Best practices for testing Early Access features
+- Checking the Extension's Dashboard database table
 
 ---
 
@@ -23,7 +24,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="extension"
-  data-version="5.1.4"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-early-access-extension/"
   data-owned-by="Jestart LLC"
@@ -75,8 +76,17 @@ Early Access features may be unstable or incomplete. Use them in testing environ
 
 ---
 
+## Database Health Check
+
+Early Access Extension 5.2 supplies its telemetry queue table and expected column definitions to MainWP Dashboard's database schema checks. The Extension uses this table to hold Telemetry events before they are sent. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair tables or check Child site databases.
+
+---
+
 ## Related Resources
 
 - [Development Add-ons](/add-ons/development) - Browse all development tools
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Extension's Dashboard database structure
 - [Early Access Extension](/advanced/miscellaneous/early-access-updater) - Dashboard Early Access settings
 - [Staging Extension](/add-ons/development/staging-extension) - Create test environments
