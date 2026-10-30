@@ -1,0 +1,408 @@
+---
+title: File Uploader Abilities
+sidebarTitle: "File Uploader Abilities"
+description: >-
+  Inspect staged files, preview and start verified file deployments to MainWP Child sites, track their status, and roll them back with the MainWP File Uploader Abilities API.
+---
+
+<Note>
+These abilities require the File Uploader release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled File Uploader release registers eight abilities in the `mainwp-file-uploader` category. Calls run on your MainWP Dashboard and use the `mainwp/` namespace.
+
+## What You'll Learn
+
+- Read the staging limits and allowed destinations
+- List, inspect, and delete your staged files
+- Preview a deployment and confirm it with a short-lived token
+- Track a deployment and roll it back within the retention window
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples
+- An active File Uploader build that registers these abilities
+- A MainWP Child version on the target site that supports the File Uploader v2 deployment protocol
+- An authenticated user with access to the File Uploader Add-on
+- `manage_options` for every ability except the policy, list, and get-object reads
+- Access to the selected site, with MainWP permission to edit sites, for preview, start, status, and rollback
+
+Team Control restrictions apply. Each staged file and each deployment belongs to the user who created it. Other users, including other administrators, cannot read, deploy, or delete it.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or another [supported authentication method](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-file-uploader-policy-v1` | GET | Read staging limits and allowed destination classes |
+| `mainwp/list-staged-file-objects-v1` | GET | List your staged files |
+| `mainwp/get-staged-file-object-v1` | GET | Read one staged file's metadata and revision |
+| `mainwp/delete-staged-file-object-v1` | POST | Permanently delete one unreferenced staged file |
+| `mainwp/preview-file-deployment-v1` | GET | Check one site and destination and get a preview token |
+| `mainwp/start-file-deployment-v1` | POST | Queue a deployment confirmed by a preview token |
+| `mainwp/get-file-deployment-status-v1` | GET | Read the progress and verified result of a deployment or rollback |
+| `mainwp/rollback-file-deployment-v1` | POST | Queue restoration of the file that a deployment replaced |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-file-uploader'
+```
+
+All abilities reject extra input properties. References such as `object_ref`, `operation_ref`, and `request_ref` are UUIDs.
+
+## How Staged Deployment Works
+
+When you upload a file on the **File Uploader** page, File Uploader keeps an immutable copy in private storage on the Dashboard. Each copy is a staged object with a SHA-256 digest and a revision. The abilities do not upload new files. They work with the staged objects you already uploaded.
+
+A deployment follows four steps:
+
+<Steps>
+<Step title="Find the staged object">
+Call `mainwp/list-staged-file-objects-v1` and copy the `object_ref` of the file you want to deploy.
+</Step>
+<Step title="Preview the deployment">
+Call `mainwp/preview-file-deployment-v1` with the site and destination. MainWP Child reports whether the target exists and its current digest. The response includes a `preview_token` that expires after five minutes.
+</Step>
+<Step title="Start the deployment">
+Call `mainwp/start-file-deployment-v1` with the same inputs, the `preview_token`, and a new `request_ref`. File Uploader queues the deployment and returns an `operation_ref`. WP-Cron runs the transfer in the background.
+</Step>
+<Step title="Check the result">
+Poll `mainwp/get-file-deployment-status-v1` until `status` is `completed`, `failed`, or `unknown`.
+</Step>
+</Steps>
+
+## Staging Policy
+
+**Ability:** `mainwp/get-file-uploader-policy-v1`<br />
+**Method:** GET
+
+This ability takes no input and does not contact a Child site.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-file-uploader-policy-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "max_object_bytes": 52428800,
+  "max_objects": 100,
+  "max_total_bytes": 524288000,
+  "unreferenced_ttl_seconds": 86400,
+  "allowed_destinations": ["uploads", "languages", "plugins", "themes", "mu_plugins"],
+  "code_confirmation_required": true,
+  "rollback_retention_seconds": 86400
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `max_object_bytes` | Largest accepted staged file. This is 50 MiB or the Dashboard's PHP `upload_max_filesize` or `post_max_size`, whichever is smallest |
+| `max_objects` | Maximum staged files kept for one user (100) |
+| `max_total_bytes` | Maximum staged bytes kept for one user (500 MiB) |
+| `unreferenced_ttl_seconds` | How long a staged file is kept after no deployment uses it (24 hours) |
+| `allowed_destinations` | Destination classes that deployments can write to |
+| `code_confirmation_required` | Always `true`; plugin, theme, and mu-plugin destinations need `confirm_code: true` |
+| `rollback_retention_seconds` | How long after completion a deployment can be rolled back (24 hours) |
+
+## Staged Objects
+
+### List staged objects
+
+**Ability:** `mainwp/list-staged-file-objects-v1`<br />
+**Method:** GET
+
+All inputs are optional. `state` filters by `ready`, `in_use`, or `expired`. `limit` accepts 1 to 100 and defaults to 50.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"state":"ready","limit":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-staged-file-objects-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "objects": [
+    {
+      "object_ref": "123e4567-e89b-42d3-a456-426614174100",
+      "content_class": "code",
+      "extension": "php",
+      "bytes": 1200,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "state": "ready",
+      "active_references": 0,
+      "created_at": "2026-08-10T05:00:00Z",
+      "expires_at": "2026-08-11T05:00:00Z",
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "next": null,
+  "truncated": false
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `content_class` | `document`, `media`, `archive`, `code`, or `data` |
+| `state` | `ready` when unused, `in_use` while a deployment references it, `expired` when scheduled for removal |
+| `active_references` | Number of deployments or rollbacks currently using the object |
+| `expires_at` | When the object will be removed if no deployment references it, or `null` |
+| `revision` | Value to pass as `if_match` when deleting |
+
+The response does not include the original file name or storage path. When `truncated` is `true`, pass the `next.after_created_at` and `next.after_object_ref` values as input to get the next page. Supply both cursor fields or neither.
+
+### Get one staged object
+
+**Ability:** `mainwp/get-staged-file-object-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"object_ref":"123e4567-e89b-42d3-a456-426614174100"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-staged-file-object-v1/run'
+```
+
+The response wraps the [object fields](#list-staged-objects) in an `object` property.
+
+### Delete a staged object
+
+**Ability:** `mainwp/delete-staged-file-object-v1`<br />
+**Method:** POST
+
+Deletion is permanent. Only objects with zero `active_references` in the `ready` or `expired` state can be deleted. All four inputs are required:
+
+- `object_ref`: the object to delete
+- `if_match`: the object's current `revision`
+- `confirm`: must be `true`
+- `request_ref`: a new UUID that identifies this request
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"object_ref":"123e4567-e89b-42d3-a456-426614174100","if_match":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","confirm":true,"request_ref":"6f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-staged-file-object-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "object_ref": "123e4567-e89b-42d3-a456-426614174100",
+  "status": "deleted",
+  "bytes_deleted": 1200
+}
+```
+
+Repeating the same request with the same `request_ref` returns the stored result. Reusing a `request_ref` with different input returns `mainwp_file_uploader_conflict`.
+
+## Deployments
+
+### Destinations
+
+`relative_destination` is the full target path, including the file name, relative to the WordPress root. It must start with one of these prefixes:
+
+| Destination class | Path prefix | Required WordPress capabilities | `confirm_code` |
+|-------------------|-------------|---------------------------------|----------------|
+| `uploads` | `wp-content/uploads/` | `update_plugins` | Not required |
+| `languages` | `wp-content/languages/` | `update_plugins` | Not required |
+| `plugins` | `wp-content/plugins/` | `update_plugins`, `edit_plugins` | Must be `true` |
+| `mu_plugins` | `wp-content/mu-plugins/` | `update_plugins`, `edit_plugins` | Must be `true` |
+| `themes` | `wp-content/themes/` | `update_themes`, `edit_themes` | Must be `true` |
+
+The capabilities are checked for your user on the Dashboard. When `DISALLOW_FILE_EDIT` is enabled on the Dashboard, WordPress removes `edit_plugins` and `edit_themes`, so code destinations are blocked.
+
+Paths cannot start with `/` or contain empty, `.`, or `..` segments, backslashes, `%`, `:`, or control characters. Paths are limited to 1,024 characters and 32 segments.
+
+The `uploads` destination refuses server-executable and server-configuration files. This includes `.htaccess`, `.user.ini`, `web.config`, and any file name with a PHP-family token such as `.php`, `.php8`, `.phtml`, or `.phar`, or with `.shtml` or ASP.NET extensions. A name such as `shell.php.jpg` is also refused. These requests return `mainwp_file_uploader_destination_forbidden`.
+
+### Preview a deployment
+
+**Ability:** `mainwp/preview-file-deployment-v1`<br />
+**Method:** GET
+
+Preview performs a read-only check on the Child site and changes nothing.
+
+| Input | Required | Description |
+|-------|----------|-------------|
+| `object_ref` | Yes | Staged object to deploy |
+| `site_id_or_domain` | Yes | MainWP site ID or exact site domain |
+| `relative_destination` | Yes | Target path described in [Destinations](#destinations) |
+| `confirm_code` | No | Set to `true` for plugin, theme, and mu-plugin destinations. Defaults to `false` |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"object_ref":"123e4567-e89b-42d3-a456-426614174100","site_id_or_domain":12,"relative_destination":"wp-content/mu-plugins/site-tweaks.php","confirm_code":true}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/preview-file-deployment-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "object_ref": "123e4567-e89b-42d3-a456-426614174100",
+  "site_id": 12,
+  "relative_destination": "wp-content/mu-plugins/site-tweaks.php",
+  "destination_class": "mu_plugins",
+  "code_deployment": true,
+  "target_exists": true,
+  "prior_bytes": 980,
+  "prior_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "rollback_available": true,
+  "will_overwrite": true,
+  "preview_token": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "expires_at": "2026-10-30T12:05:00Z"
+}
+```
+
+Review `will_overwrite` and `prior_sha256` before you start. The `preview_token` is bound to this object, site, destination, and the current state of the target file. It expires after five minutes.
+
+The site must be connected without sync errors, not suspended, and not offline. Otherwise the preview returns `mainwp_file_uploader_conflict`.
+
+### Start a deployment
+
+**Ability:** `mainwp/start-file-deployment-v1`<br />
+**Method:** POST
+
+Pass the same `object_ref`, `site_id_or_domain`, `relative_destination`, and `confirm_code` you used for the preview, plus:
+
+- `preview_token`: the token from the preview response
+- `request_ref`: a new UUID that identifies this request
+
+All six inputs are required.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"object_ref":"123e4567-e89b-42d3-a456-426614174100","site_id_or_domain":12,"relative_destination":"wp-content/mu-plugins/site-tweaks.php","confirm_code":true,"preview_token":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","request_ref":"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/start-file-deployment-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "operation_ref": "0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+  "request_ref": "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d",
+  "status": "requested",
+  "object_ref": "123e4567-e89b-42d3-a456-426614174100",
+  "site_id": 12,
+  "requested_at": "2026-10-30T12:01:10Z"
+}
+```
+
+File Uploader repeats the Child check before it queues the deployment. If the target file changed since the preview, or the token expired, the call returns `mainwp_file_uploader_stale_preview`. Run a new preview and start again.
+
+The deployment never runs inside the request. WP-Cron transfers the file, and MainWP Child verifies the byte count and SHA-256 digest before File Uploader marks it complete. Retrying with the same `request_ref` and input returns the original response.
+
+### Check deployment status
+
+**Ability:** `mainwp/get-file-deployment-status-v1`<br />
+**Method:** GET
+
+Status reads the stored operation record and does not contact the Child site. Use it for both deployments and rollbacks.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"operation_ref":"0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-file-deployment-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "operation_ref": "0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+  "object_ref": "123e4567-e89b-42d3-a456-426614174100",
+  "site_id": 12,
+  "relative_destination": "wp-content/mu-plugins/site-tweaks.php",
+  "kind": "deploy",
+  "status": "completed",
+  "attempts": 1,
+  "bytes": 1200,
+  "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "rollback_available": true,
+  "code": null,
+  "requested_at": "2026-10-30T12:01:10Z",
+  "updated_at": "2026-10-30T12:01:14Z"
+}
+```
+
+| `status` | Meaning |
+|----------|---------|
+| `requested` | Queued and waiting for WP-Cron |
+| `running` | Transfer or rollback in progress |
+| `completed` | The Child wrote the file and its digest matched |
+| `failed` | The operation stopped; see `code` |
+| `unknown` | File Uploader could not confirm the outcome; inspect the site before retrying |
+| `rolled_back` | A rollback restored the previous state |
+| `rollback_failed` | A rollback could not restore the previous state |
+
+`kind` is `deploy` or `rollback`. `attempts` counts dispatch attempts, up to 3. For failures, `code` is one of `access_denied`, `stale_preview`, `destination_forbidden`, `object_rejected`, `remote_failure`, `write_failed`, `retry_exhausted`, or `outcome_unknown`.
+
+`bytes` and `sha256` are set only for completed operations. `bytes` becomes `null` after the staged object is removed. `rollback_available` is `true` only within 24 hours of completion and while the staged object still exists.
+
+### Roll back a deployment
+
+**Ability:** `mainwp/rollback-file-deployment-v1`<br />
+**Method:** POST
+
+Rollback restores the target path to its state before the deployment. You can roll back only a completed deployment, within 24 hours, while its staged object still exists. The target file on the Child must still match the deployed digest. All four inputs are required:
+
+- `operation_ref`: the deployment's operation reference
+- `if_current_sha256`: the deployment's `sha256` from the status response
+- `confirm`: must be `true`
+- `request_ref`: a new UUID that identifies this request
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"operation_ref":"0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e","if_current_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","confirm":true,"request_ref":"3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/rollback-file-deployment-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "rollback_operation_ref": "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b",
+  "deployment_operation_ref": "0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+  "request_ref": "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f",
+  "status": "requested",
+  "site_id": 12,
+  "requested_at": "2026-10-30T12:20:00Z"
+}
+```
+
+Pass `rollback_operation_ref` to the status ability to follow the rollback. If the file on the Child changed after the deployment, the rollback returns `mainwp_file_uploader_conflict`.
+
+## Handling Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_file_uploader_invalid_input` | 400 | Check required fields, UUID formats, digests, booleans, destination paths, and extra properties |
+| `mainwp_file_uploader_authentication_required` | 401 | Authenticate the request |
+| `mainwp_file_uploader_access_denied` | 403 | Check Add-on access, `manage_options`, destination capabilities, and `confirm_code` |
+| `mainwp_file_uploader_not_found` | 404 | Check that the object, operation, or site exists and belongs to you |
+| `mainwp_file_uploader_conflict` | 409 | Re-read the object, site, or operation; the revision, state, or site connection changed |
+| `mainwp_file_uploader_stale_preview` | 409 | Run a new preview and start with the new token |
+| `mainwp_file_uploader_lock_busy` | 409 | Another change is in progress; retry the same request shortly |
+| `mainwp_file_uploader_destination_forbidden` | 422 | Use an allowed destination and file name |
+| `mainwp_file_uploader_remote_failure` | 502 | Check the Child connection and that MainWP Child supports v2 deployments |
+| `mainwp_file_uploader_outcome_unknown` | 502 | Retry with the same `request_ref`, or check status before taking further action |
+| `mainwp_file_uploader_storage_unavailable` | 503 | Private staging storage or the database is unavailable; resolve it before retrying |
+
+Start and rollback are not idempotent across different `request_ref` values. After an uncertain response, retry with the same `request_ref` instead of creating a new one.
+
+## Related Resources
+
+- [File Uploader Add-on](/add-ons/development/file-uploader-extension) - Upload files to Child sites from the Dashboard
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Application Passwords](/api-reference/rest-api/application-passwords) - Create credentials for API requests
