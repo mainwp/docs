@@ -33,6 +33,8 @@ thirdPartyPlugin: Fathom Analytics
 - Assigning Fathom sites to child sites
 - Viewing visitor data and widgets
 - Including Fathom data in Pro Reports
+- Team Control access for staff users
+- Managing Fathom with MainWP Abilities
 
 ---
 
@@ -154,6 +156,8 @@ Use the **Refresh Data** button to force an immediate update outside of the conf
 
 Use this after assigning new Fathom sites to child sites, or whenever you want to see the latest numbers without waiting for the next scheduled refresh.
 
+Refreshing all sites requires administrator access. [Team Control](#team-control-permissions) staff can refresh only a site they have access to. On the **Visitor Data** tab, they must select that site before they click **Refresh Data**.
+
 ## Display interval
 
 The **Display interval** setting on the Settings tab controls the time range shown in Fathom widgets and on the Visitor Data page. Choose **Week** or **Month** depending on the reporting window you want to see by default.
@@ -161,6 +165,10 @@ The **Display interval** setting on the Settings tab controls the time range sho
 ## Removing a connected Fathom account
 
 When you remove a connected Fathom account from MainWP, the add-on automatically clears the Fathom site assignments from your child sites and removes the related cached stats. You don't need to manually clean up child site settings after disconnecting an account.
+
+Removing an account only removes its connection from MainWP. It doesn't delete anything in your Fathom account or remove any child site.
+
+If removal can't finish, MainWP shows **Account removal could not be completed. Click Remove Account to retry.** The account row stays on the page. Click **Remove Account** again to finish the cleanup.
 
 ## Widgets
 
@@ -179,6 +187,28 @@ Fathom data can also be included using tokens. You can find a list of all availa
 
 For more information about Pro Reports and the use of tokens please refer to this KB: [Pro Reports Extension Overview](/add-ons/agency/pro-reports-extension-overview)
 
+## Team Control permissions
+
+If you use the [Team Control Add-on](/add-ons/agency/team-control-extension), connecting accounts, removing accounts, and changing **Settings** are limited to administrators. MainWP hides these controls from staff users, and requests to them from staff users have no effect.
+
+Staff users who have the Fathom extension permission can still:
+
+- View and change the Fathom site assignment for child sites they can access
+- View Fathom stats on the **Visitor Data** page and in widgets for those sites
+- Refresh data for a selected site they can access
+
+The **Visitor Data** page only shows sites the staff user can access. Requests for other sites are denied before MainWP reads cached stats or contacts Fathom.
+
+<Warning>
+Team Control staff who could connect accounts, remove accounts, or change Settings in earlier versions lose those controls after the update. An administrator must perform those tasks. There is no separate permission that restores them for staff.
+</Warning>
+
+## MainWP Abilities
+
+The Fathom Integration registers abilities in the `mainwp-fathom` category of the [MainWP Abilities API](/api-reference/abilities-api/overview). Use them to connect accounts, refresh discovered Fathom sites, manage site assignments and settings, read reports and current visitors, refresh cached analytics, and remove account connections from scripts or AI tools.
+
+The abilities, and the Fathom assignment, stats, and overview screens, require a MainWP Dashboard version that includes the Abilities foundation. On older Dashboard versions, those screens deny access. See [Fathom Abilities](/api-reference/abilities-api/fathom) for inputs, examples, permissions, and errors.
+
 ---
 
 ## Related Resources
@@ -186,3 +216,4 @@ For more information about Pro Reports and the use of tokens please refer to thi
 - [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include analytics data in reports
 - [Available Pro Reports Tokens](/add-ons/agency/available-pro-reports-tokens) - Fathom tokens
+- [Fathom Abilities](/api-reference/abilities-api/fathom) - Manage Fathom through the Abilities API
