@@ -24,7 +24,9 @@ Preview first, review the returned sites and update plan, then submit the same s
 
 Previews return `dry_run`, `would_affect`, `count`, `warnings`, and `errors`. Confirmed immediate responses include `dry_run: false`, `skipped`, and `summary.total_skipped`. Inspect both `errors` and `skipped`; a successful HTTP request does not mean every update was installed. Queued responses return a job ID for [status polling](/api-reference/abilities-api/batch-operations).
 
-These abilities respect site-level and global update holds. Pending items blocked by a hold appear as skipped, and queued jobs recheck holds, site access, and the job owner's operation permissions when they execute. Translation updates also respect the site's translation ignore setting.
+These abilities respect site-level and global update holds. Pending items blocked by a hold appear as skipped, and queued jobs recheck holds, site access, and the job owner's operation permissions when they execute.
+
+When **Ignore translation updates** is on for a site, `mainwp/list-updates-v1` and `mainwp/get-site-updates-v1` leave its translation updates out of their lists and counts. Update previews and execution results show them in `skipped` with `reason: ignored_site_flag`. Confirmed calls and queued jobs do not apply them, even when `slugs` or `specific_items` names a held translation. Turn the setting off to include the site's translation updates again.
 
 Adding an update hold remains available through the ignore abilities. Removing a site's own holds uses the new `mainwp/unignore-site-updates-v1` ability with preview or confirmation. The older `action: unignore` and `action: remove` paths return an error directing you to that ability.
 

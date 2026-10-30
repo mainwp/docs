@@ -14,6 +14,21 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 `{id_or_domain}` accepts either a numeric site ID or a site domain.
 
+## Translation Holds
+
+When **Ignore translation updates** is on for a site, REST API v1 and v2 leave its translation updates out of update lists and counts. Update calls do not apply them, including a v2 request that names a `slug`.
+
+The REST v2 `/updates/{id_or_domain}/update/translations` route returns HTTP 200 with:
+
+```json
+{
+  "success": 0,
+  "message": "Translations ignored updates per site."
+}
+```
+
+The REST v1 `/mainwp/v1/site/site-update-translations` route keeps its existing `{ "SUCCESS": "Process ran." }` response and sends no translation update request. Turn the setting off to make the site's translation updates available again.
+
 ## Route Matrix
 
 ### Read Update Data
