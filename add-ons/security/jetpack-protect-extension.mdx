@@ -102,6 +102,17 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
+## MainWP Abilities
+
+The Abilities-enabled Jetpack Protect Integration registers two read-only abilities. Use them to let AI assistants, MCP clients, or automation tools read saved Jetpack Protect data:
+
+- `mainwp/list-jetpack-protect-sites-v1`: Connection flags, last scan time, and vulnerability counts for your sites
+- `mainwp/get-jetpack-protect-site-scan-v1`: The latest stored scan for one site, with up to 100 vulnerability summaries
+
+These abilities read only data saved by earlier syncs. They never start scans, sync sites, or contact child sites. Synchronize your sites first when you need current results. They require WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an administrator with access to the add-on.
+
+See the [Jetpack Protect Abilities reference](/api-reference/abilities-api/jetpack-protect) for inputs, responses, and errors.
+
 ## Quick Start with Jetpack Protect
 
 The integration works in tandem with the Jetpack Protect plugin on your Child Sites. Both the integration and the plugin are free to download and use.
@@ -141,3 +152,4 @@ Perform another synchronization to get fresh data.
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Jetpack Scan Integration](/add-ons/security/jetpack-scan-extension) - Premium malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
+- [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) - Read stored Jetpack Protect data programmatically
