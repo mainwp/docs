@@ -1,0 +1,298 @@
+---
+title: Jetpack Protect Abilities
+sidebarTitle: "Jetpack Protect Abilities"
+description: >-
+  Read stored Jetpack Protect scans, findings, and history, request scan refreshes, and change Jetpack connection and plugin visibility for one site through MainWP Abilities.
+---
+
+The Jetpack Protect Integration registers ten abilities in the `mainwp-jetpack-protect` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Two fleet-level read abilities list stored summaries and scans. Eight site-level abilities add live control state, stored observations, findings, history, queued refreshes, and previewed connection and visibility changes.
+
+## What You'll Learn
+
+- List stored Jetpack Protect summaries for your sites
+- Read one site's stored scan, findings, and scan history
+- Read live connection and visibility state from a child site
+- Request a fresh scan read and track the queued operation
+- Preview and confirm Jetpack connection or plugin visibility changes
+- Handle stale revisions, conflicts, and unknown outcomes
+
+## Prerequisites
+
+- MainWP Dashboard with Abilities API support
+- Jetpack Protect Integration active in MainWP Dashboard
+- Jetpack Protect plugin installed on the child site
+- MainWP Child 6.4 or later on the child site for the eight site-level abilities
+- An authenticated user with access to the Jetpack Protect Add-on and to the selected site
+- A working WordPress scheduled-task runner (WP-Cron or a system cron) on the Dashboard site for refresh, connection, and visibility requests
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+<Note>
+Child sites running a MainWP Child version older than 6.4 return `unsupported_version` from the site-level abilities. The **Hide**, **Unhide**, **Connect**, and **Disconnect** actions on the Jetpack Protect page keep working on those sites.
+</Note>
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-jetpack-protect-sites-v1` | GET | List stored summary flags and counts for accessible sites |
+| `mainwp/get-jetpack-protect-site-scan-v1` | GET | Read the latest stored scan with up to 100 vulnerability summaries |
+| `mainwp/get-site-jetpack-protect-control-state-v1` | GET | Read live plugin, connection, and visibility state and its revision |
+| `mainwp/get-site-jetpack-protect-observation-v1` | GET | Read the stored scan summary: availability, time, and counts |
+| `mainwp/list-site-jetpack-protect-findings-v1` | GET | List bounded finding summaries from the stored scan |
+| `mainwp/list-site-jetpack-protect-history-v1` | GET | List paged, count-only scan history |
+| `mainwp/get-site-jetpack-protect-operation-v1` | GET | Read the status of a queued refresh, connection, or visibility request |
+| `mainwp/request-site-jetpack-protect-refresh-v1` | POST | Queue a fresh scan read from the child site |
+| `mainwp/replace-site-jetpack-protect-connection-v1` | DELETE | Preview or request a Jetpack connect or disconnect |
+| `mainwp/replace-site-jetpack-protect-visibility-v1` | DELETE | Preview or request showing or hiding the plugin on the child site |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-jetpack-protect'
+```
+
+The eight site-level abilities register only after the integration's database tables are ready. If they are missing, open `wp-admin` on the Dashboard so the integration can finish its database update.
+
+## Permissions
+
+Every call checks the Dashboard Abilities API permission, the Jetpack Protect extension right, and access to the selected site. The two fleet-level abilities also require `manage_options`. Team Control site restrictions apply.
+
+Operation status is available only to the user who made the request, for the same site.
+
+## Request Rules
+
+Site-level inputs use `site_id_or_domain`, such as `1`, `"1"`, or `"example.com"`. All inputs reject extra properties.
+
+`revision`, `if_match`, and `finding_ref` values are opaque 64-character lowercase hexadecimal strings returned by the abilities. Use the returned values instead of constructing them.
+
+Each write requires a UUID `request_ref`. Reuse it only to retry the identical request. A retry returns the stored result instead of acting twice. Reusing a `request_ref` with different inputs returns `request_conflict`.
+
+Connection and visibility changes also require JSON booleans for `dry_run` and `confirm`:
+
+| Mode | `dry_run` | `confirm` | Effect |
+|------|-----------|-----------|--------|
+| Preview | `true` | `false` | Compare the live state with the desired state without queueing work |
+| Execute | `false` | `true` | Queue the change |
+
+Setting both flags to `true` returns `mainwp_protect_invalid_input`. Setting both to `false` returns `confirmation_required`.
+
+## List Stored Site Summaries
+
+**Ability:** `mainwp/list-jetpack-protect-sites-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-jetpack-protect-sites-v1/run'
+```
+
+Optional inputs are `page` (default 1), `per_page` (1-100, default 20), and `site_id`. The response contains `sites`, `page`, `per_page`, and `total`. Each site includes `site_id`, `site_name`, `connected`, `scan_active`, `plugin_hidden`, `last_scan_at`, and `counts`.
+
+This reads stored data. It does not sync sites or start scans.
+
+## Read a Stored Site Scan
+
+**Ability:** `mainwp/get-jetpack-protect-site-scan-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-jetpack-protect-site-scan-v1/run'
+```
+
+Required input is `site_id`. The response contains `scanned_at`, `counts`, up to 100 `vulnerabilities`, and `truncated`. Each vulnerability includes `type`, `affected_item`, `installed_version`, `fixed_in`, `title`, and `severity`. Source URLs, server paths, and private account data are excluded.
+
+## Read the Live Control State
+
+**Ability:** `mainwp/get-site-jetpack-protect-control-state-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-jetpack-protect-control-state-v1/run'
+```
+
+This ability contacts the child site.
+
+| Response field | Meaning |
+|----------------|---------|
+| `site_id` | MainWP site ID |
+| `plugin_state` | `active`, `inactive`, `missing`, or `unsupported` |
+| `connection` | `connected`, `disconnected`, or `unknown` |
+| `visibility` | `visible`, `hidden`, or `unknown` |
+| `revision` | Current control revision; send it as `if_match` when changing connection or visibility |
+| `observed_at` | Time the child site reported this state |
+
+Read the control state immediately before each change.
+
+## Read the Stored Observation
+
+**Ability:** `mainwp/get-site-jetpack-protect-observation-v1`<br />
+**Method:** GET
+
+Required input is `site_id_or_domain`. This reads stored data and does not contact the child site.
+
+| Response field | Meaning |
+|----------------|---------|
+| `availability` | `available`, `not_configured`, `no_snapshot`, `stale`, `partial`, or `malformed` |
+| `observed_at` | Time of the stored scan, or `null` |
+| `fresh_until` | Time after which the scan is reported as `stale`, or `null` |
+| `connected` | Jetpack connection state at scan time, or `null` |
+| `scan_product_active` | Whether the paid Jetpack Scan product was active, or `null` |
+| `counts` | `total`, `core`, `plugins`, `themes`, `files`, and `database`; `null` for partial scans |
+| `revision` | Observation revision, or `null` |
+
+`no_snapshot` means the site is connected but no scan has been stored yet. `not_configured` means the site has no Jetpack Protect connection data. Request a refresh to store a new scan.
+
+## List Findings
+
+**Ability:** `mainwp/list-site-jetpack-protect-findings-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"kind":"plugin","limit":25}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-site-jetpack-protect-findings-v1/run'
+```
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id_or_domain` | Yes | MainWP site ID or domain |
+| `kind` | No | `core`, `plugin`, `theme`, `file`, `database`, or `null` for all |
+| `limit` | No | 1-100, default 50 |
+| `after_finding_ref` | No | Cursor from `next_after_finding_ref` |
+
+The response contains `site_id`, `observed_at`, `findings`, `next_after_finding_ref`, `truncated`, and `revision`. Each finding includes `finding_ref`, `kind`, `title`, `component_name`, and `remediation` (`core_update_available`, `component_update_available`, `component_delete_available`, or `none`). File paths and raw provider details are not returned.
+
+Continue with `next_after_finding_ref` while `truncated` is `true`. A missing or partial stored scan returns `invalid_snapshot`.
+
+## List Scan History
+
+**Ability:** `mainwp/list-site-jetpack-protect-history-v1`<br />
+**Method:** GET
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id_or_domain` | Yes | MainWP site ID or domain |
+| `limit` | No | 1-30, default 10 |
+| `before_observed_at` | No | Cursor from `next_before_observed_at` |
+| `before_generation_id` | No | Cursor from `next_before_generation_id`; requires `before_observed_at` |
+
+The response contains `site_id`, `observations`, `next_before_observed_at`, `next_before_generation_id`, and `truncated`. Each observation includes `observed_at`, `availability` (`available` or `partial`), `total` (`null` for partial scans), and `revision`.
+
+To page, pass both cursor fields from the previous response. Sending only `before_observed_at` with a timestamp that matches a stored scan returns `history_cursor_restart`. Restart from the first page in that case. Stored scan history is kept for 90 days.
+
+## Request a Refresh
+
+**Ability:** `mainwp/request-site-jetpack-protect-refresh-v1`<br />
+**Method:** POST
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"request_ref":"9e38a2d1-52ec-4ef0-bfe8-795f01c4b7d0"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/request-site-jetpack-protect-refresh-v1/run'
+```
+
+Required inputs are `site_id_or_domain` and `request_ref`. The response contains `operation_ref`, `site_id`, `type` (`refresh`), `status`, and `accepted_at`. Use `operation_ref` to [check the operation](#check-an-operation).
+
+The refresh reads the latest scan data from the child site. It does not start a new Jetpack scan. Only one refresh can be active per site; another request returns `lock_busy`.
+
+## Change Connection or Visibility
+
+**Abilities:** `mainwp/replace-site-jetpack-protect-connection-v1`, `mainwp/replace-site-jetpack-protect-visibility-v1`<br />
+**Method:** DELETE
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id_or_domain` | Yes | MainWP site ID or domain |
+| `desired_state` | Yes | `connected` or `disconnected` for connection; `visible` or `hidden` for visibility |
+| `if_match` | Yes | `revision` from the control state |
+| `request_ref` | Yes | UUID identifying this request |
+| `dry_run`, `confirm` | Yes | See [request rules](#request-rules) |
+
+<Steps>
+<Step title="Read the control state">
+Call `mainwp/get-site-jetpack-protect-control-state-v1` and copy `revision`.
+</Step>
+<Step title="Preview the change">
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"desired_state":"hidden","if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","request_ref":"11111111-1111-4111-8111-111111111111","dry_run":true,"confirm":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-site-jetpack-protect-visibility-v1/run'
+```
+
+Review `would_change`, `current_state`, and `desired_state`. A preview does not queue work.
+</Step>
+<Step title="Confirm the change">
+Send the same request with `"dry_run":false` and `"confirm":true`. The response has `mode: accepted`, an `operation_ref`, and `status` `queued`. If the site is already in the desired state, `status` is `succeeded` and nothing is sent to the child site.
+</Step>
+<Step title="Check the operation">
+Poll `mainwp/get-site-jetpack-protect-operation-v1` until the status is terminal.
+</Step>
+</Steps>
+
+If the live state changed since you read it, the call returns `stale_revision`. Read the control state again and repeat the preview.
+
+<Warning>
+Connecting a site registers it with WordPress.com.
+</Warning>
+
+## Check an Operation
+
+**Ability:** `mainwp/get-site-jetpack-protect-operation-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"operation_ref":"9e38a2d1-52ec-4ef0-bfe8-795f01c4b7d0"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-jetpack-protect-operation-v1/run'
+```
+
+Required inputs are `site_id_or_domain` and `operation_ref`. The response contains `operation_ref`, `site_id`, `type` (`refresh`, `connection`, or `visibility`), `status`, `accepted_at`, `started_at`, `finished_at`, `outcome`, and `retryable`.
+
+| Status | Meaning |
+|--------|---------|
+| `queued` | Accepted and waiting for a scheduled task |
+| `running` | Processing has started |
+| `succeeded` | Completed; `outcome` is `observation_refreshed`, `connected`, `disconnected`, `visible`, or `hidden` |
+| `failed` | Did not complete; `outcome` is `failed` or `authorization_lost` |
+| `unknown` | The result could not be confirmed; `outcome` is `outcome_unknown` |
+| `expired` | Stayed queued for more than an hour without running |
+
+`unknown` is final. The integration does not retry or reconcile it. Read the control state and send a new request with a new `request_ref` if needed.
+
+Queued work runs through WordPress scheduled tasks. If an operation stays `queued`, check that WP-Cron or a system cron runs on the Dashboard site. Finished operations are kept for 7 days.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_protect_invalid_input` | 400 | Check required fields, types, extra properties, and flag combinations |
+| `history_cursor_restart` | 400 | Restart history paging, then pass both cursor fields |
+| `access_denied` | 403 | Check the Jetpack Protect extension right and site access |
+| `authorization_lost` | 403 | Access changed before the queued job ran; check permissions and request again |
+| `site_not_found` | 404 | Check the site ID or domain |
+| `operation_not_found` | 404 | Check the reference, site, and requesting user, and the 7-day retention |
+| `confirmation_required` | 409 | Set `dry_run` or `confirm` to `true` |
+| `stale_revision` | 409 | Read the control state and preview again |
+| `request_conflict` | 409 | Use a new `request_ref` for a different request |
+| `lock_busy` | 409 | Wait for the active operation of the same type on that site to finish |
+| `unsupported_version` | 422 | Update MainWP Child on the child site to 6.4 or later |
+| `invalid_snapshot` | 422 | Request a refresh to store a complete scan |
+| `remote_unavailable` | 502 | Check that the child site is reachable |
+| `outcome_unknown` | 502 | Read the control state before sending a new request |
+| `storage_unavailable` | 503 | Open `wp-admin` to finish the database update and resolve database notices |
+
+## Related Resources
+
+- [Jetpack Protect Integration](/add-ons/security/jetpack-protect-extension) - Setup, vulnerabilities, and bulk actions
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats

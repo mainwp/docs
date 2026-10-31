@@ -86,7 +86,7 @@ The Vulnerabilities tab shows the child sites that have the Jetpack Protect plug
 
 ### Fix a vulnerability
 
-Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
+Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. Deleting requires the **Delete Plugins** or **Delete Themes** Dashboard permission, and you can delete only items flagged in the site's latest scan. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
 
 ## Overview tab
 
@@ -101,6 +101,20 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 ## Jetpack Protect REST API
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
+
+## Jetpack Protect Abilities
+
+The integration registers ten [Abilities API](/api-reference/abilities-api/overview) abilities in the `mainwp-jetpack-protect` category. Use them from scripts, automation tools, or AI assistants to:
+
+- List stored Jetpack Protect summaries and scans
+- Read one site's stored scan summary, findings, and scan history
+- Read live Jetpack connection and plugin visibility state from a child site
+- Queue a fresh scan read and track its status
+- Preview and confirm a Jetpack connect or disconnect, or hiding or showing the plugin
+
+The site-level abilities require MainWP Child 6.4 or later. The **Hide**, **Unhide**, **Connect**, and **Disconnect** actions on this page keep working on older MainWP Child versions.
+
+See [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) for inputs, responses, and examples.
 
 ## Quick Start with Jetpack Protect
 
@@ -139,5 +153,6 @@ Perform another synchronization to get fresh data.
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) - Abilities API reference
 - [Jetpack Scan Integration](/add-ons/security/jetpack-scan-extension) - Premium malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
