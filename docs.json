@@ -494,6 +494,7 @@
                 "group": "Technical Settings",
                 "pages": [
                   "customization/disable-wp-cron",
+                  "customization/cron-key-for-http-cron-calls",
                   "customization/manage-wp-cron-on-low-traffic-mainwp-dashboard",
                   "customization/required-fs_method",
                   "customization/how-to-remove-unwanted-hardening-checks",

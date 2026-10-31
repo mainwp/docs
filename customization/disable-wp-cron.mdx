@@ -127,6 +127,14 @@ If direct PHP execution is unavailable, use an HTTPS request with the complete j
 curl -fsS 'https://example.com/wp-content/plugins/PLUGIN-DIRECTORY/cron/CRON-FILE' > /dev/null 2>&1
 ```
 
+MainWP Dashboard core jobs called this way need the cron key. Add `?key=` to the URL:
+
+```bash
+curl -fsS 'https://example.com/wp-content/plugins/mainwp/cron/CRON-FILE?key=YOUR-CRON-KEY' > /dev/null 2>&1
+```
+
+Copy the URL with the key from **MainWP > Info > Cron Schedules**. Command-line jobs don't need the key. See [Cron Key for HTTP Cron Calls](/customization/cron-key-for-http-cron-calls).
+
 <Note>
 Replace `/path/to/public_html` with the MainWP Dashboard WordPress installation path and `/usr/bin/php` with the correct PHP binary. Hosting providers document cron setup for tools such as [cPanel](https://docs.cpanel.net/cpanel/advanced/cron-jobs/) and [Plesk](https://docs.plesk.com/en-US/obsidian/customer-guide/websites-and-domains/scheduling-tasks-cron-jobs.html).
 </Note>
@@ -500,6 +508,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 ## Related Resources
 
 - [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) - Recommended configuration
+- [Cron Key for HTTP Cron Calls](/customization/cron-key-for-http-cron-calls) - Key for HTTP cron jobs
 - [WordPress: Hooking WP-Cron Into the System Task Scheduler](https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/)
 - [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Server requirements
 - [How to Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Update scheduling
