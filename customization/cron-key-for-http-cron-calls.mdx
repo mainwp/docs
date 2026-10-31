@@ -1,0 +1,126 @@
+---
+title: "Cron Key for HTTP Cron Calls"
+sidebarTitle: "Cron Key"
+description: "MainWP Dashboard cron scripts called by web address need a key. Learn where to find the keyed URL, how the 60-day grace period works, and how to rotate the key."
+---
+
+If your server calls MainWP Dashboard's cron scripts by web address, for example with `curl` or `wget`, each call needs a key. Calls without the key stop working after a grace period. Cron jobs that run the scripts with PHP on the command line need no key.
+
+## What You'll Learn
+
+- Which cron jobs need the key
+- Where to find the URL with the key
+- What the notice about keyless calls means
+- What happens during and after the 60-day grace period
+- How to rotate the key
+
+---
+
+## Which cron jobs need the key
+
+The key applies to the scripts in the MainWP Dashboard `cron` folder, such as `updatescheck.php`, when they are called over HTTP:
+
+```bash
+curl -fsS 'https://example.com/wp-content/plugins/mainwp/cron/updatescheck.php?key=YOUR-CRON-KEY' > /dev/null 2>&1
+```
+
+Replace `YOUR-CRON-KEY` with the key from your Dashboard. Keep the key private. Anyone who has it can start these jobs.
+
+Command-line jobs don't change:
+
+```bash
+/usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/updatescheck.php > /dev/null 2>&1
+```
+
+If you keep **Use WP Cron** enabled and trigger `wp-cron.php`, as described in [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard), you don't need to change anything.
+
+---
+
+## Find the URL with the key
+
+<Steps>
+  <Step title="Open Cron Schedules">
+    Go to **MainWP > Info > Cron Schedules**.
+  </Step>
+  <Step title="Find the System cron section">
+    This section appears when **Use WP Cron** is turned off. It shows the command-line command, which needs no key, and the URL for `wget` or `curl` with the key included.
+  </Step>
+  <Step title="Update your cron jobs">
+    Copy the URL into your hosting cron job or cron service. The URL is for `updatescheck.php`. For the other scripts in the `cron` folder, use the same `?key=` value with the other file name.
+  </Step>
+</Steps>
+
+Only administrators who can manage MainWP settings see the URL with the key. If you use Team Control, staff members don't see it.
+
+The Dashboard creates the key when you activate or update MainWP. To set your own key, define `MAINWP_CRON_SECRET` in `wp-config.php`. When this constant is set, the Dashboard uses it, and the Cron Schedules page tells you to change the key there.
+
+---
+
+## The notice about keyless calls
+
+When a cron script is called by web address without a key, administrators see a notice titled **Update your cron job URL**. It appears on MainWP pages and on other WordPress admin pages. The notice shows:
+
+- The date when keyless calls will be blocked
+- The URL with the key for the script that was called
+- A **Copy** button for that URL
+
+You can't dismiss the notice. It goes away after the first call that includes the key. MainWP doesn't send an email about this, so check your Dashboard after you update.
+
+MainWP also writes a warning to its log, at most once per hour for each script. The log entry names the script but never includes the key.
+
+---
+
+## The 60-day grace period
+
+The grace period applies to Dashboards that were already running when MainWP was updated. It starts the first time the updated version loads.
+
+| Call | During the grace period | After the grace period |
+| --- | --- | --- |
+| Correct key | Runs | Runs |
+| No key | Runs, shows the notice, and logs a warning | Blocked with `403` |
+| Wrong key | Blocked with `403` | Blocked with `403` |
+| Command line (`php`) | Runs | Runs |
+
+After the grace period ends, the notice changes to say that calls are being blocked and that scheduled updates, syncs and backups are not running. Update your cron jobs with the URL in the notice to start them again.
+
+New MainWP Dashboard installations have no grace period. HTTP calls need the key from the start.
+
+<Note>
+Developers can change the length of the grace period with the `mainwp_cron_key_grace_days` filter. The default is `60` days.
+</Note>
+
+---
+
+## Rotate the key
+
+Rotate the key if you think someone else has it.
+
+<Steps>
+  <Step title="Open Cron Schedules">
+    Go to **MainWP > Info > Cron Schedules** and find the **System cron** section.
+  </Step>
+  <Step title="Click Rotate key">
+    Click **Rotate key** and confirm.
+  </Step>
+  <Step title="Update your cron jobs">
+    The page shows the new URL. The old key stops working right away and gets `403`. Update every HTTP cron job with the new key.
+  </Step>
+</Steps>
+
+If the key comes from `MAINWP_CRON_SECRET`, the **Rotate key** button isn't shown. Change the value in `wp-config.php` instead.
+
+---
+
+## Self-Check Checklist
+
+- [ ] Every HTTP cron job for the MainWP Dashboard `cron` folder includes `?key=`
+- [ ] The **Update your cron job URL** notice is gone
+- [ ] After a rotation, every HTTP cron job uses the new key
+- [ ] Command-line cron jobs are unchanged
+
+---
+
+## Related Resources
+
+- [Run MainWP Workers Directly with Server Cron](/customization/disable-wp-cron) - Direct worker setup
+- [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) - Recommended configuration
