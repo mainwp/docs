@@ -102,6 +102,29 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
+## MainWP Abilities
+
+The Abilities-enabled Jetpack Protect Integration registers abilities that let AI assistants, MCP clients, or automation tools work with Jetpack Protect data. Two abilities read saved summaries for your sites:
+
+- `mainwp/list-jetpack-protect-sites-v1`: Connection flags, last scan time, and vulnerability counts for your sites
+- `mainwp/get-jetpack-protect-site-scan-v1`: The latest stored scan for one site, with up to 100 vulnerability summaries
+
+These two read only data saved by earlier syncs. They never start scans, sync sites, or contact child sites. Synchronize your sites first when you need current results.
+
+Releases with the site abilities add eight more that work on one site at a time:
+
+- Read saved results, findings, and result history for a site
+- Check the site's current Jetpack connection and Jetpack Protect visibility
+- Preview, then request connecting or disconnecting Jetpack, or showing or hiding the Jetpack Protect plugin
+- Request fresh results from the child site
+- Check the status of a change or refresh request
+
+Changes and refreshes run in the background through scheduled tasks on your Dashboard, so WP-Cron or a system cron job must be working there. Contacting or changing a child site needs MainWP Child 6.4 or later on that site.
+
+All Jetpack Protect abilities require WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an administrator with access to the add-on.
+
+See the [Jetpack Protect Abilities reference](/api-reference/abilities-api/jetpack-protect) for inputs, responses, and errors.
+
 ## Quick Start with Jetpack Protect
 
 The integration works in tandem with the Jetpack Protect plugin on your Child Sites. Both the integration and the plugin are free to download and use.
@@ -141,3 +164,4 @@ Perform another synchronization to get fresh data.
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Jetpack Scan Integration](/add-ons/security/jetpack-scan-extension) - Premium malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
+- [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) - Read stored Jetpack Protect data programmatically
