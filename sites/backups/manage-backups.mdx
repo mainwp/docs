@@ -38,6 +38,7 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 - The matching MainWP Child 6.4 release or later, running PHP 7.4 or higher
 - A connected Child Site that syncs successfully
 - An administrator account to enable and configure backup settings
+- A private backup directory on the Dashboard server, writable by its PHP process and outside publicly served folders. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory).
 - Enough free disk space on the Child Site and Dashboard for backup and restore files
 - Working WordPress cron on the Dashboard for schedules and background tasks
 - Storage credentials if you want copies outside the Dashboard
@@ -91,6 +92,26 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 <Note>
 **Back Up Now** uses the destinations selected on the site's scheduled tasks. If those tasks have no destinations, the backup stays on the Dashboard. The default destination applies only to sites without a scheduled task.
 </Note>
+
+## Set Up the Private Backup Directory
+
+MainWP Dashboard needs a private directory on its own server to store downloaded backups and working files, even when you use remote storage. This is separate from the temporary backup files MainWP Child creates on each Child Site.
+
+MainWP attempts to create the directory automatically. If you see **Private backup directory is unavailable**, configure a writable private location on the **Dashboard server**:
+
+1. Create a directory outside the Dashboard's WordPress and `wp-content` directories, in a location that no website serves over the web. Make it writable by the PHP process running your Dashboard.
+2. Back up your Dashboard's `wp-config.php`, then add or update `MAINWP_BACKUP_PRIVATE_DIR` before the line that loads `wp-settings.php`:
+
+   ```php
+   define( 'MAINWP_BACKUP_PRIVATE_DIR', '/absolute/path/to/private/mainwp-backups' );
+   ```
+
+   Replace the example path with the directory's actual absolute path on your Dashboard server. Add this setting to the Dashboard's `wp-config.php`, not a Child Site's file.
+3. Retry the backup and confirm that it completes and appears under **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`).
+
+A folder outside one WordPress installation may still be publicly served by another website. This matters when the Dashboard is in a subdirectory, on an addon domain, or inside another site's folder. Choose a location outside every website's public folders.
+
+If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
 ## Configure Storage
 
@@ -495,6 +516,7 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | Symptom | What to check |
 | --- | --- |
 | Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
+| `Private backup directory` is unavailable or could not be created | Configure a writable private directory on the Dashboard server. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
 | S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
