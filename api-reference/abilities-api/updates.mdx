@@ -22,7 +22,7 @@ MainWP Dashboard 6.3 registers 14 update management abilities into the WordPress
 
 Preview first, review the returned sites and update plan, then submit the same selection with `confirm: true`. A direct Abilities API request uses these flags; the separate one-time confirmation token used by MainWP MCP belongs to the MCP server's [confirmation flow](/mcp-server/safety).
 
-Previews return `dry_run`, `would_affect`, `count`, `warnings`, and `errors`. Confirmed immediate responses include `dry_run: false`, `skipped`, and `summary.total_skipped`. Inspect both `errors` and `skipped`; a successful HTTP request does not mean every update was installed. Queued responses return a job ID for [status polling](/api-reference/abilities-api/batch-operations).
+Previews return `dry_run`, `would_affect`, `count`, `warnings`, and `errors`. Confirmed immediate responses include `dry_run: false`, `skipped`, and `summary.total_skipped`. Inspect both `errors` and `skipped`; a successful HTTP request does not mean every update was installed. Queued responses return `job_id` and `status_url` for [status polling](/api-reference/abilities-api/batch-operations). Send an authenticated GET to `status_url` using your WordPress Application Password. The URL includes `input[job_id]` for `mainwp/get-batch-job-status-v1`.
 
 These abilities respect site-level and global update holds. Pending items blocked by a hold appear as skipped, and queued jobs recheck holds, site access, and the job owner's operation permissions when they execute. Translation updates also respect the site's translation ignore setting.
 
