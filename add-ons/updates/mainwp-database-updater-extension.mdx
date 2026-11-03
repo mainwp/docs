@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1.1"
+  data-version="5.2.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-database-updater-extension/"
   data-owned-by="Jestart LLC"
@@ -118,6 +118,16 @@ The extension removes the stuck request, and the button disappears. Click **Upda
 </Note>
 
 The extension never clears stuck requests on its own. It removes records of confirmed requests 30 days after they finish, using a daily scheduled task. When you uninstall the extension, it deletes all of its request records.
+
+---
+
+## MainWP Abilities
+
+Database Updater 5.2.0 adds three abilities to read stored database updates for one site, preview a selection, and dispatch a confirmed update. Observations use the last stored sync data and do not apply the Dashboard's ignored-update settings.
+
+Verify a fresh backup before dispatching. Acceptance means MainWP Child started or queued the update; sync later and check the plugin to confirm completion. The abilities share the Dashboard's request records and stuck-request protection.
+
+Every call checks Dashboard Abilities API access, Database Updater access, the `update_plugins` right, and access to the selected site. See [Database Updater Abilities](/api-reference/abilities-api/database-updater) for authentication, previews, request examples, and results.
 
 ---
 
