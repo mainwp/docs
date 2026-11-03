@@ -6,7 +6,7 @@ description: >-
   database, strengthening security for Dashboard-to-Child Site communication.
 ---
 
-MainWP Dashboard version 5.3 introduces encryption for private keys stored in your database. These private keys ensure secure communication between your Dashboard and connected Child Sites. Encrypting them provides enhanced protection in the unlikely event of a database breach.
+MainWP Dashboard version 5.3 introduced encryption for private keys stored in your database. MainWP Dashboard uses these private keys to sign requests to connected child sites. Encryption at rest helps protect the signing keys if the database is exposed without the separate key files.
 
 <Frame>
   <img src="/images/miscellaneous/advanced-openssl-keys-encryption.mdx-f67248.png" alt="Shows the UI of MainWP Dashboard and the prompt to encrypt Keys after updating to v5.3" />
@@ -65,51 +65,52 @@ Click **Encrypt Keys Now** when the notification reappears.
 
 ## What Private Key Encryption Protects
 
-Private keys sign requests sent from the Dashboard. Corresponding public keys on Child Sites verify the authenticity of those requests. Encrypting private keys ensures they remain inaccessible even if someone gains unauthorized database access.
+Private keys sign requests sent from MainWP Dashboard. Corresponding public keys on child sites verify the authenticity of those requests. Encryption at rest helps protect these private keys if someone obtains a copy of the database without the corresponding key files.
 
-MainWP uses AES GCM encryption (Galois Counter Mode) to protect private keys. This method ensures data confidentiality, integrity, and protection against tampering.
+MainWP uses AES-256-CBC to encrypt site private keys. Third-party API keys use a separate AES-GCM workflow described in [API Key Storage](/advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data).
 
 ---
 
 ## How the Encryption Works
 
-MainWP 5.3 uses the same secure framework implemented in version 4.5 for API key encryption.
+Private-key encryption uses PHPSecLib to encrypt the signing key and keeps the decryption material in a separate key file.
 
 | Step | Process | Description |
 |------|---------|-------------|
-| 1 | Key Generation | A 32-character random encryption key is generated using PHPSecLib's `Random` class |
-| 2 | IV Creation | A unique 16-character Initialization Vector ensures each encryption is distinct |
-| 3 | Encryption | AES GCM encrypts the private key, producing cipher text and an authentication tag |
-| 4 | Storage | Encrypted data (IV + cipher + tag) is base64 encoded and stored in the database |
-| 5 | Key File | The encryption key is saved separately in a secure Key File |
+| 1 | Key Generation | PHPSecLib's `Random` class generates a random 32-byte AES key |
+| 2 | IV Creation | A random 16-byte initialization vector (IV) is generated |
+| 3 | Encryption | AES-256-CBC encrypts the site's signing private key |
+| 4 | Key Wrapping | A fresh RSA-2048 public key encrypts the AES key and IV |
+| 5 | Database Storage | The ciphertext is base64 encoded and stored in the database |
+| 6 | Key File | The RSA private key and RSA-encrypted AES key and IV are base64 encoded and saved in a separate key file |
 
-This layered approach ensures that database compromise alone cannot decrypt private keys. Access to both the Key File and encryption components is required.
+Decrypting an encrypted signing key requires both its database value and the corresponding key file.
 
 ---
 
 ## Technical Details
 
-### AES GCM Encryption
+### AES-256-CBC Encryption
 
-AES GCM (Galois Counter Mode) encrypts private keys and generates an authentication tag that verifies data integrity. Any tampering with encrypted data invalidates the tag, preventing decryption.
+AES-256-CBC encrypts the site's signing private key with a random 32-byte AES key. This private-key storage workflow does not generate a GCM authentication tag.
 
 ### Initialization Vector (IV)
 
-The IV ensures encryption uniqueness. Each encryption session uses a random IV, so identical private keys produce different encrypted outputs. This prevents pattern-based attacks.
+A fresh 16-byte IV is generated for each encryption operation, along with a new AES key.
 
-### Authentication Data
+### RSA Key Wrapping
 
-Authentication data validates that stored private keys are legitimate and unmodified. MainWP includes metadata during encryption to verify data trustworthiness.
+A fresh RSA-2048 key pair protects the AES key and IV. The RSA public key encrypts both values; the corresponding RSA private key is needed to recover them.
 
 ### Key Management
 
-The encryption key is stored separately from encrypted data. The Key File storing encryption keys is not in the database, so database access alone cannot expose private keys.
+The key file contains the RSA private key and wrapped AES key and IV. It is stored separately from the encrypted signing key in the database. Protect and back up both the database and key files so MainWP Dashboard can continue to decrypt its signing keys.
 
 ---
 
 ## Why This Matters
 
-MainWP has always used encrypted communication between Dashboard and Child Sites. Private key encryption enhances this foundation by securing keys at rest in the database. Encrypted keys remain inaccessible without the Key File and other encryption components, even in the unlikely event of a database compromise.
+Request signing authenticates requests from MainWP Dashboard. HTTPS encrypts traffic in transit. Private-key encryption protects the signing keys at rest by keeping their decryption material separate from the database.
 
 ---
 
@@ -117,7 +118,7 @@ MainWP has always used encrypted communication between Dashboard and Child Sites
 
 - [ ] Dashboard upgraded to v5.3 or later
 - [ ] Encryption notification acknowledged
-- [ ] Private keys encrypted (no notification remaining)
+- [ ] Private key encryption completed successfully
 - [ ] Child site connections working after encryption
 
 ---

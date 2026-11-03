@@ -26,7 +26,11 @@ The Abilities-enabled Advanced Uptime Monitor release registers seven abilities 
 - A configured uptime provider for operations that contact the provider
 - An authenticated user with `manage_options`, access to the Add-on, and access to the selected site
 
+Every call starts with the Dashboard's ability permission check, which requires `manage_options`. The Add-on then checks the Advanced Uptime Monitor extension right and the selected site's scope on every call. Team Control staff roles without `manage_options` receive 403 for every call.
+
 Team Control and permitted-site restrictions apply. Inventory synchronization requires an administrator with unrestricted access to all sites; a user restricted to selected sites cannot synchronize provider inventory.
+
+A user whom the Dashboard's site permission check denies receives 403 for that site. The same user also receives 403 for a site ID that does not exist. An administrator with access to all sites receives 404 `mainwp_aum_site_not_found` for a site ID that does not exist.
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or another [supported authentication method](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
@@ -76,6 +80,8 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 
 The response uses `source: dashboard_cached_mapping` and includes `monitors` and `pagination`. Each monitor supplies its local ID, site ID, service, name, address, `administrative_state`, `observed_status`, and `last_local_update` Unix timestamp.
 
+Ping and port monitors that the Add-on's own import linked to the site are listed with their stored host, IP address, or `host:port` as the `address`.
+
 `administrative_state` is `active`, `paused`, or `unknown`. `observed_status` is `up`, `down`, `degraded`, `pending`, or `unknown`. An active monitor does not establish that the site is currently up.
 
 Use a returned local ID to read its cached events:
@@ -102,7 +108,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 
 The response uses `source: live_provider` and includes `site_id`, `service`, `local_monitor_id`, `measured_at`, `ratios`, and `remote_confirmed`. Ratios contain `days_7`, `days_15`, `days_30`, `days_45`, `days_60`, and `all_time`, each a percentage from 0 through 100 or `null` when unavailable. Treat `null` as unavailable, not zero uptime.
 
-For Site24x7 and Better Stack, `all_time` is bounded to the last 365 days. This request does not import events or update Dashboard cache.
+For Site24x7 and Better Stack, `all_time` is bounded to the last 365 days. UptimeRobot values can come from the Add-on's one-hour uptime ratio cache instead of a new provider request. This request does not import events or update Dashboard cache.
 
 ## Create a Monitor
 
@@ -151,6 +157,12 @@ To delete the selected monitor after reviewing the preview, submit the same targ
 
 Inventory synchronization matches provider monitors to managed sites and skips unassigned monitors. Terminal reconciliation removes stale Dashboard mappings; it does not delete provider monitors.
 
+Synchronization only maps monitors whose target is an `http://` or `https://` URL:
+
+- Monitors with any other target, such as ping, port, DNS, `ws://`, or `ftp://`, count as skipped unassigned monitors. Synchronization never writes them and keeps any existing mapping for them.
+- Site24x7 monitors of a type other than URL and NodePing checks without a target are left out of synchronization, as they are in the Add-on's own reload.
+- Synchronization stores addresses normalized, with a lowercase scheme and no query string. The Add-on's own reload matches existing monitors by provider monitor ID first, so it does not add a second row for the same monitor.
+
 Preview one inventory page:
 
 ```bash
@@ -166,7 +178,11 @@ Start a confirmed run with `service` and `confirm: true`, omitting `sync_token` 
 
 If the result is `more`, send the returned `sync_token` and `next_cursor` as `cursor` with the same `service` and `confirm: true`. Continue until `complete`, when `next_cursor` is `null`. Echo the continuation values exactly; do not invent a cursor or start a new run for each page. Confirmation is required on every page.
 
-Tokens are short-lived. An expired or invalid continuation returns `mainwp_aum_sync_expired`. Some provider failures include `sync_token` and `cursor` in error data so the existing run can be resumed.
+Tokens are short-lived. An expired or invalid continuation returns `mainwp_aum_sync_expired`.
+
+Each run is bound to the provider credential it started with. Saving a different credential for that provider in the Add-on settings ends the run, and the next page returns `mainwp_aum_sync_expired`. Re-saving the same key or changing only the UptimeRobot access mode keeps the run valid. For Site24x7, only a change to the Administrator token ends the run. Saving the client ID, client secret, Reports token, or Operations token keeps it valid.
+
+Each confirmed page saves its monitors and its continuation state together. If a page fails, resume it with the same `sync_token` and `cursor`. Some provider failures include `sync_token` and `cursor` in error data so the existing run can be resumed.
 
 Site24x7 and NodePing inventory synchronization supports up to 100 monitors. Larger inventories return `mainwp_aum_provider_rejected` rather than completing a partial reconciliation.
 
@@ -186,6 +202,10 @@ Site24x7 and NodePing inventory synchronization supports up to 100 monitors. Lar
 | `mainwp_aum_database_failure` | 500 | Check local database health and whether the remote operation already completed |
 | `mainwp_aum_provider_rejected` | 502 | Review provider configuration, limits, and the requested operation |
 | `mainwp_aum_remote_outcome_unknown` | 504 | Check provider state before retrying a change |
+
+Malformed input returns 400 from execution, not a permission error.
+
+For all four providers, creation, pause or resume, and deletion return `mainwp_aum_remote_outcome_unknown` (504) when the provider request times out, or returns HTTP 429 or a 5xx status. A creation that the provider answers with a 2xx status but no monitor ID also returns 504, because the monitor may exist. A 4xx response with an error body returns `mainwp_aum_provider_rejected` (502). Dashboard data stays unchanged whenever an operation does not succeed.
 
 A timeout or unknown result does not establish that a provider change failed. Inspect provider state and reconcile mappings before retrying creation or deletion. WordPress may also reject schema-invalid input before the Add-on callback runs and return its own authentication or permission errors.
 

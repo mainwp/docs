@@ -1,0 +1,32 @@
+---
+title: Retrieve Site Access Query Conditions
+sidebarTitle: Site Access Queries
+description: >-
+  Use the MainWP Dashboard 6.4 site-access query hook to retrieve existing SQL conditions when building a custom query against MainWP sites.
+---
+
+MainWP Dashboard 6.4 adds `mainwp_get_sql_where_allow_access_sites`. Call this filter from Dashboard-side PHP code to retrieve the existing site-access SQL conditions for a custom site query.
+
+## Retrieve the Conditions
+
+Run the code after MainWP has initialized its hooks:
+
+```php
+$where = apply_filters( 'mainwp_get_sql_where_allow_access_sites', '', 'wp' );
+```
+
+The third argument is the table alias used for the MainWP sites table in your query. Use a fixed alias defined by your code, such as `wp`.
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| Initial value | string | Pass an empty string; MainWP's callback does not use this value |
+| Table alias | string | Alias for the sites table; defaults to `wp` |
+| Return value | string | SQL conditions beginning with `AND`, suitable after an existing `WHERE` condition |
+
+The returned conditions use MainWP's existing site-access query logic and exclude staging sites. The result depends on the current execution context.
+
+## Preserve Permission Checks
+
+Use this helper to reuse query conditions, not as a standalone authorization check. Your code must still check the current user's operation permissions, site access, and any applicable ownership restrictions. Cron, WP-CLI, and REST execution contexts can use different access handling from an interactive Dashboard request.
+
+Continue using prepared queries for values supplied by users. Do not accept a table alias or SQL fragment from request data.
