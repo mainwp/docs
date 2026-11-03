@@ -16,6 +16,7 @@ thirdPartyPlugin: Yoast SEO
 - Exporting and importing SEO settings templates
 - Publishing posts and pages with custom SEO settings
 - Managing Yoast SEO across your network
+- Reading saved settings templates through MainWP Abilities
 
 ---
 
@@ -141,6 +142,10 @@ Follow the [Import And Export in Yoast SEO](https://kb.yoast.com/kb/import-optio
 
 ### Import the Yoast SEO Settings Template to the Extension
 
+<Note>
+Only WordPress administrators (users with the `manage_options` capability) who also have access to the WordPress SEO Add-on can import a settings template. If you use [Team Control](/add-ons/agency/team-control-extension), grant the user the WordPress SEO extension permission. Imports from users without these permissions, or from expired or edited pages, are rejected with an HTTP 403 error and no template is saved. If an import fails with a 403 error, reload the **Settings Templates** tab and submit the form again.
+</Note>
+
 <Steps>
 <Step title="Log in to your MainWP Dashboard">
 </Step>
@@ -231,10 +236,17 @@ Once the WordPress SEO Extension and Yoast SEO plugin are installed on your Main
 </Step>
 </Steps>
 
+## MainWP Abilities
+
+The WordPress SEO Extension registers two read-only abilities: `mainwp/list-wordpress-seo-templates-v1` and `mainwp/get-wordpress-seo-template-v1`. Use them to list saved settings templates, see which accessible sites each template was applied to, and review a summary of key Yoast SEO settings.
+
+These abilities read data stored on your MainWP Dashboard. They do not apply templates or contact child sites. They require WordPress 6.9 or later, `manage_options`, and access to the extension. See the [WordPress SEO Abilities reference](/api-reference/abilities-api/wordpress-seo) for permissions, request examples, and response fields.
+
 ---
 
 ## Related Resources
 
 - [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
+- [WordPress SEO Abilities](/api-reference/abilities-api/wordpress-seo) - List and read saved settings templates
 - [SEOPress Extension](/add-ons/posts-pages/seopress-extension) - Alternative SEO integration
 - [Manage Posts](/sites/content/manage-posts) - Post management guide
