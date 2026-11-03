@@ -151,10 +151,12 @@ curl -X POST -u 'admin:xxxx' \
 {
   "queued": true,
   "job_id": "sync_abc123def456",
-  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run?input%5Bjob_id%5D=sync_abc123def456",
   "sites_queued": 350
 }
 ```
+
+When `queued` is `true`, send an authenticated GET to `status_url` using your WordPress Application Password. The URL includes `input[job_id]`. See [Batch Operations](/api-reference/abilities-api/batch-operations#mainwpget-batch-job-status-v1) for a polling example and response.
 
 ---
 

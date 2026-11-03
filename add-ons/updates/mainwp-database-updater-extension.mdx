@@ -90,9 +90,13 @@ After you've installed the extension, a Database Updates tab becomes available. 
 </Step>
 </Steps>
 
+If the extension refuses the update, a red X replaces the row's buttons. Hover over the red X to see the reason.
+
+When the last request for that update was sent to the child site but never confirmed, the tooltip reads: "This update was sent but never confirmed. Reload the page, then use Clear Stuck Request to try again." Before you clear the request, check the plugin on the child site to confirm its database update did not already run.
+
 ### Clear a stuck update request
 
-The extension records each database update request it sends to a child site. This record stops the Dashboard from sending the same update twice. If a request times out or hits a connection error, the Dashboard can't confirm whether the child site ran the update. The request then stays pending, and **Update Now** returns the message "The update request has already been sent; its outcome is not confirmed."
+The extension records each database update request it sends to a child site. This record stops the Dashboard from sending the same update twice. If a request times out or hits a connection error, the Dashboard can't confirm whether the child site ran the update. The request then stays pending, and **Update Now** returns the message "This update was sent but never confirmed. Reload the page, then use Clear Stuck Request to try again."
 
 Before you clear a stuck request, check the plugin on the child site. Confirm that its database update did not already run.
 

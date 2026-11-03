@@ -141,6 +141,10 @@ Follow the [Import And Export in Yoast SEO](https://kb.yoast.com/kb/import-optio
 
 ### Import the Yoast SEO Settings Template to the Extension
 
+<Note>
+Only WordPress administrators (users with the `manage_options` capability) who also have access to the WordPress SEO Add-on can import a settings template. If you use [Team Control](/add-ons/agency/team-control-extension), grant the user the WordPress SEO extension permission. Imports from users without these permissions, or from expired or edited pages, are rejected with an HTTP 403 error and no template is saved. If an import fails with a 403 error, reload the **Settings Templates** tab and submit the form again.
+</Note>
+
 <Steps>
 <Step title="Log in to your MainWP Dashboard">
 </Step>
