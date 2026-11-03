@@ -233,6 +233,14 @@ Only unrestricted Dashboard administrators can create or edit legacy REST API v1
 
 The **Backups** permission group controls backup actions such as execution, restoration, downloads, and backup task management. On a Dashboard with built-in backups, this group appears when built-in backups are enabled. On older Dashboards, its visibility follows the legacy backup setting. **API Backups** remains a separate permission group.
 
+**Delete Backups** controls whether staff can delete existing backups. It appears after **Download Backups** and is enabled by default for new roles. Untick it to let a role run backups without deleting them.
+
+When you update to a Team Control version that adds **Delete Backups**, existing roles that have **Execute Backups** receive it automatically. Team Control applies this grant once, the first time a Team Control owner opens WordPress admin after the update. Until then, staff keep their current ability to delete backups. After the grant runs, you can untick **Delete Backups** on any role, and Team Control does not add it back.
+
+<Note>
+**Delete Backups** takes effect only on a MainWP Dashboard version that supports it. On older Dashboards, the checkbox appears but **Execute Backups** continues to control backup deletion.
+</Note>
+
 Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
 
 ### Abilities and MCP Permissions
