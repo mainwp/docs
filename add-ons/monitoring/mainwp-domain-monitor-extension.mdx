@@ -8,6 +8,7 @@ addonType: "integration"
 ## What You'll Learn
 
 - Checking domain expiration dates across all sites
+- Monitoring domains that are not connected to a child site
 - Reading expiration status in the dashboard and Overview widgets
 - Entering domain info manually for unsupported TLDs
 - Scheduling automated domain checks
@@ -85,6 +86,39 @@ To retrieve domain information immediately, use one of the manual check actions 
 </Steps>
 
 Alternatively, you can use the **Bulk actions** menu to check selected sites, or use the **Check Domain** action from the site **Actions** menu to audit just one site.
+
+### Monitor Domains Not Connected to a Child Site
+
+You can monitor domains that are not MainWP child sites, such as non-WordPress sites or parked domains. These domains appear in the same Domain Monitor table as your child sites.
+
+<Note>
+  Only users with access to all child sites can see, add, check, or remove these domains.
+</Note>
+
+<Steps>
+  <Step title="Go to Add-ons > Monitoring > Domain Monitor > Dashboard">
+  </Step>
+  <Step title="Enter the domain in the field next to the Check All Sites Domains button">
+    Enter a domain name, such as `example.com`, or paste a full URL, such as `https://www.example.com/page`. Domain Monitor keeps only the hostname and drops a leading `www.`, so both examples are saved as `example.com`.
+  </Step>
+  <Step title="Click Add Domain">
+    Domain Monitor saves the domain, runs the first lookup, and reloads the table.
+  </Step>
+</Steps>
+
+If the input is not a valid domain name, Domain Monitor shows **Enter a valid domain name, for example example.com.** If the domain is already in the list, it shows **This domain is already being monitored.**
+
+Added domains are labelled **Not a child site** in the table. They work like child site domains in these ways:
+
+- **Check Domain**, **Bulk actions**, and **Check All Sites Domains** include them.
+- Automated checks and expiration notifications use your general [Domain Monitor Settings](#domain-monitor-settings).
+- Expiration notification emails name the domain and link to the Domain Monitor dashboard.
+
+Domain Monitor looks up the exact hostname you saved. For example, `example.gouv.fr` is looked up as entered.
+
+These domains do not have a **Domain Info** page, **Individual Site Settings**, or Overview and Edit links. They are not included in WP-CLI commands, the REST API, or Pro Reports tokens.
+
+To stop monitoring a domain, choose **Remove Domain** from its **Actions** menu and confirm. Domain Monitor deletes the domain and its stored domain info. The **Remove Domain** action is only available for domains that are not connected to a child site.
 
 ### Unscanned Sites
 
