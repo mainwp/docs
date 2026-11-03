@@ -1,0 +1,503 @@
+---
+title: Domain Monitor Abilities
+sidebarTitle: "Domain Monitor Abilities"
+description: >-
+  Read stored domain expiry data, manage monitoring policy and manual domain profiles, run domain checks, and request scheduled checks or expiry-alert evaluations with the MainWP Domain Monitor Abilities API.
+---
+
+<Note>
+These abilities require a Domain Monitor release with Abilities API support. Earlier builds, including 5.4, do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled release of MainWP Domain Monitor registers nine abilities in the `mainwp-domain-monitor` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities to feed domain expiration data into scripts, reports, or AI assistants connected through the [MainWP MCP Server](/mcp-server/overview). You can also use them to change monitoring settings, maintain manually entered domain data, and trigger checks without opening the Domain Monitor pages.
+
+## What You'll Learn
+
+- Read stored domain expiry summaries and detailed domain profiles
+- Read and replace global or per-site monitoring policy
+- Replace a manually entered domain profile
+- Check one site's domain through RDAP or WHOIS
+- Request scheduled domain checks or expiry-alert evaluations for selected sites
+- Use revisions, previews, and confirmation safely
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A Domain Monitor release with Abilities support, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Domain Monitor Add-on
+- Access to the target sites
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Every call checks the Domain Monitor Add-on permission and the user's allowed sites. Team Control restrictions apply:
+
+- Site-specific calls return 404 `mainwp_domain_monitor_site_not_found` for a site the user cannot access. A site that does not exist returns the same error.
+- The summary list omits sites the user cannot access.
+- Replacing the **global** policy requires access to all sites. Users restricted to selected sites can only change per-site policy.
+- Team Control staff roles without `manage_options` cannot use these abilities yet.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-site-domain-expiry-summary-v1` | GET | Read one site's stored expiry summary |
+| `mainwp/list-domain-expiry-summaries-v1` | GET | List stored expiry summaries for accessible sites, with cursor pagination |
+| `mainwp/get-domain-monitor-policy-v1` | GET | Read global or per-site monitoring policy |
+| `mainwp/replace-domain-monitor-policy-v1` | POST | Replace global or per-site monitoring policy |
+| `mainwp/get-site-domain-profile-v1` | GET | Read one site's detailed stored domain profile |
+| `mainwp/replace-site-manual-domain-profile-v1` | POST | Preview or replace a site's manually entered domain profile |
+| `mainwp/check-site-domain-v1` | POST | Preview or run an RDAP/WHOIS lookup for one site and store the result |
+| `mainwp/request-domain-check-batch-v1` | POST | Preview or request scheduled domain checks for selected sites |
+| `mainwp/request-domain-expiry-alert-evaluation-v1` | POST | Preview or request expiry-alert evaluation for selected sites |
+
+The four read abilities are marked `readonly`, non-destructive, and idempotent. They return stored data and never contact RDAP or WHOIS services. Policy replacement is idempotent. The other four write abilities are marked destructive and not idempotent, and they require a preview or explicit confirmation.
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-domain-monitor'
+```
+
+All inputs reject extra properties and explicit `null` values for required fields. Site IDs are positive JSON integers.
+
+### Revisions
+
+Each read returns a `revision`, a 64-character lowercase hexadecimal string. Write abilities require the latest revision in `expected_revision`. If the stored data changed since your read, the write returns `mainwp_domain_monitor_conflict` (409). Read the data again and retry with the new revision.
+
+| Write ability | Get `expected_revision` from |
+|---------------|------------------------------|
+| Replace policy | [Get monitoring policy](#get-monitoring-policy) for the same `site_id` |
+| Replace manual profile | [Get site domain profile](#get-site-domain-profile) or [Get site expiry summary](#get-site-expiry-summary) |
+| Check site domain | [Get site domain profile](#get-site-domain-profile) or [Get site expiry summary](#get-site-expiry-summary) |
+
+### Preview and confirmation
+
+The manual profile, domain check, and batch request abilities require `dry_run` and a caller-generated `request_ref` where listed:
+
+- Send `dry_run: true` and omit `confirm` (or set it to `false`) to preview. A preview validates input, permissions, and the revision, but changes nothing.
+- Send `dry_run: false` and `confirm: true` to execute.
+- Any other combination returns `mainwp_domain_monitor_invalid_input` (400).
+
+`request_ref` is a UUID (versions 1 through 5; version 4 recommended). Domain Monitor echoes it as `request_id` so you can correlate results.
+
+<Warning>
+Do not automatically retry a write that returned `outcome_unknown`, `mainwp_domain_monitor_write_failed`, or a network timeout. Read the current state first, because the change may already have been applied.
+</Warning>
+
+Timestamps in profile and summary fields are Unix epoch seconds in UTC. A value of `0` means the date is unavailable. `evaluated_at` uses ISO 8601 format, such as `2026-11-03T14:00:00Z`.
+
+---
+
+## Get Site Expiry Summary
+
+**Ability:** `mainwp/get-site-domain-expiry-summary-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-domain-expiry-summary-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "profile_status": "available",
+  "domain_name": "example.com",
+  "source": "provider",
+  "lifecycle": "valid",
+  "expires_at": 1798761600,
+  "last_checked_at": 1793000000,
+  "freshness": "fresh",
+  "revision": "3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a",
+  "evaluated_at": "2026-11-03T14:00:00Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `site_id` | integer | MainWP Dashboard site ID |
+| `profile_status` | string | `available`, `invalid` (stored data could not be read), or `absent` (no monitoring record yet) |
+| `domain_name` | string | Stored domain, or an empty string |
+| `source` | string | `provider` (RDAP/WHOIS lookup), `manual` (manual domain entry), or `unavailable` |
+| `lifecycle` | string | `valid`, `expiring`, `expired`, or `unavailable` |
+| `expires_at` | integer | Expiration time, or `0` |
+| `last_checked_at` | integer | Time of the last stored check, or `0` |
+| `freshness` | string | `fresh`, `stale`, or `unknown` |
+| `revision` | string | Profile revision for write abilities |
+| `evaluated_at` | string | Time Domain Monitor evaluated `lifecycle` and `freshness` |
+
+`lifecycle` is `expired` when the expiration time has passed, and `expiring` when the domain expires within the site's effective notification threshold. When the latest check failed, `expires_at` is `0` and `lifecycle` is `unavailable`. `freshness` is `stale` when the last check is older than the site's effective check frequency.
+
+## List Expiry Summaries
+
+**Ability:** `mainwp/list-domain-expiry-summaries-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"after_site_id":0,"per_page":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-domain-expiry-summaries-v1/run'
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `after_site_id` | integer | Yes | Return sites with an ID greater than this value. Use `0` for the first page |
+| `per_page` | integer | Yes | Maximum summaries per page, from `1` to `100` |
+
+**Example response:**
+
+```json
+{
+  "items": [
+    {
+      "site_id": 1,
+      "profile_status": "available",
+      "domain_name": "example.com",
+      "source": "provider",
+      "lifecycle": "expiring",
+      "expires_at": 1794200000,
+      "last_checked_at": 1793000000,
+      "freshness": "fresh",
+      "revision": "3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a"
+    }
+  ],
+  "next_after_site_id": 1,
+  "has_more": true,
+  "returned": 1,
+  "evaluated_at": "2026-11-03T14:00:00Z"
+}
+```
+
+Items use the [summary fields](#get-site-expiry-summary) without `evaluated_at` and are sorted by ascending site ID. The list includes only sites with a Domain Monitor record.
+
+While `has_more` is `true`, send `next_after_site_id` as the next `after_site_id`. A page can contain fewer items than `per_page`, or none, because sites you cannot access are removed. Keep paging until `has_more` is `false`.
+
+## Get Monitoring Policy
+
+**Ability:** `mainwp/get-domain-monitor-policy-v1`<br />
+**Method:** GET
+
+Use `site_id: 0` for the global settings, or a site ID for that site's effective settings.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-domain-monitor-policy-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "scope": "site",
+  "site_id": 1,
+  "use_schedule": true,
+  "frequency_seconds": 604800,
+  "notification_threshold_days": 30,
+  "overwrite_global": false,
+  "manual_mode": false,
+  "effective_source": "global",
+  "policy_status": "valid",
+  "revision": "9a2c4e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `scope` | string | `global` or `site` |
+| `site_id` | integer | `0` for global, or the site ID |
+| `use_schedule` | boolean | **Automatically check domains** |
+| `frequency_seconds` | integer | **Automated domain checks frequency**: `86400` (once a day), `604800` (once a week), `1296000` (twice a month), or `2592000` (once monthly) |
+| `notification_threshold_days` | integer | **Notifications threshold**, from `0` to `365`. `0` disables expiry alerts |
+| `overwrite_global` | boolean | **Overwrite general settings** for the site. Always `false` for global scope |
+| `manual_mode` | boolean | **Manual domain information entry** for the site. Always `false` for global scope |
+| `effective_source` | string | `site` when the site's own values apply, otherwise `global` |
+| `policy_status` | string | `valid`, `normalized_legacy` (older stored values were normalized), or `invalid` |
+| `revision` | string | Policy revision for [Replace monitoring policy](#replace-monitoring-policy) |
+
+For a site, the schedule, frequency, and threshold fields show the values Domain Monitor applies to that site.
+
+## Replace Monitoring Policy
+
+**Ability:** `mainwp/replace-domain-monitor-policy-v1`<br />
+**Method:** POST
+
+This replaces the complete policy. Send every field, even the ones you are not changing.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"use_schedule":true,"frequency_seconds":86400,"notification_threshold_days":14,"overwrite_global":true,"manual_mode":false,"expected_revision":"9a2c4e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-domain-monitor-policy-v1/run'
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `site_id` | integer | Yes | `0` for global settings, or a site ID |
+| `use_schedule` | boolean | Yes | Enable automated checks |
+| `frequency_seconds` | integer | Yes | `86400`, `604800`, `1296000`, or `2592000` |
+| `notification_threshold_days` | integer | Yes | `0` to `365`. `0` disables expiry alerts |
+| `overwrite_global` | boolean | Yes | Use the site's own values. Must be `false` when `site_id` is `0` |
+| `manual_mode` | boolean | Yes | Use manually entered domain data for the site. Must be `false` when `site_id` is `0` |
+| `expected_revision` | string | Yes | `revision` from the latest policy read for the same `site_id` |
+
+**Example response:**
+
+```json
+{
+  "status": "applied",
+  "scope": "site",
+  "site_id": 1,
+  "previous_revision": "9a2c4e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f",
+  "revision": "c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3",
+  "scheduler_status": "reconciled"
+}
+```
+
+| `status` | Meaning |
+|----------|---------|
+| `applied` | The new policy was saved and verified |
+| `unchanged` | The stored policy already matched |
+| `applied_scheduler_unknown` | The policy was saved, but Domain Monitor could not confirm the automated check schedule was updated |
+| `outcome_unknown` | Domain Monitor could not verify the write. Read the policy again before retrying |
+
+`scheduler_status` is `not_applicable`, `unchanged`, `reconciled`, or `unknown`.
+
+Turn on `manual_mode` before replacing a site's manual profile. Turn it off before running [Check site domain](#check-site-domain) for that site.
+
+## Get Site Domain Profile
+
+**Ability:** `mainwp/get-site-domain-profile-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-domain-profile-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "profile_status": "available",
+  "source": "provider",
+  "profile": {
+    "domain_name": "example.com",
+    "registry_domain_id": "2336799_DOMAIN_COM-VRSN",
+    "registrar_whois_server": "whois.example-registrar.com",
+    "registrar_url": "https://www.example-registrar.com",
+    "registrar": "Example Registrar, Inc.",
+    "registrar_iana_id": "9999",
+    "registrar_abuse_contact_email": "abuse@example-registrar.com",
+    "registrar_abuse_contact_phone": "+1.5555550100",
+    "updated_at": 1786000000,
+    "created_at": 808372800,
+    "expires_at": 1798761600,
+    "statuses": ["clientTransferProhibited"],
+    "name_servers": ["ns1.example.com", "ns2.example.com"],
+    "dnssec": "unsigned",
+    "last_checked_at": 1793000000
+  },
+  "revision": "3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a"
+}
+```
+
+`profile_status` and `source` use the same values as the [expiry summary](#get-site-expiry-summary). When no profile is available, `profile` contains empty strings, empty arrays, and `0` dates. `statuses` contains up to 6 values and `name_servers` up to 4.
+
+<Warning>
+Profiles can contain registrar contact details and infrastructure data. Do not log or redistribute them. RDAP and WHOIS data is not authoritative; confirm critical dates with your registrar.
+</Warning>
+
+## Replace Manual Domain Profile
+
+**Ability:** `mainwp/replace-site-manual-domain-profile-v1`<br />
+**Method:** POST
+
+Use this for sites with **Manual domain information entry** enabled, such as domains with unsupported TLDs. The site's `manual_mode` must be `true`; otherwise the call returns `mainwp_domain_monitor_conflict`. Enable it with [Replace monitoring policy](#replace-monitoring-policy) or in the [site settings](/add-ons/monitoring/mainwp-domain-monitor-extension#enter-domain-info-manually).
+
+Preview the replacement:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"expected_revision":"3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a","dry_run":true,"profile":{"domain_name":"example.hr","registry_domain_id":"","registrar_whois_server":"","registrar_url":"https://www.example-registrar.com","registrar":"Example Registrar","registrar_iana_id":"","registrar_abuse_contact_email":"","registrar_abuse_contact_phone":"","updated_at":0,"created_at":1420070400,"expires_at":1798761600,"statuses":[],"name_servers":["ns1.example.hr","ns2.example.hr"],"dnssec":""}}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-site-manual-domain-profile-v1/run'
+```
+
+Then send the same input with `"dry_run":false,"confirm":true` to save it.
+
+`profile` must include all 14 fields shown in [Get site domain profile](#get-site-domain-profile), except `last_checked_at`. Use empty strings, empty arrays, or `0` for unknown values. `domain_name` is required and must be a valid domain. `registrar_url` must be a valid URL, and `registrar_abuse_contact_email` must be empty or a valid email. Non-zero dates must be in order: `created_at`, then `updated_at`, then `expires_at`.
+
+**Example response:**
+
+```json
+{
+  "status": "applied",
+  "site_id": 1,
+  "preview": {
+    "ready": true,
+    "changed": true,
+    "field_count": 14,
+    "sensitive_fields_present": true
+  },
+  "previous_revision": "3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a",
+  "revision": "e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4"
+}
+```
+
+`status` is `preview`, `applied`, `unchanged`, or `outcome_unknown`. The response never echoes profile data.
+
+## Check Site Domain
+
+**Ability:** `mainwp/check-site-domain-v1`<br />
+**Method:** POST
+
+This runs the same RDAP lookup, with WHOIS fallback, as the **Check Domain** action and stores the result. Domain Monitor derives the domain from the site's URL. The site's `manual_mode` must be `false`.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":1,"expected_revision":"3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8a0c1e3b5d7f9a2c4e6b8d0f1a","request_ref":"6f1d2c3b-4a5e-4f60-8b7a-9c0d1e2f3a4b","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/check-site-domain-v1/run'
+```
+
+A preview (`dry_run: true`) returns the derived `domain_name` without contacting RDAP or WHOIS.
+
+**Example response:**
+
+```json
+{
+  "status": "checked",
+  "request_id": "6f1d2c3b-4a5e-4f60-8b7a-9c0d1e2f3a4b",
+  "site_id": 1,
+  "domain_name": "example.com",
+  "provider": "rdap",
+  "persistence": "stored",
+  "result_code": "checked",
+  "revision": "a0c1e3b5d7f9a2c4e6b8d0f1a3f1c9a0e5b7d2c4f6a8e0b1d3c5f7a9e2b4d6f8",
+  "authoritative": false
+}
+```
+
+| Field | Values |
+|-------|--------|
+| `status` | `preview`, `checked`, `failed`, or `outcome_unknown` |
+| `provider` | `not_contacted`, `rdap`, `whois`, `rdap_then_whois`, or `unknown` |
+| `persistence` | `not_attempted`, `stored`, `unchanged`, `not_stored`, or `unknown` |
+| `result_code` | `preview_ready`, `checked`, `unsupported_tld`, `rate_limited`, `provider_unavailable`, `invalid_response`, `state_changed`, `persistence_failed`, or `unknown` |
+| `authoritative` | Always `false`. Lookup data comes from third-party services |
+
+A `failed` lookup leaves the stored profile unchanged. For `unsupported_tld`, consider [entering the domain manually](#replace-manual-domain-profile).
+
+## Request Domain Check Batch
+
+**Ability:** `mainwp/request-domain-check-batch-v1`<br />
+**Method:** POST
+
+Queue background domain checks for up to 100 sites. Domain Monitor's scheduler runs the checks later.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids":[1,2,3],"request_ref":"0b7c9d2e-1f3a-4c5b-9d6e-7f8a9b0c1d2e","dry_run":false,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/request-domain-check-batch-v1/run'
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `site_ids` | array of integers | Yes | 1 to 100 unique site IDs. Every site must be accessible and have a Domain Monitor record |
+| `request_ref` | string | Yes | Caller UUID |
+| `dry_run` | boolean | Yes | `true` to preview |
+| `confirm` | boolean | When executing | `true` with `dry_run: false` |
+
+A site is eligible when automated checks are enabled for it, manual mode is off, and its last check is older than its check frequency.
+
+**Example response:**
+
+```json
+{
+  "status": "accepted",
+  "request_id": "0b7c9d2e-1f3a-4c5b-9d6e-7f8a9b0c1d2e",
+  "selected_count": 3,
+  "eligible_count": 2,
+  "completion_known": false,
+  "retry_safe": false
+}
+```
+
+| `status` | Meaning |
+|----------|---------|
+| `preview` | Shows `eligible_count` without queuing anything |
+| `accepted` | Eligible sites were queued |
+| `already_running` | Another batch is in progress |
+| `nothing_eligible` | No selected site is due for a check |
+| `failed` | The request was not queued |
+| `outcome_unknown` | Domain Monitor could not confirm whether the request was queued |
+
+`accepted` does not mean the checks finished. Read the [expiry summaries](#list-expiry-summaries) later to see results. When `retry_safe` is `false`, do not resend the request.
+
+## Request Expiry Alert Evaluation
+
+**Ability:** `mainwp/request-domain-expiry-alert-evaluation-v1`<br />
+**Method:** POST
+
+Ask Domain Monitor to evaluate expiry alerts for up to 100 sites in the background. It uses the same inputs as [Request domain check batch](#request-domain-check-batch).
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids":[1,2],"request_ref":"5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d","dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/request-domain-expiry-alert-evaluation-v1/run'
+```
+
+A site is eligible when automated checks are enabled, the notification threshold is above `0`, the latest check succeeded, the domain expires within the threshold, and no alert was sent for it in the last 24 hours.
+
+**Example response:**
+
+```json
+{
+  "status": "preview",
+  "request_id": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+  "selected_count": 2,
+  "eligible_count": 1,
+  "mail_attempted": false,
+  "delivery_known": false,
+  "completion_known": false,
+  "retry_safe": true
+}
+```
+
+`status` uses the same values as the check batch, plus `notifications_disabled` when the Domain Monitor email notification is turned off in MainWP Dashboard. The response never confirms that an email was sent or delivered.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Domain Monitor abilities can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_domain_monitor_invalid_input` | 400 | Missing, `null`, extra, or invalid input, or an invalid `dry_run`/`confirm` combination |
+| `mainwp_domain_monitor_authentication_required` | 401 | The request is not authenticated |
+| `mainwp_domain_monitor_access_denied` | 403 | The user lacks Domain Monitor access, or a site-restricted user tried to change global policy |
+| `mainwp_domain_monitor_site_not_found` | 404 | The site does not exist or the user cannot access it |
+| `mainwp_domain_monitor_conflict` | 409 | The revision is stale, the site's manual mode doesn't match the operation, or a selected site has no Domain Monitor record. Read again before continuing |
+| `mainwp_domain_monitor_busy` | 409 | Another Domain Monitor operation is running for the same target. Try again shortly |
+| `mainwp_domain_monitor_read_failed` | 500 | Domain Monitor could not read its stored data |
+| `mainwp_domain_monitor_write_failed` | 500 | Domain Monitor could not verify the change. Read the current state before retrying |
+| `mainwp_domain_monitor_runtime_unavailable` | 500 | Domain Monitor could not complete the request |
+
+## Related Resources
+
+- [Domain Monitor](/add-ons/monitoring/mainwp-domain-monitor-extension) - Check domains and configure notifications and automated checks
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs for site-specific calls
