@@ -1,0 +1,238 @@
+---
+title: SSL Monitor Abilities
+sidebarTitle: "SSL Monitor Abilities"
+description: >-
+  Read stored SSL certificate status and effective monitoring settings for your sites with the MainWP SSL Monitor Abilities API.
+---
+
+The Abilities-enabled release of MainWP SSL Monitor registers three read-only abilities in the `mainwp-ssl-monitor` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities to feed certificate expiration data into scripts, reports, or AI assistants connected through the [MainWP MCP Server](/mcp-server/overview). They return the certificate data SSL Monitor already stored. They do not run certificate checks or contact your sites.
+
+## What You'll Learn
+
+- List stored certificate summaries for your monitored HTTPS sites
+- Read one site's stored certificate details and automatic check times
+- Read the effective monitoring settings for a site
+- Interpret certificate status values and handle errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- An SSL Monitor release with Abilities support, active on MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the SSL Monitor Add-on
+- Access to the target sites
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Every call checks the SSL Monitor Add-on permission, including requests made over REST, WP-CLI, or cron. Site-specific calls also check access to the requested site. The status list omits sites the user cannot access.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-ssl-monitor-site-statuses-v1` | GET | List stored certificate summaries for monitored HTTPS sites, with page-based pagination |
+| `mainwp/get-ssl-monitor-site-status-v1` | GET | Read one site's stored certificate details and automatic check times |
+| `mainwp/get-ssl-monitor-site-policy-v1` | GET | Read one site's effective notification threshold, check frequency, and scheduling |
+
+All three abilities are marked `readonly`, non-destructive, and idempotent.
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-ssl-monitor'
+```
+
+Site-specific calls require `site_id`, a positive integer such as `1`. These abilities reject extra input properties.
+
+<Note>
+Results reflect the last stored check. To refresh certificate data, run a check from the [SSL Monitor Dashboard](/add-ons/monitoring/mainwp-ssl-monitor-extension#check-ssl-certificates) or with [WP-CLI](/add-ons/monitoring/mainwp-ssl-monitor-extension#check-sites-via-wp-cli), then read the results again.
+</Note>
+
+---
+
+## List Site Certificate Statuses
+
+**Ability:** `mainwp/list-ssl-monitor-site-statuses-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-ssl-monitor-site-statuses-v1/run'
+```
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, `1` or greater |
+| `per_page` | integer | No | `20` | Sites per page, from `1` to `100` |
+
+Input is optional. Omit it, or send an empty object or `null`, to get the first page of 20 sites.
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 1,
+      "site_name": "Example Site",
+      "url": "https://example.com/",
+      "common_name": "example.com",
+      "issuer": {
+        "organization": "Let's Encrypt",
+        "common_name": "R11"
+      },
+      "valid_from": "2026-09-15T08:12:40Z",
+      "valid_to": "2026-12-14T08:12:39Z",
+      "days_left": 46,
+      "status": "valid",
+      "last_check": "2026-10-29T06:00:02Z",
+      "scheduled_checks": true
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+The list includes only sites that meet all of these conditions:
+
+- The site URL starts with `https://`
+- SSL Monitor has a stored monitoring record for the site
+- The authenticated user can access the site
+
+Sites are sorted by ascending site ID. `total` is the number of matching sites across all pages. Increase `page` until you have read `total` sites.
+
+### Certificate summary fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `site_id` | integer | MainWP Dashboard site ID |
+| `site_name` | string | Site name, or the URL when no name is set |
+| `url` | string | Site URL |
+| `common_name` | string | Certificate common name |
+| `issuer.organization` | string | Issuing organization |
+| `issuer.common_name` | string | Issuer common name |
+| `valid_from` | string or null | Certificate start date |
+| `valid_to` | string or null | Certificate expiration date |
+| `days_left` | integer or null | Days until expiration, rounded to the nearest day |
+| `status` | string | `valid`, `expiring_soon`, `expired`, or `unknown` |
+| `last_check` | string or null | Time of the last stored certificate check |
+| `scheduled_checks` | boolean | Whether automatic checks are enabled for the site |
+
+Timestamps use ISO 8601 format in UTC, such as `2026-12-14T08:12:39Z`. Missing timestamps and `days_left` are `null`. Missing text fields are empty strings.
+
+### Status values
+
+| `status` | Meaning |
+|----------|---------|
+| `expired` | `days_left` is less than `1` |
+| `expiring_soon` | `days_left` is less than the site's effective notification threshold |
+| `valid` | `days_left` is at or above the effective notification threshold |
+| `unknown` | No expiration date is stored |
+
+The `expiring_soon` boundary uses the same threshold that triggers email notifications. Read it with [Get Site Monitoring Policy](#get-site-monitoring-policy). When no threshold is set, the threshold is `0` and certificates are never reported as `expiring_soon`. The SSL Monitor Dashboard table colors certificates using a fixed 30-day boundary, so its colors can differ from this status.
+
+## Get Site Certificate Status
+
+**Ability:** `mainwp/get-ssl-monitor-site-status-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-ssl-monitor-site-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "site_name": "Example Site",
+  "url": "https://example.com/",
+  "common_name": "example.com",
+  "issuer": {
+    "organization": "Let's Encrypt",
+    "common_name": "R11"
+  },
+  "valid_from": "2026-09-15T08:12:40Z",
+  "valid_to": "2026-12-14T08:12:39Z",
+  "days_left": 46,
+  "status": "valid",
+  "last_check": "2026-10-29T06:00:02Z",
+  "scheduled_checks": true,
+  "subject_alt_names": ["DNS:example.com", "DNS:www.example.com"],
+  "signature_type": "sha256WithRSAEncryption",
+  "certificate_version": 2,
+  "last_auto_check": "2026-10-29T06:00:02Z",
+  "next_auto_check": "2026-10-30T06:00:02Z"
+}
+```
+
+The response contains every [certificate summary field](#certificate-summary-fields) plus these details:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `subject_alt_names` | array of strings | Subject alternative names on the certificate, or an empty array |
+| `signature_type` | string | Certificate signature algorithm |
+| `certificate_version` | integer or null | Certificate version number as stored |
+| `last_auto_check` | string or null | Time of the last automatic check |
+| `next_auto_check` | string or null | Time of the next scheduled automatic check |
+
+## Get Site Monitoring Policy
+
+**Ability:** `mainwp/get-ssl-monitor-site-policy-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-ssl-monitor-site-policy-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "source": "global",
+  "notification_threshold_days": 14,
+  "frequency_seconds": 86400,
+  "scheduled_checks": true
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `site_id` | integer | MainWP Dashboard site ID |
+| `source` | string | `global` when the site uses the [general settings](/add-ons/monitoring/mainwp-ssl-monitor-extension#adjust-the-ssl-monitor-settings), or `site_override` when **Overwrite general settings** is enabled for the site |
+| `notification_threshold_days` | integer | Days before expiration when email notifications start; `0` when unset |
+| `frequency_seconds` | integer | Interval between automatic checks in seconds; `86400` (one day) when unset |
+| `scheduled_checks` | boolean | Whether automatic checks run for the site |
+
+This returns the effective settings that SSL Monitor applies to the site. To change them, use the [general settings](/add-ons/monitoring/mainwp-ssl-monitor-extension#adjust-the-ssl-monitor-settings) or the [single-site settings](/add-ons/monitoring/mainwp-ssl-monitor-extension#adjust-the-ssl-monitor-settings-on-a-single-site).
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Invalid input, such as a `per_page` above `100`, returns `ability_invalid_input` with HTTP 400. SSL Monitor abilities can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_ssl_monitor_invalid_input` | 400 | `site_id` is missing or is not a positive integer |
+| `mainwp_permission_denied` | 401 or 403 | The request is unauthenticated, or the user lacks `manage_options` |
+| `mainwp_ssl_monitor_forbidden` | 403 | The user does not have permission to use SSL Monitor |
+| `mainwp_access_denied` | 403 | The user cannot access the requested site |
+| `mainwp_site_not_found` | 404 | The requested site could not be found |
+
+## Related Resources
+
+- [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Check certificates and configure notifications and automated checks
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs for site-specific calls

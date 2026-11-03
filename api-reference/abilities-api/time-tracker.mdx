@@ -20,14 +20,14 @@ MainWP Time Tracker 5.2.0 registers twelve abilities in the `mainwp-time-tracker
 - WordPress 6.9 or later on the MainWP Dashboard site
 - MainWP Dashboard with Abilities API support, active when Time Tracker loads; use version 6.2 or later for the `input_json` and DELETE examples below
 - [Time Tracker](/add-ons/client/mainwp-time-tracker-extension) 5.2.0 or later, active in MainWP Dashboard
-- An authenticated MainWP Dashboard administrator with access to the Time Tracker Add-on
+- An authenticated user permitted by the Dashboard Abilities API, with access to the Time Tracker Add-on
 - The Time Tracker permissions listed for each ability, and access to the related clients and sites
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
 ## Permissions
 
-Each ability requires the Dashboard administrator capability and the Time Tracker permissions below. Team Control grants alone do not bypass the administrator requirement. Every request also checks the user's current access to the task's client and to every site attached to the task.
+Each ability requires the Dashboard Abilities API permission and the Time Tracker permissions below. Application Password and session authentication require `manage_options`. A permitted MainWP REST API key with explicit Team Control site grants can use the scoped-key path without that broad capability. Every request also checks the user's current access to the task's client and to every site attached to the task.
 
 | Ability | Required Time Tracker permissions |
 |---------|-----------------------------------|
@@ -249,6 +249,8 @@ Required inputs are `task_ref`, `session_ref` from the start response or task re
 
 The response contains `request_id`, `task_ref`, `session_ref`, `segment_ref`, `segment_seconds`, the total `duration_seconds`, `state` (`paused`), and the new `revision`.
 
+Pause stops timing without completing the task. There is no separate stop ability. Only the current session can be paused; unusable start times or sessions longer than a year require reconciliation.
+
 ## Complete a Task
 
 **Ability:** `mainwp/complete-time-tracker-task-v1`<br />
@@ -264,6 +266,8 @@ curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
 ```
 
 The response contains `mode`, `request_id`, `task_ref`, `duration_seconds`, `billing_snapshot_ref`, `state` (`completed` after execution), `revision`, and `preview_token`.
+
+Completion records a price but does not send an invoice or mark payment as received. Only one billing snapshot is allowed per task, even if the task is later reopened elsewhere.
 
 ## Handle Errors and Retries
 

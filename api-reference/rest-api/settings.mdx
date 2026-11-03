@@ -13,6 +13,19 @@ Use these endpoints to read and update MainWP Dashboard settings.
 Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collection/ujfddk4/mainwp-rest-api-v2-current) as the source of truth for request and response schemas.
 </Note>
 
+## JSON Request Bodies
+
+For PUT and PATCH settings requests, send a JSON object with `Content-Type: application/json`. Media type matching is case-insensitive, and parameters such as `charset=utf-8` are accepted. For example, you can use `Content-Type: application/json; charset=utf-8`.
+
+Arrays, scalar values such as `5` or `"abc"`, and `null` are not valid settings bodies. An empty object (`{}`) is accepted when the endpoint has no required fields.
+
+Body validation can return these HTTP 400 errors before settings are updated:
+
+| Code | Meaning |
+|---|---|
+| `invalid_content_type` | The media type must be `application/json`. |
+| `invalid_body` | The JSON body must be an object. |
+
 ## Route Matrix
 
 ### General Settings
@@ -94,7 +107,7 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 ```bash
 curl -X PUT \
   -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
+  -H "Content-Type: application/json; charset=utf-8" \
   -d '{
     "mainwp_uptime_monitoring_active": 1,
     "mainwp_uptime_monitoring_type": "http",
