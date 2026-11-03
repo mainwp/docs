@@ -3,16 +3,16 @@ title: Restart the MainWP Quick Setup Wizard
 description: Access the MainWP Quick Setup Wizard from the top-right profile menu to rerun initial setup steps.
 ---
 
-The Quick Setup Wizard guides you through MainWP's initial configuration, including system checks, connecting child sites, adding clients, and setting up monitoring. If you skipped the wizard during installation or need to reconfigure your settings, you can restart it at any time.
+Restart the Quick Setup Wizard to connect a site and review its updates and monitoring status. MainWP 6.4 uses three steps: Welcome, Add Site, and Site Summary. A System Check appears first if the Dashboard does not meet the connection requirements.
 
 ## What You Will Accomplish
 
 By completing these steps, you will launch the Quick Setup Wizard and be able to:
 
-- Review system requirements
-- Connect your first child site
-- Add your first client
-- Configure uptime and health monitoring settings
+- Connect a Child Site or import sites from CSV
+- Review the connected site's updates and monitoring status
+- Assign the site to a client or add another site
+- Choose whether to start a guided tour
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ By completing these steps, you will launch the Quick Setup Wizard and be able to
 
 <Steps>
 <Step title="Open MainWP Tools">
-Click the profile image in the top-right corner, then select **MainWP Tools**.
+Click the profile image in the top-right corner, then select **MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
 </Step>
 <Step title="Start the wizard">
 Click the **Start Quick Setup Wizard** button.
@@ -32,11 +32,13 @@ The Quick Setup Wizard start screen appears. Continue through each step using th
 </Step>
 </Steps>
 
-If you prefer, you can open the wizard directly by visiting `admin.php?page=mainwp-setup` on your Dashboard site.
+![Quick Setup Wizard welcome screen with options to connect a site, import a CSV, or skip setup.](/images/getting-started/setup-wizard-intro.jpg)
+
+You can also open `/wp-admin/admin.php?page=mainwp-setup` on your Dashboard site. Restarting the wizard preserves existing monitoring settings.
 
 ## Common Use Cases
 
-- **Reconfiguring after initial setup**: You skipped certain steps during first-time setup and want to complete them now
+- **Adding your first site**: You skipped the connection during installation and want to complete it now
 - **Onboarding a team member**: Walking someone through the configuration process on a shared Dashboard
 - **Reviewing system requirements**: Checking that your server still meets MainWP requirements after hosting changes
 
@@ -50,7 +52,7 @@ If you prefer, you can open the wizard directly by visiting `admin.php?page=main
 
 ## Self-Check
 
-- [ ] Quick Setup Wizard introduction screen displays after clicking the button
+- [ ] Quick Setup Wizard Welcome screen displays after clicking the button
 - [ ] You can navigate through wizard steps using the wizard navigation buttons
 
 ## Next Steps

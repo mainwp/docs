@@ -353,6 +353,7 @@
                   "api-reference/abilities-api/overview",
                   "api-reference/abilities-api/sites",
                   "api-reference/abilities-api/updates",
+                  "api-reference/abilities-api/backups",
                   "api-reference/abilities-api/clients",
                   "api-reference/abilities-api/tags",
                   "api-reference/abilities-api/batch-operations"
@@ -364,10 +365,16 @@
                   "api-reference/abilities-api/advanced-uptime-monitor",
                   "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/clone",
+                  "api-reference/abilities-api/cost-tracker-assistant",
                   "api-reference/abilities-api/custom-dashboard",
+                  "api-reference/abilities-api/dashboard-lock",
+                  "api-reference/abilities-api/favorites",
                   "api-reference/abilities-api/google-search-console",
+                  "api-reference/abilities-api/maintenance",
                   "api-reference/abilities-api/matomo",
+                  "api-reference/abilities-api/virusdie",
                   "api-reference/abilities-api/woocommerce-shortcuts",
+                  "api-reference/abilities-api/wordpress-seo",
                   "api-reference/abilities-api/wp-rocket"
                 ]
               },
@@ -471,7 +478,8 @@
                   "customization/add-a-custom-tab-to-the-add-site-screen",
                   "customization/how-to-add-wp-admin-button-to-the-main-navigation-bar",
                   "customization/how-to-change-the-default-page-after-logging-into-wordpress",
-                  "customization/how-to-create-a-new-column-in-the-manage-sites-table"
+                  "customization/how-to-create-a-new-column-in-the-manage-sites-table",
+                  "customization/retrieve-site-access-query-conditions"
                 ]
               },
               {

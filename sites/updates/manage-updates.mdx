@@ -600,6 +600,8 @@ Click **Save Settings**.
 Translation auto-updates use trusted plugin and theme context.
 Per-site translation control is available through **Ignore translation updates** in **MainWP > Sites > Manage Sites > Settings**.
 
+The hold also applies to updates requested through the Abilities API, MCP, and REST API v1/v2. Lists and counts omit held translations. Abilities previews report them as skipped with reason `ignored_site_flag`. Update calls do not apply them, even when a request names a held translation. Turn **Ignore translation updates** off to make those updates available again.
+
 ---
 
 ## Automatic Update Summary Emails
