@@ -378,7 +378,8 @@
                   "api-reference/abilities-api/staging",
                   "api-reference/abilities-api/virusdie",
                   "api-reference/abilities-api/woocommerce-shortcuts",
-                  "api-reference/abilities-api/wordpress-seo"
+                  "api-reference/abilities-api/wordpress-seo",
+                  "api-reference/abilities-api/wp-rocket"
                 ]
               },
               "api-reference/mainwp-control"
