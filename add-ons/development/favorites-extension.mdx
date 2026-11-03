@@ -148,10 +148,21 @@ To install a favorite:
 
 MainWP will then install the selected items on the chosen sites automatically.
 
+## MainWP Abilities
+
+Favorites registers three read-only abilities that let scripts, AI assistants, and MCP clients read your saved favorites:
+
+- `mainwp/list-favorite-items-v1` lists saved plugins and themes, with optional type and group filters
+- `mainwp/get-favorite-item-v1` reads one saved item and its groups
+- `mainwp/list-favorite-groups-v1` lists groups with descriptions and item counts
+
+The abilities require an administrator with access to the Favorites Add-on. They do not return download URLs or uploaded ZIP paths, and they cannot change favorites or install items. See the [Favorites Abilities reference](/api-reference/abilities-api/favorites) for requests and response fields.
+
 ---
 
 ## Related Resources
 
+- [Favorites Abilities](/api-reference/abilities-api/favorites) - Read saved favorites and groups
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Managing Plugins](/sites/plugins/managing-plugins-with-mainwp) - Plugin management guide
 - [Managing Themes](/sites/themes/managing-themes-with-mainwp) - Theme management guide
