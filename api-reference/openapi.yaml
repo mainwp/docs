@@ -12278,9 +12278,11 @@ components:
         - success
     QueuedAction:
       type: object
-      description: Returned when the Dashboard queues the work instead of running it inline. Job status is exposed
-        through the `mainwp/get-batch-job-status-v1` ability on the WordPress Abilities API, which uses WordPress
-        authentication rather than the MainWP API key; no MainWP REST API v2 route serves it.
+      description: Returned when the Dashboard queues the work instead of running it inline. To get the job status,
+        send a GET to `/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run` with `input[job_id]`
+        set to the returned `job_id`. Use WordPress authentication, such as an Application Password. MainWP REST
+        API keys do not authenticate this request. See [Batch Operations](/api-reference/abilities-api/batch-operations)
+        for a polling example and response.
       properties:
         success:
           type: integer
