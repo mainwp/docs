@@ -86,7 +86,7 @@ The Vulnerabilities tab shows the child sites that have the Jetpack Protect plug
 
 ### Fix a vulnerability
 
-Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. Deleting requires the **Delete Plugins** or **Delete Themes** Dashboard permission, and you can delete only items flagged in the site's latest scan. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
+Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. Deleting requires the **Delete Plugins** or **Delete Themes** Dashboard permission, and the item must be flagged in the site's latest scan. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
 
 ## Overview tab
 
@@ -98,23 +98,29 @@ The **Bulk Actions** menu can activate, update, hide, unhide, connect, or discon
 
 ![Animated screenshot demonstrating bulk actions menu for multiple sites](/images/add-ons/04394bef107f.gif)
 
+## Team Control compatibility
+
+The Jetpack Protect Integration respects access restrictions configured by the [Team Control Add-on](/add-ons/agency/team-control-extension). Team members see the Jetpack Protect site page and the **Jetpack Protect** Dashboard widget only when their role includes Jetpack Protect in its **Allowed Add-ons** list. Users whose role does not include it do not see either one.
+
+To grant access, edit the role in **MainWP > Add-ons > Agency > Team Control** and select Jetpack Protect under **Allowed Add-ons**.
+
 ## Jetpack Protect REST API
 
 The integration registers a v1 REST API endpoint at `wp-json/mainwp/v1/jetpack-protect/result`. All MainWP REST API calls, including full documentation and examples, are publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Please refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
-## Jetpack Protect Abilities
+## Database Health Check
 
-The integration registers ten [Abilities API](/api-reference/abilities-api/overview) abilities in the `mainwp-jetpack-protect` category. Use them from scripts, automation tools, or AI assistants to:
+The Jetpack Protect Integration supplies its site status and scan results tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
 
-- List stored Jetpack Protect summaries and scans
-- Read one site's stored scan summary, findings, and scan history
-- Read live Jetpack connection and plugin visibility state from a child site
-- Queue a fresh scan read and track its status
-- Preview and confirm a Jetpack connect or disconnect, or hiding or showing the plugin
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair tables or scan your Child Sites for vulnerabilities.
 
-The site-level abilities require MainWP Child 6.4 or later. The **Hide**, **Unhide**, **Connect**, and **Disconnect** actions on this page keep working on older MainWP Child versions.
+## MainWP Abilities
 
-See [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) for inputs, responses, and examples.
+The Jetpack Protect Integration provides ten abilities: two stored summary reads, plus site-level stored observations, findings, history, live control state, operation status, refresh requests, and previewed connection or visibility changes.
+
+Live control reads, connection and visibility changes, and refresh execution require MainWP Child 6.4 or later. Stored-data reads do not contact the Child. Queued work needs working scheduled tasks on MainWP Dashboard.
+
+See [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) for inputs, permissions, examples, and operation results.
 
 ## Quick Start with Jetpack Protect
 
@@ -153,6 +159,6 @@ Perform another synchronization to get fresh data.
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
-- [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) - Abilities API reference
 - [Jetpack Scan Integration](/add-ons/security/jetpack-scan-extension) - Premium malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
+- [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) - Read stored Jetpack Protect data programmatically
