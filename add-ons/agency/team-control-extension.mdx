@@ -235,6 +235,8 @@ The **Backups** permission group controls backup actions such as execution, rest
 
 Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
 
+MainWP Dashboard 6.4.1 adds a separate permission for deleting backup snapshots and running **Clean Up**. When your Team Control version supports this permission, staff members also need it to delete snapshots or run **Clean Up**, in addition to permission to run backups. Without it, the **Delete** and **Clean Up** controls on **Backups > Snapshots & Restore** are hidden, and the matching backup abilities are refused. Grant it only to roles that should be able to permanently remove backups.
+
 ### Abilities and MCP Permissions
 
 In the role editor, find **API Access > Abilities and MCP > Use MainWP abilities and MCP**. This permission allows restricted users to run an approved set of MainWP Dashboard abilities, including through the MainWP MCP Server. Their site access and operation permissions continue to apply.

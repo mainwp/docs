@@ -469,10 +469,14 @@ Activate plugins on a site.
 
 **Method:** POST
 
+Supports a preview. Set `dry_run: true` to see which plugins would change without contacting the Child Site, review the result, then send the same request with `confirm: true`. Requests without `dry_run` apply the change right away, so existing integrations keep working. Do not set both flags to `true`; the ability returns `400` with `mainwp_invalid_input`.
+
+Preview the change:
+
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  -d '{"input":{"site_id_or_domain":1,"plugins":["akismet/akismet.php"],"dry_run":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/activate-site-plugins-v1/run'
 ```
 
@@ -481,7 +485,38 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `slugs` | array | Yes | — | Plugin slugs to activate |
+| `plugins` | array | Yes | — | Plugin slugs to activate, for example `akismet/akismet.php` |
+| `dry_run` | boolean | No | false | Preview the change using the last synced site data |
+| `confirm` | boolean | No | false | Confirm the change after a preview |
+
+After reviewing the preview, apply the change:
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"plugins":["akismet/akismet.php"],"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/activate-site-plugins-v1/run'
+```
+
+**Preview response:**
+
+```json
+{
+  "dry_run": true,
+  "would_affect": [
+    {
+      "slug": "akismet/akismet.php",
+      "name": "Akismet Anti-spam",
+      "active": false,
+      "will_change": true
+    }
+  ],
+  "count": 1,
+  "warnings": ["Preview uses the last synced site data. Current state may have changed; unknown activation state is returned as null."]
+}
+```
+
+`active` is the last synced state. `active` and `will_change` are `null` when MainWP has no synced state for the plugin. `count` includes plugins already in the requested state.
 
 **Response:**
 
@@ -501,10 +536,14 @@ Deactivate plugins on a site.
 
 **Method:** POST
 
+Supports a preview. Set `dry_run: true` to see which plugins would change without contacting the Child Site, review the result, then send the same request with `confirm: true`. Requests without `dry_run` apply the change right away, so existing integrations keep working. Do not set both flags to `true`; the ability returns `400` with `mainwp_invalid_input`.
+
+Preview the change:
+
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"slugs":["akismet/akismet.php"]}}' \
+  -d '{"input":{"site_id_or_domain":1,"plugins":["akismet/akismet.php"],"dry_run":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/deactivate-site-plugins-v1/run'
 ```
 
@@ -513,7 +552,38 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `slugs` | array | Yes | — | Plugin slugs to deactivate |
+| `plugins` | array | Yes | — | Plugin slugs to deactivate, for example `akismet/akismet.php` |
+| `dry_run` | boolean | No | false | Preview the change using the last synced site data |
+| `confirm` | boolean | No | false | Confirm the change after a preview |
+
+After reviewing the preview, apply the change:
+
+```bash
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"plugins":["akismet/akismet.php"],"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/deactivate-site-plugins-v1/run'
+```
+
+**Preview response:**
+
+```json
+{
+  "dry_run": true,
+  "would_affect": [
+    {
+      "slug": "akismet/akismet.php",
+      "name": "Akismet Anti-spam",
+      "active": true,
+      "will_change": true
+    }
+  ],
+  "count": 1,
+  "warnings": ["Preview uses the last synced site data. Current state may have changed; unknown activation state is returned as null."]
+}
+```
+
+`active` is the last synced state. `active` and `will_change` are `null` when MainWP has no synced state for the plugin. `count` includes plugins already in the requested state.
 
 **Response:**
 
@@ -606,10 +676,14 @@ Activate a theme on a site.
 
 **Method:** POST
 
+Supports a preview. Set `dry_run: true` to see which themes would change without contacting the Child Site, review the result, then send the same request with `confirm: true`. Requests without `dry_run` apply the change right away, so existing integrations keep working. Do not set both flags to `true`; the ability returns `400` with `mainwp_invalid_input`.
+
+Preview the change:
+
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"site_id_or_domain":1,"slug":"twentytwentyfour"}}' \
+  -d '{"input":{"site_id_or_domain":1,"theme":"twentytwentyfour","dry_run":true}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/activate-site-theme-v1/run'
 ```
 
@@ -618,7 +692,13 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `slug` | string | Yes | — | Theme slug to activate |
+| `theme` | string | Yes | — | Theme slug to activate |
+| `dry_run` | boolean | No | false | Preview the change using the last synced site data |
+| `confirm` | boolean | No | false | Confirm the change after a preview |
+
+After reviewing the preview, send the same request with `"confirm":true` instead of `"dry_run":true`.
+
+The preview response includes `would_affect`, `count`, and `warnings`, plus `current_theme` with the last synced active theme, or `null` when unknown.
 
 **Response:**
 

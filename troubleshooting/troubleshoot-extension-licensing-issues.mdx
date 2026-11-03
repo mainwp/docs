@@ -13,6 +13,7 @@ Add-on licensing issues typically occur when the connection between your Dashboa
 - Fix add-on license activation failures
 - Resolve missing add-on updates
 - Troubleshoot add-on update failures
+- Refresh your license when MainWP Pro add-ons ask you to upgrade
 
 ## Prerequisites
 
@@ -124,6 +125,28 @@ Attempt the update again.
 | Server timeout | Increase PHP max_execution_time |
 | Write permissions | Check wp-content/plugins folder permissions |
 | Download failed | Verify mainwp.com is accessible from your server |
+
+---
+
+## Add-ons Page Asks You to Upgrade to MainWP Pro
+
+MainWP Dashboard saves your plan when it checks your license. If the saved plan is out of date, the **Add-ons** page or the **Install Add-ons** dialog can offer **Upgrade to Pro** even though you already have MainWP Pro. In MainWP Dashboard 6.4.1 and later, refresh your license to update the saved plan.
+
+<Steps>
+<Step title="Open the Add-ons page">
+Go to **MainWP > Add-ons**.
+</Step>
+<Step title="Click Refresh License">
+Click **Refresh License** next to **Already on MainWP Pro?** or **MainWP Pro includes all MainWP add-ons.** The button also appears in the **Install Add-ons** dialog.
+</Step>
+<Step title="Check the result">
+MainWP re-checks your saved license key and reloads the page with your current plan. If the refresh fails, MainWP shows **Could not refresh your license. Please try again.** or the error returned by the license server.
+</Step>
+</Steps>
+
+**Refresh License** appears only when your license key is saved with **Remember Key** and you are an administrator who can manage add-ons. If you don't see it, enter your API key again on the **Add-ons** page with **Remember Key** enabled.
+
+If the license server rejects the key, MainWP clears the saved plan. Verify the key in your [MainWP account](https://mainwp.com/my-account/), then enter it again.
 
 ---
 
