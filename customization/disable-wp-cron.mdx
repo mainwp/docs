@@ -223,9 +223,33 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     <Note>
     These workers run built-in backups in MainWP 6.4 and later and Legacy Backups in earlier versions. They do not run backup Add-ons.
 
-    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Built-in backups also require other scheduled events, including daily retention cleanup, that these two workers do not run.
+    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Configure the backup slice and daily cleanup workers below as separate jobs when using direct-worker mode.
 
     For [MainWP Built-In Backups](/sites/backups/manage-backups), keep **Use WP Cron** enabled and follow the [low-traffic cron setup](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) to run all required events.
+    </Note>
+
+    #### Run Backup Steps
+
+    **Frequency:** every minute (crontab schedule: `* * * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_slice.php > /dev/null 2>&1
+    ```
+
+    Starts due built-in backup tasks and advances backup processing. Keep this worker scheduled every minute in addition to the hourly start and five-minute continuation workers.
+
+    #### Clean Up Old Backups
+
+    **Frequency:** once daily (example crontab schedule: `0 0 * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_prune.php > /dev/null 2>&1
+    ```
+
+    Applies configured backup retention policies and prunes old backup diagnostics and run history. The example runs at midnight in the server's cron timezone; another daily time is also suitable.
+
+    <Note>
+    These two workers are for MainWP Built-In Backups in MainWP 6.4 and later. They do not run backup Add-ons or replace the general WordPress WP-Cron queue.
     </Note>
 
     #### Send Site Health Notifications
