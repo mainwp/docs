@@ -6,7 +6,7 @@ description: >-
 ---
 
 <Note>
-These abilities require the upcoming Article Uploader release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+These abilities require an Article Uploader release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
 </Note>
 
 The Abilities-enabled Article Uploader release registers two read-only abilities in the `mainwp-article-uploader` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
@@ -95,7 +95,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 }
 ```
 
-Articles are sorted by last modified time, newest first. `total` is the number of staged articles that match the `source` filter. The list includes staged articles in any post status.
+Articles are sorted by last modified time, newest first. `total` is the number of staged articles that match the `source` filter. The list is not limited to drafts; it uses the WordPress `any` status query for staged articles.
 
 ## Get One Staged Article
 

@@ -1,0 +1,195 @@
+---
+title: Maintenance Abilities
+sidebarTitle: "Maintenance Abilities"
+description: >-
+  List stored MainWP Maintenance schedules and read one schedule with its accessible target and failed sites through the Abilities API.
+---
+
+MainWP Maintenance registers two read-only abilities in the `mainwp-maintenance` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to audit cleanup schedules, check which schedules are paused or failing, and find the sites a schedule targets. They read schedules stored on MainWP Dashboard only. They do not run cleanup, contact child sites, or create, edit, pause, resume, or delete schedules. Use the [Maintenance schedules screen](/add-ons/performance/maintenance-extension#manage-scheduled-tasks) for those actions.
+
+## What You'll Learn
+
+- List all stored maintenance schedules
+- Read one schedule with its target sites and last-run failed sites
+- Interpret schedule fields, statuses, and timestamps
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A MainWP Maintenance release with Abilities support, active on MainWP Dashboard
+- An authenticated user with `manage_options` and access to the Maintenance Add-on
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+The schedule detail ability also checks site access for each returned site. Sites you cannot access are omitted from `sites` and `failed_sites`.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-maintenance-schedules-v1` | GET | List stored schedules with tasks, frequency, status, target counts, and run times |
+| `mainwp/get-maintenance-schedule-v1` | GET | Read one schedule with its accessible target sites and last-run failed sites |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-maintenance'
+```
+
+---
+
+## List Maintenance Schedules
+
+**Ability:** `mainwp/list-maintenance-schedules-v1`<br />
+**Method:** GET
+
+This ability accepts no input properties.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-maintenance-schedules-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "schedules": [
+    {
+      "schedule_id": 3,
+      "title": "Weekly cleanup",
+      "tasks": ["revisions", "spam", "trashcomment", "transients_expired", "optimize"],
+      "revisions_to_keep": 5,
+      "frequency": {
+        "schedule": "weekly",
+        "perform": 1,
+        "recurring_day": "1",
+        "recurring_hour": 2
+      },
+      "paused": false,
+      "status": "scheduled",
+      "target_counts": {
+        "sites": 0,
+        "tags": 2,
+        "clients": 0
+      },
+      "last_run": 1792540800,
+      "next_run": 1793145600,
+      "last_run_status": "success",
+      "last_run_failures": 0
+    }
+  ]
+}
+```
+
+`schedules` is always an array. It is empty when no schedules are stored.
+
+## Get One Maintenance Schedule
+
+**Ability:** `mainwp/get-maintenance-schedule-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `schedule_id` | integer | Yes | Schedule ID from the list response, `1` or greater |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"schedule_id":3}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-maintenance-schedule-v1/run'
+```
+
+The response contains every [schedule field](#schedule-fields) plus two site lists:
+
+```json
+{
+  "schedule_id": 3,
+  "title": "Weekly cleanup",
+  "status": "failed",
+  "last_run_status": "failed",
+  "last_run_failures": 1,
+  "sites": [
+    { "site_id": 1, "name": "Client Site", "url": "https://client-site.com/" },
+    { "site_id": 4, "name": "Shop", "url": "https://shop.example.com/" }
+  ],
+  "failed_sites": [
+    { "site_id": 4, "name": "Shop" }
+  ]
+}
+```
+
+The example omits some schedule fields for brevity.
+
+- `sites` lists the sites the schedule targets, after MainWP expands selected tags and clients. It includes only sites you can access.
+- `failed_sites` lists the sites that failed during the last run. It includes only sites you can access. It does not include the recorded error text; review failure details on the **Schedules** screen.
+
+Both lists are always arrays, even when empty.
+
+---
+
+## Schedule Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `schedule_id` | integer | Schedule ID |
+| `title` | string | Schedule title |
+| `tasks` | array | Selected cleanup tasks; see [task values](#task-values) |
+| `revisions_to_keep` | integer | Number of revisions kept when `revisions` cleanup runs |
+| `frequency` | object | Stored `schedule`, `perform`, `recurring_day`, and `recurring_hour` values |
+| `paused` | boolean | Whether the schedule is paused |
+| `status` | string | Current schedule status; see [statuses](#statuses) |
+| `target_counts` | object | Number of selected `sites`, `tags`, and `clients` |
+| `last_run` | integer or null | Last run time, or `null` if the schedule has never run |
+| `next_run` | integer or null | Next planned run time, or `null` when none is set |
+| `last_run_status` | string | `running`, `success`, `failed`, or an empty string |
+| `last_run_failures` | integer | Number of sites that failed during the last run |
+
+Timestamps are Unix seconds in UTC.
+
+In `frequency`, `schedule` is the period (`daily`, `weekly`, `monthly`, or `yearly`) and `perform` is how many times the schedule runs per period. `recurring_day` and `recurring_hour` are the stored run day and hour for schedules that run once per week, month, or year.
+
+`target_counts` counts the selected sites, tags, and clients. It does not count the total sites those tags and clients contain. Use the `sites` list from the detail ability for the expanded site list.
+
+### Task Values
+
+| Value | Cleanup task |
+|-------|--------------|
+| `revisions` | Delete post revisions |
+| `autodraft` | Delete auto-drafts |
+| `trashpost` | Delete trashed posts |
+| `spam` | Delete spam comments |
+| `pending` | Delete pending comments |
+| `trashcomment` | Delete trashed comments |
+| `tags` | Delete tags with zero posts |
+| `categories` | Delete categories with zero posts |
+| `optimize` | Optimize database tables |
+| `transients_expired` | Delete expired transients |
+| `transients_all` | Delete all transients |
+
+See [Maintenance Options](/add-ons/performance/maintenance-extension#maintenance-options) for what each task does.
+
+### Statuses
+
+`status` uses the same states as the **Status** column on the Schedules screen: `paused`, `running`, `failed`, `unscheduled`, `scheduled`, `due`, `delayed`, or `missed`. See [Schedule Statuses](/add-ons/performance/maintenance-extension#schedule-statuses) for their meanings.
+
+---
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Maintenance can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options`, Dashboard API permission, or access to the Maintenance Add-on |
+| `mainwp_schedule_not_found` | 404 | No schedule exists with the requested `schedule_id` |
+
+## Related Resources
+
+- [Maintenance](/add-ons/performance/maintenance-extension) - Create, run, and manage maintenance schedules
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Look up site details by `site_id`
