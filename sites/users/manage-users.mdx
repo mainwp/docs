@@ -120,8 +120,13 @@ Enter values in this order, separated by commas:
 | 3 | First Name | Optional |
 | 4 | Last Name | Optional |
 | 5 | Website URL | Optional |
-| 6 | Send Password | 0 = don't email, 1 = email password |
-| 7+ | Sites/Tags | Child site URLs or tag names |
+| 6 | Password | Password for the new user |
+| 7 | Send Password | 0 = don't email, 1 = send the user notification |
+| 8 | Role | WordPress role, such as `subscriber` or `editor` |
+| 9 | Select Sites | Child Site URLs, separated by semicolons |
+| 10 | Select Groups | Site tag names, separated by semicolons |
+
+Keep all ten columns, including empty optional fields. Enclose any field containing a comma in double quotes. To include a double quote inside a quoted field, double it (`""`). Backslashes are treated literally.
 </Step>
 <Step title="Upload and import">
 Upload the CSV file to your Dashboard. Check **CSV file contains a header** if you kept line 1 from the sample. Click **Import Users**.
@@ -131,6 +136,12 @@ Upload the CSV file to your Dashboard. Check **CSV file contains a header** if y
 <Warning>
 MainWP requires CSV format. TXT and other text formats will not work.
 </Warning>
+
+### Retry Failed Rows
+
+If any rows fail, click **Save failed** in the import results. Correct the failed rows and reimport the CSV.
+
+Imported passwords are excluded from the import log and the failed-row CSV. Fill in the Password column for each failed row before retrying.
 
 ---
 
