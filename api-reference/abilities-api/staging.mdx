@@ -24,7 +24,7 @@ Use them to find which Child Sites have staging clones, check whether each clone
 - An authenticated WordPress user with `manage_options` and access to the Staging Add-on
 - Access to the selected MainWP site for site-specific calls
 
-Team Control restrictions apply. The list returns only sites you can access. A site-specific call for a site you cannot access returns the same `mainwp_site_not_found` error as a site that does not exist.
+Team Control restrictions apply. The list returns only sites you can access. Site-specific calls can return a Dashboard site-access error with HTTP 403. A missing site or a refusal by the Staging site-permission check returns `mainwp_site_not_found` with HTTP 404.
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
