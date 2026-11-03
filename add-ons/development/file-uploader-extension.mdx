@@ -14,6 +14,7 @@ addonType: extension
 - Setting upload paths and destinations
 - Supported file types list
 - Adding support for custom file types
+- Deploying staged files through the Abilities API
 
 ---
 
@@ -72,6 +73,22 @@ Set the path where you want to upload your file(s).
 
 
 The file that already exists with the same name in the same directory **will be overwritten.** File names are sanitized before upload, so spaces and certain special characters in file names can be replaced with dashes. Enter the destination path exactly as you want MainWP Child to create it.
+
+## Verified Deployments to wp-content Folders
+
+When the upload path is inside `wp-content/uploads`, `wp-content/languages`, `wp-content/plugins`, `wp-content/themes`, or `wp-content/mu-plugins`, File Uploader uses a verified deployment. The Dashboard keeps a private staged copy of each uploaded file. MainWP Child confirms the written file's size and SHA-256 digest before the upload is reported as successful.
+
+- If a Child site runs an older MainWP Child version without verified deployment support, File Uploader falls back to the standard upload for that site.
+- Uploads to other folders, such as the WordPress root, `wp-admin`, or `wp-includes`, use the standard upload.
+- Staged files are limited to 50 MiB each, 100 files, and 500 MiB in total per Dashboard user.
+- Uploading to `wp-content/plugins`, `wp-content/themes`, or `wp-content/mu-plugins` requires the plugin or theme editing capabilities. Setting `DISALLOW_FILE_EDIT` on the Dashboard blocks these destinations.
+- In `wp-content/uploads`, File Uploader refuses server-executable and server-configuration files such as `.php` or `.htaccess`.
+
+## Abilities API
+
+The Abilities-enabled File Uploader release adds eight WordPress abilities. Use them to read the staging policy, list and delete your staged files, preview and start a deployment to one Child site, check its status, and roll it back within 24 hours.
+
+See [File Uploader Abilities](/api-reference/abilities-api/file-uploader) for requirements, permissions, request examples, and error handling.
 
 ## Supported File Types
 
@@ -139,6 +156,7 @@ MainWP is not responsible for the files that you upload to your sites. The File 
 
 ## Related Resources
 
+- [File Uploader Abilities](/api-reference/abilities-api/file-uploader) - Deploy staged files through the Abilities API
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Custom Dashboard Extension](/add-ons/development/mainwp-custom-dashboard-extension) - Add custom snippets
 - [System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - PHP configuration settings
