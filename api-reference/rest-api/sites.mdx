@@ -79,6 +79,7 @@ When adding or editing sites, use the expected JSON types instead of relying on 
 |---|---|---|
 | `force_use_ipv4` | Add and edit | `0` to disable, `1` to force IPv4, or `2` to use the global setting; JSON `false` and `true` are also accepted for `0` and `1` |
 | `ssl_verify` | Add | JSON `true` or `false`; `null` is rejected |
+| `ssl_version` | Add | cURL SSL version selection; `0` uses automatic detection |
 | `uniqueid` | Add and edit | String containing the child's Unique Security ID; `uniqueId` is accepted as a fallback alias |
 | `groupids` | Add and edit | Comma-separated tag IDs in a string, such as `"3,7"` |
 

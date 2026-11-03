@@ -79,7 +79,7 @@ Choose one or more permissions based on the endpoints you plan to call.
 - `Write & Delete` for `POST`, `PUT`, `PATCH`, and `DELETE`
 </Step>
 <Step title="Optional: enable v1 compatibility">
-If your integration requires `/mainwp/v1`, enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret in the same creation flow.
+If an integration requires `/mainwp/v1`, an unrestricted Dashboard administrator can enable **MainWP REST API v1 Compatibility**. This generates a legacy Consumer Key and Consumer Secret alongside the v2 key.
 
 ![Add API key with v1 compatibility enabled](/images/api-reference/rest-api-add-key-v1-compatibility.png)
 </Step>
@@ -177,6 +177,8 @@ Use this URL to import the API into Postman, generate client code, or feed your 
 MainWP still supports legacy v1 endpoints (`/wp-json/mainwp/v1/`) for backward compatibility.
 
 In the UI flow (**MainWP Dashboard > API Access > API Keys > Add API Keys**), you can enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret along with the v2 Bearer token.
+
+Only unrestricted Dashboard administrators can create or edit legacy v1 keys. Team Control staff cannot manage these keys, even if their role grants API key permissions.
 
 The v2 API key endpoints create and manage v2 keys and do not create legacy v1 credentials.
 

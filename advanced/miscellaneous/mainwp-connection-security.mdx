@@ -3,16 +3,16 @@ title: MainWP connection security
 sidebarTitle: "Connection Security"
 description: >-
   How MainWP secures communication between Dashboard and Child Sites using
-  password authentication, OpenSSL encryption, and request signing.
+  password authentication, digital signatures, and HTTPS.
 ---
 
-MainWP uses multiple layers of security to protect communication between your Dashboard and Child Sites. This includes secure initial connections when adding sites and encrypted, signed requests for all subsequent communication.
+MainWP authenticates site connections and signs subsequent requests from MainWP Dashboard. Use HTTPS URLs for your child sites to encrypt requests and responses in transit.
 
 ## What You'll Learn
 
 - How MainWP secures the initial site connection
 - How MainWP requires at least one initial connection authentication method
-- How Dashboard-to-Child communication is encrypted
+- How HTTPS encrypts Dashboard-to-Child traffic
 - How request authentication prevents unauthorized access
 
 ---
@@ -33,7 +33,7 @@ MainWP uses the WordPress administrator's password for verification during initi
 |--------|--------|
 | Usage | Verification during initial setup only |
 | Storage | Password is never stored on Dashboard or sent to MainWP.com |
-| After connection | OpenSSL key pair handles all future communication |
+| After connection | A per-site key pair authenticates subsequent requests |
 | Per-user setting | Each admin controls their own password authentication setting |
 | Connection requirement | If Password Authentication is disabled, Unique Security ID must be enabled |
 
@@ -61,17 +61,23 @@ The Disconnect Site feature allows you to clear all connection data for a Child 
 
 ## Post-Connection Security
 
-After a site is added, all communication uses OpenSSL-encrypted connections.
+After a site is added, MainWP Dashboard signs requests with that site's private key. MainWP Child verifies the signatures using the public key saved during connection.
 
 ### Key Pair Generation
 
-When MainWP Dashboard connects to a child site for the first time:
+With the default OpenSSL connection method, MainWP Dashboard creates a key pair when it first connects to a child site:
 
-1. Dashboard generates Public and Private key pairs (2048 bits) using `openssl_pkey_new()`
+1. MainWP Dashboard generates a 2048-bit RSA public/private key pair using `openssl_pkey_new()`
 2. Public key is saved on both the child site and Dashboard
 3. Private key is encrypted and saved only on the Dashboard
 
+For connections created before version 5.3, complete the [private-key encryption steps](/advanced/openssl-keys-encryption) if you have not already done so.
+
+PHPSecLib is an alternative for key generation and signing that you select in the global or per-site [connection settings](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl).
+
 ### Request Signing and Verification
+
+OpenSSL signs requests using SHA-256 by default.
 
 | Step | Function | Description |
 |------|----------|-------------|
@@ -80,11 +86,17 @@ When MainWP Dashboard connects to a child site for the first time:
 
 The child site only processes requests with valid signatures that match its stored public key.
 
+### HTTPS Encryption and Certificate Verification
+
+HTTPS encrypts request and response contents in transit. Request signing authenticates requests but does not encrypt an HTTP connection, so use HTTPS URLs for connected child sites.
+
+SSL certificate verification is enabled by default. You can configure it globally or per site. Keep it enabled to verify the child site's certificate.
+
 ---
 
 ## HTTPS Request Structure
 
-MainWP Dashboard communicates with child sites via HTTPS requests using cURL. Each request includes:
+MainWP Dashboard sends requests to each child site's configured URL using cURL. The following example uses HTTPS. Requests include:
 
 | Parameter | Purpose |
 |-----------|---------|
@@ -94,7 +106,7 @@ MainWP Dashboard communicates with child sites via HTTPS requests using cURL. Ea
 
 ### Example Sync Request
 
-```
+```text
 https://childsite.com/wp-admin/admin-ajax.php?user=demouser&function=stats&mainwpsignature=dgTOIUbQyBWvCh0pNhnwmxmHoeayfg34PCBJxhszRFASTfFwRqrJaMk%2F%2FLJSQvDKlQ8A2Wf4cwowG1PaL9f%2FdG2DzBDucu9GRMi%2Bq18iauk9JgXR%2FaPd9jSvAzoxc5GSJrDmBOLLZEFe8M0VWJ2VVdRm3Bq%2BPyD4p4AtB0%2BphMRXnP99PVMXkwMJKVnf1OT7jjAYATBuSkkccsZ5bRyZDHuJw78L%2BsGhhvKxoz0IwRNqnV4e09LuPW8CKe6DtyPc9SRD9ojc69NQxZBDa2Zyr%2FvH%2BypFvFxsw0Eh0Tnoiq9giVUSDNlEtR7RLJbtGOEKr4%2BBMtmIb1M9ODy72N9%2Ftg%3D%3D
 ```
 
