@@ -463,6 +463,10 @@ curl -G -u 'admin:xxxx' \
 
 ---
 
+## Preview Plugin and Theme Changes
+
+Starting with MainWP Dashboard 6.4.1, `mainwp/activate-site-plugins-v1`, `mainwp/deactivate-site-plugins-v1`, and `mainwp/activate-site-theme-v1` accept `dry_run: true` to preview changes. With MainWP MCP, review and confirm the preview before the change runs. With direct Abilities API calls, omitting `dry_run` applies the change immediately and `confirm` remains optional for these three abilities.
+
 ## mainwp/activate-site-plugins-v1
 
 Activate plugins on a site.

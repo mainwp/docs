@@ -51,7 +51,7 @@ Open **MainWP > Sites > Backups** after enabling built-in backups.
 
 | Screen | Use it for | Relative URL |
 | --- | --- | --- |
-| Top-right user menu > MainWP Settings > Backup Settings | Enable built-in backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
+| MainWP menu (three lines, top right) > MainWP Settings > Backup Settings | Enable built-in backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
 | Backups > Manage Backups | View schedules, run tasks, and inspect errors | `/wp-admin/admin.php?page=ManageBackups` |
 | Backups > Add New | Create a scheduled backup task | `/wp-admin/admin.php?page=ManageBackupsAddNew` |
 | Backups > Storage | Connect and test storage destinations | `/wp-admin/admin.php?page=ManageBackupsStorage` |
@@ -63,7 +63,7 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 
 <Steps>
 <Step title="Enable built-in backups">
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
+Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
 If **Select primary backup system** is shown, select **Built-In Backups**. Turn on **Enable Built-In Backups** and click **Save Settings**.
 </Step>
@@ -163,7 +163,7 @@ By default, MainWP places the bucket name before the storage endpoint in the req
 
 For Amazon S3 or Wasabi buckets containing dots, enable **Path style addressing**. This places the bucket name in the URL path instead. Other S3-compatible services may have different addressing requirements; follow your provider's guidance.
 
-Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`), configure the destination, enable **Path style addressing**, then click **Test Connection & Save**.
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and configure the destination. In MainWP Dashboard 6.4.1 and later, MainWP enables **Path style addressing** by default for new destinations with dotted bucket names on recognized Amazon S3 and Wasabi HTTPS endpoints. Existing destinations keep their saved setting. Verify **Path style addressing** is enabled, then click **Test Connection & Save**.
 
 For example, use these settings for a Wasabi bucket in `eu-central-1`:
 
@@ -206,7 +206,7 @@ Use [Snapshots & Restore](#restore-a-backup) to find backups by site and date an
 
 ### Encrypt Backup Archives
 
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
+Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
 
 1. Turn on **Encrypt backup archives** to show the **Backup recovery passphrase** fields.
 2. Set a recovery passphrase. The first setup also asks for your WordPress password. Use at least 12 characters; a long, unique passphrase of 20 characters or more is recommended. Store it separately from the Dashboard.
@@ -220,7 +220,7 @@ MainWP encrypts new archives before uploading them. Existing snapshots remain un
 Keep the recovery passphrase and your Dashboard's encryption keys safe. The passphrase can recover a lost encryption key, but you still need backups of the Dashboard database and backup files.
 </Warning>
 
-S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption.
+S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption. To stop requesting provider-side encryption from MainWP, select **None** and click **Test Connection & Save**. Your bucket's own encryption settings still apply.
 
 ## Create a Scheduled Backup
 
@@ -362,7 +362,7 @@ The **Test Restore** column shows automatic restore test results. MainWP periodi
 
 ### Backup Notification Emails
 
-Review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
+Review **Send email when backup starts** and **Send email when backup fails** under **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
 
 Scheduled backup alerts normally go to the WordPress profile email of the account that last saved the task. To change that account's address, sign in as that user and open **WordPress Users > Profile** (`/wp-admin/profile.php`). A previously saved MainWP notification address from an older setup can take precedence. There is no separate recipient list for backup alerts on Backup Settings, and the recipient lists on Email Settings do not control these alerts.
 
@@ -397,7 +397,7 @@ Leave a retention limit blank or enter zero for no limit. Each enabled limit can
 
 Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
 
-For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
+For **Back Up Now**, set **On-demand backups to keep** under **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
 
 <Note>
 **Leftover backup files to keep** in **Backup Settings** controls cleanup of older downloaded files in each site's backup folder on the Dashboard. It applies to files that are not protected by completed snapshots or active runs. The default is one; zero keeps all leftover files. It does not limit completed snapshots or copies at storage destinations.
@@ -495,9 +495,9 @@ If those conditions are not met, the restore stops with an explanation. Review o
 
 ## Require a Backup Before Updates
 
-In **top-right user menu > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without of a full backup tolerance**.
+In **MainWP menu (three lines, top right) > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without a full backup (tolerance)**.
 
-Use this setting to require a recent backup before updating from **Manage Sites**.
+Use this setting to require a recent backup before updating from **Manage Sites**. In MainWP Dashboard 6.4.1 and later, the same check also applies when starting updates from the **Updates**, **Plugins**, and **Themes** pages.
 
 Built-in backups accept completed full, database-only, or incremental backups within the allowed age. Files-only backups do not qualify.
 
@@ -531,7 +531,7 @@ Database-only backups and restores remain supported. A database-only restore can
 
 ### Export Diagnostics
 
-Export diagnostics from **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
+Export diagnostics from **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
 1. Enable **Backup run diagnostics** and click **Save Settings**. The **Export diagnostics data** button appears after saving.
 2. If diagnostics was not enabled when the problem occurred, run the affected backup task again to record it. If it was already enabled, you can export the existing data.
