@@ -73,6 +73,49 @@ Click **Add Termageddon API Key**, enter the API key generated in your [Termaged
 </Step>
 </Steps>
 
+## Upgrade Termageddon Storage
+
+If the Add-on displays a storage upgrade notice, go to **Add-ons > Termageddon for MainWP** and click **Upgrade Termageddon storage**. Use an account with **Manage Termageddon connection** permission and the WordPress `manage_options` capability.
+
+Read the resulting notice before continuing:
+
+| Notice | What to do |
+| --- | --- |
+| Storage is up to date; saved credentials need account revalidation | Complete the account revalidation described below before using the new automation abilities |
+| No saved credential was found | Add your Termageddon API key |
+| A saved credential was set aside or could not be read | Re-enter a valid API key; if the notice instructs you to remove the unreadable key first, use **Manage Termageddon API Key > Remove API Key**, then save it again |
+| Storage needs InnoDB | Ask your database administrator or hosting provider to check the WordPress options and Termageddon tables and convert the affected tables to InnoDB |
+| Upgrade did not finish cleanly | Run **Upgrade Termageddon storage** again; this notice does not indicate that data was deleted |
+| Permissions changed | Sign in again with the required permissions and retry |
+
+### Revalidate the Account for Automation
+
+A successful storage upgrade can preserve a saved key while leaving the automation connection in `reconciliation_required`. Saving the key through the existing API-key form also does not establish the account generation required by the new abilities.
+
+An administrator using the Abilities API must [preview and confirm credential revalidation](/api-reference/abilities-api/termageddon#replace-or-revalidate-a-credential), then retrieve the current Policy Sets and revalidate the affected site mappings. If you do not use the API directly, have the administrator responsible for your automation complete this step.
+
+If a site Policy Set change reports that storage is unsettled, run the storage upgrade. If it reports that the selection changed, reload the site settings and select the Policy Set again. If Termageddon is unavailable, retry after the service becomes available.
+
+## Team Control Permissions
+
+With [Team Control](/add-ons/agency/team-control-extension), open **MainWP > Add-ons > Agency > Team Control > Roles & Permissions** and manage the role's permissions. Allow access to **Termageddon for MainWP** and the relevant Child Sites, then select the operations the user needs:
+
+| Permission | Allows |
+| --- | --- |
+| **View Termageddon connection** | Read connection state and connection-operation status |
+| **Manage Termageddon connection** | Manage credentials and run the storage upgrade |
+| **View Termageddon policy sets** | Read available Policy Sets |
+| **View Termageddon site policy** | Read site-to-Policy-Set mappings and their operation status |
+| **Manage Termageddon site policy** | Link, replace, or unlink a site's Policy Set |
+| **View Termageddon pages** | Read policy page records and page-removal operation status |
+| **Delete Termageddon pages** | Remove a local page mapping or request verified deletion from a Child Site through the Abilities API |
+
+Credential changes and storage upgrades also require WordPress `manage_options`. Granting **Manage Termageddon connection** alone does not replace that requirement. Users who perform an operation and check its result also need the corresponding view permission.
+
+## Automate Termageddon
+
+The Add-on provides abilities for reading connection, Policy Set, mapping, and page state; replacing credentials or site mappings; disconnecting an account; and removing policy pages. See [Termageddon Abilities](/api-reference/abilities-api/termageddon) for authentication, exact inputs, permissions, preview and confirmation requirements, and operation status handling.
+
 ## Create or link Termageddon policy pages
 
 <Steps>
