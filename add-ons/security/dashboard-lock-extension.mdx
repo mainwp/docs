@@ -14,6 +14,7 @@ addonType: extension
 - Restricting wp-admin access by IP address
 - Adding HTTP Basic Authentication to wp-admin and wp-login
 - Manually removing Dashboard locks if locked out
+- Reading Dashboard Lock settings with the Abilities API
 
 ---
 
@@ -280,6 +281,12 @@ Remove the code inserted by the Dashboard Lock Extension \# BEGIN MainWP Secure 
 <Step title="Upload the file back to the root directory">
 </Step>
 </Steps>
+
+## Abilities API
+
+Dashboard Lock adds two read-only abilities for checking its stored settings from scripts, monitoring tools, or AI assistants. The status ability reports which protections have saved settings. The configuration ability returns the saved redirect URL, redirect exclusions, and IP allowlists. Both report whether HTTP Basic Authentication credentials are saved without returning usernames or passwords.
+
+These abilities read saved settings only. They do not inspect your `.htaccess` files, so they cannot confirm that locks are applied on the server. See [Dashboard Lock Abilities](/api-reference/abilities-api/dashboard-lock) for requirements, examples, and response fields.
 
 ---
 

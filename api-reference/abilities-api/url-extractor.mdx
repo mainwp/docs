@@ -212,6 +212,8 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 | `failed` | No usable results |
 | `expired` | The run is no longer available |
 
+Reads and exports recheck your current access to every selected site. Runs that include non-public statuses also require **URL Extractor: Extract Non-Public Posts** when read or exported.
+
 A run stores up to 10,000 records. `truncated: true` means MainWP Dashboard stopped collecting after reaching a limit. Only the user who started a run can read or export it.
 
 ## Read records
@@ -271,7 +273,9 @@ To protect spreadsheet users, MainWP Dashboard prefixes cell values that start w
 
 ### Download an export
 
-Each export can be downloaded once. The link expires 10 minutes after it is created. An export file can be up to 16 MB.
+An identical retry with the same `request_ref` returns the existing export without extending its expiry or allowing a second download. Use a new request reference to create a new export when needed.
+
+Each export can be downloaded once. The link expires 10 minutes after it is created. An export file can be up to 16 MiB (16,777,216 bytes).
 
 - **In a browser:** Open `download_url` while logged in to MainWP Dashboard as the user who created the export. You do not need a REST nonce.
 - **From a script:** Send an authenticated GET request to the REST download endpoint with the `artifact_ref`.
