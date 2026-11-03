@@ -2,7 +2,7 @@
 title: Termageddon Abilities
 sidebarTitle: "Termageddon"
 description: >-
-  Read Termageddon connection, policy, and page state, and safely change credentials, site mappings, or policy pages through the Abilities API.
+  Read Termageddon connection, policy, and page state, and change credentials, site mappings, or policy pages through the Abilities API.
 ---
 
 Termageddon for MainWP registers ten abilities in the `mainwp-termageddon` category. These are additional to the abilities supplied by MainWP Dashboard. For installation and everyday use, see the [Termageddon Add-on guide](/add-ons/posts-pages/termageddon-for-mainwp-extension).
@@ -110,7 +110,7 @@ Page types are `privacy`, `terms`, `disclaimer`, and `cookie-consent`. Mapping s
 
 Returns `page_ref`, `site_id`, `type`, `deployment_state`, `child_post_ref`, `content_generation`, `account_generation`, `mapping_generation`, `generation`, and `observed_at`. Use this page's `generation` as `if_match` for removal; do not substitute its account or mapping generation.
 
-Deployment states are `draft`, `queued`, `created`, `updated`, `failed`, `delete_pending`, `deleted`, `unknown`, or `reconciliation_required`. Page references identify stored records; they are not WordPress post IDs or URLs.
+Deployment states are `draft`, `queued`, `created`, `updated`, `failed`, `delete_pending`, `deleted`, `unknown`, `reconciliation_required`, or `revalidation_required`. Page references identify stored records; they are not WordPress post IDs or URLs.
 
 ## Preview and Confirm Changes
 

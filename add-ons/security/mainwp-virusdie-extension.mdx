@@ -15,6 +15,7 @@ thirdPartyPlugin: Virusdie
 - Adding child sites to Virusdie for malware scanning
 - Running manual and automated security scans
 - Troubleshooting sync file upload errors
+- Reading stored Virusdie status through the Abilities API
 
 ---
 
@@ -26,7 +27,7 @@ thirdPartyPlugin: Virusdie
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.0.1"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-virusdie-extension/"
   data-integrates-with="Virusdie"
@@ -322,8 +323,32 @@ For more details about this child-to-Dashboard reverse-download requirement, see
 
 ---
 
+## Database Health Check
+
+Virusdie 5.1 supplies its site and scan report tables and expected column definitions to MainWP Dashboard's database schema checks. With MainWP Dashboard 6.2 or later and the Add-on active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure; they do not repair tables or scan your Child Sites for malware.
+
+---
+
+## Abilities API
+
+The Virusdie Integration registers four read-only WordPress abilities that let AI assistants, the [MainWP MCP Server](/mcp-server/overview), and automation scripts read the Virusdie state stored on your Dashboard:
+
+- List accessible sites with their connection, firewall, automatic cleanup, and last scan result
+- Read one site's stored Virusdie state
+- List and read stored scan report summaries for a site
+
+These abilities don't contact Virusdie or start scans, and they never return your API key. They require WordPress 6.9 or later and MainWP Dashboard with Abilities API support.
+
+See [Virusdie Abilities](/api-reference/abilities-api/virusdie) for permissions, request examples, response fields, and errors.
+
+---
+
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database structure
+- [Virusdie Abilities](/api-reference/abilities-api/virusdie) - Read stored Virusdie status and scan reports
 - [Sucuri Extension](/add-ons/security/sucuri-extension) - Alternative malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Scan for known vulnerabilities

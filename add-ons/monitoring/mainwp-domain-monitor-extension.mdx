@@ -64,6 +64,16 @@ If the add-on cannot retrieve your domain information automatically, you can ent
 
 ## Check Domains
 
+### Automatic Inclusion of New Sites
+
+Domain Monitor 5.3 and later automatically creates a domain monitoring record when you connect a new site to MainWP Dashboard. The first domain lookup is handled by the scheduler when **Automated Checks** are enabled; connecting a site does not perform an immediate RDAP or WHOIS request.
+
+The Add-on also adds missing monitoring records when an automatic checking run starts or when you save global settings with **Automated Checks** enabled. This includes sites connected before automatic checks were enabled. Existing manual domain profiles and individual settings, including disabled automatic checks, are preserved.
+
+To retrieve domain information immediately, use one of the manual check actions below.
+
+### Run Manual Checks
+
 <Steps>
   <Step title="Go to Add-ons > Monitoring > Domain Monitor > Dashboard">
   </Step>
@@ -225,6 +235,7 @@ MainWP REST API calls, including Domain Monitor endpoints, full documentation, a
 
 ## Related Resources
 
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database table and column definitions
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
 - [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Monitor SSL certificates
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include domain data in reports

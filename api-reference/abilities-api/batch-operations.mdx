@@ -39,6 +39,12 @@ These abilities support batch queuing:
 | `mainwp/check-sites-v1` | Batch connectivity check |
 | `mainwp/suspend-sites-v1` | Batch suspend |
 
+## Update Confirmation and Permissions
+
+In MainWP Dashboard 6.3, preview `run-updates-v1` and `update-all-v1` with `dry_run: true`, then submit the reviewed selection with `confirm: true`. A preview does not queue an update job. See [Updates Abilities](/api-reference/abilities-api/updates#confirmation-and-update-holds-in-6-3) for confirmation flags and update holds.
+
+Queued jobs run under the requesting user's permissions. MainWP rechecks site access, operation permissions, and applicable update holds before executing updates. If access changes after a job is queued, review its errors and skipped items before retrying. Check individual results even when a job's status is `completed`.
+
 ## Response Patterns
 
 ### Immediate Response (≤200 sites)
@@ -61,20 +67,20 @@ These abilities support batch queuing:
 {
   "queued": true,
   "job_id": "sync_abc123def456",
-  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run?input%5Bjob_id%5D=sync_abc123def456",
   "sites_queued": 350
 }
 ```
 
 ## mainwp/get-batch-job-status-v1
 
-Retrieves the current status of a queued batch operation.
+Retrieves the current status of a queued batch operation. When `queued` is `true`, `status_url` includes the job ID as `input[job_id]`. Send an authenticated GET to this URL using your WordPress Application Password.
 
 **Method:** GET (readonly)
 
 ```bash
-curl -G -u "admin:xxxx" \
-  --data-urlencode 'input_json={"job_id":"sync_abc123def456"}' \
+curl -G -u "admin:YOUR_APPLICATION_PASSWORD" \
+  --data-urlencode 'input[job_id]=sync_abc123def456' \
   "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run"
 ```
 
@@ -114,16 +120,18 @@ curl -G -u "admin:xxxx" \
 |--------|-------------|
 | `queued` | Waiting to start |
 | `processing` | Currently running |
-| `completed` | Finished successfully |
+| `completed` | Processing finished; individual items may have failed |
 | `failed` | Failed with errors |
 
 ## Polling Workflow
+
+Use the returned `status_url` to poll with the same WordPress authentication. It already includes `input[job_id]`.
 
 ```bash
 #!/bin/bash
 
 # 1. Start the operation
-RESPONSE=$(curl -s -X POST -u "admin:xxxx" \
+RESPONSE=$(curl -s -X POST -u "admin:YOUR_APPLICATION_PASSWORD" \
   -H "Content-Type: application/json" \
   -d '{"input":{"site_ids_or_domains":[]}}' \
   "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/sync-sites-v1/run")
@@ -131,15 +139,14 @@ RESPONSE=$(curl -s -X POST -u "admin:xxxx" \
 # 2. Check if queued
 QUEUED=$(echo $RESPONSE | jq -r '.queued // false')
 JOB_ID=$(echo $RESPONSE | jq -r '.job_id // empty')
+STATUS_URL=$(echo $RESPONSE | jq -r '.status_url // empty')
 
 if [ "$QUEUED" = "true" ] && [ -n "$JOB_ID" ]; then
   echo "Job queued: $JOB_ID"
 
   # 3. Poll for status
   while true; do
-    STATUS=$(curl -s -G -u "admin:xxxx" \
-      --data-urlencode "input_json=$(jq -cn --arg job_id "$JOB_ID" '{job_id: $job_id}')" \
-      "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run")
+    STATUS=$(curl -s -u "admin:YOUR_APPLICATION_PASSWORD" "$STATUS_URL")
 
     PROGRESS=$(echo $STATUS | jq -r '.progress')
     STATE=$(echo $STATUS | jq -r '.status')

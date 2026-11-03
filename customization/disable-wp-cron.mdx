@@ -7,7 +7,7 @@ description: "Advanced reference for invoking individual MainWP Dashboard and Ad
 <Warning>
 This is an advanced manual setup and is not the recommended solution for a low-traffic MainWP Dashboard. Direct worker files invoke specific MainWP tasks; they do not replace WordPress's complete cron and background-event processing.
 
-For most installations, keep **MainWP Dashboard > Settings > Advanced Settings > Use WP Cron** enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+For most installations, keep **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`) enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Warning>
 
 This page documents the individual workers currently available for administrators who intentionally choose to maintain direct server cron jobs.
@@ -89,7 +89,7 @@ Before switching, inventory every enabled MainWP feature and Add-on and identify
     Record every MainWP Dashboard feature and Add-on that relies on scheduled processing, including multi-stage workflows.
   </Step>
   <Step title="Turn off Use WP Cron">
-    Turn off **MainWP Dashboard > Settings > Advanced Settings > Use WP Cron**. This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
+    Turn off **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`). This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
   </Step>
   <Step title="Configure each documented worker">
     Create a separate server job for every required worker at the exact cadence shown below.
@@ -126,6 +126,14 @@ If direct PHP execution is unavailable, use an HTTPS request with the complete j
 ```bash
 curl -fsS 'https://example.com/wp-content/plugins/PLUGIN-DIRECTORY/cron/CRON-FILE' > /dev/null 2>&1
 ```
+
+MainWP Dashboard core jobs called this way need the cron key. Add `?key=` to the URL:
+
+```bash
+curl -fsS 'https://example.com/wp-content/plugins/mainwp/cron/CRON-FILE?key=YOUR-CRON-KEY' > /dev/null 2>&1
+```
+
+Copy the URL with the key from **MainWP > Info > Cron Schedules**. Command-line jobs don't need the key. See [Cron Key for HTTP Cron Calls](/customization/cron-key-for-http-cron-calls).
 
 <Note>
 Replace `/path/to/public_html` with the MainWP Dashboard WordPress installation path and `/usr/bin/php` with the correct PHP binary. Hosting providers document cron setup for tools such as [cPanel](https://docs.cpanel.net/cpanel/advanced/cron-jobs/) and [Plesk](https://docs.plesk.com/en-US/obsidian/customer-guide/websites-and-domains/scheduling-tasks-cron-jobs.html).
@@ -204,7 +212,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 
     Runs registered MainWP regular-sequence processes incrementally. It is not the general WordPress WP-Cron dispatcher and does not execute arbitrary due WP-Cron events.
 
-    #### Start Legacy Backups
+    #### Start Backup Tasks
 
     **Frequency:** *every hour (crontab schedule: 0 * * * *)*
 
@@ -212,7 +220,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups.php > /dev/null 2>&1
     ```
 
-    #### Continue Legacy Backups
+    #### Continue Backups and Restores
 
     **Frequency:** *every 5 minutes (crontab schedule: */5 * * * *)*
 
@@ -221,7 +229,35 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     ```
 
     <Note>
-    Configure these two workers only when the built-in MainWP Legacy Backup feature is enabled. They do not run backup Add-ons.
+    These workers run built-in backups in MainWP 6.4 and later and Legacy Backups in earlier versions. They do not run backup Add-ons.
+
+    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Configure the backup slice and daily cleanup workers below as separate jobs when using direct-worker mode.
+
+    For [MainWP Built-In Backups](/sites/backups/manage-backups), keep **Use WP Cron** enabled and follow the [low-traffic cron setup](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) to run all required events.
+    </Note>
+
+    #### Run Backup Steps
+
+    **Frequency:** every minute (crontab schedule: `* * * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_slice.php > /dev/null 2>&1
+    ```
+
+    Starts due built-in backup tasks and advances backup processing. Keep this worker scheduled every minute in addition to the hourly start and five-minute continuation workers.
+
+    #### Clean Up Old Backups
+
+    **Frequency:** once daily (example crontab schedule: `0 0 * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_prune.php > /dev/null 2>&1
+    ```
+
+    Applies configured backup retention policies and prunes old backup diagnostics and run history. The example runs at midnight in the server's cron timezone; another daily time is also suitable.
+
+    <Note>
+    These two workers are for MainWP Built-In Backups in MainWP 6.4 and later. They do not run backup Add-ons or replace the general WordPress WP-Cron queue.
     </Note>
 
     #### Send Site Health Notifications
@@ -486,7 +522,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 - [ ] Start and continuation workers are configured separately
 - [ ] MainWP recurring hooks and matching direct workers are not both running
 - [ ] `DISABLE_WP_CRON` is not enabled unless a general external WP-Cron runner is working
-- [ ] Legacy Backup workers are configured if the Legacy Backup feature is enabled
+- [ ] Built-in backups use a general WP-Cron runner, or the Legacy Backup workers are configured for earlier versions
 - [ ] Regression Testing uses the recommended WP-Cron setup when complete automation is required
 - [ ] Newly connected sites appear in Domain Monitor, and eligible HTTPS sites appear in SSL Monitor, after automatic reconciliation
 - [ ] Actual saved data and feature-specific results were verified, not only command exit status
@@ -496,6 +532,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 ## Related Resources
 
 - [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) - Recommended configuration
+- [Cron Key for HTTP Cron Calls](/customization/cron-key-for-http-cron-calls) - Key for HTTP cron jobs
 - [WordPress: Hooking WP-Cron Into the System Task Scheduler](https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/)
 - [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Server requirements
 - [How to Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Update scheduling

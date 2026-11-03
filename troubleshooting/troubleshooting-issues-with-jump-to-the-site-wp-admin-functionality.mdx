@@ -27,7 +27,7 @@ Jump to WP Admin lets you open a child site's WordPress admin area directly from
 
 Starting with MainWP Dashboard 6.2, Jump to WP Admin can use the address last reported by the child site when the difference is a `www` variant or an HTTP-to-HTTPS change. A mismatch no longer necessarily means the jump will fail. A site can also sync successfully while its Jump to WP Admin login fails.
 
-The **Auto-correct site URLs** setting in **MainWP > Settings > Advanced Settings > Miscellaneous Settings** is enabled by default. It also allows MainWP to verify and update stored addresses in the background. Automatic handling does not switch HTTPS to HTTP or change the domain, port, or path.
+The **Auto-correct site URLs** setting in **top-right user menu > MainWP Settings > Advanced Settings > Miscellaneous Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`) is enabled by default. It also allows MainWP to verify and update stored addresses in the background. Automatic handling does not switch HTTPS to HTTP or change the domain, port, or path.
 
 A site's **Lock site URL** setting prevents both automatic changes to its stored URL and automatic address adjustment for Jump to WP Admin. Disabling the global setting alone stops background URL changes but still allows Jump to WP Admin to use a supported detected address.
 

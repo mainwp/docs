@@ -1,0 +1,63 @@
+---
+title: MainWP AI Menu
+sidebarTitle: AI Menu
+description: >-
+  Find Knowledge, connect an AI tool through MainWP MCP, and set up MainWP Control
+  from the AI menu in MainWP Dashboard 6.3.
+---
+
+MainWP Dashboard 6.3 brings **Knowledge**, **MainWP MCP**, and **MainWP Control** together under **MainWP > AI**. Open the AI landing page to choose a workflow, or select a page directly from its submenu.
+
+![The MainWP AI landing page with Knowledge, MainWP MCP, and MainWP Control cards](/images/dashboard/mainwp-ai-menu.jpg)
+
+## What You'll Learn
+
+- Choose between Knowledge, MainWP MCP, and MainWP Control
+- Find the new Dashboard pages
+- Create credentials and copy setup instructions from the guided pages
+
+## Prerequisites
+
+- MainWP Dashboard 6.3 or later
+- A WordPress administrator account with `manage_options` for the AI landing and setup pages
+- WordPress 6.9 or later for the Abilities API used by connected tools
+- HTTPS on the Dashboard for external connections
+
+## Choose a Workflow
+
+| Page | Use it to | Dashboard path |
+|------|-----------|----------------|
+| **Knowledge** | Save agency, client, and site context, procedures, and work history; review records submitted by AI tools | **MainWP > AI > Knowledge** |
+| **MainWP MCP** | Connect an MCP-compatible AI assistant to your Dashboard | **MainWP > AI > MainWP MCP** |
+| **MainWP Control** | Run MainWP operations from a terminal, scripts, scheduled jobs, or CI/CD pipelines | **MainWP > AI > MainWP Control** |
+
+Knowledge works in the Dashboard before you connect an assistant. Its menu opens **Review** by default; select **Agency** to manage shared records. Client and Site Knowledge remain on their respective client and site pages. See the [Knowledge guide](/dashboard/overview/mainwp-knowledge) for those workflows and permissions.
+
+MainWP MCP runs on the computer hosting your AI tool. MainWP Control runs on the computer or server hosting your terminal automation. The Dashboard pages guide setup; they do not install either program or run commands on your computer.
+
+## Connect an AI Assistant
+
+Open **MainWP > AI > MainWP MCP** and work through **Credentials**, **Connect**, **Test**, and **Finish**. Create an Application Password on the page, copy your configuration, and use the instructions for your AI client to finish the connection.
+
+The Application Password success dialog also provides a **Connect an AI tool** panel with separate configurations for **Claude Code**, **Cursor**, and **VS Code**. See [MCP Quickstart](/mcp-server/quickstart#guided-setup-in-mainwp-dashboard) and [Application Passwords](/api-reference/rest-api/application-passwords#connect-an-ai-tool).
+
+## Set Up Terminal Automation
+
+Open **MainWP > AI > MainWP Control** and work through **Credentials**, **Install**, **Test**, and **Finish**. Create a separate Application Password, copy the installation and login commands, and start with the read-only test commands.
+
+Follow the [MainWP Control guide](/api-reference/mainwp-control#guided-setup-in-mainwp-dashboard) for the full setup and command-line options.
+
+## Permissions and Credentials
+
+An Application Password belongs to the WordPress user who creates it. It does not grant additional site access or MainWP permissions. Connected tools still follow that user's permissions, site restrictions, and the safeguards for each operation.
+
+Use a separate credential per tool. Copy a newly created password before closing its success dialog; the Dashboard cannot retrieve the full value later. Manage or revoke it under **MainWP > API Access > Application Passwords**.
+
+If the AI menu is missing, check the Dashboard version, the account's administrator access, and any menu customization or Team Control restrictions.
+
+## Related Resources
+
+- [Knowledge](/dashboard/overview/mainwp-knowledge) - Saved instructions and review workflows
+- [MCP Quickstart](/mcp-server/quickstart) - Connect an AI assistant
+- [MainWP Control](/api-reference/mainwp-control) - Terminal setup and automation
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Discovery, authentication, and execution

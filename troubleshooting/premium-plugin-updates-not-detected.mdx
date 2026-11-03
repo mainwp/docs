@@ -6,7 +6,7 @@ description: >-
   MainWP Dashboard, and use existing compatibility filters when needed.
 ---
 
-MainWP Dashboard 6.2 includes built-in compatibility for many premium plugins. If an update is missing, check the child site first, then use **Settings > Premium Updates** to add compatibility when needed. Existing PHP filters still work.
+MainWP Dashboard 6.2 includes built-in compatibility for many premium plugins. If an update is missing, check the child site first, then use **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`) to add compatibility when needed. Existing PHP filters still work.
 
 ## What You'll Learn
 
@@ -23,13 +23,13 @@ Log in to the affected child site and open **Dashboard > Updates**. Use **Check 
 If the update never appears there, check the plugin's own settings and contact its author. MainWP compatibility cannot bypass the vendor's update or licensing requirements.
 </Step>
 <Step title="Check whether the plugin is active">
-Some premium updaters only load while the plugin is active. Check the affected child's Plugins screen and any inactive notice under **MainWP > Settings > Premium Updates > Detected Plugins**.
+Some premium updaters only load while the plugin is active. Check the affected child's Plugins screen and any inactive notice under **top-right user menu > MainWP Settings > Premium Updates > Detected Plugins** (`/wp-admin/admin.php?page=PremiumUpdates`).
 </Step>
 <Step title="Sync the child site">
 Go to **MainWP > Sites > Manage Sites**, sync the affected site, and check its plugin updates again.
 </Step>
 <Step title="Add compatibility if the update is still missing">
-Open **MainWP > Settings > Premium Updates**. Under **Custom Identifiers**, select **Plugin** and search by product name or identifier. Select the correct premium product, or manually enter its full plugin identifier, then click **Add New**.
+Open **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`). Under **Custom Identifiers**, select **Plugin** and search by product name or identifier. Select the correct premium product, or manually enter its full plugin identifier, then click **Add New**.
 
 ![Plugin identifier field highlighted in the Premium Updates settings form](/images/dashboard/premium-updates-plugin-identifier-dark.svg)
 

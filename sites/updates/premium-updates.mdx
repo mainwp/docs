@@ -5,7 +5,7 @@ description: >-
   detected products, and add custom identifiers in MainWP Dashboard.
 ---
 
-MainWP Dashboard 6.2 includes built-in update compatibility for many premium plugins and themes. Supported products receive extra update checks automatically. If a premium product needs additional compatibility, add its identifier from **MainWP > Settings > Premium Updates** without writing a code snippet.
+MainWP Dashboard 6.2 includes built-in update compatibility for many premium plugins and themes. Supported products receive extra update checks automatically. If a premium product needs additional compatibility, add its identifier from **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`) without writing a code snippet.
 
 This page configures compatibility. Continue installing available updates from your usual [Updates screens](/sites/updates/manage-updates).
 
@@ -25,7 +25,7 @@ This page configures compatibility. Continue installing available updates from y
 
 ## Open Premium Updates
 
-Go to **MainWP > Settings > Premium Updates** (`admin.php?page=PremiumUpdates`). Built-in compatibility is automatic; there is no switch to enable first.
+Go to **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`). Built-in compatibility is automatic; there is no switch to enable first.
 
 ![Premium Updates settings with the licensing notice and inline Custom Identifiers form in dark mode](/images/dashboard/premium-updates-overview-dark.svg)
 
@@ -58,7 +58,7 @@ Use **Custom Identifiers** when a premium product needs compatibility that is no
 
 <Steps>
 <Step title="Sync the affected child sites">
-Go to **MainWP > Sites > Manage Sites** and sync the sites that have the product installed. Then return to **Settings > Premium Updates**.
+Go to **MainWP > Sites > Manage Sites** and sync the sites that have the product installed. Then return to **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`).
 </Step>
 <Step title="Choose Plugin or Theme">
 In **Custom Identifiers**, select the appropriate **Type**.
@@ -104,6 +104,10 @@ The existing plugin and theme compatibility filters still work in MainWP Dashboa
 The filters receive built-in identifiers and your saved custom identifiers. Append to that array to preserve them. Identifiers added only by PHP filters are not automatically imported into the settings tables.
 
 See the advanced examples in [Premium Plugin Updates Not Detected](/troubleshooting/premium-plugin-updates-not-detected#advanced-compatibility-filters) and [Premium Theme Updates Not Detected](/troubleshooting/premium-theme-updates-not-detected#advanced-compatibility-filters).
+
+## After Installing a Premium Update
+
+Sync the affected site after the update completes. MainWP Child 6.3 removes premium updates that are already installed from the data it reports to MainWP Dashboard. If an item remains after a fresh sync, compare its installed version and available update directly on the Child site before trying the update again.
 
 ## If Updates Still Fail
 

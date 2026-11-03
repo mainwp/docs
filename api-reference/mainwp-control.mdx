@@ -35,8 +35,9 @@ safety model for protected actions.
 
 ## Prerequisites
 
-- Node.js 20 or later
+- Node.js 20.18.1 or later
 - MainWP Dashboard 6 or later
+- WordPress 6.9 or later on the Dashboard for the Abilities API
 - A WordPress user account with permission to perform the actions you need
 - A WordPress Application Password for that user
 
@@ -64,6 +65,31 @@ use in MainWP.
 ---
 
 ## Typical Workflow
+
+### Guided Setup in MainWP Dashboard
+
+MainWP Dashboard 6.3 adds **MainWP > AI > MainWP Control**. The page has four steps and lets you create an Application Password without leaving it. Access to this setup page requires a WordPress administrator account with `manage_options`.
+
+<Steps>
+  <Step title="Create a credential">
+    In **Credentials**, click **Create Application Password**, review the prefilled name, and click **Create**. Save the generated password before closing the success dialog.
+  </Step>
+  <Step title="Install and sign in">
+    Select **Install**, then click **Copy to clipboard** for the installation and login commands. Run them on the computer or server where you will use MainWP Control. Login asks for the Dashboard URL, the WordPress username that owns the password, and the Application Password.
+  </Step>
+  <Step title="Test with read-only commands">
+    Select **Test** and copy `mainwpcontrol abilities list` and `mainwpcontrol abilities run list-sites-v1 --json`. Run them in your terminal and check the returned sites.
+  </Step>
+  <Step title="Review features and safeguards">
+    Select **Finish** for links and reminders about profiles, structured output, previews, confirmation, and credentials.
+  </Step>
+</Steps>
+
+![The MainWP Control guided setup page with installation and login commands](/images/dashboard/mainwp-control-guided-setup.jpg)
+
+The page supplies editable commands. It does not run them, install the CLI, or verify the connection for you. The **Connect an AI tool** panel in the password dialog is for MainWP MCP clients; continue with the Control page's **Install** and **Test** steps for the CLI.
+
+### Terminal Setup
 
 MainWP Control installs as the `mainwpcontrol` command. A common starting flow
 is:
@@ -161,3 +187,4 @@ repeatable workflows around clear command behavior.
 - [Abilities API Overview](/api-reference/abilities-api/overview)
 - [MainWP MCP Server](/mcp-server/overview)
 - [Application Passwords](/api-reference/rest-api/application-passwords)
+- [AI Menu](/dashboard/overview/mainwp-ai)

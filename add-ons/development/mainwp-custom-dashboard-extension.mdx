@@ -13,6 +13,8 @@ addonType: extension
 - Where custom code is stored and executed
 - Using the built-in code editor (CodeMirror 6) with autocompletion, code folding, and the One Dark theme
 - Validating PHP snippets before saving with the built-in syntax check
+- Keeping your draft when a save conflicts with another change
+- Previewing and applying snippet changes through MainWP abilities
 - Handling PHP errors safely
 - Accessing example code snippets
 
@@ -26,7 +28,7 @@ addonType: extension
   data-pricing-tier="free"
   data-bundle="Essentials"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-custom-dashboard-extension/"
   data-owned-by="Jestart LLC"
@@ -65,9 +67,8 @@ Check out our Github repository where we keep example snippets that will help yo
 ## How It Works
 
 MainWP Custom Dashboard Extension saves your PHP, CSS, and JS snippets in WordPress options on your MainWP Dashboard site instead of requiring separate PHP, CSS, or JS files.
-CSS and JS snippets are added inline on MainWP pages only — they don't load on the rest of WP Admin or the front-end.
-Saved PHP Code Snippets are executed on page load using the PHP function `eval()`.
-In case the `eval()` function is disabled on your host, please contact your host support and have them enable it for you.
+CSS and JS snippets are added inline on MainWP admin pages, except Child site tabs. They do not load on other WordPress admin pages or the front end.
+Saved PHP snippets run during WordPress initialization using `eval()`. Their scope includes all WordPress requests on the MainWP Dashboard site, not just MainWP admin pages. Add conditions or hooks in your PHP code when it should run only in a specific context.
 
 MainWP Custom Dashboard Extension is used to apply custom code snippets to the MainWP Dashboard site ONLY!
 It doesn't apply code to child sites.
@@ -85,6 +86,18 @@ The editor is powered by CodeMirror 6 and ships with productivity features enabl
 - **Tab indentation** that respects natural tab behavior inside the editor
 
 Use the language tab at the top of the page to switch between the PHP, CSS, and JS editors. Each language is saved independently.
+
+### Handling a Save Conflict
+
+Version 5.2 checks whether the saved snippet has changed since you opened the editor. If another user, browser tab, or API request changes it first, your save is rejected instead of overwriting that change.
+
+Your draft remains in the open editor, and the page does not automatically reload after the conflict. To continue:
+
+1. Copy your draft somewhere safe before reloading. It is not automatically saved as a recoverable draft.
+2. Reload the editor to load the latest saved snippet, compare it with your draft, and combine the changes you want to keep.
+3. Save again from the refreshed editor.
+
+If you kept the editor open while upgrading to 5.2, copy any unsaved work and reload before saving so the editor can send the required snippet revision.
 
 ## Writing PHP Snippets
 
@@ -108,22 +121,33 @@ add_action( 'admin_footer', function () {
 
 ### Pre-save syntax validation
 
-Before a PHP snippet is saved, the extension runs a syntax check on the code. If the snippet contains a parse error, the save is rejected and the editor displays the error message so you can fix it before it ever runs.
+Before a PHP snippet is saved, the extension parses the code without executing it. Malformed snippets are rejected, and the editor displays a validation message. The same parse-only check is used by the PHP validation and replacement-preview abilities.
 
-This catches the most common cause of a broken dashboard — a typo in a snippet — without you having to reload the page to find out.
+Top-level `namespace`, `declare`, and `use` import statements are also rejected because snippets are executed as inline PHP rather than standalone PHP files. A closure's `use (...)` clause is allowed.
+
+Passing validation confirms syntax only. It does not prove that the snippet will behave correctly or safely when it later runs.
 
 ### Runtime error handling
 
-If a saved PHP snippet still produces a parse or compile fatal error at runtime, the extension catches it and shows a safe error message with a link back to the PHP editor. Snippet execution is disabled until you fix the code:
+For a matching parse or compile fatal error, the extension shows a recovery message with a reference and a link back to the PHP editor. The **Go to fix the snippet** link opens the editor with snippet execution skipped for that recovery request:
 
 ![Screenshot showing PHP error message with link to fix the code](/images/add-ons/custom-dashboard-php-error.png)
 
 Other runtime exceptions (`Throwable`s) thrown by a snippet are caught and logged instead of taking down the page.
 
+## Abilities API
+
+Version 5.2 adds four MainWP abilities to read snippet status without returning saved code, validate proposed PHP without storing or running it, and preview or apply replacements and removals for PHP, CSS, and JavaScript.
+
+Changes require the current snippet revision and explicit confirmation. Previews report the proposed effect without saving it. PHP previews check syntax; CSS and JavaScript previews do not lint or execute the supplied code.
+
+See [Custom Dashboard Abilities](/api-reference/abilities-api/custom-dashboard) for authentication, permissions, examples, and conflict handling. These abilities affect the MainWP Dashboard site only.
+
 ---
 
 ## Related Resources
 
+- [Custom Dashboard Abilities](/api-reference/abilities-api/custom-dashboard) - Inspect, validate, and manage snippets through the API
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Code Snippets Extension](/add-ons/development/code-snippets-extension) - Deploy code to child sites
 - [Dashboard Themes](/customization/how-to-change-the-theme-for-mainwp) - MainWP Dashboard appearance and theme behavior

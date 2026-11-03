@@ -1,7 +1,7 @@
 ---
 title: Configuration Reference
 description: >-
-  Every environment variable and settings.json option the MainWP MCP Server accepts.
+  Environment variables, settings.json options, connection diagnostics, and resource limits for the MainWP MCP Server.
 ---
 
 The server accepts configuration through environment variables and a `settings.json` file. Environment variables take precedence, so you can keep a base file and override specific values at runtime.
@@ -11,7 +11,7 @@ The server accepts configuration through environment variables and a `settings.j
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `MAINWP_URL` | Yes | | Base URL of your MainWP Dashboard |
-| `MAINWP_USER` | Yes* | | WordPress username that owns the Application Password |
+| `MAINWP_USER` | Yes* | | WordPress login name or email address of the user who owns the Application Password, not the display name |
 | `MAINWP_APP_PASSWORD` | Yes* | | WordPress Application Password |
 | `MAINWP_TOKEN` | No | | MainWP REST API bearer token. **Not accepted by the Abilities API; see the note below** |
 | `MAINWP_SKIP_SSL_VERIFY` | No | `false` | Skip SSL certificate verification (development only) |
@@ -140,6 +140,23 @@ Once configuration succeeds, the full tool list appears in the same session for 
 
 It writes only those three connection fields, never security settings, and blocking `mainwp_configure` through `blockedTools` removes chat-based setup entirely while leaving the manual path available.
 
+### Rejected credentials
+
+If the Dashboard rejects the loaded credentials during startup or a setup connection check, the server enters `credentials_rejected` and keeps the MainWP tools hidden. Calling `mainwp_get_setup_status` reports the problem without resending those credentials. `mainwp_configure` cannot replace them from chat.
+
+The setup status includes:
+
+| Field | What to check |
+| --- | --- |
+| `username` | The configured WordPress login name or email address. A value that looks like an Application Password is withheld, with a warning that the username and password may be swapped. |
+| `connectionSources` | Where each connection value came from: `env` or `settings.json`. Different values can come from different sources. |
+| `overriddenSettingsKeys` | Settings-file values overridden by environment variables. Editing only the file will not change those effective values. |
+| `problem` and `guidance` | The rejection details and recovery instructions. Passwords and tokens are not included. |
+
+Correct the value at the source shown in `connectionSources`, using the [field mapping](#field-mapping) for settings-file names, then restart your MCP client. Use the WordPress login name or email address and an Application Password from that user's profile, not the display name or account login password. If the diagnostics report that Application Passwords are disabled, restore their availability on the Dashboard before reconnecting.
+
+HTTP 401 is treated as a credential rejection. Other HTTP 4xx responses are treated this way only when WordPress reports `invalid_username`, `invalid_email`, `incorrect_password`, `application_passwords_disabled`, or `application_passwords_disabled_for_user`. Network failures, TLS errors, HTTP 5xx, and a bare HTTP 403 leave the server in `degraded`, where `mainwp_get_setup_status` can retry with the loaded credentials.
+
 ### Why setup will not replace credentials you already have
 
 Chat-based setup can get you connected the first time, but it can never overwrite a connection you set up yourself. That line is deliberate, and it is worth knowing where it costs you something.
@@ -148,7 +165,7 @@ The reason is that an assistant acts on text, and text can come from places you 
 
 A tempting middle ground is to allow it when the stored credentials are provably wrong, since the Dashboard rejected them with an authentication error. We do not do that, because it would let the remote side decide when your local configuration may be replaced: a Dashboard that had been compromised, or a connection someone was tampering with, could reject a valid login on purpose to unlock the replacement path, without ever knowing your password.
 
-The cost is real, and it lands in one place. If you rotate the Application Password in WordPress, or the stored one is wrong for any other reason, retrying will not help, because the retry reuses the same credentials the Dashboard is already refusing. You have to put the new password in `~/.config/mainwp-mcp/settings.json` or your client's `env` block yourself and restart the client. That is the same edit you would have made to set the server up manually in the first place, and it takes a minute.
+If you rotate the Application Password in WordPress, or the stored one is wrong for any other reason, the server stops resending it after a confirmed rejection. Follow the [rejected-credentials diagnostics](#rejected-credentials) to update the source that supplies the password, then restart the client.
 
 ## Behavior settings
 
@@ -169,6 +186,27 @@ These guard against runaway operations and oversized responses.
 | `requestTimeout` | 30000 ms | The request is aborted |
 | `maxResponseSize` | 10 MB | The single response is rejected |
 | `maxSessionData` | 50 MB | Subsequent calls fail with `RESOURCE_EXHAUSTED` until the server restarts |
+
+### Input limits
+
+Tool inputs have separate limits from response data. For each string, the called ability's input schema can declare a positive, safe-integer `maxLength`. That value replaces the default, including when it is smaller, up to the server ceiling below. A missing or invalid declaration keeps the default. The check follows nested `properties` and array `items` schemas.
+
+| Input | Limit |
+| --- | --- |
+| String without a valid schema `maxLength` | 10,000 characters |
+| String with a valid schema `maxLength` | The declared value, capped at 67,108,864 characters |
+| Array | 1,000 elements per array |
+| Nested objects and arrays | Maximum depth of 5 below the top-level arguments |
+
+String lengths use JavaScript's UTF-16 code-unit count; ASCII and base64 characters each count as one. Over-limit values are rejected, not truncated. String-length errors identify the parameter, effective `maxLength`, and `limitSource` (`default`, `schema`, or `ceiling`).
+
+Transport limits also apply:
+
+- **Inbound stdio:** the buffer limit is 72 MiB of UTF-8 bytes for the incoming JSON-RPC data, including the request envelope and other arguments. Non-ASCII text, JSON escaping, or multiple large values can reach this limit before a per-string limit.
+- **GET and DELETE:** inputs are encoded in the query string. The complete encoded URL must be at most 8,000 characters, even if the schema permits longer strings. Oversized URLs are rejected before sending.
+- **POST:** inputs use a JSON body. The ability's schema and the Dashboard's PHP, web server, or proxy limits can impose additional constraints. A string limit is not a binary upload-size allowance; base64 encoding increases the payload size.
+
+These input and transport limits are not changed by `maxResponseSize` or `maxSessionData`.
 
 ## Retry logic
 

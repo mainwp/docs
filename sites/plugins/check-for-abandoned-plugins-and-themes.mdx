@@ -38,8 +38,18 @@ MainWP identifies plugins and themes that may be abandoned based on how long sin
 MainWP marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
 
 <Note>
-MainWP can evaluate only plugins and themes with usable WordPress.org metadata. Delisted items and premium, private, or custom plugins and themes that are absent from WordPress.org cannot be evaluated for abandonment.
+By default, MainWP uses WordPress.org metadata. Dashboard 6.3 adds an optional local-file-date fallback for items without a usable WordPress.org last-updated date, including premium, private, or delisted items. This requires MainWP Child 6.3 or later.
 </Note>
+
+### Check Items Without a WordPress.org Date
+
+1. Open **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`) and find **Updates Settings**.
+2. Enable **Abandoned check by local file date**, review **Abandoned plugins/themes tolerance**, and click **Save Settings**.
+3. Sync the affected sites to send the setting to MainWP Child, then run the abandoned checks below.
+
+The fallback compares the modification date of a plugin's main file or a theme's `style.css` with the same tolerance used for WordPress.org dates. It is disabled by default. An older Child that does not support it continues using WordPress.org metadata.
+
+A local file date is a signal to investigate. Copying or restoring files can change it, and it does not establish the author's last release date. See [how the fallback works](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3).
 
 ### Why Abandoned Items Matter
 
@@ -57,7 +67,7 @@ MainWP can evaluate only plugins and themes with usable WordPress.org metadata. 
 When abandoned plugin and theme data is enabled for sync, MainWP Child schedules daily background checks and processes installed items in batches. Dashboard syncs collect the cached results and can queue a check when the cache is missing or incomplete. These background tasks rely on WordPress cron.
 
 <Note>
-These checks depend on the sync-data settings in **MainWP > Settings > Advanced Settings**. In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, MainWP does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
+These checks depend on the sync-data settings in **top-right user menu > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`). In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, MainWP does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
 </Note>
 
 ---
@@ -89,7 +99,7 @@ MainWP starts the abandoned-item check on the selected sites.
 
 <Steps>
 <Step title="Navigate to Abandoned Plugins">
-Go to **MainWP > Sites > Plugins > Abandoned Plugins**.
+Go to **Sites > Plugins > Abandoned Plugins** (`/wp-admin/admin.php?page=PluginsAbandoned`).
 </Step>
 <Step title="Run check">
 Click **Check for Abandoned Plugins** in the action bar. The action bar remains available even when the results table is empty. This checks all accessible sites without sync errors in the current scope, including sites that may not appear in the abandoned results table.
@@ -100,7 +110,7 @@ Click **Check for Abandoned Plugins** in the action bar. The action bar remains 
 
 <Steps>
 <Step title="Navigate to Abandoned Themes">
-Go to **MainWP > Sites > Themes > Abandoned Themes**.
+Go to **Sites > Themes > Abandoned Themes** (`/wp-admin/admin.php?page=ThemesAbandoned`).
 </Step>
 <Step title="Run check">
 Click **Check for Abandoned Themes** in the action bar. The action bar remains available even when the results table is empty. This checks all accessible sites without sync errors in the current scope, including sites that may not appear in the abandoned results table.
@@ -113,7 +123,7 @@ Click **Check for Abandoned Themes** in the action bar. The action bar remains a
 
 Change the number of days before an item is marked as abandoned:
 
-1. Go to **MainWP > Settings**
+1. Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`)
 2. Open **General Settings** and find **Updates Settings**
 3. Adjust **Abandoned plugins/themes tolerance** (default: 365 days)
 4. Click **Save Settings**

@@ -156,12 +156,10 @@ Synchronize your child sites before running updates to ensure all available upda
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Update all">
-Click **Update All Sites (Update All Themes)**.
-
-![MainWP Themes Updates page with Update All Sites button highlighted](/images/dashboard/0716a8eee9b2.png)
+Click **Update All Themes**.
 </Step>
 <Step title="Confirm">
 Confirm the update when prompted.
@@ -172,7 +170,7 @@ Confirm the update when prompted.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Item**.
@@ -191,7 +189,7 @@ Click **Update All** in the theme row.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Site**.
@@ -210,7 +208,7 @@ Click **Update All** in the site row.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
 Set **Show updates per** to **Site**.
@@ -231,7 +229,7 @@ Use the **History** action to review theme change activity by site and by day.
 
 <Steps>
 <Step title="Open a theme row with History">
-Open theme rows in **MainWP > Themes > Manage Themes**, **MainWP > Updates > Themes Updates**, or theme rows on an individual site Operations page.
+Open theme rows in **Sites > Themes > Manage Themes** (`/wp-admin/admin.php?page=ThemesManage`), **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`), or theme rows on an individual site Operations page.
 </Step>
 <Step title="Open the history modal">
 Click **History** in the theme row.
@@ -300,12 +298,10 @@ Ignoring a theme update removes it from the available updates list and the Updat
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
-
-![Themes Updates page with View updates per Plugin/Theme dropdown and Ignore Globally button](/images/dashboard/sites-themes-99c5c8.png)
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 </Step>
 <Step title="Select view">
-Set **View updates per** to **Plugin/Theme**.
+Select **Show updates per Item**.
 </Step>
 <Step title="Ignore">
 Locate the theme and click **Ignore Globally** in its row.
@@ -316,10 +312,10 @@ Locate the theme and click **Ignore Globally** in its row.
 
 <Steps>
 <Step title="Navigate to Ignored Updates">
-Go to **MainWP > Sites > Themes > Ignored Updates**.
+Go to **Sites > Themes > Ignored Updates** (`/wp-admin/admin.php?page=ThemesIgnore`).
 </Step>
-<Step title="Allow updates">
-In the **Globally Ignored Themes** table, locate the theme and click **Allow**.
+<Step title="Un-ignore the theme">
+In the **Globally Ignored Themes** table, locate the theme and click **Unignore**.
 </Step>
 </Steps>
 
@@ -327,12 +323,12 @@ In the **Globally Ignored Themes** table, locate the theme and click **Allow**.
 
 <Steps>
 <Step title="Navigate to Theme Updates">
-Go to **MainWP > Sites > Updates > Themes Updates**.
+Go to **Sites > Updates > Themes** (`/wp-admin/admin.php?page=UpdatesManage&tab=themes-updates`).
 
 ![Themes Updates page showing per-site view with Ignore button for individual themes](/images/dashboard/sites-themes-7ec980.png)
 </Step>
 <Step title="Select view">
-Set **View updates per** to **Site**.
+Select **Show updates per Site**.
 </Step>
 <Step title="Locate site">
 Find the child site and expand its row.
@@ -346,12 +342,32 @@ Find the theme and click **Ignore**.
 
 <Steps>
 <Step title="Navigate to Ignored Updates">
-Go to **MainWP > Sites > Themes > Ignored Updates**.
+Go to **Sites > Themes > Ignored Updates** (`/wp-admin/admin.php?page=ThemesIgnore`).
 </Step>
-<Step title="Allow updates">
-In the **Per Site Ignored Themes** table, locate the theme and click **Allow**.
+<Step title="Un-ignore the theme">
+In the **Per Site Ignored Themes** table, locate the theme and click **Unignore**.
 </Step>
 </Steps>
+
+---
+
+## Configure Automatic Theme Updates
+
+MainWP advanced automatic updates are independent from WordPress native auto-updates. Enable the feature and mark the themes you want MainWP Dashboard to update automatically.
+
+<Steps>
+<Step title="Enable theme advanced automatic updates">
+Open **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). In **Updates Settings**, set **Theme advanced automatic updates** to **Install Trusted Updates**, then click **Save Settings**.
+</Step>
+<Step title="Load themes on the trust page">
+Go to **Sites > Themes > Advanced Auto Updates** (`/wp-admin/admin.php?page=ThemesAutoUpdate`). Use **Theme Status to Search**, the trust-status dropdown under **Search Options**, and the **Theme name** field to filter themes. Click **Show Themes**.
+</Step>
+<Step title="Mark themes as trusted">
+Select the themes, choose **Mark as Trusted** from **Bulk Actions**, and click **Apply**. Use **Mark as Untrusted** on this same page when you want a theme to require manual updates again.
+</Step>
+</Steps>
+
+Configure **Frequency of automatic updates**, **Select time**, and **Advanced automatic updates delay** under **Updates Settings**. See [Update Frequency Settings](/sites/updates/how-to-change-daily-update-and-sync-frequency) for scheduling details. Ignored themes are excluded from automatic updates.
 
 ---
 
@@ -363,10 +379,10 @@ MainWP identifies themes that may be abandoned based on how long since their las
 
 <Steps>
 <Step title="Navigate to Settings">
-Go to **MainWP > Settings**.
+Go to **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`).
 </Step>
 <Step title="Find Update Settings">
-Locate the **Update Settings** section.
+Locate the **Updates Settings** section.
 </Step>
 <Step title="Set tolerance">
 Find **Abandoned plugins/themes tolerance** and enter the number of days.
@@ -389,6 +405,7 @@ Themes without updates for the specified period appear in the Abandoned Themes s
 - [ ] Theme updates complete without errors
 - [ ] Ignored themes no longer appear in update lists
 - [ ] Deleted themes are removed from child sites
+- [ ] Automatic theme updates are enabled and the intended themes are trusted
 
 ---
 

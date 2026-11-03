@@ -165,6 +165,10 @@
     {
       "source": "/api-reference/abilities-api/mcp-server",
       "destination": "/mcp-server/overview"
+    },
+    {
+      "source": "/sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard",
+      "destination": "/sites/backups/manage-backups"
     }
   ],
   "navigation": {
@@ -199,6 +203,8 @@
             "pages": [
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
               "dashboard/overview/mainwp-command-palette",
+              "dashboard/overview/mainwp-ai",
+              "dashboard/overview/mainwp-knowledge",
               "dashboard/overview/mainwp-database-health-check",
               "dashboard/overview/manage-extensions",
               "dashboard/overview/choose-list-or-grid-view-for-manage-sites-table",
@@ -220,14 +226,15 @@
               "sites/management/uptime-monitoring",
               "sites/management/mainwp-dashboard-settings",
               "sites/how-can-i-export-child-sites",
-              "sites/network-activity",
-              {
-                "group": "Backups",
-                "pages": [
-                  "sites/backups/manage-backups",
-                  "sites/backups/why-doesnt-mainwp-include-backups-in-the-dashboard"
-                ]
-              }
+              "sites/network-activity"
+            ]
+          },
+          {
+            "group": "Backups",
+            "icon": "hard-drive",
+            "pages": [
+              "sites/backups/manage-backups",
+              "sites/backups/api-backups"
             ]
           },
           {
@@ -291,6 +298,7 @@
             "pages": [
               "mcp-server/overview",
               "mcp-server/quickstart",
+              "mcp-server/claude-desktop-bundle",
               "mcp-server/clients",
               "mcp-server/claude-code-plugin",
               "mcp-server/safety",
@@ -345,10 +353,41 @@
                   "api-reference/abilities-api/overview",
                   "api-reference/abilities-api/sites",
                   "api-reference/abilities-api/updates",
+                  "api-reference/abilities-api/backups",
                   "api-reference/abilities-api/clients",
                   "api-reference/abilities-api/tags",
                   "api-reference/abilities-api/batch-operations",
                   "api-reference/abilities-api/termageddon"
+                ]
+              },
+              {
+                "group": "Add-on Abilities",
+                "pages": [
+                  "api-reference/abilities-api/advanced-uptime-monitor",
+                  "api-reference/abilities-api/article-uploader",
+                  "api-reference/abilities-api/cache-control",
+                  "api-reference/abilities-api/clone",
+                  "api-reference/abilities-api/cost-tracker-assistant",
+                  "api-reference/abilities-api/custom-dashboard",
+                  "api-reference/abilities-api/dashboard-lock",
+                  "api-reference/abilities-api/database-updater",
+                  "api-reference/abilities-api/fathom",
+                  "api-reference/abilities-api/favorites",
+                  "api-reference/abilities-api/file-uploader",
+                  "api-reference/abilities-api/google-search-console",
+                  "api-reference/abilities-api/jetpack-protect",
+                  "api-reference/abilities-api/lighthouse",
+                  "api-reference/abilities-api/maintenance",
+                  "api-reference/abilities-api/matomo",
+                  "api-reference/abilities-api/patchstack",
+                  "api-reference/abilities-api/ssl-monitor",
+                  "api-reference/abilities-api/staging",
+                  "api-reference/abilities-api/time-tracker",
+                  "api-reference/abilities-api/url-extractor",
+                  "api-reference/abilities-api/virusdie",
+                  "api-reference/abilities-api/woocommerce-shortcuts",
+                  "api-reference/abilities-api/wordpress-seo",
+                  "api-reference/abilities-api/wp-rocket"
                 ]
               },
               "api-reference/mainwp-control"
@@ -413,7 +452,9 @@
                 "pages": [
                   "dashboard/overview/how-can-i-initiate-the-quick-setup-wizard",
                   "troubleshooting/how-to-enable-error-logging",
+                  "troubleshooting/resolve-max-join-size-errors",
                   "troubleshooting/which-mainwp-database-tables-can-get-large",
+                  "troubleshooting/slow-updates-pages-large-networks",
                   "troubleshooting/resolve-system-requirement-issues",
                   "troubleshooting/does-mainwp-child-plugin-affect-my-child-site-loading-time",
                   "troubleshooting/why-was-the-htaccess-file-removed-from-mainwp-child",
@@ -449,7 +490,8 @@
                   "customization/add-a-custom-tab-to-the-add-site-screen",
                   "customization/how-to-add-wp-admin-button-to-the-main-navigation-bar",
                   "customization/how-to-change-the-default-page-after-logging-into-wordpress",
-                  "customization/how-to-create-a-new-column-in-the-manage-sites-table"
+                  "customization/how-to-create-a-new-column-in-the-manage-sites-table",
+                  "customization/retrieve-site-access-query-conditions"
                 ]
               },
               {
@@ -471,6 +513,7 @@
                 "group": "Technical Settings",
                 "pages": [
                   "customization/disable-wp-cron",
+                  "customization/cron-key-for-http-cron-calls",
                   "customization/manage-wp-cron-on-low-traffic-mainwp-dashboard",
                   "customization/required-fs_method",
                   "customization/how-to-remove-unwanted-hardening-checks",
@@ -548,7 +591,7 @@
                 ]
               },
               {
-                "group": "Beta & Early Access",
+                "group": "Early Access",
                 "pages": [
                   "advanced/miscellaneous/early-access-updater",
                   "advanced/miscellaneous/mainwp-telemetry-early-access"

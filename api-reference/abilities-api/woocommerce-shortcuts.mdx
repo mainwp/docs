@@ -1,0 +1,141 @@
+---
+title: WooCommerce Shortcuts Abilities
+sidebarTitle: "WooCommerce Shortcuts Abilities"
+description: >-
+  Read the cached WooCommerce detection state and synchronization freshness for one authorized MainWP site.
+---
+
+WooCommerce Shortcuts 5.1 registers one read-only ability in the `mainwp-woocommerce-shortcuts` category. It uses the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- Read one site's cached WooCommerce detection state
+- Distinguish inactive WooCommerce from unavailable data
+- Interpret freshness and synchronization timestamps
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` example below
+- WooCommerce Shortcuts 5.1 or later, active in MainWP Dashboard
+- An authenticated user with `manage_options`
+- Access to the WooCommerce Shortcuts Add-on, the selected site, and the **Jump to WP Admin** operation
+
+Team Control restrictions apply. The ability checks the same extension and Child site WordPress admin operation permissions used by the shortcut widget, as well as the user's allowed sites and permission for the exact selected site. Read-only access does not bypass those checks.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Ability
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-woocommerce-shortcuts-status-v1` | GET | Read cached WooCommerce state and synchronization freshness for one site |
+
+Discover the ability and its full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-woocommerce-shortcuts'
+```
+
+The ability is marked `readonly: true`, `destructive: false`, and `idempotent: true`.
+
+## Read Cached WooCommerce Status
+
+**Ability:** `mainwp/get-woocommerce-shortcuts-status-v1`<br />
+**Method:** GET
+
+The only input is the required `site_id`, identifying the MainWP site. Supply a positive JSON integer such as `1`. Canonical decimal strings such as `"1"` are also normalized to a site ID. Domains, URLs, zero, negative values, leading-zero strings, decimal or exponent strings, booleans, and extra properties are not accepted.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-woocommerce-shortcuts-status-v1/run'
+```
+
+**Example response for an active cached installation:**
+
+```json
+{
+  "site_id": 1,
+  "state": "active",
+  "observed_at": 1791889200,
+  "synced_at": 1791889200,
+  "freshness": "fresh"
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `site_id` | Authorized MainWP site ID |
+| `state` | `active`, `inactive`, or `unknown` |
+| `observed_at` | Unix timestamp of the cached detection observation, or `null` when unavailable |
+| `synced_at` | Unix timestamp of the cached MainWP site synchronization, or `null` when unavailable |
+| `freshness` | `fresh`, `missing`, `stale`, `sync_error`, or `invalid` |
+
+The response contains only these five fields. It does not expose the Child URL, plugin inventory, shortcut links, or authentication nonces.
+
+## Interpret the State
+
+| State | Meaning |
+|-------|---------|
+| `active` | Validated cached inventory lists WooCommerce as active |
+| `inactive` | Validated cached inventory lists WooCommerce as inactive or does not list it |
+| `unknown` | Cached data is missing, stale, failed, invalid, or inconsistent; installation status cannot be established |
+
+`inactive` does not distinguish a deactivated plugin from an absent plugin. `unknown` does not mean WooCommerce is uninstalled. The widget shows **WooCommerce not detected** for `inactive` and **WooCommerce status unavailable** for `unknown`.
+
+## Interpret Freshness
+
+| Freshness | Meaning | Next step |
+|-----------|---------|-----------|
+| `fresh` | Cached detection passes the current synchronization and inventory checks | Use the result as cached status |
+| `missing` | No detection record exists and the stored site inventory cannot provide a trustworthy fallback | Sync the site with plugin inventory enabled and resolve any sync errors |
+| `stale` | Site synchronization is older than 24 hours, or the observation and sync timestamps differ by more than five minutes | Sync the site again |
+| `sync_error` | The site's current cached synchronization reports an error | Resolve the connection or sync error and sync again |
+| `invalid` | Stored records, timestamps, or inventory are malformed or inconsistent | Refresh the inventory through a successful site sync |
+
+The `missing` fallback can also cover a stale or failed synchronization before the first detection record exists. Do not assume `missing` proves the site has never been synced.
+
+**Example response when no trustworthy observation is available:**
+
+```json
+{
+  "site_id": 1,
+  "state": "unknown",
+  "observed_at": null,
+  "synced_at": null,
+  "freshness": "missing"
+}
+```
+
+## Cached Data After Upgrades and Selective Sync
+
+Before the first sync after upgrading to 5.1, the ability can derive status from the existing stored plugin inventory. When that fallback passes validation, both `observed_at` and `synced_at` use the cached site's sync timestamp. Reading the fallback does not create a detection record.
+
+When the **Installed plugins** sync item is disabled, subsequent syncs can retain detection from the stored inventory. A `fresh` result describes validation against the cached inventory and site sync time; it does not establish that the plugin inventory was fetched again during that sync.
+
+To verify a later WooCommerce installation or activation change, enable **Installed plugins** under **Select data to sync** in [MainWP Dashboard settings](/sites/management/mainwp-dashboard-settings), sync the site, then read the status again.
+
+<Note>
+This ability reads MainWP Dashboard's cached data. It does not contact the Child site, schedule or perform a sync, write settings, open WordPress admin, or manage WooCommerce orders and products. An active result does not prove that a live storefront or admin screen is reachable.
+</Note>
+
+## Handle Errors
+
+Unavailable cached status is returned as a successful response with `state: unknown`. Authentication, authorization, input, site resolution, and missing runtime errors are separate request failures.
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_woocommerce_shortcuts_invalid_input` | 400 | Supply only a positive integer `site_id` |
+| `mainwp_woocommerce_shortcuts_access_denied` | 403 | Check extension, site, allowed-site, and Child site WordPress admin permissions |
+| `mainwp_woocommerce_shortcuts_site_not_found` | 404 | Verify the requested site exists and resolves to that exact ID |
+| `mainwp_woocommerce_shortcuts_runtime_unavailable` | 503 | Check the active Add-on and MainWP Dashboard Abilities runtime |
+
+WordPress can reject invalid input against the public schema before the Add-on callback runs. MainWP Dashboard also supplies its authentication and general permission errors, including HTTP 401 for unauthenticated requests and HTTP 403 for insufficient Dashboard permissions.
+
+## Related Resources
+
+- [WooCommerce Shortcuts](/add-ons/administrative/woocommerce-shortcuts-extension) - Widget, destinations, permissions, and synchronization behavior
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [MainWP Dashboard Settings](/sites/management/mainwp-dashboard-settings) - Select the data included in synchronization
