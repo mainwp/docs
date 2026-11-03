@@ -21,11 +21,11 @@ Use them to check which supported plugins on a child site have a pending databas
 - WordPress 6.9 or later on the MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - Database Updater 5.2.0 or later, active on MainWP Dashboard
-- An authenticated WordPress user with `manage_options`, access to the Database Updater extension, the `update_plugins` Dashboard right, and access to the target site
+- An authenticated user permitted by the Dashboard Abilities API, with access to the Database Updater extension, the `update_plugins` Dashboard right, and access to the target site
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
-Team Control permissions also apply. Every call checks access to the extension, the `update_plugins` right, and access to the requested site.
+Team Control permissions also apply. Every call checks access to the extension, the `update_plugins` right, and access to the requested site. Application Password and session authentication require `manage_options`. A permitted MainWP REST API key with explicit Team Control site grants can use the scoped-key path without that broad capability.
 
 ## Available Abilities
 
@@ -66,7 +66,7 @@ Call `get-site-database-update-observations-v1` and keep `observation_revision`.
 Call `preview-site-database-update-dispatch-v1` with the plugins to update and the observation revision. Keep `plan_revision`.
 </Step>
 <Step title="Confirm your backup decision">
-Back up the site, or decide to proceed without a backup. The extension does not verify backups.
+Create and verify a fresh backup before continuing. The extension does not verify backups.
 </Step>
 <Step title="Dispatch">
 Call `dispatch-site-database-updates-v1` with `dry_run: false` and `confirm: true`.
@@ -250,12 +250,12 @@ Each entry in `items` has an `outcome` of `would_dispatch`, `accepted`, `not_acc
 
 MainWP Dashboard records one dispatch receipt for each site, plugin, and target database version. The receipt is shared by Abilities API calls and by **Update** buttons in the Dashboard.
 
-- If an earlier request for the same target was accepted or not accepted, a repeat returns that recorded result. MainWP Child is not contacted again.
+- While its receipt is retained, if an earlier request for the same target was accepted or not accepted, a repeat returns that recorded result. MainWP Child is not contacted again.
 - If an earlier request is still in progress or its result is unknown, a repeat returns `status: "outcome_unknown"`. MainWP does not resend the update, because the site may already have applied or queued it.
 - `request_ref` is for correlation only. A new `request_ref` does not allow a resend.
 - When a plugin reports a newer target database version, you can dispatch it independently.
 
-Receipts do not expire. After an `outcome_unknown` result, sync the site and check the plugin on the child site before taking further action.
+A daily scheduled task removes settled receipts after 30 days. Unconfirmed receipts do not expire automatically. After an `outcome_unknown` result, sync the site and check the plugin on the Child site before taking further action. If it is safe to retry, use [Clear Stuck Request](/add-ons/updates/mainwp-database-updater-extension#clear-a-stuck-update-request) before sending another dispatch. Changing `request_ref` alone does not clear the receipt.
 
 ---
 

@@ -38,6 +38,7 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 - The matching MainWP Child 6.4 release or later, running PHP 7.4 or higher
 - A connected Child Site that syncs successfully
 - An administrator account to enable and configure backup settings
+- A private backup directory on the Dashboard server, writable by its PHP process and outside publicly served folders. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory).
 - Enough free disk space on the Child Site and Dashboard for backup and restore files
 - Working WordPress cron on the Dashboard for schedules and background tasks
 - Storage credentials if you want copies outside the Dashboard
@@ -92,6 +93,26 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 **Back Up Now** uses the destinations selected on the site's scheduled tasks. If those tasks have no destinations, the backup stays on the Dashboard. The default destination applies only to sites without a scheduled task.
 </Note>
 
+## Set Up the Private Backup Directory
+
+MainWP Dashboard needs a private directory on its own server to store downloaded backups and working files, even when you use remote storage. This is separate from the temporary backup files MainWP Child creates on each Child Site.
+
+MainWP attempts to create the directory automatically. If you see **Private backup directory is unavailable**, configure a writable private location on the **Dashboard server**:
+
+1. Create a directory outside the Dashboard's WordPress and `wp-content` directories, in a location that no website serves over the web. Make it writable by the PHP process running your Dashboard.
+2. Back up your Dashboard's `wp-config.php`, then add or update `MAINWP_BACKUP_PRIVATE_DIR` before the line that loads `wp-settings.php`:
+
+   ```php
+   define( 'MAINWP_BACKUP_PRIVATE_DIR', '/absolute/path/to/private/mainwp-backups' );
+   ```
+
+   Replace the example path with the directory's actual absolute path on your Dashboard server. Add this setting to the Dashboard's `wp-config.php`, not a Child Site's file.
+3. Retry the backup and confirm that it completes and appears under **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`).
+
+A folder outside one WordPress installation may still be publicly served by another website. This matters when the Dashboard is in a subdirectory, on an addon domain, or inside another site's folder. Choose a location outside every website's public folders.
+
+If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
+
 ## Configure Storage
 
 Completed backups are stored in the Dashboard's private backup directory, organized by Child Site. Storage destinations receive copies uploaded by the Dashboard. A **Local Path** destination also refers to a path on the Dashboard server. Keep enough free space on both the Dashboard and Child Site to create and process backups, even when using [Remove local archives after upload](#retention-and-cleanup).
@@ -124,7 +145,7 @@ Choose **Use as default destination** or **Make Default** to preselect a destina
 
 | Provider | Details to enter |
 | --- | --- |
-| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable Path style addressing when your service requires it. |
+| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable [Path style addressing](#s3-bucket-names-with-dots) when your service requires it. |
 | Google Cloud Storage | Bucket, HMAC access key, and HMAC secret from your storage interoperability settings. |
 | Dropbox | App key, App secret, and an optional Folder. Register the exact Redirect URI shown in MainWP in your Dropbox app, then use Connect Dropbox. The app needs `files.content.write`, `files.content.read`, and `files.metadata.read` permissions. |
 | SFTP | Host, Port, Username, and an existing absolute Directory path. Use a Password or a PEM Private key. When a private key is supplied, Password is its passphrase. |
@@ -136,6 +157,27 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 
 Set **Minimum retention (days)** on a destination to protect its copies from automatic cleanup for a minimum period. The default is zero, which disables this protection. See [Minimum Retention at a Destination](#minimum-retention-at-a-destination).
 
+### S3 Bucket Names with Dots
+
+By default, MainWP places the bucket name before the storage endpoint in the request hostname. If the bucket name contains a dot, such as `example.com`, HTTPS requests can fail with an SSL certificate hostname mismatch.
+
+For Amazon S3 or Wasabi buckets containing dots, enable **Path style addressing**. This places the bucket name in the URL path instead. Other S3-compatible services may have different addressing requirements; follow your provider's guidance.
+
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`), configure the destination, enable **Path style addressing**, then click **Test Connection & Save**.
+
+For example, use these settings for a Wasabi bucket in `eu-central-1`:
+
+| Field | Example |
+| --- | --- |
+| Endpoint | `https://s3.eu-central-1.wasabisys.com` |
+| Region | `eu-central-1` |
+| Bucket | `example.com` |
+| Path style addressing | Enabled |
+
+The **Endpoint** must match the bucket's region. Enter the bucket name in the separate **Bucket** field; do not include it in the endpoint. Check [Wasabi's regional service URLs](https://docs.wasabi.com/docs/service-urls-for-wasabis-storage-regions) for your bucket's region.
+
+For background, see [Amazon S3's dotted-bucket certificate limitation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) and [Wasabi's path-style recommendation](https://docs.wasabi.com/apidocs/rest-api-introduction).
+
 ### Share a Bucket Between Sites
 
 You can use one private Amazon S3 or Backblaze B2 bucket for multiple Child Sites connected to the same MainWP Dashboard. For B2, select **S3 Compatible Storage** and enter the bucket's S3-compatible endpoint.
@@ -145,6 +187,22 @@ MainWP stores each site's snapshots under separate paths in the bucket. The Dash
 For eligible restores of unencrypted backups, the Dashboard can send the Child Site temporary download links for the required backup files. These links expire after one hour and grant access only to the specified files. Encrypted backups are downloaded and decrypted on the Dashboard before being transferred to the Child Site.
 
 Keep the bucket private and do not share its credentials with Child Sites. Separate paths organize the backups but do not create independent storage permissions. Anyone with bucket-wide access can access the backups, and anyone with a temporary download link can use it while it remains valid.
+
+### Understand the Cloud Backup Layout
+
+MainWP organizes cloud copies by Child Site ID and snapshot ID, rather than the site's name. For example, `12/34/` contains snapshot 34 for Child Site 12.
+
+Inside a snapshot folder, you may see:
+
+| Item | Purpose |
+| --- | --- |
+| `chunks/` | Backup data split into hashed `.bin` files. The default chunk size is 4 MiB, approximately 4.2 MB. |
+| `files/` | Small backup files uploaded whole instead of split into chunks. |
+| `manifest.json` | Archive names, site and snapshot details, and the information needed to reconstruct the backup from its chunks. |
+
+Splitting larger archives into chunks lets interrupted uploads resume. A large backup can produce many chunk files; seeing `.bin` files instead of a ZIP or Tar GZip archive is expected. The **Backup file name** tokens do not change these numbered cloud folders or hashed chunk names.
+
+Use [Snapshots & Restore](#restore-a-backup) to find backups by site and date and restore a completed remote copy. For a downloadable archive, see [Download a Backup](#download-a-backup).
 
 ### Encrypt Backup Archives
 
@@ -380,6 +438,8 @@ MainWP can use an available local or completed remote copy. For incremental back
 A full or incremental restore replaces files and database content. A database restore changes the database only; a files-only restore leaves the database in place.
 
 Changes made after the snapshot may be lost. Review any warnings before proceeding.
+
+See [How Files and Database Tables Are Restored](#how-files-and-database-tables-are-restored) for cleanup rules and exceptions.
 </Step>
 
 <Step title="Keep the safety backup enabled">
@@ -394,6 +454,28 @@ Confirm **I understand this replaces the current site content**, then click **St
 Wait for **Restore completed**, then click **Visit site**. Check key pages, sign-in, and other site functions. Review any warnings and the **Recent restores** list.
 </Step>
 </Steps>
+
+### How Files and Database Tables Are Restored
+
+MainWP restores the snapshot in place. It does not delete the entire site and database before restoring.
+
+**Files:** MainWP restores the backed-up files, then compares the site against a file inventory saved automatically with the backup. It removes files that are absent from that inventory within the backup's scope, with these exceptions:
+
+- `wp-config.php` and `wp-content/object-cache.php`
+- MainWP Child and MainWP's data and backup directories
+- Existing `mu-plugins` files that are absent from the backup
+- Paths excluded from the backup, symbolic links, and certain files required by the site's configuration
+- Files that could not be archived during the backup
+
+Files-only restores also keep additional files in the uploads directory because the current database remains in use.
+
+If the backup's file inventory is unavailable or cannot be verified, MainWP skips the additional-file cleanup and displays a warning. Review restore warnings even when the restore completes.
+
+**Database tables:** MainWP replaces restored tables with the backup's version instead of merging their contents with current rows. Existing tables that are absent from the backup are not automatically deleted.
+
+<Warning>
+A built-in restore is not a complete site wipe or a guaranteed malware cleanup. Malicious files or database tables can remain in preserved or excluded areas.
+</Warning>
 
 ### Cancel or Roll Back a Restore
 
@@ -434,8 +516,10 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | Symptom | What to check |
 | --- | --- |
 | Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
+| `Private backup directory` is unavailable or could not be created | Configure a writable private directory on the Dashboard server. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
+| S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
