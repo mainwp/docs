@@ -1,0 +1,117 @@
+---
+title: Built-In Backup Abilities
+sidebarTitle: Backup Abilities
+description: >-
+  Discover 32 backup abilities in MainWP Dashboard 6.4. Read status, preview changes, manage tasks and storage, and monitor backups and restores.
+---
+
+MainWP Dashboard 6.4 registers 32 abilities in the `mainwp-backups` category. Use them to manage [MainWP Built-In Backups](/sites/backups/manage-backups) through the WordPress Abilities API or the [MainWP MCP Server](/mcp-server/overview).
+
+## Prerequisites
+
+- MainWP Dashboard 6.4 or later and the matching MainWP Child release
+- WordPress 6.9 or later on the Dashboard
+- An authenticated Dashboard user with access to the requested sites and the required backup permissions
+- Built-in backups enabled for backup creation and restores
+
+Authenticate direct API requests with a [WordPress Application Password](/api-reference/rest-api/application-passwords). MainWP REST API keys do not authenticate Abilities API requests.
+
+## Discover the Available Schemas
+
+List the category to retrieve each ability's input schema, output schema, and execution instructions:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-backups&per_page=50'
+```
+
+Fetch one ability's definition before calling it:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-site-backup-v1'
+```
+
+Use the returned schema for the installed Dashboard version. Inputs reject unknown fields. Storage credentials, encryption keys, and recovery passphrases are not exposed by these abilities.
+
+## Read Backup Status
+
+Read abilities use `GET`. Pass input as a JSON-encoded `input` query parameter when needed:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-backup-progress-v1/run'
+```
+
+| Ability | Purpose |
+| --- | --- |
+| `mainwp/get-backup-status-v1` | Read backup status across accessible sites |
+| `mainwp/list-backup-history-v1` | List backup history |
+| `mainwp/list-backup-destinations-v1` | List configured storage destinations |
+| `mainwp/get-backup-destination-v1` | Read one destination without its credentials |
+| `mainwp/get-backup-settings-v1` | Read backup settings without recovery secrets |
+| `mainwp/list-backup-tasks-v1` | List scheduled backup tasks |
+| `mainwp/get-backup-task-v1` | Read a task's configuration |
+| `mainwp/get-backup-task-run-v1` | Poll a scheduled task run |
+| `mainwp/get-site-backup-progress-v1` | Poll a site's backup progress |
+| `mainwp/list-backup-snapshots-v1` | List stored snapshots |
+| `mainwp/get-backup-snapshot-v1` | Read one snapshot's details |
+| `mainwp/list-restore-jobs-v1` | List restore jobs |
+| `mainwp/get-restore-job-v1` | Poll a restore job and inspect its outcome |
+
+## Preview and Confirm Changes
+
+Write abilities use `POST` and require either `dry_run: true` to preview or `confirm: true` to execute. Preview the action, review its affected sites, destinations, retention deletions, and warnings, then confirm the same selection. Do not set both flags to true.
+
+For example, preview an on-demand full backup:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-site-backup-v1/run'
+```
+
+After reviewing the preview, execute it:
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-site-backup-v1/run'
+```
+
+The backup continues in the background. Follow the returned polling instructions until it completes or fails. A start response does not mean the backup has finished. If the result is `not_started`, no work was queued; retry later. An `already_running` result attaches to an existing run, so poll it rather than starting another.
+
+| Ability | Purpose |
+| --- | --- |
+| `mainwp/run-site-backup-v1` | Start an on-demand full backup of one site |
+| `mainwp/run-backup-task-v1` | Run a scheduled task now |
+| `mainwp/cancel-site-backup-v1` | Request cancellation of a site's backup |
+| `mainwp/reset-backup-task-run-v1` | Reset an open task run |
+| `mainwp/cleanup-site-backups-v1` | Clean up a site's backups |
+| `mainwp/delete-backup-snapshot-v1` | Delete a snapshot |
+| `mainwp/create-backup-task-v1` | Create a scheduled backup task |
+| `mainwp/update-backup-task-v1` | Update a task |
+| `mainwp/delete-backup-task-v1` | Delete a task, with an option to keep its snapshots |
+| `mainwp/pause-backup-task-v1` | Pause a task and stop advancing its open run |
+| `mainwp/resume-backup-task-v1` | Resume a paused task |
+| `mainwp/restore-site-snapshot-v1` | Restore a snapshot to its site |
+| `mainwp/cancel-restore-v1` | Request cancellation or stop post-restore connection checks |
+| `mainwp/rollback-restore-v1` | Restore the safety backup from an earlier restore job |
+| `mainwp/test-backup-destination-v1` | Test a stored destination's connection |
+| `mainwp/set-default-backup-destination-v1` | Choose the default destination |
+| `mainwp/update-backup-destination-v1` | Change a destination's name, default flag, or minimum retention |
+| `mainwp/delete-backup-destination-v1` | Remove a destination from the Dashboard; stored objects remain |
+| `mainwp/update-backup-settings-v1` | Change supported backup settings |
+
+Edit destination credentials, hosts, buckets, and paths in **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`). Configure encryption and the recovery passphrase in [Backup Settings](/sites/backups/manage-backups#encrypt-backup-archives).
+
+## Permissions and Restore Results
+
+Abilities enforce the user's site access, task ownership, and operation permissions. Storage changes require an account with access to all sites. Reading or changing global backup settings requires the corresponding Dashboard settings permissions.
+
+Before confirming a restore, review the preview's replacement and WooCommerce warnings. After starting it, poll `mainwp/get-restore-job-v1` and inspect `outcome`, `partial_state_risk`, and `verification`. A cancellation request may still be pending; keep polling until the site confirms it stopped. Rollback requires an available safety backup from the original restore.
+
+For restore precautions and recovery options, see [Restore a Snapshot](/sites/backups/manage-backups#restore-a-backup).
