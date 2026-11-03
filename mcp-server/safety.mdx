@@ -10,7 +10,7 @@ The MCP server assumes the AI will sometimes get things wrong. The guardrails ar
 
 The AI operates with the permissions of the WordPress user whose Application Password you configured, and only through the tools the server exposes.
 
-With default configuration it **can**: read site, plugin, theme, update, client, and tag data; run updates, which on Dashboard 6.3 and later need your confirmation; activate and deactivate plugins and themes; sync and reconnect sites; and delete sites, clients, tags, plugins, or themes, but only after you confirm.
+With default configuration it **can**: read site, plugin, theme, update, client, and tag data; run updates, which on Dashboard 6.3 and later need your confirmation; activate and deactivate plugins and switch themes, with confirmation on Dashboard 6.4.1 and later; sync and reconnect sites; and delete sites, clients, tags, plugins, or themes, but only after you confirm.
 
 It **cannot**: log into WordPress admin, bypass WordPress permissions, run arbitrary code on your sites, or touch anything MainWP itself does not expose.
 
@@ -65,7 +65,7 @@ If you want destructive operations off the table completely, enable safe mode:
 Destructive calls then fail with `SAFE_MODE_BLOCKED` without ever reaching your Dashboard. We recommend running your first sessions in safe mode: you can verify the connection and learn how the AI behaves while the dangerous tool classes stay blocked.
 
 <Warning>
-Safe mode is not read-only. Plugin and theme activation and site syncing still work. On Dashboards before 6.3, updates do too, and a bad update can break a site. For genuinely read-only access, expose only read tools with `allowedTools`. The [Restrict Available Tools](/mcp-server/guides/restrict-tools) guide has a ready-made read-only configuration.
+Safe mode still allows site syncing. On Dashboards before 6.4.1, plugin activation, plugin deactivation, and theme activation also work. On Dashboards before 6.3, updates do too, and a bad update can break a site. For genuinely read-only access, expose only read tools with `allowedTools`. The [Restrict Available Tools](/mcp-server/guides/restrict-tools) guide has a ready-made read-only configuration.
 </Warning>
 
 | | Safe mode | Confirmation flow |
@@ -74,6 +74,7 @@ Safe mode is not read-only. Plugin and theme activation and site syncing still w
 | Good for | Testing, demos, training, first-time setup | Day-to-day production use |
 | Deletions | Blocked | Allowed after preview and confirmation |
 | Updates (Dashboard 6.3 and later) | Blocked | Allowed after preview and confirmation |
+| Plugin activation and deactivation, and theme activation (Dashboard 6.4.1 and later) | Blocked | Allowed after preview and confirmation |
 | You experience | AI says "I can't do that" | AI shows a preview and asks |
 | Default | Off | On |
 

@@ -40,6 +40,10 @@ The per-tool reference (parameters, types, response shapes) lives with the Abili
 
 Remember the naming translation when reading those pages: `mainwp/get-site-v1` there is the tool `get_site_v1` here.
 
+## API Backups
+
+MainWP Dashboard 6.4.1 adds two read-only tools for API Backups. Use `list_api_backups_providers_v1` to see which providers have stored configuration and `list_api_backups_site_status_v1` to see saved backup request dates for sites your account can access. The tools read Dashboard data without contacting the providers. A saved request date does not confirm that a backup completed.
+
 ## Built-in resources
 
 Beyond tools, the server exposes MCP resources for inspection:
