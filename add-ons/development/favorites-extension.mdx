@@ -8,6 +8,7 @@ addonType: "extension"
 ## What You'll Learn
 
 - Adding plugins and themes to your favorites list by URL or direct ZIP upload
+- Adding WordPress.org plugins to favorites directly from the Install Plugins page
 - Organizing favorites into groups
 - Assigning and filtering favorites by group
 - Managing and editing saved favorites
@@ -15,7 +16,7 @@ addonType: "extension"
 
 ---
 
-<div id="addon-data" style={{ display:"none" }} data-title="Favorites" data-purchase-url="https://mainwp.com/extension/favorites/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.3.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-favorites-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{ display:"none" }} data-title="Favorites" data-purchase-url="https://mainwp.com/extension/favorites/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.4" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-favorites-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <Info>
   **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
@@ -70,6 +71,34 @@ If you use a URL, it must be publicly accessible. If you upload a ZIP file direc
 </Note>
 
 The process is the same for both plugins and themes.
+
+## Adding WordPress.org Plugins from the Install Plugins Page
+
+You can save a WordPress.org plugin to your favorites while you browse the plugin directory, without installing it on any child site.
+
+<Steps>
+  <Step title="Go to Dashboard > Plugins > Install Plugins.">
+    
+  </Step>
+  <Step title="Search for the plugin you want to save.">
+    
+  </Step>
+  <Step title="Click Add to Favorites on the plugin card.">
+    The button appears below **Plugin Details** and **Install Plugin**. You don't need to select any sites.
+  </Step>
+</Steps>
+
+While the extension downloads the plugin ZIP to read its details, the button shows a loading state. After the save succeeds, the button changes to **Favorited**. The plugin then appears in the **Plugins** section of the Favorites page.
+
+Plugin cards also show **Favorited** for plugins that are already in your favorites, including after a page reload and in later searches. The extension matches favorites by their WordPress.org slug. A favorite still matches if you renamed it or pinned an older version.
+
+If you click **Add to Favorites** for a plugin that is already a favorite, for example from a second browser tab, the extension doesn't create a duplicate.
+
+If the save fails, the button returns to **Add to Favorites** and the card shows the message "The plugin could not be added to Favorites. Please try again." followed by details from the server.
+
+<Note>
+  The **Add to Favorites** button is available only on WordPress.org plugin cards. Theme cards and the MainWP Child plugin card don't have this button. To remove a favorite, use the Favorites page. A plugin you add from a card appears in the **Install from Favorites** list after you reload the page.
+</Note>
 
 ## Managing Your Favorites List
 
