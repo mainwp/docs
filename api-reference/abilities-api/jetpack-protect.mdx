@@ -376,9 +376,9 @@ Queued work runs through WordPress scheduled tasks. If an operation stays `queue
 
 ## Privacy and Redaction
 
-Both abilities return an explicit set of fields. They never return raw stored scan data, Jetpack account details, credentials, source URLs, or server file paths.
+The two stored summary abilities return an explicit set of fields. They never return raw stored scan data, Jetpack account details, credentials, source URLs, or server file paths.
 
-Before returning a response, the add-on checks every text value:
+Before returning a stored summary response, the add-on checks every text value:
 
 - Query strings and fragments are removed from URL-like text.
 - Text containing a `Basic` or `Bearer` authentication marker is replaced with `[redacted]`. This also applies to site names and component names that contain these words followed by more text, such as `Basic Auth`.
@@ -390,7 +390,18 @@ This is a bounded masking policy, not a guarantee that any arbitrary string is s
 
 The site-level abilities retain only validated scan fields. Finding titles are limited to 160 characters and component names to 120. File and database findings have no component name. Text containing control characters or angle brackets is rejected.
 
-## Handle Errors
+## Error Handling
+
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). The two stored summary abilities return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 401 or 403 | The request is unauthenticated, or the user lacks `manage_options` or access to the Jetpack Protect add-on |
+| `mainwp_site_not_found` | 404 | The site ID does not exist or you cannot access it |
+| `mainwp_jetpack_protect_read_failed` | 500 | The Dashboard could not read stored Jetpack Protect results. The error does not include database details. |
+
+### Site-Level Errors
 
 | Error code | HTTP status | Next step |
 |------------|-------------|-----------|
@@ -414,3 +425,5 @@ The site-level abilities retain only validated scan fields. Finding titles are l
 
 - [Jetpack Protect Integration](/add-ons/security/jetpack-protect-extension) - Setup, vulnerabilities, and bulk actions
 - [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+
+- [Sites Abilities](/api-reference/abilities-api/sites) - Find site IDs
