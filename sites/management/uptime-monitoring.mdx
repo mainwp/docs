@@ -152,6 +152,20 @@ Go to **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/adm
 
 Uptime notifications are sent on important status changes, including when a site goes down and when it comes back online. Emails include the monitor URL, status code, and event timestamp.
 
+### Why Down Alerts Can Be Delayed
+
+A down alert can arrive later than the moment a site goes offline. Several factors affect the timing:
+
+- **Monitor Interval:** The configured interval affects when the next scheduled check is due. An outage is detected when a check runs.
+- **Down Confirmation Check:** When enabled, MainWP can show **PENDING** while it retries a failed check. A down alert is queued after downtime is confirmed.
+- **WP Cron:** By default, WP Cron depends on requests to the Dashboard site. On a low-traffic Dashboard, both checks and scheduled emails can run late unless an external trigger runs cron regularly.
+- **Batched checks:** Each scheduled run checks a limited number of monitors, controlled by **Maximum simultaneous uptime monitoring requests**. With many monitors due, checks and confirmation retries can take several runs.
+- **Email processing:** Confirmed status changes are queued for a separate scheduled notification process. The email may be sent after the Monitoring table shows **DOWN**.
+
+<Tip>
+For more consistent scheduling, keep **Use WP Cron** enabled and configure a server cron job to trigger WP Cron regularly. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) for setup instructions.
+</Tip>
+
 ### `[uptime.status]` Token Support
 
 You can use `[uptime.status]` in the email subject and heading, and in template content for individual-site uptime emails. In a combined administrator summary, the subject and heading use the first included event's status; a token in the template body is not replaced for each listed monitor.

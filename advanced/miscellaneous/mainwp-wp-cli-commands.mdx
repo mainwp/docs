@@ -156,13 +156,21 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
 
     **Add a new site:**
 
+    Use the administrator password when the Child Site requires Password Authentication:
+
     ```bash
-    wp mainwp site --add-site --site-url=http://site.com --name=sitename --admin=adminuser --uniqueid=xxxxx
+    wp mainwp site --add-site --site-url=https://site.com --name=sitename --admin=adminuser --adminpassword='YOUR_ADMIN_PASSWORD'
     ```
 
-    <Note>
-    The CLI add-site command supports `--uniqueid` but does not accept an administrator password flag. Use this command when the child site requires Unique Security ID. If the child site requires Password Authentication, add the site through MainWP Dashboard or REST API with `adminpassword`.
-    </Note>
+    MainWP Dashboard 6.4 and later accepts `--adminpassword=<password>`. The flag must include a value. Password connections require HTTPS with certificate verification by default. Resolve certificate errors on the Child Site before retrying.
+
+    If the Child Site requires a Unique Security ID, supply `--uniqueid`:
+
+    ```bash
+    wp mainwp site --add-site --site-url=https://site.com --name=sitename --admin=adminuser --uniqueid=YOUR_SECURITY_ID
+    ```
+
+    Supply both `--adminpassword` and `--uniqueid` when MainWP Child requires both methods. Avoid leaving connection credentials in shared scripts or shell history.
 
     **Sync, reconnect, disconnect, or remove:**
 
