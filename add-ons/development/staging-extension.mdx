@@ -232,6 +232,14 @@ To run updates on your child sites,
 
 After selecting **Staging sites**, updates will be performed only on staging sites. After you verify that everything is ok on the staging sites, you can run updates on your production sites.
 
+## Database Health Check
+
+The Staging Extension supplies its settings and staging sites tables, along with their expected column definitions, to MainWP Dashboard's database schema checks. The settings table stores general and per-site WP Staging settings. The staging sites table tracks the staging clones created for each Child Site. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section for missing tables, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair saved Staging settings, recreate staging sites, or check Child Site databases.
+
+---
+
 ## Abilities API
 
 The Abilities-enabled Staging release adds two read-only WordPress abilities. Use them to list Child Sites with stored staging clones and to read one site's clones, effective saved settings, and override status. These abilities read Dashboard data only. They do not contact Child Sites, create or delete staging sites, or save settings.
@@ -246,3 +254,4 @@ See [Staging Abilities](/api-reference/abilities-api/staging) for requirements, 
 - [Clone Extension](/add-ons/development/clone-extension) - Clone sites between servers
 - [Manage Updates](/sites/updates/manage-updates) - Understanding update management
 - [Staging Abilities](/api-reference/abilities-api/staging) - Read stored staging clones and settings
+- [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check MainWP database tables
