@@ -67,7 +67,29 @@ For changes and refresh requests, `if_match` is an input field containing the cu
 
 Mapping replacements, policy replacements, and catalog refreshes require exactly one of `dry_run` and `confirm` to be `true`. Start with `dry_run: true, confirm: false`, inspect the effects, then send the same request with `dry_run: false, confirm: true` to proceed. Keep the original `if_match` and `request_ref` for that preview-to-confirmation sequence. A site observation refresh has no preview or confirmation flags.
 
+If neither flag is true, the request returns 409 `mainwp_google_search_console_confirmation_required` and nothing changes. If both are true, it returns 400 `mainwp_google_search_console_invalid_input`.
+
 `request_ref` identifies one logical request. When retrying that exact request after a lost response, reuse its UUID and payload. If the target, revision, or requested settings change, use a new UUID. A stale revision requires reading the resource again and reviewing a new request; do not blindly retry with a newer revision.
+
+### True and False Inputs
+
+The boolean inputs are `dry_run`, `confirm`, `auto_refresh`, `include_daily`, and the `usable` filter. Send them as JSON `true` or `false`. From the release after 6.3, the Add-on reads each one strictly:
+
+| Value sent | Read as |
+|------------|---------|
+| `true`, `1`, `"1"`, `"true"` | True |
+| `false`, `0`, `"0"`, `"false"` | False |
+| Optional field left out | False, or no filter for `usable` |
+
+String values are not case-sensitive, so `"FALSE"` is also false. Any other value, such as `"yes"` or `2`, fails input validation. Only `usable` accepts `null`, which means no filter.
+
+<Warning>
+Version 6.3 reads the string `"false"` as true for all five inputs. On 6.3, `"confirm":"false"` runs the change and `"auto_refresh":"false"` turns automatic refresh on. Send real JSON `true` and `false` values when you use 6.3.
+</Warning>
+
+From the release after 6.3, the string `"false"` is never read as a confirmation. A request that sends `"confirm":"false"` without a true `dry_run` returns 409 `mainwp_google_search_console_confirmation_required` and does not change anything.
+
+A policy request that spells `auto_refresh` as `"true"` and one that sends `true` are the same request, so a retry with the same `request_ref` replays its stored result. A request stored by version 6.3 that sent `auto_refresh` as a string returns 409 `mainwp_google_search_console_request_conflict` if you retry it with the same `request_ref`. Use a new `request_ref` instead.
 
 ---
 
@@ -106,7 +128,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 | Optional parameter | Default | Description |
 |--------------------|---------|-------------|
 | `connection_ref` | `null` | Limit results to one connection |
-| `usable` | `null` | Filter by whether the cached property is usable for mapping |
+| `usable` | `null` | Filter by whether the cached property is usable for mapping. `null` returns both. See [True and False Inputs](#true-and-false-inputs) |
 | `after_property_ref` | `null` | Cursor returned by the previous page |
 | `limit` | `50` | Page size from `1` to `100` |
 
@@ -176,7 +198,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-google-search-console-observation-v1/run'
 ```
 
-`site_id_or_domain` is required. `include_daily` is optional and defaults to `false`.
+`site_id_or_domain` is required. `include_daily` is optional and defaults to `false`. See [True and False Inputs](#true-and-false-inputs).
 
 The response includes `site_id`, `availability`, `period` (`week`, `month`, or `null`), `period_start`, `period_end`, `generated_at`, `stale`, `totals`, `daily`, and `revision`. Unavailable dates and metrics can be `null`.
 
@@ -243,7 +265,7 @@ Supply all three settings, even when changing only one:
 | Required setting | Allowed values |
 |------------------|----------------|
 | `report_period` | `week` or `month` |
-| `auto_refresh` | `true` or `false` |
+| `auto_refresh` | `true` or `false`. See [True and False Inputs](#true-and-false-inputs) |
 | `refresh_hours` | `1`, `3`, `9`, `15`, `18`, or `24` |
 
 Also provide `if_match` from Get Refresh Policy, a `request_ref`, and the [confirmation flags](#inputs-revisions-and-confirmation).
@@ -330,7 +352,7 @@ The result contains `properties_added`, `properties_updated`, `properties_remove
 
 ## Handling Errors
 
-Ability errors use the `mainwp_google_search_console_` prefix. Authentication and access errors require an authorized user; confirmation errors require the correct preview or confirmation flags. For a stale revision, read the current resource and review the intended change again. For credential or provider authorization failures, repair the connection through the Add-on before requesting another refresh.
+Ability errors use the `mainwp_google_search_console_` prefix. Authentication and access errors require an authorized user. A 409 `confirmation_required` error means neither `dry_run` nor `confirm` was true; a 400 `invalid_input` error can mean both were true. See [True and False Inputs](#true-and-false-inputs). For a stale revision, read the current resource and review the intended change again. For credential or provider authorization failures, repair the connection through the Add-on before requesting another refresh.
 
 A successful request to queue work is not proof that Google data was refreshed. Poll the returned job, inspect its terminal result, then read the updated mapping, catalog, or observation. If a job remains queued, check that WordPress cron is running on the MainWP Dashboard site.
 
