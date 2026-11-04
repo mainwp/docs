@@ -1,0 +1,197 @@
+---
+title: Post Plus Abilities
+sidebarTitle: "Post Plus Abilities"
+description: >-
+  List and read drafts saved in MainWP Post Plus, with accessible target sites, a plain-text excerpt, and credentials masked in the output.
+---
+
+<Note>
+These abilities require a Post Plus release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled Post Plus release registers two read-only abilities in the `mainwp-post-plus` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to review post and page drafts saved with **Save as Draft** before you publish them. They do not create, edit, publish, or delete drafts, and they do not contact Child sites.
+
+## What You'll Learn
+
+- List saved drafts with pagination and an optional post or page filter
+- Read one saved draft with its slug and a short plain-text excerpt
+- Interpret target sites, hidden sites, client targets, and masked text
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A Post Plus build that registers these abilities, active on MainWP Dashboard
+- An authenticated user with `manage_options` and access to the Post Plus Add-on
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Requests without authentication return HTTP 401. Authenticated users without `manage_options`, such as subscribers, or without access to the Post Plus Add-on return HTTP 403.
+
+Team Control restrictions apply to target sites. A response names only the sites you can access. Other selected sites are counted in `hidden_site_count`.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-post-plus-drafts-v1` | GET | List a page of saved post and page drafts |
+| `mainwp/get-post-plus-draft-v1` | GET | Read one saved draft with its slug and a masked excerpt |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-post-plus'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. They reject extra input properties.
+
+---
+
+## List Saved Drafts
+
+**Ability:** `mainwp/list-post-plus-drafts-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, starting at `1` |
+| `per_page` | integer | No | `20` | Drafts per page, from `1` to `100` |
+| `type` | string | No | Both | `post` for post drafts or `page` for page drafts |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20,"type":"post"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-post-plus-drafts-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "drafts": [
+    {
+      "id": 42,
+      "title": "Spring maintenance checklist",
+      "type": "post",
+      "categories": "News, Guides",
+      "tags": "maintenance",
+      "modified": "2026-10-29T12:00:00Z",
+      "target_by": "site",
+      "sites": [
+        { "site_id": 1, "name": "Client Site One" }
+      ],
+      "client_ids": [],
+      "hidden_site_count": 1,
+      "group_count": 0
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+Drafts are sorted by last modified time, newest first. `total` is the number of saved drafts that match the `type` filter. A page past the last draft returns an empty `drafts` array.
+
+The list includes only drafts saved with **Save as Draft** in Post Plus, the same drafts shown on the Post Plus **Drafts** page.
+
+## Get One Saved Draft
+
+**Ability:** `mainwp/get-post-plus-draft-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Saved draft ID in MainWP Dashboard, `1` or higher. Use an `id` from the list response |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"id":42}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-post-plus-draft-v1/run'
+```
+
+The response contains the same fields as a list item, plus `slug` and `excerpt`:
+
+```json
+{
+  "id": 42,
+  "title": "Spring maintenance checklist",
+  "type": "post",
+  "categories": "News, Guides",
+  "tags": "maintenance",
+  "modified": "2026-10-29T12:00:00Z",
+  "target_by": "site",
+  "sites": [
+    { "site_id": 1, "name": "Client Site One" }
+  ],
+  "client_ids": [],
+  "hidden_site_count": 1,
+  "group_count": 0,
+  "slug": "spring-maintenance-checklist",
+  "excerpt": "Review plugin updates, confirm backups, and check uptime reports before the season starts."
+}
+```
+
+The ability reads only saved Post Plus drafts. Other Dashboard posts and pages, Post Plus items that are no longer drafts, and drafts that were not saved with **Save as Draft** return `mainwp_post_not_found`, even when the ID exists.
+
+---
+
+## Response Fields
+
+| Field | Meaning |
+|-------|---------|
+| `id` | Saved draft ID in MainWP Dashboard |
+| `title` | Plain-text title, up to 300 characters |
+| `type` | `post` or `page` |
+| `categories` | Saved categories as plain text, or an empty string |
+| `tags` | Saved tags as plain text, or an empty string |
+| `modified` | Last modified time in ISO 8601 UTC, or an empty string when unavailable |
+| `target_by` | How the draft selects its targets: `site`, `group`, or `client` |
+| `sites` | Selected sites you can access, each with `site_id` and `name` |
+| `client_ids` | Saved client IDs when `target_by` is `client`; otherwise empty |
+| `hidden_site_count` | Number of selected sites you cannot access |
+| `group_count` | Number of selected site tags (groups) when `target_by` is `group` |
+| `slug` | Get only. Saved slug as plain text, or an empty string |
+| `excerpt` | Get only. Plain-text excerpt of up to 300 characters |
+
+When `target_by` is `group`, `sites` and `hidden_site_count` cover the sites in the selected groups. When `target_by` is `client`, the abilities return the saved `client_ids` only. They do not look up the clients' sites, so `sites` is empty and `hidden_site_count` is `0`. Use the [Clients Abilities](/api-reference/abilities-api/clients) to look up a client's sites.
+
+## Excerpts and Masked Text
+
+The excerpt is built from the saved draft body. Shortcodes and HTML are removed before the text is shortened to 300 characters. The response never includes the full body, HTML, or raw metadata.
+
+Before returning any text field, including site names, Post Plus replaces sensitive-looking values with `[redacted]`:
+
+- `Basic` credentials whose value decodes to `user:password`, and `Bearer` tokens of six or more characters
+- Private key blocks and known API key and token formats
+- Credential assignments such as `password=...`, `api_key: ...`, or `token=...`. Everything from the label to the end of the field is replaced
+- Email addresses
+- URLs, including `mailto:`, `tel:`, and `www.` addresses, and file paths
+
+Ordinary text such as "Basic SEO checklist" or "The bearer of good news" stays readable. Open the draft in Post Plus to review its full content.
+
+<Note>
+These abilities read stored data on MainWP Dashboard only. They do not contact Child sites or change drafts, metadata, or settings.
+</Note>
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). Post Plus can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 401 | The request is not authenticated |
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options` or access to Post Plus |
+| `mainwp_post_plus_invalid_input` | 400 | An input is out of range, has the wrong type, or is not allowed |
+| `mainwp_post_not_found` | 404 | No saved Post Plus draft has this ID |
+| `mainwp_post_plus_read_failed` | 500 | Post Plus could not read the saved drafts |
+
+## Related Resources
+
+- [Post Plus](/add-ons/posts-pages/post-plus-extension) - Save, edit, and publish drafts and randomize post metadata
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [Sites Abilities](/api-reference/abilities-api/sites) - Look up site IDs returned in `sites`
+- [Clients Abilities](/api-reference/abilities-api/clients) - Look up clients returned in `client_ids`
