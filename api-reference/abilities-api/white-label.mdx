@@ -164,7 +164,7 @@ Each entry in `sites` contains:
 | `name` | Site name in MainWP Dashboard, or an empty string. See [Labels](#labels) |
 | `override` | **Override general settings** is on for this site |
 | `hide_child_plugin`, `show_support_button`, `remove_restore`, `remove_setting`, `remove_server_info`, `remove_wp_tools`, `remove_wp_setting` | The same flags as the general settings, as stored for this site |
-| `disable_theme_plugin_change` | The site's stored theme and plugin change restriction column. The per-site **Prevent theme alterations** setting is stored elsewhere and is not returned |
+| `disable_theme_plugin_change` | **Prevent theme alterations** is on in this site's stored settings. Stored settings that cannot be read report `false` |
 | `custom_plugin_header_set` | At least one custom Child plugin header field is stored for this site. Stored headers that cannot be read report `false` |
 | `contact_button_label` | The site's stored **Contact Support button title**, or an empty string. See [Labels](#labels) |
 
