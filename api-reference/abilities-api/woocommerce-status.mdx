@@ -1,0 +1,186 @@
+---
+title: WooCommerce Status Abilities
+sidebarTitle: "WooCommerce Status Abilities"
+description: >-
+  List child sites with stored WooCommerce Status data and read one store's last stored sales, order, stock, and top seller figures.
+---
+
+<Note>
+These abilities require a WooCommerce Status release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+</Note>
+
+The Abilities-enabled WooCommerce Status release registers two read-only abilities in the `mainwp-woocommerce-status` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to read the store figures shown on the **WooCommerce Status** page from an AI assistant or script. They return the data saved during the last sync. They do not sync, refresh, or contact Child sites.
+
+## What You'll Learn
+
+- List the child sites that have stored WooCommerce Status data
+- Read one store's last stored sales, order, stock, and top seller figures
+- Interpret missing optional fields and access errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A WooCommerce Status build that registers these abilities, active on MainWP Dashboard
+- An authenticated user with `manage_options` and access to the WooCommerce Status Add-on
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Team Control restrictions apply. The list leaves out sites you cannot access. Reading a single store you cannot access returns an error.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-woocommerce-stores-v1` | GET | List accessible child sites with stored WooCommerce Status data |
+| `mainwp/get-woocommerce-store-status-v1` | GET | Read one store's last stored status |
+
+Discover the abilities and their schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-woocommerce-status'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. They reject extra input properties.
+
+---
+
+## List Stores
+
+**Ability:** `mainwp/list-woocommerce-stores-v1`<br />
+**Method:** GET
+
+This ability takes no input. Send no input, an empty object, or `null`.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-woocommerce-stores-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "stores": [
+    {
+      "site_id": 1,
+      "name": "Client Store",
+      "url": "https://store.example.com/",
+      "active": true,
+      "need_db_update": false,
+      "sales_this_month": 1520.5,
+      "orders": {
+        "processing": 4,
+        "on_hold": 1
+      },
+      "low_stock": 2,
+      "out_of_stock": 0
+    },
+    {
+      "site_id": 3,
+      "name": "Closed Shop",
+      "url": "https://shop.example.org/",
+      "active": false,
+      "need_db_update": false,
+      "sales_this_month": 0,
+      "orders": {
+        "processing": 0,
+        "on_hold": 0
+      },
+      "low_stock": 0,
+      "out_of_stock": 0
+    }
+  ]
+}
+```
+
+The list includes every accessible child site with a stored WooCommerce Status record, including sites where WooCommerce was inactive at the last sync. Use `active` to tell them apart. The list is not paginated and has no defined sort order.
+
+## Get Store Status
+
+**Ability:** `mainwp/get-woocommerce-store-status-v1`<br />
+**Method:** GET
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `site_id` | integer | Yes | Child site ID in MainWP Dashboard, `1` or higher |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-woocommerce-store-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "name": "Client Store",
+  "url": "https://store.example.com/",
+  "active": true,
+  "need_db_update": false,
+  "sales_this_month": 1520.5,
+  "orders": {
+    "processing": 4,
+    "on_hold": 1
+  },
+  "low_stock": 2,
+  "out_of_stock": 0,
+  "sales_last_7_days": 310.25,
+  "top_seller": {
+    "name": "Blue T-Shirt",
+    "quantity": 12
+  }
+}
+```
+
+The response contains the same fields as a list item. It can also include `sales_last_7_days` and `top_seller`, but only when the last sync stored them. A site with no stored WooCommerce Status record returns `mainwp_site_not_found`.
+
+---
+
+## Response Fields
+
+| Field | Meaning |
+|-------|---------|
+| `site_id` | Child site ID in MainWP Dashboard |
+| `name` | Site name in MainWP Dashboard |
+| `url` | Site URL in MainWP Dashboard |
+| `active` | Whether WooCommerce was active on the child site at the last sync |
+| `need_db_update` | Whether the child site reported a pending WooCommerce database update |
+| `sales_this_month` | Stored **Sales This Month** amount as a number, or `0` when not stored |
+| `orders.processing` | Stored count of orders awaiting processing |
+| `orders.on_hold` | Stored count of orders on hold |
+| `low_stock` | Stored count of products low in stock |
+| `out_of_stock` | Stored count of products out of stock |
+| `sales_last_7_days` | Get only, optional. Stored **Sales Last 7 Days** amount |
+| `top_seller` | Get only, optional. Stored **Top Seller This Month**, with `name` and the `quantity` sold |
+
+Counts that were not stored are returned as `0`. Sales amounts are plain numbers; the response has no currency field.
+
+`sales_last_7_days` appears only when the last sync stored it. The Add-on collects it by default, and the **Sales Last 7 Days** metric requires MainWP Child 6.1.7 or later. `top_seller` appears only when a stored top seller has a product name and a numeric quantity.
+
+<Note>
+These abilities read the data saved on MainWP Dashboard during the last sync. Sync your sites first if you need current figures. The abilities do not return the raw stored payload, and they do not change stored data.
+</Note>
+
+## Error Handling
+
+Standard authentication, schema, and method errors follow the [Abilities API error reference](/api-reference/abilities-api/overview#error-reference). WooCommerce Status can also return:
+
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `mainwp_permission_denied` | 401 | The request is not authenticated |
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options` or access to WooCommerce Status |
+| `mainwp_access_denied` | 403 | The user does not have access to the requested site |
+| `mainwp_site_not_found` | 404 | The site does not exist, has no stored WooCommerce Status record, or is outside the user's Team Control site restrictions |
+
+## Related Resources
+
+- [WooCommerce Status](/add-ons/administrative/woocommerce-status-extension) - Monitor WooCommerce stores from MainWP Dashboard
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input formats, discovery, and errors
+- [WooCommerce Shortcuts Abilities](/api-reference/abilities-api/woocommerce-shortcuts) - Check a site's cached WooCommerce status
+- [Sites Abilities](/api-reference/abilities-api/sites) - Look up site IDs
