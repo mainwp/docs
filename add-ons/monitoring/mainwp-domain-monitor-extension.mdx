@@ -9,6 +9,7 @@ addonType: "integration"
 
 - Checking domain expiration dates across all sites
 - Reading expiration status in the dashboard and Overview widgets
+- Monitoring domains that are not connected to a child site
 - Entering domain info manually for unsupported TLDs
 - Scheduling automated domain checks
 - Overriding general settings for individual sites
@@ -17,7 +18,7 @@ addonType: "integration"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.4" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.5" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/QMziJ1BxEcE" title="Domain Monitor - Video Tutorial" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
 
@@ -86,6 +87,41 @@ To retrieve domain information immediately, use one of the manual check actions 
 </Steps>
 
 Alternatively, you can use the **Bulk actions** menu to check selected sites, or use the **Check Domain** action from the site **Actions** menu to audit just one site.
+
+### Monitor Domains Not Connected to a Child Site
+
+Domain Monitor 5.5 and later can monitor domains that are not MainWP child sites, such as non-WordPress sites or parked domains. These domains appear in the same Domain Monitor table as your child sites.
+
+<Note>
+  Only users with access to all child sites can see the **Add Domain Monitor** button and add, check, or remove these domains.
+</Note>
+
+<Steps>
+  <Step title="Go to Add-ons > Monitoring > Domain Monitor > Dashboard">
+  </Step>
+  <Step title="Click the Add Domain Monitor button">
+    The button is next to **Check All Sites Domains**. It opens the **Add Domain Monitor** modal.
+  </Step>
+  <Step title="Enter the domain in the Domain name field">
+    Enter a domain name, such as `example.com`, or paste a full URL, such as `https://www.example.com/page`. Domain Monitor keeps only the hostname and drops a leading `www.`, so both examples are saved as `example.com`.
+  </Step>
+  <Step title="Click Add Monitor or press Enter">
+    Domain Monitor saves the domain, runs the first lookup, and reloads the table.
+  </Step>
+</Steps>
+
+If the input is not a valid domain name, the modal shows **Enter a valid domain name, for example example.com.** If the domain is already in the list, it shows **This domain is already being monitored.** When a submission fails, the modal keeps your entry and the error message, even if you close and reopen it, so you can correct the domain and try again.
+
+You can close the modal with the close icon, including by focusing it with the keyboard and pressing Enter or Space.
+
+Added domains are labelled **Not a child site** in the table. They work like child site domains in these ways:
+
+- **Check Domain**, **Bulk actions**, and **Check All Sites Domains** include them.
+- Automated checks and expiration notifications use your general [Domain Monitor Settings](#domain-monitor-settings).
+
+These domains do not have a **Domain Info** page, **Individual Site Settings**, or Overview and Edit links.
+
+To stop monitoring a domain, choose **Remove Domain** from its **Actions** menu and confirm. Domain Monitor deletes the domain and its stored domain info. The **Remove Domain** action is only available for domains that are not connected to a child site.
 
 ### Unscanned Sites
 
