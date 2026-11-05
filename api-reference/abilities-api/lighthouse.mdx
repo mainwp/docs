@@ -1,0 +1,179 @@
+---
+title: Lighthouse Abilities
+sidebarTitle: "Lighthouse Abilities"
+description: >-
+  Read the stored Lighthouse overview and paginated desktop and mobile scores for accessible sites through MainWP Abilities.
+---
+
+The MainWP Lighthouse Add-on registers two read-only abilities in the `mainwp-lighthouse` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to check Lighthouse configuration and audit freshness, or to pull stored scores into reports, scripts, and AI tools. They return data that Lighthouse has already stored. They do not run audits or change settings.
+
+## What You'll Learn
+
+- Read the Lighthouse overview: API key presence, schedule settings, and latest audit times
+- List stored desktop and mobile scores for accessible sites
+- Page through results and filter by site
+- Handle permission and input errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A Lighthouse Add-on release with Abilities support, active in MainWP Dashboard
+- An authenticated user with `manage_options` and access to the Lighthouse Add-on
+- Dashboard access to each site you want to read
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Both abilities check permissions again when they run. Results include only sites that the Dashboard site list returns and that the current user is allowed to access. Sites the user cannot access are left out of the overview totals and the results list.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-lighthouse-overview-v1` | GET | Read API key presence, schedule settings, tracked-site count, and latest audit times |
+| `mainwp/list-lighthouse-site-results-v1` | GET | List stored desktop and mobile scores for accessible sites |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-lighthouse'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. Inputs and outputs reject extra properties.
+
+## Read the Lighthouse Overview
+
+**Ability:** `mainwp/get-lighthouse-overview-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-lighthouse-overview-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "api_key_configured": true,
+  "bad_api_key": false,
+  "use_schedule": true,
+  "recheck_interval": 7,
+  "cron_working": false,
+  "tracked_sites": 3,
+  "last_desktop_audit": "2026-10-28T09:15:00Z",
+  "last_mobile_audit": "2026-10-28T09:17:42Z"
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `api_key_configured` | `true` when a Google PageSpeed Insights API key is stored |
+| `bad_api_key` | `true` when Lighthouse has flagged the stored key as invalid |
+| `use_schedule` | Whether automated audits are enabled (see [Schedule automated audits](/add-ons/monitoring/mainwp-lighthouse-extension#schedule-automated-audits)) |
+| `recheck_interval` | Stored global recheck interval setting |
+| `cron_working` | Whether this request is running inside WordPress cron |
+| `tracked_sites` | Number of accessible sites with stored Lighthouse records |
+| `last_desktop_audit` | Most recent desktop audit time across accessible sites, in UTC, or `null` |
+| `last_mobile_audit` | Most recent mobile audit time across accessible sites, in UTC, or `null` |
+
+<Note>
+`api_key_configured` reports only that a key is stored. It does not validate the key, and the response never includes the key itself. `cron_working` describes the current request context only. It is not a cron health check, so it is normally `false` for API calls.
+</Note>
+
+## List Site Results
+
+**Ability:** `mainwp/list-lighthouse-site-results-v1`<br />
+**Method:** GET
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `page` | No | Page number, starting at 1. Default `1` |
+| `per_page` | No | Results per page, from 1 to 100. Default `20` |
+| `site_id` | No | Return only the matching MainWP site |
+
+All inputs must be positive JSON integers.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-lighthouse-site-results-v1/run'
+```
+
+Read the results for one site:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-lighthouse-site-results-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 1,
+      "site_name": "Example Site",
+      "desktop_last_audit": "2026-10-28T09:15:00Z",
+      "mobile_last_audit": "2026-10-28T09:17:42Z",
+      "blacklisted": false,
+      "use_schedule": false,
+      "recheck_interval": 0,
+      "desktop_score": 98,
+      "desktop_accessibility_score": 95,
+      "desktop_best_practices_score": 100,
+      "desktop_seo_score": 92,
+      "mobile_score": 84,
+      "mobile_accessibility_score": 95,
+      "mobile_best_practices_score": 100,
+      "mobile_seo_score": 92
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+The response envelope contains `sites`, `total`, `page`, and `per_page`. `total` counts every accessible site with stored Lighthouse records, not only the current page. Sites are ordered by site ID. Request the next `page` until you have read `total` results.
+
+Each site contains:
+
+| Field | Meaning |
+|-------|---------|
+| `site_id` | MainWP site ID |
+| `site_name` | Site name in MainWP Dashboard |
+| `desktop_last_audit`, `mobile_last_audit` | Last audit time for each strategy, in UTC, or `null` |
+| `blacklisted` | Whether the site is excluded from Lighthouse audits |
+| `use_schedule` | Whether the site uses its own audit schedule instead of the global setting |
+| `recheck_interval` | Stored site-specific recheck interval setting |
+| `desktop_score`, `mobile_score` | Performance score from 0 to 100, or `null` |
+| `desktop_accessibility_score`, `mobile_accessibility_score` | Accessibility score from 0 to 100, or `null` |
+| `desktop_best_practices_score`, `mobile_best_practices_score` | Best practices score from 0 to 100, or `null` |
+| `desktop_seo_score`, `mobile_seo_score` | SEO score from 0 to 100, or `null` |
+
+A `null` score or audit time means Lighthouse has no stored value for that strategy. For example, the strategy may not be configured, or the site has not been audited yet. If no results are stored, the ability returns an empty `sites` array with `total: 0`.
+
+The response does not include site URLs, API keys, notification emails, or raw audit data. To run a new audit, use the [Lighthouse Dashboard](/add-ons/monitoring/mainwp-lighthouse-extension#audit-child-sites), [WP-CLI](/add-ons/monitoring/mainwp-lighthouse-extension#audit-sites-via-wp-cli), or the [Lighthouse REST API](/add-ons/monitoring/mainwp-lighthouse-extension#lighthouse-rest-api), then read the results again.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_permission_denied` | 403 | Check `manage_options` and Lighthouse Add-on access |
+| `mainwp_access_denied` | 403 | Check that the user can access the requested `site_id` |
+| `mainwp_site_not_found` | 404 | Verify the `site_id` exists in MainWP Dashboard |
+| `mainwp_lighthouse_invalid_input` | 400 | Use positive integer `page`, `per_page` (up to 100), and `site_id` values, with no other properties |
+
+MainWP Dashboard returns HTTP 401 for unauthenticated requests. WordPress can also reject invalid input against the public schema before the Add-on callback runs.
+
+## Related Resources
+
+- [Lighthouse](/add-ons/monitoring/mainwp-lighthouse-extension) - Setup, audits, schedules, and settings
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
