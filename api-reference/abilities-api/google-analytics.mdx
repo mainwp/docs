@@ -1,0 +1,229 @@
+---
+title: Google Analytics Abilities
+sidebarTitle: "Google Analytics Abilities"
+description: >-
+  Read cached Google Analytics data, manage site mappings and refresh policy, and track background refresh jobs through MainWP Abilities.
+---
+
+The Abilities-enabled Google Analytics build registers nine abilities in the `mainwp-google-analytics` category. Use them to inspect saved connections and GA4 properties, read aggregate analytics, change mappings and refresh settings, and request background refreshes.
+
+<Note>
+Earlier Google Analytics builds may not register these abilities. Discover the category on your Dashboard before using the examples. A version number alone does not establish that your installed build includes this API.
+</Note>
+
+## What You'll Learn
+
+- Read connections, properties, site mappings, and cached aggregate analytics
+- Preview and confirm mapping and refresh-policy changes
+- Request a background refresh and check its outcome
+- Handle revisions, repeat requests, and uncertain results
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples
+- An active Google Analytics build that registers these abilities
+- An authenticated user permitted by the Dashboard Abilities API, with access to the Google Analytics Add-on
+- A configured Google connection for property mapping and refreshes
+- Working Dashboard scheduled tasks for background refresh jobs
+
+Authenticate with a [WordPress Application Password](/api-reference/rest-api/application-passwords). MainWP REST API keys do not authenticate Abilities API requests.
+
+Global connection and property lists, policy reads and changes, mapping changes, and connection-catalog refreshes require `manage_options`. Site calls also require the `edit_sites` Dashboard permission, access to the selected site, and a connected Child site. Team Control restrictions apply. Refresh-status reads require Add-on access and either ownership of the job or `manage_options`.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+| --- | --- | --- |
+| `mainwp/list-google-analytics-connections-v1` | GET | List stored connection health |
+| `mainwp/list-google-analytics-properties-v1` | GET | List the cached GA4 property catalog |
+| `mainwp/get-site-google-analytics-mapping-v1` | GET | Read a site's mapping and cache state |
+| `mainwp/replace-site-google-analytics-mapping-v1` | DELETE | Preview or replace a mapping, including removal |
+| `mainwp/get-site-google-analytics-observation-v1` | GET | Read cached aggregate analytics |
+| `mainwp/get-google-analytics-refresh-policy-v1` | GET | Read refresh settings and scheduler state |
+| `mainwp/replace-google-analytics-refresh-policy-v1` | DELETE | Preview or replace refresh settings |
+| `mainwp/request-google-analytics-refresh-v1` | POST | Preview or queue one site-cache or connection-catalog refresh |
+| `mainwp/get-google-analytics-refresh-status-v1` | GET | Read the status of an ability-requested refresh job |
+
+The replacement abilities use **DELETE**, including for previews, because they are marked destructive and idempotent. They change Dashboard mappings, settings, and cached data; they do not delete Google Analytics properties.
+
+Discover the full input and output schemas for your installed build:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-google-analytics'
+```
+
+## Request Rules
+
+Send read inputs in the `input_json` query parameter. For DELETE and POST calls, send a JSON body containing an `input` object. Unknown fields are rejected. Use JSON booleans for flags.
+
+Site calls use `site_id_or_domain`, which accepts a MainWP site ID or exact domain. Connection references, property references, and revisions are opaque 64-character hexadecimal strings. Read them from the API; do not substitute Google account IDs or property IDs.
+
+Mapping and policy replacements require the latest resource `revision` as `if_match`. Obtain it from the mapping or policy read for that resource.
+
+Every replacement and refresh request also requires these fields:
+
+| Field | Preview | Execution |
+| --- | --- | --- |
+| `request_ref` | A client-generated UUID for this logical request | The same UUID |
+| `dry_run` | `true` | `false` |
+| `confirm` | `false` | `true` |
+| `preview_token` | `null` | The token returned by the matching preview |
+
+Review the preview before executing. Keep the same target, desired values, revision, and request UUID. An expired token or changed revision requires a fresh read and preview. Reuse the original UUID and payload when recovering the response to the same execution; use a new UUID for new work. A request-reference conflict is not permission to submit changed work under the old UUID.
+
+The repeated `a` and `b` strings below are fictional references. Replace them with returned values, and generate your own request UUIDs.
+
+## List Connections and Properties
+
+List stored connections:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"limit":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-google-analytics-connections-v1/run'
+```
+
+| Ability | Optional inputs | Response |
+| --- | --- | --- |
+| List connections | `status`, `after_connection_ref`, `limit` | `connections`, `next_after_connection_ref`, `truncated` |
+| List properties | `connection_ref`, `mapped`, `after_property_ref`, `limit` | `properties`, `next_after_property_ref`, `truncated` |
+
+Both lists default to 50 rows and accept a `limit` from 1 to 100. Filters and cursors default to `null`. The connection `status` filter accepts `connected`, `needs_reauthorization`, `credential_unavailable`, `no_properties`, or `disabled`. The property `mapped` filter accepts `true`, `false`, or `null`.
+
+When `truncated` is true, pass the returned next cursor into the corresponding `after_*` field to continue.
+
+Connection entries include `connection_ref`, `label`, `method` (`oauth` or `service_account`), `status`, `property_count`, `mapped_site_count`, `last_catalog_refresh_at`, and `revision`. Property entries include `property_ref`, `connection_ref`, `label`, `account_label`, `mapped_site_count`, and `revision`.
+
+These reads do not contact Google or return credentials. Use the returned property reference when changing a mapping.
+
+## Read and Replace a Site Mapping
+
+Read the mapping:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-google-analytics-mapping-v1/run'
+```
+
+The response contains `site_id`, `status` (`unmapped`, `mapped`, or `stale`), `property_ref`, `connection_ref`, `property_label`, `cache_status`, `cache_generated_at`, and `revision`. Cache status is `none`, `fresh`, `stale`, or `malformed`.
+
+Preview a replacement using the current mapping revision and a property reference from the catalog:
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"property_ref":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","if_match":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","request_ref":"123e4567-e89b-42d3-a456-426614174000","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-site-google-analytics-mapping-v1/run'
+```
+
+Set `property_ref` to `null` to remove the mapping. Every field in this example is required.
+
+The response contains `mode` (`dry_run` or `applied`), `site_id`, `changed`, `cache_invalidated`, `mapping`, and `preview_token`. After reviewing the preview, send the same input with the returned token, `dry_run: false`, and `confirm: true`. A changed mapping can invalidate that site's cached analytics. Read its state again before relying on previous figures.
+
+## Read Cached Analytics
+
+Call `mainwp/get-site-google-analytics-observation-v1` with a required `site_id_or_domain` and optional `include_daily` (default `false`):
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"include_daily":true}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-google-analytics-observation-v1/run'
+```
+
+The response includes `site_id`, `availability`, `period`, `generated_at`, `stale`, `current`, `previous`, `daily`, and `revision`.
+
+- `availability` is `unmapped`, `no_cache`, `available`, `stale`, or `malformed`.
+- `period` is `week`, `month`, or `null` when unavailable.
+- Available period metrics contain `sessions`, `active_users`, `new_users`, `page_views`, `pages_per_session`, `bounce_rate` (percentage), and `average_engagement_seconds`. Unavailable metric objects can be `null`.
+- Daily data contains at most 31 points with UTC calendar dates, active users, new users, page views, and average engagement seconds.
+
+This is a stored read. It does not contact Google or refresh the cache. Use a site-cache refresh below when you need updated figures, then read the observation again.
+
+## Read and Replace Refresh Policy
+
+`mainwp/get-google-analytics-refresh-policy-v1` takes no input. It returns `report_period`, `auto_refresh`, `refresh_hours`, `scheduler_mode`, `schedule_state`, refresh timestamps, and `revision`.
+
+To call `mainwp/replace-google-analytics-refresh-policy-v1`, use DELETE with the following required input object wrapped in `{"input":{...}}`:
+
+```json
+{
+  "report_period": "week",
+  "auto_refresh": true,
+  "refresh_hours": 3,
+  "if_match": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "request_ref": "123e4567-e89b-42d3-a456-426614174001",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+`report_period` accepts `week` or `month`. `refresh_hours` accepts `1`, `3`, `9`, `15`, `18`, or `24`. Use the policy read's revision for `if_match`, then follow the preview and confirmation rules above.
+
+The response contains `mode`, `changed`, `schedule_changed`, `caches_invalidated`, `policy`, and `preview_token`. Changing policy can invalidate cached observations. The policy reports `scheduler_mode` as `wordpress`, `external`, or `disabled`, and `schedule_state` as `scheduled`, `unscheduled`, or `drifted`. Inspect the actual schedule state after changing settings.
+
+## Request and Track a Refresh
+
+Call `mainwp/request-google-analytics-refresh-v1` with POST. Preview a site-cache refresh using this input:
+
+```json
+{
+  "kind": "site_cache",
+  "site_id_or_domain": 1,
+  "request_ref": "123e4567-e89b-42d3-a456-426614174002",
+  "dry_run": true,
+  "confirm": false,
+  "preview_token": null
+}
+```
+
+For a property-catalog refresh, set `kind` to `connection_catalog`, supply the returned `connection_ref`, and omit `site_id_or_domain` or set it to `null`. A site-cache refresh requires a mapped site and omits `connection_ref` or sets it to `null`. Both require a usable connected Google account.
+
+Review the preview, then confirm using its token and the same target and request UUID. The response contains `mode` (`dry_run` or `queued`), `job_id`, `request_id`, `kind`, `target`, `status` (`ready` or `requested`), `requested_at`, and `preview_token`. Preview responses have no queued job.
+
+A queued response is not completion. Pass its `job_id` as `job_ref` to `mainwp/get-google-analytics-refresh-status-v1`:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"job_ref":"123e4567-e89b-42d3-a456-426614174003"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-google-analytics-refresh-status-v1/run'
+```
+
+Replace the example UUID with the actual returned job ID. Status responses contain `job_id`, `kind`, `target`, `status`, `phase`, `attempts`, `result`, and request/update/completion timestamps.
+
+| Status | What to do |
+| --- | --- |
+| `requested` or `running` | Continue polling the same job. If it does not advance, check Dashboard scheduled tasks. |
+| `succeeded` | Inspect `result`, then read the updated catalog or observation. |
+| `failed` | Inspect `result.code` and correct the cause before planning new work. |
+| `unknown` | Read the current mapping, catalog, and observation before deciding whether to request another refresh. Do not automatically create a new request. |
+
+The result reports property counts added, updated, and removed, mappings invalidated, whether the cache was updated, a result revision, and a coarse outcome code.
+
+If a response is lost, resend the same logical request with the same `request_ref` and payload to recover its existing job receipt. A different target under that UUID returns a conflict. Poll the recovered job rather than creating a duplicate. Completed job history is retained for 30 days; do not treat request references as permanent deduplication keys.
+
+## Error Handling
+
+Errors use the `mainwp_google_analytics_` prefix. WordPress may return authentication, schema, or method errors before the Add-on runs.
+
+| Suffix | HTTP | Action |
+| --- | --- | --- |
+| `invalid_input` | 400 | Check required fields, JSON types, and confirmation flags. |
+| `authentication_required` | 401 | Authenticate with an authorized WordPress account. |
+| `access_denied` | 403 | Check Dashboard, Add-on, operation, and site permissions. |
+| `not_found` | 404 | Check the site or job reference and job visibility. |
+| `stale_revision` | 409 | Read the resource again and obtain a fresh matching preview. |
+| `request_conflict` | 409 | The UUID belongs to different work. Review the intended action before using a new UUID. |
+| `credential_unavailable` or `mapping_invalid` | 422 | Check account health and the site's property assignment. |
+| `storage_unavailable` | 503 | Restore storage availability and read back state before retrying a change. |
+
+For encryption-key recovery, account reconnection, and Dashboard refresh settings, see the [Google Analytics guide](/add-ons/analytics/mainwp-google-analytics-extension).
+
+## Related Resources
+
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication, input handling, and discovery
+- [Google Analytics](/add-ons/analytics/mainwp-google-analytics-extension) - Connect accounts and review visitor data
+- [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) - Separate search-performance integration
