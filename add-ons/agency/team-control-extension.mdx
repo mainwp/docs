@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.2.0"
+  data-version="5.2.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
@@ -242,6 +242,12 @@ When you update to a Team Control version that adds **Delete Backups**, existing
 </Note>
 
 Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
+
+### Cost Tracker Permissions
+
+The **Cost Tracker** permission group includes **Manage Cost Tracker Settings**, which controls whether staff can change Cost Tracker settings.
+
+When you update to Team Control 5.2.1, existing roles that have **Manage Dashboard Settings** receive **Manage Cost Tracker Settings** automatically, so staff who could manage Cost Tracker settings before keep that access. Team Control applies this grant once, the first time a Team Control owner opens WordPress admin after the update. Roles that already have **Manage Cost Tracker Settings** explicitly enabled or disabled keep their saved choice. After the grant runs, you can untick **Manage Cost Tracker Settings** on any role, and Team Control does not add it back.
 
 ### Abilities and MCP Permissions
 
