@@ -1,0 +1,350 @@
+---
+title: Fathom Abilities
+sidebarTitle: "Fathom Abilities"
+description: >-
+  Connect Fathom accounts, manage site mappings and settings, read live reports and current visitors, and remove local connections through MainWP Abilities.
+---
+
+The MainWP Fathom Integration registers thirteen abilities in the `mainwp-fathom` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- Which Fathom abilities are available and who can use them
+- Connect a Fathom account and refresh its site catalog
+- Read and replace a site's Fathom mapping
+- Read live reports, refresh cached analytics, and get current visitors
+- Read and replace global settings
+- Preview and delete a local Fathom account connection
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard 6 or later with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
+- The Fathom Integration with Abilities support, active in MainWP Dashboard
+- An authenticated user with access to the Fathom Add-on
+- `manage_options` for account, settings, and deletion abilities
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+<Note>
+On a MainWP Dashboard without the Abilities foundation, the Fathom abilities are not registered. The Fathom mapping, stats, and overview screens also deny access on those Dashboard versions. Update MainWP Dashboard before you update the Fathom Integration.
+</Note>
+
+## Permissions
+
+All abilities require access to the Fathom Add-on. Team Control restrictions apply.
+
+| Access level | Abilities |
+|--------------|-----------|
+| Fathom Add-on access plus access to the selected site | List sites, get report, refresh analytics, get current visitors, get site mapping, replace site mapping |
+| Administrator (`manage_options`) | List accounts, connect account, refresh account catalog, get settings, replace settings, preview delete, delete account |
+
+`mainwp/list-fathom-sites-v1` returns only the mapped sites the current user can access. A site-scoped call for a site outside the user's access returns `mainwp_fathom_access_denied` before MainWP reads cached data or contacts Fathom.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-fathom-sites-v1` | GET | List authorized MainWP sites with a Fathom mapping |
+| `mainwp/get-fathom-report-v1` | GET | Get live aggregates and an optional daily series for one site |
+| `mainwp/refresh-fathom-analytics-v1` | POST | Refresh one site's cached widget analytics |
+| `mainwp/get-fathom-current-visitors-v1` | GET | Get one site's current visitor count |
+| `mainwp/list-fathom-accounts-v1` | GET | List connected accounts and their discovered Fathom sites |
+| `mainwp/connect-fathom-account-v1` | POST | Connect an account or replace an account's token |
+| `mainwp/refresh-fathom-account-catalog-v1` | POST | Rediscover the Fathom sites for one account |
+| `mainwp/get-fathom-site-mapping-v1` | GET | Read one site's mapping and revision |
+| `mainwp/replace-fathom-site-mapping-v1` | DELETE | Replace or clear one site's mapping |
+| `mainwp/get-fathom-settings-v1` | GET | Read the display interval and refresh frequency |
+| `mainwp/replace-fathom-settings-v1` | DELETE | Replace the display interval and refresh frequency |
+| `mainwp/preview-delete-fathom-account-v1` | GET | Preview removing a local account and get a confirmation token |
+| `mainwp/delete-fathom-account-v1` | DELETE | Remove a previewed local account connection |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-fathom'
+```
+
+The two replace abilities and the delete ability use **DELETE** because the Abilities API routes destructive, idempotent abilities to that method. Replacing a mapping or settings changes MainWP data only. It does not change anything in your Fathom account.
+
+## Request Rules
+
+All inputs reject extra properties.
+
+Site inputs use `site_id_or_domain`, such as `1`, `"1"`, or `"example.com"`. Use a positive MainWP site ID or an exact domain or URL. Prefer site IDs when a domain could match more than one site.
+
+`account_id` is the local MainWP ID of a connected Fathom account, returned by List Accounts. It is not the Fathom account ID. `provider_site_id` is the Fathom site ID shown in the account's discovered sites.
+
+Mapping and settings revisions are 64-character lowercase hexadecimal values. Read the current revision and send it as `if_match` when you replace data. A stale revision returns `mainwp_fathom_conflict`.
+
+## List Mapped Sites
+
+**Ability:** `mainwp/list-fathom-sites-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-fathom-sites-v1/run'
+```
+
+The response contains `sites`, `total`, and `truncated`. Each site has `id`, `name`, and `url`. The list returns at most 1,000 sites, ordered by site ID. `truncated` is `true` when more authorized mapped sites exist.
+
+## Get a Report
+
+**Ability:** `mainwp/get-fathom-report-v1`<br />
+**Method:** GET
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id_or_domain` | Yes | MainWP site ID or domain |
+| `start_date` | Yes | Inclusive start date in `YYYY-MM-DD` format |
+| `end_date` | Yes | Inclusive end date in `YYYY-MM-DD` format |
+| `metric` | No | Daily series to include: `none` (default), `pageviews`, `visits`, `uniques`, or `average_engagement_time` |
+
+The range can be up to 366 days. The start date can't be later than the end date.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1,"start_date":"2026-10-01","end_date":"2026-10-28","metric":"visits"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-fathom-report-v1/run'
+```
+
+The response contains `site`, `start_date`, `end_date`, `metric`, `aggregates`, and `series`. `aggregates` contains `visits`, `uniques`, `pageviews`, `average_engagement_time`, and `bounce_rate`. Each `series` item has a `date` and a `value`. `series` is empty when `metric` is `none`.
+
+This ability requests data from Fathom on every call. It doesn't read or update the cached widget data.
+
+## Refresh Cached Analytics
+
+**Ability:** `mainwp/refresh-fathom-analytics-v1`<br />
+**Method:** POST
+
+Required input is `site_id_or_domain`. MainWP fetches fresh data from Fathom for the configured display interval. It replaces the site's cached widget data only after it receives a complete response.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/refresh-fathom-analytics-v1/run'
+```
+
+If the refresh fails, MainWP keeps the previous cache and returns `mainwp_fathom_refresh_failed` with `previous_cache_preserved: true`.
+
+The response contains `site`, `refreshed`, `cached_at`, `interval` (`week` or `month`), and `section_counts`. `section_counts` reports the number of cached `pages`, `countries`, `devices`, `browsers`, `referrers`, and `graph_points`.
+
+## Get Current Visitors
+
+**Ability:** `mainwp/get-fathom-current-visitors-v1`<br />
+**Method:** GET
+
+Required input is `site_id_or_domain`.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-fathom-current-visitors-v1/run'
+```
+
+The response contains `site`, `visitors` (an integer), `source`, and `cached_until`. MainWP caches the count for one minute. `source` is `provider` when MainWP fetched the count from Fathom, and `cache` when it reused the cached count.
+
+## Manage Accounts
+
+### List Accounts
+
+**Ability:** `mainwp/list-fathom-accounts-v1`<br />
+**Method:** GET
+
+Optional inputs are `limit` (1-100, default 50) and `after_ref` (the `next_after_id` value from the previous page).
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"limit":10}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-fathom-accounts-v1/run'
+```
+
+The response contains `accounts`, `next_after_id`, and `truncated`. Each account has `id`, `name`, `connected`, and up to 1,000 discovered `sites`, each with an `id` and `name`. When `truncated` is `true`, request the next page with `after_ref` set to `next_after_id`. A page can contain fewer accounts than `limit`.
+
+Responses never include API tokens.
+
+### Connect an Account
+
+**Ability:** `mainwp/connect-fathom-account-v1`<br />
+**Method:** POST
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `auth_token` | Yes | Fathom API token. Write-only. |
+| `replace_account_id` | No | Local account ID whose token you want to replace, or `null` (default) to add an account |
+
+Create the token in Fathom as described in [Establishing a connection with a Fathom Account](/add-ons/analytics/fathom-extension#establishing-a-connection-with-a-fathom-account).
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"auth_token":"YOUR_FATHOM_API_TOKEN"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/connect-fathom-account-v1/run'
+```
+
+MainWP validates the token with Fathom and discovers the account's sites before it saves anything. An invalid or revoked token fails without changing an existing account, its discovered sites, or its cached data.
+
+The response contains `account` (`id`, `name`, `connected`), `available_site_count`, and `credential_stored`. The token is never returned.
+
+### Refresh an Account's Site Catalog
+
+**Ability:** `mainwp/refresh-fathom-account-catalog-v1`<br />
+**Method:** POST
+
+Required input is `account_id`. Use this after you add or remove sites in Fathom.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"account_id":1}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/refresh-fathom-account-catalog-v1/run'
+```
+
+MainWP revalidates the account and replaces only that account's discovered sites, and only after Fathom returns a complete list. Other accounts' catalogs stay unchanged. Each account can hold up to 10,000 discovered sites.
+
+The response contains `account_id`, `connected`, `site_count`, `catalog_replaced`, and `refreshed_at`.
+
+## Read and Replace a Site Mapping
+
+### Read the Mapping
+
+**Ability:** `mainwp/get-fathom-site-mapping-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-fathom-site-mapping-v1/run'
+```
+
+The response contains `site`, `mapping`, and `revision`. `mapping` is `null` when the site has no mapping. Otherwise it contains `account_id`, `provider_site_id`, and `provider_site_name`.
+
+### Replace or Clear the Mapping
+
+**Ability:** `mainwp/replace-fathom-site-mapping-v1`<br />
+**Method:** DELETE
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id_or_domain` | Yes | MainWP site ID or domain |
+| `mapping` | Yes | Object with `account_id` and `provider_site_id`, or `null` to clear the mapping |
+| `if_match` | Yes | Current mapping `revision` |
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id_or_domain":1,"mapping":{"account_id":1,"provider_site_id":"ABCDEFGH"},"if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-fathom-site-mapping-v1/run'
+```
+
+The account must be connected, and `provider_site_id` must be in that account's discovered sites. Otherwise the request returns `mainwp_fathom_conflict`. Refresh the account catalog if a new Fathom site is missing.
+
+The response contains `site_id`, `mapping`, the new `revision`, and `cache_invalidated`. When the mapping changes, MainWP invalidates the site's cached analytics. Run [Refresh Cached Analytics](#refresh-cached-analytics) to load data for the new Fathom site.
+
+## Read and Replace Settings
+
+### Read Settings
+
+**Ability:** `mainwp/get-fathom-settings-v1`<br />
+**Method:** GET<br />
+**Input:** None
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-fathom-settings-v1/run'
+```
+
+The response contains `interval` (`week` or `month`), `refresh_hours`, and `revision`. These match the **Display interval** and **Data refresh frequency** options on the Fathom **Settings** tab.
+
+### Replace Settings
+
+**Ability:** `mainwp/replace-fathom-settings-v1`<br />
+**Method:** DELETE
+
+Required inputs are `interval` (`week` or `month`), `refresh_hours` (integer from 1 to 168), and `if_match` (the current settings `revision`).
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"interval":"month","refresh_hours":24,"if_match":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-fathom-settings-v1/run'
+```
+
+The response contains `interval`, `refresh_hours`, the new `revision`, and `caches_invalidated`. Changing the settings invalidates cached analytics once so widgets load data for the new settings. Repeating a request with values that are already saved returns the current settings without another change.
+
+## Remove a Local Account Connection
+
+Removing an account deletes its local connection from MainWP. It doesn't delete anything in Fathom, and it doesn't remove any MainWP Child site.
+
+### Preview the Removal
+
+**Ability:** `mainwp/preview-delete-fathom-account-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"account_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/preview-delete-fathom-account-v1/run'
+```
+
+The response contains:
+
+| Field | Meaning |
+|-------|---------|
+| `account` | `id`, `name`, and `connected` |
+| `mapped_site_count` | Site mappings that will be removed |
+| `cache_row_count` | Cached analytics rows that will be removed |
+| `catalog_site_count` | Discovered Fathom sites that will be removed |
+| `will_delete_key_file` | Whether the stored credential's key file will be deleted |
+| `preview_token` | Confirmation token for the delete call |
+| `expires_at` | UTC time when the token expires, five minutes after the preview |
+
+### Delete the Account
+
+**Ability:** `mainwp/delete-fathom-account-v1`<br />
+**Method:** DELETE
+
+Required inputs are `account_id` and `preview_token` from the current preview.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"account_id":1,"preview_token":"PREVIEW_TOKEN"}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-fathom-account-v1/run'
+```
+
+The token is bound to the account's state at preview time. An expired or altered token, or an account that changed after the preview, returns `mainwp_fathom_conflict`. Request a new preview and review it again.
+
+A successful response contains `account_id`, `status` (`deleted`), `deleted_mappings`, `deleted_cache_rows`, `deleted_catalog_sites`, `credential_record_deleted`, `key_file_deleted`, and `completed_at`. Repeating the same request within 24 hours returns the same result.
+
+If MainWP removes the account but can't delete the key file, the call returns `mainwp_fathom_delete_partial` with `retryable: true`. Repeat the same request to finish the key cleanup.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_fathom_access_denied` | 403 | Check Fathom Add-on access, site access, and `manage_options` for administrator abilities |
+| `mainwp_fathom_invalid_input` | 400 | Check required fields, types, dates, ranges, and extra properties |
+| `mainwp_fathom_site_not_found` | 404 | Check the MainWP site ID or domain |
+| `mainwp_fathom_mapping_not_found` | 404 | Map the site to a Fathom site first |
+| `mainwp_fathom_not_found` | 404 | Check the local `account_id` and that the account is connected |
+| `mainwp_fathom_account_unavailable` | 409 | Reconnect or replace the mapped account's token |
+| `mainwp_fathom_conflict` | 409 | Re-read the current revision, mapping, or deletion preview and try again |
+| `mainwp_fathom_lock_busy` | 409 | Wait for the operation already in progress, then retry |
+| `mainwp_fathom_remote_failure` | 502 | Check Fathom availability and the account's API token |
+| `mainwp_fathom_refresh_failed` | 502 | The cached analytics weren't refreshed and the previous cache was kept; check Fathom availability and retry |
+| `mainwp_fathom_delete_partial` | 500 | Repeat the delete request to finish key cleanup |
+| `mainwp_fathom_cache_write_failed` | 500 | Resolve the Dashboard storage error and retry |
+| `mainwp_fathom_write_failed` | 500 | Inspect current state and resolve the Dashboard storage error |
+
+A failed Fathom request doesn't replace the existing account, discovered sites, or cached analytics.
+
+## Related Resources
+
+- [Fathom Integration](/add-ons/analytics/fathom-extension) - Setup, site mapping, settings, and Team Control access
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) - Staff roles and site access

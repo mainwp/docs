@@ -12,10 +12,11 @@ thirdPartyPlugin: "Patchstack"
 - Registering and protecting child sites
 - Viewing vulnerability and attack data
 - Configuring API sync and notifications
+- Reading Patchstack status through MainWP Abilities
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Patchstack" data-purchase-url="https://mainwp.com/add-on/patchstack-integration/" data-pricing-tier="free" data-bundle="Essentials" data-addon-type="integration" data-version="6.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-patchstack-extension/" data-video-url="https://www.youtube.com/watch?v=eQ6LMfOj1zU" data-integrates-with="Patchstack" data-owned-by="Patchstack OÜ" data-privacy-url="https://patchstack.com/privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Patchstack" data-purchase-url="https://mainwp.com/add-on/patchstack-integration/" data-pricing-tier="free" data-bundle="Essentials" data-addon-type="integration" data-version="6.2" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-patchstack-extension/" data-video-url="https://www.youtube.com/watch?v=eQ6LMfOj1zU" data-integrates-with="Patchstack" data-owned-by="Patchstack OÜ" data-privacy-url="https://patchstack.com/privacy-policy/" />
 
 <iframe src="https://www.youtube.com/embed/K9N_gmRFqGI" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
 
@@ -26,6 +27,7 @@ The Patchstack add-on connects your MainWP Dashboard with your Patchstack accoun
 - View protection status, vulnerabilities, recent attacks, and available updates
 - Track trends with global and per-site widgets (attacks blocked, active threats, firewall logs)
 - Include Patchstack stats in the MainWP Overview and Pro Reports
+- Read cached Patchstack status through MainWP Abilities
 
 ![Patchstack Threats Monitor](/images/miscellaneous/add-ons-security-99f53b.png)
 
@@ -159,6 +161,22 @@ Navigate to **MainWP \> Sites \> Security \> Patchstack Integration \> Settings*
 | Email notifications           | Toggle alerts and customize recipients/templates through **MainWP \> Settings \> Email Settings** |
 | Per-site overrides            | Let specific clients use different API keys, schedules, or notification preferences               |
 
+## MainWP Abilities
+
+Patchstack 6.2 registers five read-only abilities. Use them to let an AI assistant, script, or other compatible tool read Patchstack status without opening the Patchstack screens:
+
+- Connection status, sync schedule, and plan allowance
+- Account-wide site and vulnerability totals
+- One site's mapping, plugin, and firewall state
+- One site's vulnerability counts
+- A paginated list of one site's cached vulnerabilities
+
+The abilities return data from the last Patchstack sync. They do not contact Patchstack, change settings, or start a sync. Sync the data first when you need current results. These features require WordPress 6.9 or later and MainWP Dashboard with Abilities API support.
+
+Users need `manage_options` and access to the Patchstack Add-on. Site-specific reads also require access to the selected site.
+
+Use the dedicated [Patchstack Abilities reference](/api-reference/abilities-api/patchstack) for inputs, request examples, and error handling.
+
 ---
 
 ## Related Resources
@@ -166,3 +184,4 @@ Navigate to **MainWP \> Sites \> Security \> Patchstack Integration \> Settings*
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Alternative vulnerability scanning
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include Patchstack stats in reports
+- [Patchstack Abilities](/api-reference/abilities-api/patchstack) - Read cached Patchstack status through MainWP Abilities
