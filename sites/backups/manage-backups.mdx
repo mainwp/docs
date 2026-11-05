@@ -409,6 +409,8 @@ On **Snapshots & Restore**:
 - Use **Clean Up** to remove leftover files from interrupted backups, prune on-demand backups beyond the keep count, and delete snapshots whose task was deleted.
 - Enable **Show removed backups** to see removal history and reasons.
 
+**Delete** and **Clean Up** appear only for users who can delete backups. With [Team Control](/add-ons/agency/team-control-extension#backup-permissions), this can be a separate permission from running backups.
+
 <Warning>
 **Clean Up** also deletes cloud copies of snapshots whose task was deleted, even if you kept those snapshots when deleting the task. Deleted backups can no longer be restored.
 
@@ -485,6 +487,14 @@ If the restore finished on the Child Site but the Dashboard cannot reconnect, cl
 
 After a failed database restore, resolve the reported database problem before removing maintenance mode.
 
+### Restore From the Command Line
+
+If WordPress Admin or the Dashboard is unavailable, you can restore a built-in backup directly on the Child Site server with WP-CLI. This path does not create a safety backup. See [Restore a Built-In Backup](/advanced/miscellaneous/mainwp-wp-cli-commands#restore-a-built-in-backup).
+
+```bash
+wp mainwp-child backup restore backup-1718900000.zip --type=full --yes
+```
+
 <Accordion title="Restoring a WooCommerce store">
 Restoring a database normally replaces orders, customers, and other data with the snapshot's version.
 
@@ -523,6 +533,9 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
+| Backup or restore fails with "This request uses a newer backup format than this version of MainWP Child supports" | The Child site runs an older MainWP Child version. Update MainWP Child on that site, sync it, and start the backup or restore again. MainWP Child makes no changes to the site when it rejects the request. |
+| Backup or restore fails with "The site layout changed" | The site's folder layout changed after the task started. Start the backup or restore again. |
+| Restore stops partway through a large backup | The restore inactivity timer resets while backup data is transferring to the Child site. A stalled transfer or an expired restore time limit can stop it. Read the reported error and check disk space on the Child Site before trying again. |
 | File backup is refused because content is outside the WordPress folder | Built-in backups do not support this layout for file backups or restores. Use database-only tasks and your host's file backups. |
 
 Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.

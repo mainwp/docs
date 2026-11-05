@@ -27,17 +27,17 @@ Use these abilities to feed domain expiration data into scripts, reports, or AI 
 - WordPress 6.9 or later on the MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - A Domain Monitor release with Abilities support, active on MainWP Dashboard
-- An authenticated WordPress user with `manage_options` and access to the Domain Monitor Add-on
+- An authenticated user permitted to use MainWP abilities, with access to the Domain Monitor Add-on
 - Access to the target sites
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
 Every call checks the Domain Monitor Add-on permission and the user's allowed sites. Team Control restrictions apply:
 
-- Site-specific calls return 404 `mainwp_domain_monitor_site_not_found` for a site the user cannot access. A site that does not exist returns the same error.
+- Missing sites and sites outside the user's Team Control selection return 404 `mainwp_domain_monitor_site_not_found`. Other Dashboard site-access refusals can return 403 `mainwp_domain_monitor_access_denied`.
 - The summary list omits sites the user cannot access.
 - Replacing the **global** policy requires access to all sites. Users restricted to selected sites can only change per-site policy.
-- Team Control staff roles without `manage_options` cannot use these abilities yet.
+- Application Password and session authentication require `manage_options`. An authorized MainWP API key can also be used by a Team Control role with an explicit, nonempty site selection and permission to use MainWP abilities. Add-on and operation permissions still apply.
 
 ## Available Abilities
 
@@ -488,7 +488,7 @@ Standard authentication, schema, and method errors follow the [Abilities API err
 |------|------|---------|
 | `mainwp_domain_monitor_invalid_input` | 400 | Missing, `null`, extra, or invalid input, or an invalid `dry_run`/`confirm` combination |
 | `mainwp_domain_monitor_authentication_required` | 401 | The request is not authenticated |
-| `mainwp_domain_monitor_access_denied` | 403 | The user lacks Domain Monitor access, or a site-restricted user tried to change global policy |
+| `mainwp_domain_monitor_access_denied` | 403 | MainWP ability, Add-on, or site access was denied, or a site-restricted user tried to change global policy |
 | `mainwp_domain_monitor_site_not_found` | 404 | The site does not exist or the user cannot access it |
 | `mainwp_domain_monitor_conflict` | 409 | The revision is stale, the site's manual mode doesn't match the operation, or a selected site has no Domain Monitor record. Read again before continuing |
 | `mainwp_domain_monitor_busy` | 409 | Another Domain Monitor operation is running for the same target. Try again shortly |
