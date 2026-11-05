@@ -193,6 +193,14 @@ As always, widgets can be enabled or disabled in [Page Settings](/getting-starte
 
 If automatic fetching is disabled, visiting MainWP Dashboard pages does not refresh the analytics data. Use **Refresh Data** when you need fresh figures, or enable automatic fetching for scheduled refreshes.
 
+## MainWP Abilities
+
+The Abilities-enabled Google Analytics build registers nine abilities in the `mainwp-google-analytics` category. Use them to read connections and cached properties, manage site mappings and refresh settings, read cached aggregate analytics, and request background refreshes.
+
+The abilities require WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Google Analytics build that registers them. Authenticate with a WordPress Application Password. Add-on and site permissions still apply. Mapping changes, refresh-policy changes, and refresh requests require a preview token before confirmation.
+
+See [Google Analytics Abilities](/api-reference/abilities-api/google-analytics) for discovery, permissions, request examples, response fields, and retry handling. Read abilities return stored Dashboard data; request and track a refresh when you need new data from Google.
+
 ## Troubleshooting
 
 ### Cannot add the encryption key to `wp-config.php`
@@ -203,7 +211,9 @@ If you see this message:
 
 The add-on could not safely write its encryption key to the MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
 
-Add the key manually:
+Before generating a key, check whether this Dashboard previously used `MAINWP_GA_ENCRYPTION_KEY`. If it did, restore the original definition from your secure configuration backup. A new key cannot decrypt credentials saved with the previous key. Follow [Recover an existing encryption key](#recover-an-existing-encryption-key) if the notice says saved Google credentials cannot be read.
+
+For a Dashboard that has never used an encryption key and has no credentials saved under an older key, add the key manually:
 
 <Steps>
   <Step title="Back up wp-config.php.">
@@ -239,6 +249,22 @@ Do not make `wp-config.php` world-writable or grant PHP permission to change fil
 A file ending in `.mainwp-lock` may be created while the add-on coordinates an automatic update. It is a lock file, not the cause of the warning and not a replacement for `wp-config.php`. Add the definition to the active `wp-config.php` file.
 
 If Google Search Console shows a similar warning, follow the instructions in the [Google Search Console troubleshooting section](/add-ons/analytics/google-search-console-extension#cannot-update-wp-configphp-automatically) and generate a separate key for its constant.
+
+### Recover an existing encryption key
+
+If the Add-on finds saved Google credentials but no encryption key in `wp-config.php`, it keeps those credentials unavailable instead of replacing the key. Back up the current configuration before making changes.
+
+- **The original key is available:** Restore this site's previous `MAINWP_GA_ENCRYPTION_KEY` definition from your secure backup. Place it above the line that loads `wp-settings.php`, keeping exactly one definition. Reload MainWP Dashboard.
+- **The original key is lost:** Go to **Google Analytics > Manage Accounts** and use **Remove Account** for every Google account. Then connect each account again from **Add Account**. The Add-on creates a new key once no credentials saved under the old key remain. Removing accounts requires reconnecting them; review the site assignments afterward.
+- **The defined key is invalid:** Correct the definition using the original valid key. Generating a different key does not recover existing encrypted credentials.
+
+Keep the encryption key in the Dashboard's secure configuration backups. It is separate from the MainWP Bridge site secret and Google's Service Account JSON key. **Reset Now** repairs the Bridge site secret; it does not recover `MAINWP_GA_ENCRYPTION_KEY`.
+
+### Configuration rollback failed
+
+If the notice says the Add-on could not safely restore `wp-config.php` after a failed update, automatic retries have stopped. Restore the file from a known-good backup, then ask your hosting provider to check disk space, permissions, ACLs, and the server security context.
+
+If no backup is available, have your hosting provider or server administrator inspect the active file before retrying. Keep exactly one encryption-key definition. Restore the previous key when one was already in use; otherwise follow the [initial key setup](#cannot-add-the-encryption-key-to-wp-config-php). Do not generate a replacement for credentials encrypted with a lost key; use the account-removal and reconnection procedure above.
 
 ### Sign In with Google buttons are disabled / "Google OAuth requires the WordPress REST API" notice
 
@@ -315,6 +341,7 @@ If accounts still require re-verification after cron is stable, check for a corr
 
 ## Related Resources
 
+- [Google Analytics Abilities](/api-reference/abilities-api/google-analytics) - Read cached analytics, manage mappings, and track background refreshes
 - [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's registered account, site-assignment, and cached-statistics tables
 - [Analytics Add-ons](/add-ons/analytics) - Browse all analytics integrations
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include analytics data in reports
