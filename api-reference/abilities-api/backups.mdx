@@ -40,7 +40,7 @@ Read abilities use `GET`. Pass input as a JSON-encoded `input` query parameter w
 
 ```bash
 curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
-  --data-urlencode 'input={"site_id_or_domain":1}' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-backup-progress-v1/run'
 ```
 
@@ -107,6 +107,51 @@ The backup continues in the background. Follow the returned polling instructions
 | `mainwp/update-backup-settings-v1` | Change supported backup settings |
 
 Edit destination credentials, hosts, buckets, and paths in **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`). Configure encryption and the recovery passphrase in [Backup Settings](/sites/backups/manage-backups#encrypt-backup-archives).
+
+## Read API Backups Data
+
+MainWP Dashboard 6.4.1 adds two read-only abilities for [API Backups](/sites/backups/api-backups). They appear in the `mainwp-backups` category when the API Backups module is enabled. Use them to check which hosting providers are configured and when backups were last requested for each site.
+
+| Ability | Purpose |
+| --- | --- |
+| `mainwp/list-api-backups-providers-v1` | List providers with stored credentials, whether each is enabled, and how many accessible sites use it |
+| `mainwp/list-api-backups-site-status-v1` | List accessible sites, their provider, and their last stored backup request date |
+
+These abilities read only data stored on the Dashboard. They do not contact providers or Child Sites, and they never read or decrypt credentials. A listed provider does not mean its credentials are valid.
+
+Filter the site list by provider and page through results. `per_page` accepts `1` to `100` and defaults to `20`:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"provider":"cloudways","per_page":20,"page":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-api-backups-site-status-v1/run'
+```
+
+Example response:
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 12,
+      "name": "Acme Store",
+      "provider": "cloudways",
+      "last_backup": "2026-11-02T08:15:00+00:00",
+      "last_status": "unknown"
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1,
+  "hidden_site_count": 0
+}
+```
+
+`last_backup` is the date a backup was last requested, or `null` if none is stored. It is not a confirmed completion time. `last_status` is `unknown` because API Backups does not consistently store backup outcomes. `hidden_site_count` is the number of sites excluded because your account can't access them.
+
+Provider values are `cloudways`, `gridpane`, `vultr`, `linode`, `digitalocean`, `cpanel`, `plesk`, and `kinsta`.
+
+Both abilities require a Dashboard administrator with the API Backups management permission. The providers ability also requires access to all sites and tags. Accounts restricted to some sites receive `403` with `mainwp_restricted_account`.
 
 ## Permissions and Restore Results
 

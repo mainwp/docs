@@ -287,6 +287,24 @@ With MainWP Child 6.3, Pressable Cache Management reports provider confirmation 
 
 Keep MainWP Child up to date. This ability requires structured purge results, including `result_basis`. A Child response without those fields returns `mainwp_cache_control_purge_result_invalid`; the cache may still have been purged, so check the site's logs before retrying.
 
+### Purge request failures
+
+When MainWP Dashboard cannot complete the request to the Child site, the purge ability returns one of these errors:
+
+| Dashboard result | Error code | HTTP |
+|------------------|------------|------|
+| The site is suspended | `mainwp_cache_control_site_unavailable` | 409 |
+| MainWP Dashboard refused to send the request because of permissions | `mainwp_cache_control_access_denied` | 403 |
+| The connection failed, dropped, or returned any other error | `mainwp_cache_control_purge_transport_unknown` | 502 |
+
+A 403 means MainWP Dashboard refused the request before sending it, so nothing was purged. A 502 means the outcome is unknown. Check the site and its logs before retrying.
+
+<Note>
+Cache Control 5.3.1 and later report a Dashboard permission refusal as 403. This requires a MainWP Dashboard version that reports refusals separately from connection failures. With an older Dashboard, refusals return 502. Update Cache Control before, or together with, MainWP Dashboard.
+</Note>
+
+The Cache Control screens in MainWP Dashboard still show one generic error message for both cases. Only the ability and its REST route return the separate status codes.
+
 ## Read the Last Purge Outcome
 
 **Ability:** `mainwp/get-site-cache-purge-outcome-v1`<br />
@@ -311,7 +329,7 @@ Standard authentication, schema, and method errors follow the [Abilities API err
 | Code | HTTP | Meaning |
 |------|------|---------|
 | `mainwp_cache_control_invalid_input` | 400 | Invalid site ID, mode, value type, or input fields |
-| `mainwp_cache_control_access_denied` | 403 | Cache Control, Dashboard capability, or site access was denied |
+| `mainwp_cache_control_access_denied` | 403 | Cache Control, Dashboard capability, or site access was denied, or MainWP Dashboard refused to send the purge request |
 | `mainwp_cache_control_site_not_found` | 404 | The requested site could not be resolved |
 | `mainwp_cache_control_purge_in_progress` | 409 | Another purge is in progress for this site |
 | `mainwp_cache_control_site_unavailable` | 409 | The site is unavailable for purging, including when suspended |
@@ -321,7 +339,7 @@ Standard authentication, schema, and method errors follow the [Abilities API err
 | `mainwp_cache_control_credential_read_failed` | 500 | Stored credential state could not be read |
 | `mainwp_cache_control_purge_outcome_storage_failed` | 500 | The purge returned a result, but its structured outcome could not be stored |
 | `mainwp_cache_control_child_unavailable` | 502 | The Cache Control Child integration is unavailable |
-| `mainwp_cache_control_purge_transport_unknown` | 502 | The purge result could not be confirmed |
+| `mainwp_cache_control_purge_transport_unknown` | 502 | The purge result could not be confirmed, including when the connection to the Child site failed |
 | `mainwp_cache_control_purge_result_invalid` | 502 | The Child returned an invalid or unsupported purge result |
 
 Policy write errors include `data.rollback_failed`. If it is `true`, read the current settings and resolve the save failure before syncing. After a purge transport, result, or storage error, inspect the site and logs before retrying because a purge may already have occurred.
