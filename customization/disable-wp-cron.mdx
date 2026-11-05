@@ -7,7 +7,7 @@ description: "Advanced reference for invoking individual MainWP Dashboard and Ad
 <Warning>
 This is an advanced manual setup and is not the recommended solution for a low-traffic MainWP Dashboard. Direct worker files invoke specific MainWP tasks; they do not replace WordPress's complete cron and background-event processing.
 
-For most installations, keep **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`) enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+For most installations, keep **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`) enabled and configure the server to request `wp-cron.php` every minute. Follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Warning>
 
 This page documents the individual workers currently available for administrators who intentionally choose to maintain direct server cron jobs.
@@ -89,7 +89,7 @@ Before switching, inventory every enabled MainWP feature and Add-on and identify
     Record every MainWP Dashboard feature and Add-on that relies on scheduled processing, including multi-stage workflows.
   </Step>
   <Step title="Turn off Use WP Cron">
-    Turn off **top-right user menu > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`). This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
+    Turn off **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings > Use WP Cron** (`/wp-admin/admin.php?page=SettingsAdvanced`). This removes the MainWP recurring schedules controlled by the setting; it does not disable WordPress WP-Cron globally.
   </Step>
   <Step title="Configure each documented worker">
     Create a separate server job for every required worker at the exact cadence shown below.
@@ -121,7 +121,15 @@ Use the job-specific examples below to identify the correct cron filename. For A
 
 ### Alternative HTTP invocation
 
-If direct PHP execution is unavailable, use an HTTPS request with the complete job-specific plugin directory and filename:
+If direct PHP execution is unavailable, use an HTTPS request. Starting with MainWP Dashboard 6.4.1, HTTP requests to MainWP Dashboard core cron scripts use an access key. After turning off **Use WP Cron**, open **MainWP menu (three lines, top right) > System Info > Cron Schedules** as a Dashboard administrator. Copy **URL for wget or curl (key included)** from **System cron**. For other core workers, replace the script filename and keep the same key.
+
+```bash
+curl -fsS 'https://example.com/wp-content/plugins/mainwp/cron/updatescheck.php?key=YOUR_CRON_KEY' > /dev/null 2>&1
+```
+
+Existing installations have a default 60-day transition for keyless HTTP requests. Update existing HTTP jobs during that window. Keep the keyed URLs private. If you rotate the key, update every job that uses it. Direct PHP commands continue to work without a key.
+
+For Add-on workers that support HTTP, use the Add-on directory and filename listed for that worker:
 
 ```bash
 curl -fsS 'https://example.com/wp-content/plugins/PLUGIN-DIRECTORY/cron/CRON-FILE' > /dev/null 2>&1
@@ -221,11 +229,35 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     ```
 
     <Note>
-    These workers run built-in backups in the MainWP 6.4 Release Candidate (RC) and Legacy Backups in earlier versions. They do not run backup Add-ons.
+    These workers run built-in backups in MainWP 6.4 and later and Legacy Backups in earlier versions. They do not run backup Add-ons.
 
-    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Built-in backups also require other scheduled events, including daily retention cleanup, that these two workers do not run.
+    In 6.4, the continuation worker also processes uploads, cloud deletions, retention, restores, and automatic restore tests. Configure the backup slice and daily cleanup workers below as separate jobs when using direct-worker mode.
 
     For [MainWP Built-In Backups](/sites/backups/manage-backups), keep **Use WP Cron** enabled and follow the [low-traffic cron setup](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) to run all required events.
+    </Note>
+
+    #### Run Backup Steps
+
+    **Frequency:** every minute (crontab schedule: `* * * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_slice.php > /dev/null 2>&1
+    ```
+
+    Starts due built-in backup tasks and advances backup processing. Keep this worker scheduled every minute in addition to the hourly start and five-minute continuation workers.
+
+    #### Clean Up Old Backups
+
+    **Frequency:** once daily (example crontab schedule: `0 0 * * *`)
+
+    ```bash
+    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/backups_prune.php > /dev/null 2>&1
+    ```
+
+    Applies configured backup retention policies and prunes old backup diagnostics and run history. The example runs at midnight in the server's cron timezone; another daily time is also suitable.
+
+    <Note>
+    These two workers are for MainWP Built-In Backups in MainWP 6.4 and later. They do not run backup Add-ons or replace the general WordPress WP-Cron queue.
     </Note>
 
     #### Send Site Health Notifications
@@ -500,6 +532,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
 ## Related Resources
 
 - [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) - Recommended configuration
+- [Cron Key for HTTP Cron Calls](/customization/cron-key-for-http-cron-calls) - Key for HTTP cron jobs
 - [WordPress: Hooking WP-Cron Into the System Task Scheduler](https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/)
 - [MainWP System Requirements](/advanced/miscellaneous/mainwp-system-requirements) - Server requirements
 - [How to Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Update scheduling

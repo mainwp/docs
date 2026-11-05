@@ -7,10 +7,19 @@ description: >-
 
 MainWP Built-In Backups lets you back up and restore Child Sites directly from MainWP Dashboard, without a backup add-on or third-party backup plugin.
 
-MainWP Child creates the backup and sends it to your Dashboard. You can also store copies on remote storage or a mounted drive.
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/AOY72CdvfL4"
+  title="MainWP Built-In Backups - Video Tutorial"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+MainWP Child creates the backup archive. Your MainWP Dashboard downloads it, stores it locally, and uploads copies to the selected storage destinations. Backups do not upload directly from the Child Site to cloud storage.
 
 <Info>
-This guide covers built-in backups in the MainWP 6.4 Release Candidate (RC). Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
+MainWP Built-In Backups is available in MainWP 6.4 and later. Keep MainWP Dashboard and MainWP Child updated, and test backups and restores on a staging site.
 </Info>
 
 To manage your hosting provider's backups, use [API Backups](/sites/backups/api-backups). For third-party backup plugins, see [Backup Add-ons](/add-ons/backups).
@@ -26,9 +35,10 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 ## Prerequisites
 
 - MainWP Dashboard 6.4 running PHP 8.3 or higher
-- MainWP Child with built-in backup support, running PHP 7.4 or higher
+- The matching MainWP Child 6.4 release or later, running PHP 7.4 or higher
 - A connected Child Site that syncs successfully
 - An administrator account to enable and configure backup settings
+- A private backup directory on the Dashboard server, writable by its PHP process and outside publicly served folders. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory).
 - Enough free disk space on the Child Site and Dashboard for backup and restore files
 - Working WordPress cron on the Dashboard for schedules and background tasks
 - Storage credentials if you want copies outside the Dashboard
@@ -41,7 +51,7 @@ Open **MainWP > Sites > Backups** after enabling built-in backups.
 
 | Screen | Use it for | Relative URL |
 | --- | --- | --- |
-| Top-right user menu > MainWP Settings > Backup Settings | Enable built-in backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
+| MainWP menu (three lines, top right) > MainWP Settings > Backup Settings | Enable built-in backups, encryption, diagnostics, and on-demand retention | `/wp-admin/admin.php?page=BackupSettings` |
 | Backups > Manage Backups | View schedules, run tasks, and inspect errors | `/wp-admin/admin.php?page=ManageBackups` |
 | Backups > Add New | Create a scheduled backup task | `/wp-admin/admin.php?page=ManageBackupsAddNew` |
 | Backups > Storage | Connect and test storage destinations | `/wp-admin/admin.php?page=ManageBackupsStorage` |
@@ -53,9 +63,9 @@ A **task** defines what to back up, which sites to include, and when to run. A *
 
 <Steps>
 <Step title="Enable built-in backups">
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Enable built-in backups and save.
+Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
-If **Select primary backup system** is shown, select the built-in backup system.
+If **Select primary backup system** is shown, select **Built-In Backups**. Turn on **Enable Built-In Backups** and click **Save Settings**.
 </Step>
 
 <Step title="Choose where to store the backup">
@@ -83,9 +93,29 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 **Back Up Now** uses the destinations selected on the site's scheduled tasks. If those tasks have no destinations, the backup stays on the Dashboard. The default destination applies only to sites without a scheduled task.
 </Note>
 
+## Set Up the Private Backup Directory
+
+MainWP Dashboard needs a private directory on its own server to store downloaded backups and working files, even when you use remote storage. This is separate from the temporary backup files MainWP Child creates on each Child Site.
+
+MainWP attempts to create the directory automatically. If you see **Private backup directory is unavailable**, configure a writable private location on the **Dashboard server**:
+
+1. Create a directory outside the Dashboard's WordPress and `wp-content` directories, in a location that no website serves over the web. Make it writable by the PHP process running your Dashboard.
+2. Back up your Dashboard's `wp-config.php`, then add or update `MAINWP_BACKUP_PRIVATE_DIR` before the line that loads `wp-settings.php`:
+
+   ```php
+   define( 'MAINWP_BACKUP_PRIVATE_DIR', '/absolute/path/to/private/mainwp-backups' );
+   ```
+
+   Replace the example path with the directory's actual absolute path on your Dashboard server. Add this setting to the Dashboard's `wp-config.php`, not a Child Site's file.
+3. Retry the backup and confirm that it completes and appears under **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`).
+
+A folder outside one WordPress installation may still be publicly served by another website. This matters when the Dashboard is in a subdirectory, on an addon domain, or inside another site's folder. Choose a location outside every website's public folders.
+
+If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
+
 ## Configure Storage
 
-Completed backups are stored in the Dashboard's private backup directory. Storage destinations receive additional copies. Keep enough free space on both the Dashboard and Child Site to create and process backups.
+Completed backups are stored in the Dashboard's private backup directory, organized by Child Site. Storage destinations receive copies uploaded by the Dashboard. A **Local Path** destination also refers to a path on the Dashboard server. Keep enough free space on both the Dashboard and Child Site to create and process backups, even when using [Remove local archives after upload](#retention-and-cleanup).
 
 When moving the Dashboard, [include its private backup directory in the transfer](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
@@ -115,7 +145,7 @@ Choose **Use as default destination** or **Make Default** to preselect a destina
 
 | Provider | Details to enter |
 | --- | --- |
-| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable Path style addressing when your service requires it. |
+| S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable [Path style addressing](#s3-bucket-names-with-dots) when your service requires it. |
 | Google Cloud Storage | Bucket, HMAC access key, and HMAC secret from your storage interoperability settings. |
 | Dropbox | App key, App secret, and an optional Folder. Register the exact Redirect URI shown in MainWP in your Dropbox app, then use Connect Dropbox. The app needs `files.content.write`, `files.content.read`, and `files.metadata.read` permissions. |
 | SFTP | Host, Port, Username, and an existing absolute Directory path. Use a Password or a PEM Private key. When a private key is supplied, Password is its passphrase. |
@@ -124,6 +154,29 @@ Choose **Use as default destination** or **Make Default** to preselect a destina
 For SFTP, you can supply the server's **Host key fingerprint** to verify its identity. If left empty, the first key received is trusted and pinned. Obtain the fingerprint from your server administrator when possible.
 
 **Local Path** does not count as offsite storage, even on a mounted drive, and cannot satisfy **Require an offsite-verified backup**.
+
+Set **Minimum retention (days)** on a destination to protect its copies from automatic cleanup for a minimum period. The default is zero, which disables this protection. See [Minimum Retention at a Destination](#minimum-retention-at-a-destination).
+
+### S3 Bucket Names with Dots
+
+By default, MainWP places the bucket name before the storage endpoint in the request hostname. If the bucket name contains a dot, such as `example.com`, HTTPS requests can fail with an SSL certificate hostname mismatch.
+
+For Amazon S3 or Wasabi buckets containing dots, enable **Path style addressing**. This places the bucket name in the URL path instead. Other S3-compatible services may have different addressing requirements; follow your provider's guidance.
+
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and configure the destination. In MainWP Dashboard 6.4.1 and later, MainWP enables **Path style addressing** by default for new destinations with dotted bucket names on recognized Amazon S3 and Wasabi HTTPS endpoints. Existing destinations keep their saved setting. Verify **Path style addressing** is enabled, then click **Test Connection & Save**.
+
+For example, use these settings for a Wasabi bucket in `eu-central-1`:
+
+| Field | Example |
+| --- | --- |
+| Endpoint | `https://s3.eu-central-1.wasabisys.com` |
+| Region | `eu-central-1` |
+| Bucket | `example.com` |
+| Path style addressing | Enabled |
+
+The **Endpoint** must match the bucket's region. Enter the bucket name in the separate **Bucket** field; do not include it in the endpoint. Check [Wasabi's regional service URLs](https://docs.wasabi.com/docs/service-urls-for-wasabis-storage-regions) for your bucket's region.
+
+For background, see [Amazon S3's dotted-bucket certificate limitation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) and [Wasabi's path-style recommendation](https://docs.wasabi.com/apidocs/rest-api-introduction).
 
 ### Share a Bucket Between Sites
 
@@ -135,12 +188,29 @@ For eligible restores of unencrypted backups, the Dashboard can send the Child S
 
 Keep the bucket private and do not share its credentials with Child Sites. Separate paths organize the backups but do not create independent storage permissions. Anyone with bucket-wide access can access the backups, and anyone with a temporary download link can use it while it remains valid.
 
+### Understand the Cloud Backup Layout
+
+MainWP organizes cloud copies by Child Site ID and snapshot ID, rather than the site's name. For example, `12/34/` contains snapshot 34 for Child Site 12.
+
+Inside a snapshot folder, you may see:
+
+| Item | Purpose |
+| --- | --- |
+| `chunks/` | Backup data split into hashed `.bin` files. The default chunk size is 4 MiB, approximately 4.2 MB. |
+| `files/` | Small backup files uploaded whole instead of split into chunks. |
+| `manifest.json` | Archive names, site and snapshot details, and the information needed to reconstruct the backup from its chunks. |
+
+Splitting larger archives into chunks lets interrupted uploads resume. A large backup can produce many chunk files; seeing `.bin` files instead of a ZIP or Tar GZip archive is expected. The **Backup file name** tokens do not change these numbered cloud folders or hashed chunk names.
+
+Use [Snapshots & Restore](#restore-a-backup) to find backups by site and date and restore a completed remote copy. For a downloadable archive, see [Download a Backup](#download-a-backup).
+
 ### Encrypt Backup Archives
 
-Open **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
+Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`):
 
-1. Set a **Backup recovery passphrase**. The first setup also asks for your WordPress password. Store the passphrase separately from the Dashboard.
-2. Enable **Encrypt backup archives** and save.
+1. Turn on **Encrypt backup archives** to show the **Backup recovery passphrase** fields.
+2. Set a recovery passphrase. The first setup also asks for your WordPress password. Use at least 12 characters; a long, unique passphrase of 20 characters or more is recommended. Store it separately from the Dashboard.
+3. Click **Save Settings** and confirm that encryption remains enabled.
 
 ![Backup Settings with archive encryption enabled and fields for the current and new recovery passphrases.](/images/sites/built-in-backups/backup-encryption.jpg)
 
@@ -150,7 +220,7 @@ MainWP encrypts new archives before uploading them. Existing snapshots remain un
 Keep the recovery passphrase and your Dashboard's encryption keys safe. The passphrase can recover a lost encryption key, but you still need backups of the Dashboard database and backup files.
 </Warning>
 
-S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption.
+S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption. To stop requesting provider-side encryption from MainWP, select **None** and click **Test Connection & Save**. Your bucket's own encryption settings still apply.
 
 ## Create a Scheduled Backup
 
@@ -218,7 +288,7 @@ For large sites, use **Tar GZip**. MainWP can switch large Zip backups to Tar GZ
 
 Review the exclusion switches for known backup locations, known cache locations, non-WordPress folders, and ZIP archives. Excluding old backup archives avoids repeatedly backing up earlier backups. Do not exclude files you expect to recover.
 
-Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`.
+Enter **Custom excludes** as paths relative to the Child Site's WordPress directory, separated by newlines or commas. For example, `wp-content/cache`. To exclude the standard WordPress uploads folder, use `wp-content/uploads`. To exclude only a form upload folder, enter that folder's actual relative path. Excluded files will not be available from that backup during restore.
 
 ### Database Dumps and the Clone Folder
 
@@ -262,7 +332,7 @@ A recent backup stored only locally shows **At Risk**. **Protected** confirms ba
 
 ## Check Backup Status
 
-Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last Run**, **Next Run**, destinations, and errors. Click **Last run reported errors** or **Last run notes** to review the details.
+Open **Manage Backups** (`/wp-admin/admin.php?page=ManageBackups`) to check **Last Run**, **Next Run**, destinations, and errors. Hover over **Last run reported errors** or **Last run notes** to read the details. These badges show tooltips; they do not open a copyable log. Use [Export Diagnostics](#export-diagnostics) for a downloadable report.
 
 Starting a task with **Run Now** opens a progress window. Use **View Progress** or **View Result** to inspect the run. Closing the progress window leaves the backup running.
 
@@ -274,8 +344,6 @@ Use the task's action menu to **Edit**, **Pause**, **Resume**, or **Delete** it.
 
 A later **Clean Up** for the site deletes these retained snapshots and their cloud copies. See [Retention and Cleanup](#retention-and-cleanup).
 
-For email notifications, review **Send email when backup starts** and **Send email when backup fails** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
-
 On **Snapshots & Restore**, select a site and check **Available from** and the upload details.
 
 If a snapshot shows **files not backed up**, click the warning to inspect the listed paths. A completed backup can still omit files. Resolve any unexpected omissions and create another backup before relying on it.
@@ -286,10 +354,19 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 | Partially Uploaded | Some configured remote copies completed, but others have not |
 | Upload Failed / Re-enter Credentials | Inspect the error and test or update the affected storage connection |
 | Offsite Verified | All remote uploads for this snapshot completed and passed verification |
+| Damaged Archive | A backup archive failed an integrity check. Review the reported error and create a new full backup. |
 
 **Offsite Verified** includes remote file size checks. It does not confirm that the backup can restore the site.
 
 The **Test Restore** column shows automatic restore test results. MainWP periodically tests selected backups in a temporary environment on the Dashboard, leaving the live Child Site unchanged. **Couldn't test here** can indicate missing database permissions on the Dashboard host. Test a restore on a staging site as well.
+
+### Backup Notification Emails
+
+Review **Send email when backup starts** and **Send email when backup fails** under **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
+
+Scheduled backup alerts normally go to the WordPress profile email of the account that last saved the task. To change that account's address, sign in as that user and open **WordPress Users > Profile** (`/wp-admin/profile.php`). A previously saved MainWP notification address from an older setup can take precedence. There is no separate recipient list for backup alerts on Backup Settings, and the recipient lists on Email Settings do not control these alerts.
+
+The failure alert covers errors while executing the scheduled backup task. A later failure during a remote upload does not trigger that alert; also check the snapshot's upload status.
 
 ### Download a Backup
 
@@ -299,21 +376,32 @@ Incremental backups cannot be downloaded as one archive. Use **Restore** to rest
 
 ## Retention and Cleanup
 
-Each scheduled task has its own retention settings, applied per site.
+Each scheduled task has its own **Backup Retention** settings, applied separately to each Child Site. For example, **Keep last** set to seven is a separate count for each site in that task, not a shared total across all selected sites. Another task for the same site has its own policy.
 
-![Backup Retention settings showing Keep last, age and storage limits, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
+![Backup Retention settings in dark mode, including count, age and storage limits, Remove local archives after upload, and Remove cloud copies too.](/images/sites/built-in-backups/backup-retention.jpg)
 
 | Setting | Effect |
 | --- | --- |
 | Keep last | Retains the selected number of backups or complete incremental chains |
 | Remove backups older than (days) | Makes older backups or chains eligible for removal |
 | Storage cap (MB) | Removes older backups or chains when their combined size exceeds the cap |
+| Remove local archives after upload | Removes Dashboard archives from new backups after every selected destination has a verified upload; requires at least one remote destination |
 | Start a new chain after (backups) | Creates a new full base after an incremental chain reaches this length, including its initial full backup |
-| Remove cloud copies too | Also removes the corresponding copies from the task's storage destinations |
+| Remove cloud copies too | Also deletes the corresponding remote copies when task retention removes a backup |
 
-Leave a retention limit blank or enter zero for no limit. Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
+When task retention removes a backup, it removes the Dashboard's backup files. Enable **Remove cloud copies too** to include the corresponding remote copies in that cleanup. If it is off, the remote copies remain.
 
-For **Back Up Now**, set **On-demand backups to keep** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
+Enable **Remove local archives after upload** to save disk space on the Dashboard after uploads finish. It applies to new backups created by the task, including runs started with **Run Now**, and leaves existing backup archives unchanged. MainWP keeps the file inventories needed for incremental backups. Snapshots whose archives are available only remotely show **Remote only** and can still be restored, but cannot be downloaded through the Dashboard. Normal task retention still applies.
+
+Leave a retention limit blank or enter zero for no limit. Each enabled limit can make older backups eligible for removal. For example, **Keep last** set to seven can remove an older backup before a 30-day age limit is reached. For age-based cleanup alone, leave **Keep last** and **Storage cap (MB)** blank. The age limit is a cleanup threshold, not a guaranteed minimum storage period.
+
+Scheduled retention keeps the newest complete, restorable backup or chain for each task and site, even if it exceeds the storage cap. Incremental chains are kept or removed together, so **Keep last** counts chains rather than individual snapshots.
+
+For **Back Up Now**, set **On-demand backups to keep** under **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). The default is five per site, with a minimum of one.
+
+<Note>
+**Leftover backup files to keep** in **Backup Settings** controls cleanup of older downloaded files in each site's backup folder on the Dashboard. It applies to files that are not protected by completed snapshots or active runs. The default is one; zero keeps all leftover files. It does not limit completed snapshots or copies at storage destinations.
+</Note>
 
 On **Snapshots & Restore**:
 
@@ -326,6 +414,14 @@ On **Snapshots & Restore**:
 
 Use the Dashboard controls for cleanup. Do not delete individual incremental chain files or the entire Child Site `wp-content/uploads/mainwp` directory. That directory can contain other MainWP data and encryption material.
 </Warning>
+
+### Minimum Retention at a Destination
+
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and add or edit a destination. Set **Minimum retention (days)** to the minimum time its copies should remain before automatic cleanup can remove them. Set it to zero to disable this protection.
+
+The period starts when the upload is verified. For older backups without a recorded upload time, MainWP uses the snapshot's creation time. Task count, age, and storage limits do not override this minimum. A protected snapshot can also keep its incremental chain from being removed automatically.
+
+Manual deletion can override the minimum. Review the confirmation before deleting a snapshot or its cloud copies.
 
 ## Restore a Backup
 
@@ -342,6 +438,8 @@ MainWP can use an available local or completed remote copy. For incremental back
 A full or incremental restore replaces files and database content. A database restore changes the database only; a files-only restore leaves the database in place.
 
 Changes made after the snapshot may be lost. Review any warnings before proceeding.
+
+See [How Files and Database Tables Are Restored](#how-files-and-database-tables-are-restored) for cleanup rules and exceptions.
 </Step>
 
 <Step title="Keep the safety backup enabled">
@@ -356,6 +454,28 @@ Confirm **I understand this replaces the current site content**, then click **St
 Wait for **Restore completed**, then click **Visit site**. Check key pages, sign-in, and other site functions. Review any warnings and the **Recent restores** list.
 </Step>
 </Steps>
+
+### How Files and Database Tables Are Restored
+
+MainWP restores the snapshot in place. It does not delete the entire site and database before restoring.
+
+**Files:** MainWP restores the backed-up files, then compares the site against a file inventory saved automatically with the backup. It removes files that are absent from that inventory within the backup's scope, with these exceptions:
+
+- `wp-config.php` and `wp-content/object-cache.php`
+- MainWP Child and MainWP's data and backup directories
+- Existing `mu-plugins` files that are absent from the backup
+- Paths excluded from the backup, symbolic links, and certain files required by the site's configuration
+- Files that could not be archived during the backup
+
+Files-only restores also keep additional files in the uploads directory because the current database remains in use.
+
+If the backup's file inventory is unavailable or cannot be verified, MainWP skips the additional-file cleanup and displays a warning. Review restore warnings even when the restore completes.
+
+**Database tables:** MainWP replaces restored tables with the backup's version instead of merging their contents with current rows. Existing tables that are absent from the backup are not automatically deleted.
+
+<Warning>
+A built-in restore is not a complete site wipe or a guaranteed malware cleanup. Malicious files or database tables can remain in preserved or excluded areas.
+</Warning>
 
 ### Cancel or Roll Back a Restore
 
@@ -375,9 +495,9 @@ If those conditions are not met, the restore stops with an explanation. Review o
 
 ## Require a Backup Before Updates
 
-In **top-right user menu > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without of a full backup tolerance**.
+In **MainWP menu (three lines, top right) > MainWP Settings > General Settings > Updates Settings** (`/wp-admin/admin.php?page=Settings`), enable **Require a backup before an update** and set **Days without a full backup (tolerance)**.
 
-Use this setting to require a recent backup before updating from **Manage Sites**.
+Use this setting to require a recent backup before updating from **Manage Sites**. In MainWP Dashboard 6.4.1 and later, the same check also applies when starting updates from the **Updates**, **Plugins**, and **Themes** pages.
 
 Built-in backups accept completed full, database-only, or incremental backups within the allowed age. Files-only backups do not qualify.
 
@@ -385,13 +505,21 @@ Enable **Require an offsite-verified backup** to also require verified copies on
 
 For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates/does-mainwp-have-safe-updates).
 
+## Automate Backups
+
+MainWP Dashboard 6.4 includes 32 [backup abilities](/api-reference/abilities-api/backups) for reading status, managing tasks and destinations, running backups, and restoring snapshots. Use the WordPress Abilities API directly or connect an assistant through the [MainWP MCP Server](/mcp-server/overview).
+
+Actions support a preview before confirmation. Backup and restore jobs continue in the background, so follow their progress until completion.
+
 ## Troubleshooting and Limitations
 
 | Symptom | What to check |
 | --- | --- |
 | Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
+| `Private backup directory` is unavailable or could not be created | Configure a writable private directory on the Dashboard server. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
+| S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
 | Restore is unavailable | Check that the site is connected and the backup files are available. Update MainWP Child and sync again when prompted. |
 | Large backup is slow or times out | Check free disk space, use Tar GZip, and review cache and old-backup exclusions |
@@ -399,13 +527,19 @@ For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates
 
 Sites with `wp-content` or uploads outside the WordPress core directory, including symlinked folders, cannot use file backups or restores. Create a **Database Backup** task for these sites; **Back Up Now** always creates a full backup.
 
-A database-only restore may also stop on these sites because the safety backup includes files. Keep an independent backup and follow the error message before retrying without the safety backup.
+Database-only backups and restores remain supported. A database-only restore can stop before making changes if **Create a safety backup first** is enabled, because that safety backup includes files. Keep an independent database backup, then restart the database-only restore with **Create a safety backup first** turned off.
 
 ### Export Diagnostics
 
-Enable **Backup run diagnostics** under **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`), save, and reproduce the problem.
+Export diagnostics from **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
 
-Click **Export diagnostics data** and include the export in your support request, along with the task, backup type, storage provider, and exact error. Diagnostics are stored on the Dashboard for two weeks.
+1. Enable **Backup run diagnostics** and click **Save Settings**. The **Export diagnostics data** button appears after saving.
+2. If diagnostics was not enabled when the problem occurred, run the affected backup task again to record it. If it was already enabled, you can export the existing data.
+3. Click **Export diagnostics data** to download the report to your computer. Attach the downloaded file to your support request with the task name, backup type, storage provider, and time of the failed run.
+
+The report normally downloads as a ZIP. Extract it and open `tasks.json` in a text editor to read the stored task errors under `backup_errors` and notes under `backup_notices`. Detailed run events are in the `events/` folder as `.jsonl` files. If ZIP support is unavailable on the Dashboard, the report downloads as a JSON file instead.
+
+This is a diagnostics package for troubleshooting, not an on-screen log viewer. Detailed run logs are recorded only while diagnostics is enabled and are kept on the Dashboard for up to two weeks.
 
 {/* Keep incoming links to the former API guide usable after its content moves. */}
 <div id="backup-add-ons" />
