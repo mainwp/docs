@@ -322,6 +322,11 @@ This limit is most often hit when creating monitors for all sites by clicking th
 
 When Uptime Robot returns a rate-limit response, the integration pauses further requests for the wait period reported by the API and retries automatically. During uptime ratio synchronization, the progress dialog shows a countdown until the next retry.
 
+The wait period applies to every request made with the same API key. Until it expires, the integration does not send any requests to Uptime Robot:
+
+- Loading the monitor list returns **UptimeRobot rate limit is active. Retry after N seconds.** instead of contacting Uptime Robot. Reload the monitors after the wait period ends.
+- Reports that include uptime data from Uptime Robot show **N/A** for the affected uptime values instead of failing to generate.
+
 <Frame>
   <img src="/images/add-ons/22a002fdb75f.png" alt="Screenshot showing API rate limit error when creating monitors for all sites" />
 </Frame>
