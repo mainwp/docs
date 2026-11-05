@@ -389,7 +389,7 @@ In MainWP Dashboard 6.4.2 and later, a backup error shows a short label with the
 
 When you click **Back Up Now**, the **Backup Progress** window opens. If the backup fails, the short label appears on the progress bar and the full error appears in the red box under it.
 
-After you close the window, a message on **Snapshots & Restore** keeps the short label and adds a **View details** link. Click it to reopen the **Backup Progress** window and read the full error. You can also reach the link with the Tab key and open it with Enter. While a backup is still running, the same link reads **View progress**.
+After you close the window, a message on **Snapshots & Restore** keeps the short label and adds a **View details** link. Click it to reopen the **Backup Progress** window and read the full error. You can also reach the link with the Tab key and open it with Enter. While a backup is still running, the same link reads **View progress**. If cancellation fails, the message on **Snapshots & Restore** keeps the full cancellation error while progress updates continue.
 
 | Label | What it means | What to do |
 | --- | --- | --- |
@@ -421,7 +421,8 @@ These are the folder errors you may see, grouped by machine:
   - "Could not write to the backup archive on the child site."
 - **Dashboard server:**
   - "The folder ... does not exist on the Dashboard server." or "The web server cannot write to the folder ... on the Dashboard server." These come from testing a **Local Path** destination.
-  - "Backup directory ... on the Dashboard server cannot be used." This is the private backup directory.
+  - "Backup directory ... on the Dashboard server cannot be used." Check the **Directory path** of the **Local Path** destination.
+  - "Private backup directory ... is unavailable." Check the [private backup directory](#set-up-the-private-backup-directory).
 - **SFTP server:**
   - "The folder does not exist on the SFTP server."
 
