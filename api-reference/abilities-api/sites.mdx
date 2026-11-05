@@ -151,10 +151,12 @@ curl -X POST -u 'admin:xxxx' \
 {
   "queued": true,
   "job_id": "sync_abc123def456",
-  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run?input%5Bjob_id%5D=sync_abc123def456",
   "sites_queued": 350
 }
 ```
+
+When `queued` is `true`, send an authenticated GET to `status_url` using your WordPress Application Password. The URL includes `input[job_id]`. See [Batch Operations](/api-reference/abilities-api/batch-operations#mainwpget-batch-job-status-v1) for a polling example and response.
 
 ---
 
@@ -460,6 +462,10 @@ curl -G -u 'admin:xxxx' \
 ```
 
 ---
+
+## Preview Plugin and Theme Changes
+
+Starting with MainWP Dashboard 6.4.1, `mainwp/activate-site-plugins-v1`, `mainwp/deactivate-site-plugins-v1`, and `mainwp/activate-site-theme-v1` accept `dry_run: true` to preview changes. With MainWP MCP, review and confirm the preview before the change runs. With direct Abilities API calls, omitting `dry_run` applies the change immediately and `confirm` remains optional for these three abilities.
 
 ## mainwp/activate-site-plugins-v1
 
@@ -882,17 +888,39 @@ curl -G -u 'admin:xxxx' \
   "site_id": 1,
   "costs": [
     {
-      "id": 1,
-      "name": "Hosting",
-      "amount": 29.99,
-      "frequency": "monthly",
-      "next_due": "2024-02-15"
+      "id": 12,
+      "name": "Shared Hosting",
+      "type": "subscription",
+      "price": 89,
+      "renewal_type": "monthly",
+      "payment_method": "credit_debit",
+      "product_type": "hosting",
+      "last_renewal": "2026-06-29T00:00:00+00:00",
+      "next_renewal": "2026-11-29T00:00:00+00:00",
+      "purchase_date": "2026-06-29T00:00:00+00:00",
+      "license_type": "multi_site",
+      "sites_count": 10,
+      "site_share": 8.9
     }
   ],
-  "total_monthly": 29.99,
-  "total_yearly": 359.88
+  "total": 1
 }
 ```
+
+**Response fields for each cost:**
+
+| Field | Description |
+|-------|-------------|
+| `id`, `name` | Cost ID and name |
+| `type` | `subscription` (recurring) or `lifetime` (one-time) |
+| `price` | Price for one renewal period. For `single_site`, this price applies to each covered site. For `multi_site`, this is the total price split across covered sites |
+| `renewal_type` | How often it renews: `weekly`, `monthly`, `quarterly`, `yearly` or `disabled` |
+| `purchase_date` | Date the cost was bought |
+| `last_renewal` | Same value as `purchase_date`. Still returned for existing integrations; it does not move forward as renewals pass |
+| `next_renewal` | Next renewal date, the same date the Cost Tracker shows. `null` for lifetime costs and costs that aren't active |
+| `license_type` | `single_site` (full price for each site) or `multi_site` (price split across the cost's sites) |
+| `sites_count` | Number of sites the cost covers, including sites added through groups or clients |
+| `site_share` | This site's part of the price for each renewal period: the full price for a single-site license, or the price divided by `sites_count` for a multiple-site license. `0` when the cost isn't active |
 
 <Note>
 This ability requires the Cost Tracker module. If inactive, returns `mainwp_module_not_available` error.
