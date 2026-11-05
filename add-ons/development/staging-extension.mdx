@@ -33,6 +33,7 @@ thirdPartyPlugin: WP Staging
 - Running updates on staging sites first
 - Publishing staging changes through WP Staging Pro
 - Reading stored staging clones and settings through the Abilities API
+- Limiting Staging access with Team Control
 
 ---
 
@@ -231,6 +232,17 @@ To run updates on your child sites,
 
 
 After selecting **Staging sites**, updates will be performed only on staging sites. After you verify that everything is ok on the staging sites, you can run updates on your production sites.
+
+## Team Control compatibility
+
+The Staging Extension respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). MainWP loads the Staging Extension only for users whose role grants access to it.
+
+For team members whose role does not include the Staging Extension, MainWP hides:
+
+- The **Staging** column in the **Sites** table
+- The **WP Staging** tab on individual child sites
+
+To give a team member access, open **Roles & Permissions** in Team Control, click **Edit Role / Manage Permissions** for their role, and select the Staging Extension under **Allowed Add-ons**.
 
 ## Abilities API
 
