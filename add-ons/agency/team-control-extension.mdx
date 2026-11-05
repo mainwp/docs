@@ -243,6 +243,8 @@ When you update to a Team Control version that adds **Delete Backups**, existing
 
 Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
 
+MainWP Dashboard 6.4.1 adds a separate permission for deleting backup snapshots and running **Clean Up**. When your Team Control version supports this permission, staff members also need it to delete snapshots or run **Clean Up**, in addition to permission to run backups. Without it, the **Delete** and **Clean Up** controls on **Backups > Snapshots & Restore** are hidden, and the matching backup abilities are refused. Grant it only to roles that should be able to permanently remove backups.
+
 ### Cost Tracker Permissions
 
 The **Cost Tracker** permission group includes **Manage Cost Tracker Settings**, which controls whether staff can change Cost Tracker settings.
