@@ -40,7 +40,7 @@ Read abilities use `GET`. Pass input as a JSON-encoded `input` query parameter w
 
 ```bash
 curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
-  --data-urlencode 'input={"site_id_or_domain":1}' \
+  --data-urlencode 'input_json={"site_id_or_domain":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-backup-progress-v1/run'
 ```
 
@@ -123,7 +123,7 @@ Filter the site list by provider and page through results. `per_page` accepts `1
 
 ```bash
 curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
-  --data-urlencode 'input={"provider":"cloudways","per_page":20,"page":1}' \
+  --data-urlencode 'input_json={"provider":"cloudways","per_page":20,"page":1}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-api-backups-site-status-v1/run'
 ```
 

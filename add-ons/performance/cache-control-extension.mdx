@@ -169,6 +169,8 @@ A recent **Last Purged** time alone does not prove every cache layer succeeded. 
 
 The **MainWP > Sites > Manage Sites** table can show Cache Control columns such as **Last Purged Cache** and **Cache Solution**. These columns help you confirm when cache was last purged and which supported cache plugin MainWP Child detected on each site.
 
+**Last Purged Cache** shows **Never Purged** when MainWP Dashboard has no valid purge time stored for the site. This includes sites that have never purged cache and sites whose stored value is not a valid timestamp. If a sync reports an invalid purge time, MainWP Dashboard keeps the previously stored time instead of clearing it.
+
 ## View Logs
 
 After a manual purge finishes, sync the affected MainWP Child sites to refresh the purge information stored in MainWP Dashboard. Then go to **MainWP > Add-ons > Cache Control > Logs** to review the log table. Reloading Logs without syncing can leave the previous purge result and timestamp displayed.

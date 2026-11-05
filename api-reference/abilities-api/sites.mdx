@@ -7,6 +7,10 @@ description: >-
 
 MainWP registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
 
+<Note>
+Site abilities can access only sites owned by the calling WordPress user when per-user mode is enabled (`mainwp_is_single_user` is `false`). This also applies to administrators, site deletion, and plugin lists. Lists omit other users' sites; direct requests return the same missing-site error as an unknown site, with the ability's usual response format. Team Control permissions can limit access further, but cannot grant access to another user's sites. Default single-user installations are unchanged.
+</Note>
+
 ## What You'll Learn
 
 - Listing, filtering, and retrieving site information
@@ -192,6 +196,10 @@ curl -X POST -u 'admin:xxxx' \
 MainWP Child requires at least one connection authentication method. Provide `adminpassword`, `uniqueid`, or both according to the child site's MainWP Child settings.
 
 Keep certificate verification enabled and use HTTPS when connecting with an administrator password. Leave `ssl_version` at `0` unless your host requires a specific cURL SSL version.
+
+<Note>
+Omitting `verify_certificate` uses the Dashboard's global certificate setting during registration and later connections. Explicit choices are saved for that site. Existing sites keep their saved settings. Use `verify_certificate` for this ability; `ssl_verify` is not an accepted input name.
+</Note>
 
 **Response:**
 
@@ -462,6 +470,10 @@ curl -G -u 'admin:xxxx' \
 ```
 
 ---
+
+## Preview Plugin and Theme Changes
+
+Starting with MainWP Dashboard 6.4.1, `mainwp/activate-site-plugins-v1`, `mainwp/deactivate-site-plugins-v1`, and `mainwp/activate-site-theme-v1` accept `dry_run: true` to preview changes. With MainWP MCP, review and confirm the preview before the change runs. With direct Abilities API calls, omitting `dry_run` applies the change immediately and `confirm` remains optional for these three abilities.
 
 ## mainwp/activate-site-plugins-v1
 

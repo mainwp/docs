@@ -25,7 +25,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.2.0"
+  data-version="5.2.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-team-control-extension/"
   data-owned-by="Jestart LLC"
@@ -231,11 +231,25 @@ Only unrestricted Dashboard administrators can create or edit legacy REST API v1
 
 ### Backup Permissions
 
-The **Backups** permission group controls backup actions such as execution, restoration, downloads, and backup task management. On a Dashboard with built-in backups, this group appears when built-in backups are enabled. On older Dashboards, its visibility follows the legacy backup setting. **API Backups** remains a separate permission group.
+The **Backups** permission group controls backup actions such as execution, restoration, downloads, and backup task management. On a Dashboard with built-in backups, this group appears when built-in backups are enabled. On older Dashboards, its visibility follows the legacy backup setting. **API Backups** remains a separate permission group. MainWP Dashboard 6.4.1 adds separate permissions for deleting backup snapshots and running **Clean Up**. Review both when configuring a role that manages built-in backups.
+
+**Delete Backups** controls whether staff can delete existing backups. It appears after **Download Backups** and is enabled by default for new roles. Untick it to let a role run backups without deleting them.
+
+When you update to a Team Control version that adds **Delete Backups**, existing roles that have **Execute Backups** receive it automatically. Team Control applies this grant once, the first time a Team Control owner opens WordPress admin after the update. Until then, staff keep their current ability to delete backups. After the grant runs, you can untick **Delete Backups** on any role, and Team Control does not add it back.
+
+<Note>
+**Delete Backups** takes effect only on a MainWP Dashboard version that supports it. On older Dashboards, the checkbox appears but **Execute Backups** continues to control backup deletion.
+</Note>
 
 Built-in backup abilities also check the user's site access and the Dashboard's permissions for each operation. **Use MainWP abilities and MCP** alone does not authorize every backup action.
 
 MainWP Dashboard 6.4.1 adds a separate permission for deleting backup snapshots and running **Clean Up**. When your Team Control version supports this permission, staff members also need it to delete snapshots or run **Clean Up**, in addition to permission to run backups. Without it, the **Delete** and **Clean Up** controls on **Backups > Snapshots & Restore** are hidden, and the matching backup abilities are refused. Grant it only to roles that should be able to permanently remove backups.
+
+### Cost Tracker Permissions
+
+The **Cost Tracker** permission group includes **Manage Cost Tracker Settings**, which controls whether staff can change Cost Tracker settings.
+
+When you update to Team Control 5.2.1, existing roles that have **Manage Dashboard Settings** receive **Manage Cost Tracker Settings** automatically, so staff who could manage Cost Tracker settings before keep that access. Team Control applies this grant once, the first time a Team Control owner opens WordPress admin after the update. Roles that already have **Manage Cost Tracker Settings** explicitly enabled or disabled keep their saved choice. After the grant runs, you can untick **Manage Cost Tracker Settings** on any role, and Team Control does not add it back.
 
 ### Abilities and MCP Permissions
 
