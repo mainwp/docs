@@ -43,6 +43,8 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 - Working WordPress cron on the Dashboard for schedules and background tasks
 - Storage credentials if you want copies outside the Dashboard
 
+For the full list of what MainWP checks on each machine, see [What a Site Needs Before a Backup Can Run](#what-a-site-needs-before-a-backup-can-run).
+
 Keep a separate backup of your MainWP Dashboard installation, including its database and backup encryption keys.
 
 ## Find the Backup Screens
@@ -112,6 +114,27 @@ MainWP attempts to create the directory automatically. If you see **Private back
 A folder outside one WordPress installation may still be publicly served by another website. This matters when the Dashboard is in a subdirectory, on an addon domain, or inside another site's folder. Choose a location outside every website's public folders.
 
 If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
+
+## What a Site Needs Before a Backup Can Run
+
+A backup uses two machines. MainWP Child builds the backup on the Child Site. Your Dashboard then downloads it, keeps it on the Dashboard server, and copies it to any storage destinations you add.
+
+In MainWP Dashboard 6.4.2 and later, this list also appears under **Back Up Now** on **Snapshots & Restore** and on **Backups > Add New**. Click **What a site needs before a backup can run** to open it.
+
+**On the Child Site:**
+
+- [ ] MainWP Child is a version that supports Built-In Backups. If it is too old, the backup stops and asks you to update MainWP Child and sync the site.
+- [ ] The site is connected to the Dashboard. Disconnected and suspended sites cannot be backed up.
+- [ ] The web server can write to the MainWP backup folder in the site's uploads folder, usually `wp-content/uploads`. MainWP Child keeps its working files there.
+- [ ] The disk has room for the backup plus a reserve: a tenth of the disk, at least 100 MB and at most 1 GB. The Dashboard also will not start a backup when the site reports less than 50 MB free. Some hosts turn off the PHP functions that report disk space; MainWP then skips this check.
+- [ ] For file backups, the `wp-content` and uploads folders are inside the WordPress folder. Hosts that move them, such as Pressable, WordPress.com, and Bedrock installs, can run database backups but not file backups yet.
+- [ ] For backups that include the database, the site uses one database server. Sites that spread the database across several servers with a `db.php` drop-in, such as HyperDB or LudicrousDB, can only run a **Files Only Backup**.
+
+**On the Dashboard server:**
+
+- [ ] PHP has the cURL and OpenSSL extensions.
+- [ ] The Dashboard has a private folder that the web server can write to and no website serves. By default, it creates a `mainwp-private` folder beside the WordPress folder. On hosts that provide a `private_html` or `private` folder, it can use that instead. If none of these work, see [Set Up the Private Backup Directory](#set-up-the-private-backup-directory).
+- [ ] The disk has room for the backups the Dashboard downloads.
 
 ## Configure Storage
 
@@ -360,6 +383,51 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 
 The **Test Restore** column shows automatic restore test results. MainWP periodically tests selected backups in a temporary environment on the Dashboard, leaving the live Child Site unchanged. **Couldn't test here** can indicate missing database permissions on the Dashboard host. Test a restore on a staging site as well.
 
+### Read Backup Errors
+
+In MainWP Dashboard 6.4.2 and later, a backup error shows a short label with the full error below it.
+
+When you click **Back Up Now**, the **Backup Progress** window opens. If the backup fails, the short label appears on the progress bar and the full error appears in the red box under it.
+
+After you close the window, a message on **Snapshots & Restore** keeps the short label and adds a **View details** link. Click it to reopen the **Backup Progress** window and read the full error. You can also reach the link with the Tab key and open it with Enter. While a backup is still running, the same link reads **View progress**. If cancellation fails, the message on **Snapshots & Restore** keeps the full cancellation error while progress updates continue.
+
+| Label | What it means | What to do |
+| --- | --- | --- |
+| Backup could not start. | MainWP stopped before the backup began. For example, a restore is already running on the site, or Built-In Backups was turned off after the page loaded. | Read the full error, fix what it names, and click **Back Up Now** again. |
+| Backup failed. | The backup started but did not finish. | Read the full error. If it names a folder, see [Find Where a Folder Error Comes From](#find-where-a-folder-error-comes-from). |
+| Backup failed on the Dashboard server. | The Dashboard could not use its private backup folder. | See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
+| Could not cancel the backup. | MainWP could not stop the backup. | Read the full error, then reopen the progress window to see whether the backup is still running. Try **Cancel backup** again if it is. |
+| Full cleanup error | **Clean Up** could not finish removing leftover files. The banner shows the full reason with no **View details** link. | Fix the issue named in the banner and try **Clean Up** again. |
+
+### Errors in Run Now
+
+When you click **Run Now** on **Manage Backups**, the progress window lists each site in the task. In MainWP Dashboard 6.4.2 and later, a site that fails shows its error in red under the site name. If MainWP received no details, the line reads **Backup task failed.** Screen readers announce the error when it first appears and again only if it changes.
+
+### Find Where a Folder Error Comes From
+
+A folder error can come from the Child Site, the Dashboard server, or an SFTP server you added as storage. The folder can be missing or locked on any of them. In MainWP Dashboard 6.4.2 and later, folder errors name the machine:
+
+| The error says | The folder is on | What to do |
+| --- | --- | --- |
+| on the child site | The WordPress site you are backing up | Check folder permissions and free disk space on that site, or ask its hosting provider. The MainWP backup folder is in the site's uploads folder, usually `wp-content/uploads`. |
+| on the Dashboard server | The server that runs your MainWP Dashboard | Check the [private backup directory](#set-up-the-private-backup-directory), or the **Directory path** of a **Local Path** destination on **Backups > Storage**. |
+| on the SFTP server | Your SFTP storage server | Create the folder on the SFTP server, or change the destination's **Directory path** to a folder that exists. |
+
+These are the folder errors you may see, grouped by machine:
+
+- **Child Site:**
+  - "The MainWP backup folder in the uploads folder on the child site is not writable."
+  - "Could not create the ZIP archive on the child site."
+  - "Could not write to the backup archive on the child site."
+- **Dashboard server:**
+  - "The folder ... does not exist on the Dashboard server." or "The web server cannot write to the folder ... on the Dashboard server." These come from testing a **Local Path** destination.
+  - "Backup directory ... on the Dashboard server cannot be used." Check the **Directory path** of the **Local Path** destination.
+  - "Private backup directory ... is unavailable." Check the [private backup directory](#set-up-the-private-backup-directory).
+- **SFTP server:**
+  - "The folder does not exist on the SFTP server."
+
+One error can point to either machine: "Could not create a backup file or folder." It appears when the backup folder on the Child Site or the private backup folder on the Dashboard server cannot be written to. Check both.
+
 ### Backup Notification Emails
 
 Review **Send email when backup starts** and **Send email when backup fails** under **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`). Confirm that your Dashboard can send email before relying on these alerts.
@@ -527,6 +595,8 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | --- | --- |
 | Backup screens are missing | Enable built-in backups, check the primary backup system, and confirm your account has the relevant permissions |
 | `Private backup directory` is unavailable or could not be created | Configure a writable private directory on the Dashboard server. See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
+| An error names a folder on the child site, the Dashboard server, or the SFTP server | See [Find Where a Folder Error Comes From](#find-where-a-folder-error-comes-from) |
+| A site cannot be backed up | Check [What a Site Needs Before a Backup Can Run](#what-a-site-needs-before-a-backup-can-run) |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
 | S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
