@@ -73,7 +73,7 @@ If neither flag is true, the request returns 409 `mainwp_google_search_console_c
 
 ### True and False Inputs
 
-The boolean inputs are `dry_run`, `confirm`, `auto_refresh`, `include_daily`, and the `usable` filter. Send them as JSON `true` or `false`. From the release after 6.3, the Add-on reads each one strictly:
+The boolean inputs are `dry_run`, `confirm`, `auto_refresh`, `include_daily`, and the `usable` filter. Send them as JSON `true` or `false`. In builds with strict boolean parsing, the Add-on reads each one strictly:
 
 | Value sent | Read as |
 |------------|---------|
@@ -84,12 +84,12 @@ The boolean inputs are `dry_run`, `confirm`, `auto_refresh`, `include_daily`, an
 String values are not case-sensitive, so `"FALSE"` is also false. Any other value, such as `"yes"` or `2`, fails input validation. Only `usable` accepts `null`, which means no filter.
 
 <Warning>
-Version 6.3 reads the string `"false"` as true for all five inputs. On 6.3, `"confirm":"false"` runs the change and `"auto_refresh":"false"` turns automatic refresh on. Send real JSON `true` and `false` values when you use 6.3.
+Earlier builds without strict boolean parsing read the string `"false"` as true for all five inputs. On those builds, `"confirm":"false"` runs the change and `"auto_refresh":"false"` turns automatic refresh on. Send real JSON `true` and `false` values with those builds.
 </Warning>
 
-From the release after 6.3, the string `"false"` is never read as a confirmation. A request that sends `"confirm":"false"` without a true `dry_run` returns 409 `mainwp_google_search_console_confirmation_required` and does not change anything.
+In builds with strict boolean parsing, the string `"false"` is never read as a confirmation. A request that sends `"confirm":"false"` without a true `dry_run` returns 409 `mainwp_google_search_console_confirmation_required` and does not change anything.
 
-A policy request that spells `auto_refresh` as `"true"` and one that sends `true` are the same request, so a retry with the same `request_ref` replays its stored result. A request stored by version 6.3 that sent `auto_refresh` as a string returns 409 `mainwp_google_search_console_request_conflict` if you retry it with the same `request_ref`. Use a new `request_ref` instead.
+A policy request that spells `auto_refresh` as `"true"` and one that sends `true` are the same request, so a retry with the same `request_ref` replays its stored result. A request stored by an earlier build without strict boolean parsing that sent `auto_refresh` as a string returns 409 `mainwp_google_search_console_request_conflict` if you retry it with the same `request_ref`. Use a new `request_ref` instead.
 
 ---
 
