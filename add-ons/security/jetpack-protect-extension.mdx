@@ -86,7 +86,7 @@ The Vulnerabilities tab shows the child sites that have the Jetpack Protect plug
 
 ### Fix a vulnerability
 
-Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
+Then you can click a vulnerability to reveal more information about it. For supported WordPress core, plugin, and theme vulnerabilities, you can update to the fixed version when one is available. For plugin and theme vulnerabilities, you can also delete the affected item. Deleting requires the **Delete Plugins** or **Delete Themes** Dashboard permission, and the item must be flagged in the site's latest scan. ![Animated screenshot showing how to expand vulnerability details and fix options](/images/add-ons/24b9e3ee052e.gif)
 
 ## Overview tab
 
@@ -116,14 +116,11 @@ See [Database Health Check](/dashboard/overview/mainwp-database-health-check) fo
 
 ## MainWP Abilities
 
-The Jetpack Protect Integration provides these two read-only abilities. Use them to let AI assistants, MCP clients, or automation tools read saved Jetpack Protect data:
+The Jetpack Protect Integration provides ten abilities: two stored summary reads, plus site-level stored observations, findings, history, live control state, operation status, refresh requests, and previewed connection or visibility changes.
 
-- `mainwp/list-jetpack-protect-sites-v1`: Connection flags, last scan time, and vulnerability counts for your sites
-- `mainwp/get-jetpack-protect-site-scan-v1`: The latest stored scan for one site, with up to 100 vulnerability summaries
+Live control reads, connection and visibility changes, and refresh execution require MainWP Child 6.4 or later. Stored-data reads do not contact the Child. Queued work needs working scheduled tasks on MainWP Dashboard.
 
-These abilities read only data saved by earlier syncs. They never start scans, sync sites, or contact child sites. Synchronize your sites first when you need current results. They require WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an administrator with access to the add-on.
-
-See the [Jetpack Protect Abilities reference](/api-reference/abilities-api/jetpack-protect) for inputs, responses, and errors.
+See [Jetpack Protect Abilities](/api-reference/abilities-api/jetpack-protect) for inputs, permissions, examples, and operation results.
 
 ## Quick Start with Jetpack Protect
 

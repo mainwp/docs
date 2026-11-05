@@ -15,6 +15,7 @@ addonType: extension
 - Configuring output format and separators
 - Saving and loading extraction templates
 - Exporting results in CSV or TXT format
+- Automating extractions with the Abilities API
 
 ---
 
@@ -26,7 +27,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.0.1"
+  data-version="5.1.0"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-url-extractor-extension/"
   data-owned-by="Jestart LLC"
@@ -129,6 +130,18 @@ The values in the Output format and Separator fields can be saved as templates f
 </Steps>
 
 
+### Template migration in version 5.1
+
+URL Extractor 5.1 copies your saved templates to new template storage in the background. Older templates that cannot be converted are kept unchanged. When this happens, administrators see an informational notice. No action is needed, and you do not need to edit or delete old templates. The **Preview Output** workflow keeps working while migration runs.
+
+## Abilities API
+
+URL Extractor 5.1 adds ten abilities for AI assistants and automation tools. Use them to manage templates, run extractions across up to 100 Child sites in the background, read stored records, and create one-use TXT or CSV downloads.
+
+URL Extractor 5.1 also adds four permissions you can assign with [Team Control](/add-ons/agency/team-control-extension): **View Templates**, **Manage Templates**, **Extract Published Posts**, and **Extract Non-Public Posts**. The **Preview Output** button checks the extraction permissions on every request. Extracting any status other than Published requires **Extract Non-Public Posts**.
+
+See [URL Extractor Abilities](/api-reference/abilities-api/url-extractor) for requests, examples, and errors.
+
 ## Increase the maximum number of Posts returned from a Child site
 
 The URL Extractor extension returns a maximum of 50 posts from a single child site. This number can be customized with a filter. As an example, this code snippet will increase the maximum number of posts to 500.
@@ -162,3 +175,4 @@ Add the code snippet to the PHP tab in the Custom Dashboard extension ![Custom D
 - [Administrative Add-ons](/add-ons/administrative) - Browse administrative tools
 - [Post Plus Extension](/add-ons/posts-pages/post-plus-extension) - Advanced post creation
 - [Manage Posts](/sites/content/manage-posts) - Post management guide
+- [URL Extractor Abilities](/api-reference/abilities-api/url-extractor) - Automate extractions and exports
