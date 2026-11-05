@@ -92,15 +92,14 @@ After you've installed the extension, a Database Updates tab becomes available. 
 
 ### Check the update result
 
-After you click **Update Now** or **Update All**, each site row shows one of these icons:
+After you click **Update Now** or **Update All**, check the status shown for each site:
 
 | Icon | Meaning |
 |------|---------|
-| Green check | The child site reported the database update as successful |
 | Yellow clock | The child site started or queued the update. Hover over it to see "Update started; sync the site to verify completion." |
 | Red X | The update failed or the extension refused it |
 
-A database update stays listed as pending until the next site sync refreshes its status. After a yellow clock, sync the site to confirm the update finished. If any site shows a yellow clock or a red X during **Update All**, the progress modal stays open so you can review the results.
+A database update stays listed as pending until the next site sync refreshes its status. A successful request means the update was accepted, not that it finished. After a yellow clock, sync the site to confirm the update finished. If any site shows a yellow clock or a red X during **Update All**, the progress modal stays open so you can review the results.
 
 If the extension refuses the update, a red X replaces the row's buttons. Hover over the red X to see the reason.
 
