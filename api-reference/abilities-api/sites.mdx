@@ -497,7 +497,7 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `plugins` | array | Yes | — | Plugin slugs to activate, for example `akismet/akismet.php` |
+| `plugins` | array | Yes | - | Plugin slugs to activate, for example `akismet/akismet.php` |
 | `dry_run` | boolean | No | false | Preview the change using the last synced site data |
 | `confirm` | boolean | No | false | Confirm the change after a preview |
 
@@ -564,7 +564,7 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `plugins` | array | Yes | — | Plugin slugs to deactivate, for example `akismet/akismet.php` |
+| `plugins` | array | Yes | - | Plugin slugs to deactivate, for example `akismet/akismet.php` |
 | `dry_run` | boolean | No | false | Preview the change using the last synced site data |
 | `confirm` | boolean | No | false | Confirm the change after a preview |
 
@@ -704,7 +704,7 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
-| `theme` | string | Yes | — | Theme slug to activate |
+| `theme` | string | Yes | - | Theme slug to activate |
 | `dry_run` | boolean | No | false | Preview the change using the last synced site data |
 | `confirm` | boolean | No | false | Confirm the change after a preview |
 
