@@ -356,20 +356,39 @@
                   "api-reference/abilities-api/backups",
                   "api-reference/abilities-api/clients",
                   "api-reference/abilities-api/tags",
-                  "api-reference/abilities-api/batch-operations"
+                  "api-reference/abilities-api/batch-operations",
+                  "api-reference/abilities-api/termageddon"
                 ]
               },
               {
                 "group": "Add-on Abilities",
                 "pages": [
                   "api-reference/abilities-api/advanced-uptime-monitor",
+                  "api-reference/abilities-api/article-uploader",
                   "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/clone",
+                  "api-reference/abilities-api/cost-tracker-assistant",
                   "api-reference/abilities-api/custom-dashboard",
+                  "api-reference/abilities-api/dashboard-lock",
+                  "api-reference/abilities-api/database-updater",
+                  "api-reference/abilities-api/fathom",
                   "api-reference/abilities-api/favorites",
+                  "api-reference/abilities-api/file-uploader",
                   "api-reference/abilities-api/google-search-console",
+                  "api-reference/abilities-api/jetpack-protect",
+                  "api-reference/abilities-api/lighthouse",
+                  "api-reference/abilities-api/maintenance",
                   "api-reference/abilities-api/matomo",
-                  "api-reference/abilities-api/woocommerce-shortcuts"
+                  "api-reference/abilities-api/patchstack",
+                  "api-reference/abilities-api/ssl-monitor",
+                  "api-reference/abilities-api/staging",
+                  "api-reference/abilities-api/time-tracker",
+                  "api-reference/abilities-api/url-extractor",
+                  "api-reference/abilities-api/virusdie",
+                  "api-reference/abilities-api/woocommerce-shortcuts",
+                  "api-reference/abilities-api/woocommerce-status",
+                  "api-reference/abilities-api/wordpress-seo",
+                  "api-reference/abilities-api/wp-rocket"
                 ]
               },
               "api-reference/mainwp-control"
@@ -495,6 +514,7 @@
                 "group": "Technical Settings",
                 "pages": [
                   "customization/disable-wp-cron",
+                  "customization/cron-key-for-http-cron-calls",
                   "customization/manage-wp-cron-on-low-traffic-mainwp-dashboard",
                   "customization/required-fs_method",
                   "customization/how-to-remove-unwanted-hardening-checks",
