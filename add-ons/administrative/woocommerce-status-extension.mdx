@@ -23,6 +23,7 @@ thirdPartyPlugin: WooCommerce
 - Monitoring WooCommerce store status from MainWP Dashboard
 - Understanding the WooCommerce Status widgets
 - Installing the add-on and WooCommerce plugin
+- Reading stored store status through MainWP Abilities
 
 ---
 
@@ -140,7 +141,20 @@ After installing and activating the WooCommerce plugin, synchronize your sites s
 
 ---
 
+## MainWP Abilities
+
+The Abilities-enabled WooCommerce Status release adds two read-only abilities:
+
+- `mainwp/list-woocommerce-stores-v1` lists accessible child sites with stored WooCommerce Status data, including sites where WooCommerce is inactive
+- `mainwp/get-woocommerce-store-status-v1` reads one store's last stored sales, order, and stock counts, plus weekly sales and the top seller when they were stored
+
+Use them to check your stores from an AI assistant or script. Both require `manage_options` and access to WooCommerce Status, and Team Control site restrictions apply. They read the data saved during the last sync; they do not sync or contact Child sites. See the [WooCommerce Status Abilities reference](/api-reference/abilities-api/woocommerce-status) for request examples and response fields.
+
+---
+
 ## Related Resources
+
+- [WooCommerce Status Abilities](/api-reference/abilities-api/woocommerce-status) - List stores and read stored store status
 
 - [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's registered WooCommerce status table and column definitions
 - [WooCommerce Shortcuts Extension](/add-ons/administrative/woocommerce-shortcuts-extension) - Quick links to WooCommerce pages

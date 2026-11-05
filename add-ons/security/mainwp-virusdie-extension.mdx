@@ -15,6 +15,7 @@ thirdPartyPlugin: Virusdie
 - Adding child sites to Virusdie for malware scanning
 - Running manual and automated security scans
 - Troubleshooting sync file upload errors
+- Reading stored Virusdie status through the Abilities API
 
 ---
 
@@ -330,9 +331,24 @@ See [Database Health Check](/dashboard/overview/mainwp-database-health-check) fo
 
 ---
 
+## Abilities API
+
+The Virusdie Integration registers four read-only WordPress abilities that let AI assistants, the [MainWP MCP Server](/mcp-server/overview), and automation scripts read the Virusdie state stored on your Dashboard:
+
+- List accessible sites with their connection, firewall, automatic cleanup, and last scan result
+- Read one site's stored Virusdie state
+- List and read stored scan report summaries for a site
+
+These abilities don't contact Virusdie or start scans, and they never return your API key. They require WordPress 6.9 or later and MainWP Dashboard with Abilities API support.
+
+See [Virusdie Abilities](/api-reference/abilities-api/virusdie) for permissions, request examples, response fields, and errors.
+
+---
+
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database structure
+- [Virusdie Abilities](/api-reference/abilities-api/virusdie) - Read stored Virusdie status and scan reports
 - [Sucuri Extension](/add-ons/security/sucuri-extension) - Alternative malware scanning
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Scan for known vulnerabilities

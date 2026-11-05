@@ -1,0 +1,200 @@
+---
+title: Favorites Abilities
+sidebarTitle: "Favorites Abilities"
+description: >-
+  Read saved favorite plugins, themes, and groups from the MainWP Favorites Add-on with read-only abilities.
+---
+
+The MainWP Favorites Add-on registers three read-only abilities in the `mainwp-favorites` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities when a script, AI assistant, or [MCP client](/mcp-server/overview) needs to see which plugins and themes you saved as favorites and how you grouped them. For example, you can list the plugins in a "Starter Kit" group before planning a new site build. The abilities only read data. They do not add, edit, or delete favorites or groups, refresh version info, or install anything on child sites.
+
+## What You'll Learn
+
+- List saved favorite plugins and themes with type and group filters
+- Read one saved favorite and its group memberships
+- List favorite groups with item counts
+- Understand which URLs are returned and which are omitted
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A Favorites Add-on release with Abilities support, active in MainWP Dashboard
+- An authenticated WordPress user with `manage_options`
+- Access to the Favorites Add-on in MainWP Dashboard
+
+Team Control restrictions apply. Each ability checks the Dashboard abilities permission and the user's access to the Favorites Add-on.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-favorite-items-v1` | GET | List saved favorite plugins and themes, with optional type and group filters |
+| `mainwp/get-favorite-item-v1` | GET | Read one saved favorite plugin or theme |
+| `mainwp/list-favorite-groups-v1` | GET | List saved favorite groups and their item counts |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-favorites'
+```
+
+All three abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`.
+
+## List Favorite Items
+
+**Ability:** `mainwp/list-favorite-items-v1`<br />
+**Method:** GET
+
+All inputs are optional. Without input, the ability returns the first 20 saved plugins and themes.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `type` | string | `plugin` or `theme` |
+| `group_id` | integer | Return only items in this group. Get group IDs from `mainwp/list-favorite-groups-v1`. |
+| `page` | integer | Page number, starting at `1`. Default `1`. |
+| `per_page` | integer | Records per page, from `1` to `100`. Default `20`. |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"type":"plugin","group_id":3,"per_page":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-favorite-items-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "items": [
+    {
+      "item_id": 12,
+      "type": "plugin",
+      "name": "Query Monitor",
+      "version": "3.16.4",
+      "author_name": "John Blackbourn",
+      "author_uri": "https://querymonitor.com",
+      "item_uri": "https://querymonitor.com",
+      "item_link": "https://wordpress.org/plugins/query-monitor/",
+      "slug": "query-monitor",
+      "groups": [
+        { "group_id": 3, "name": "Starter Kit" }
+      ],
+      "last_updated": "2026-10-20T14:05:00Z",
+      "source": "wordpress.org"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 50
+}
+```
+
+`total` counts all matching items before pagination. Requesting a page past the last one returns an empty `items` array with the same `total`.
+
+## Get a Favorite Item
+
+**Ability:** `mainwp/get-favorite-item-v1`<br />
+**Method:** GET
+
+The only input is the required `item_id`, a positive integer. Get item IDs from `mainwp/list-favorite-items-v1`.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"item_id":12}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-favorite-item-v1/run'
+```
+
+The response is a single item object with the same fields as one entry in the `items` array above.
+
+### Item fields
+
+| Field | Meaning |
+|-------|---------|
+| `item_id` | Saved favorite item ID |
+| `type` | `plugin` or `theme` |
+| `name` | Saved item name |
+| `version` | Saved version |
+| `author_name` | Saved author name |
+| `author_uri` | Author's public URL. Omitted when unavailable or unsafe. |
+| `item_uri` | Plugin or theme homepage URL. Omitted when unavailable or unsafe. |
+| `item_link` | WordPress.org plugin or theme page, such as `https://wordpress.org/plugins/query-monitor/`. Omitted for other sources. |
+| `slug` | Saved item slug |
+| `groups` | Groups that contain the item, each with `group_id` and `name` |
+| `last_updated` | Last metadata update in ISO 8601 UTC, or `null` when unavailable |
+| `source` | `wordpress.org`, `uploaded` (direct ZIP upload), or `external` (custom URL) |
+
+### Returned URLs
+
+The abilities never return download URLs, uploaded ZIP file paths, or stored filenames. Custom download links can contain access tokens, so the Add-on applies these rules:
+
+- `author_uri` and `item_uri` drop any username, query string, or fragment. They are omitted when the URL is invalid, points to a download, package, or ZIP path, matches the item's saved download URL, or points to the Favorites uploads folder.
+- `item_link` is returned only for plain `https://wordpress.org/plugins/<slug>/` or `https://wordpress.org/themes/<slug>/` pages. External and uploaded items do not include `item_link`.
+- Items saved as a bare WordPress.org slug return `slug` but no `item_link`.
+
+Optional URL fields are left out of the response rather than returned as empty strings.
+
+## List Favorite Groups
+
+**Ability:** `mainwp/list-favorite-groups-v1`<br />
+**Method:** GET
+
+All inputs are optional.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `type` | string | `plugin` or `theme` |
+| `page` | integer | Page number, starting at `1`. Default `1`. |
+| `per_page` | integer | Records per page, from `1` to `100`. Default `20`. |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"type":"plugin"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-favorite-groups-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "groups": [
+    {
+      "group_id": 3,
+      "type": "plugin",
+      "name": "Starter Kit",
+      "description": "Plugins for every new client site",
+      "item_count": 6
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `group_id` | Saved group ID. Use it as `group_id` in `mainwp/list-favorite-items-v1`. |
+| `type` | `plugin` or `theme` |
+| `name` | Saved group name |
+| `description` | Saved group description |
+| `item_count` | Number of saved items in the group |
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_favorites_invalid_input` | 400 | Send only the documented inputs. Use `plugin` or `theme` for `type`, positive integers for IDs and `page`, and `1` to `100` for `per_page`. |
+| `mainwp_favorites_not_found` | 404 | Verify the `item_id` with `mainwp/list-favorite-items-v1` |
+| `mainwp_permission_denied` | 403 | Use an administrator account with access to the Favorites Add-on |
+
+WordPress can reject invalid input against the public schema before the Add-on callback runs. MainWP Dashboard also returns HTTP 401 for unauthenticated requests.
+
+## Related Resources
+
+- [Favorites](/add-ons/development/favorites-extension) - Save, group, and install favorite plugins and themes
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [MCP Server Overview](/mcp-server/overview) - Use abilities from AI assistants

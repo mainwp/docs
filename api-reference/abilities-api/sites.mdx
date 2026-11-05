@@ -7,6 +7,10 @@ description: >-
 
 MainWP registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
 
+<Note>
+Site abilities can access only sites owned by the calling WordPress user when per-user mode is enabled (`mainwp_is_single_user` is `false`). This also applies to administrators, site deletion, and plugin lists. Lists omit other users' sites; direct requests return the same missing-site error as an unknown site, with the ability's usual response format. Team Control permissions can limit access further, but cannot grant access to another user's sites. Default single-user installations are unchanged.
+</Note>
+
 ## What You'll Learn
 
 - Listing, filtering, and retrieving site information
@@ -151,10 +155,12 @@ curl -X POST -u 'admin:xxxx' \
 {
   "queued": true,
   "job_id": "sync_abc123def456",
-  "status_url": "https://your-dashboard.com/wp-json/mainwp/v2/jobs/sync_abc123def456",
+  "status_url": "https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-batch-job-status-v1/run?input%5Bjob_id%5D=sync_abc123def456",
   "sites_queued": 350
 }
 ```
+
+When `queued` is `true`, send an authenticated GET to `status_url` using your WordPress Application Password. The URL includes `input[job_id]`. See [Batch Operations](/api-reference/abilities-api/batch-operations#mainwpget-batch-job-status-v1) for a polling example and response.
 
 ---
 
@@ -167,7 +173,7 @@ Add a new MainWP child site.
 ```bash
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
-  -d '{"input":{"url":"https://newsite.example.com","admin":"admin","name":"New Site","uniqueid":"xxxxx"}}' \
+  -d '{"input":{"url":"https://newsite.example.com","admin_username":"admin","name":"New Site","uniqueid":"xxxxx"}}' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/add-site-v1/run'
 ```
 
@@ -176,17 +182,24 @@ curl -X POST -u 'admin:xxxx' \
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `url` | string | Yes | — | Site URL |
-| `admin` | string | Yes | — | Admin username on child site |
-| `name` | string | No | — | Display name for the site |
+| `admin_username` | string | Yes | - | Admin username on child site |
+| `name` | string | Yes | - | Display name for the site |
 | `client_id` | integer | No | — | Associate with a client |
-| `tags` | array | No | — | Array of tag IDs to assign |
+| `tag_ids` | array | No | - | Array of tag IDs to assign |
 | `http_user` | string | No | — | HTTP Auth username |
 | `http_pass` | string | No | — | HTTP Auth password |
 | `adminpassword` | string | No | - | WordPress administrator password. Required when Password Authentication is enabled on the child site |
 | `uniqueid` | string | No | - | Unique Security ID from MainWP Child. Required when Unique Security ID is enabled or Password Authentication is disabled |
-| `ssl_verify` | boolean | No | true | Verify SSL certificate |
+| `verify_certificate` | integer | No | 2 | `0` disables verification, `1` verifies, `2` uses the global setting |
+| `ssl_version` | integer | No | 0 | cURL SSL version selection; `0` uses automatic detection |
 
 MainWP Child requires at least one connection authentication method. Provide `adminpassword`, `uniqueid`, or both according to the child site's MainWP Child settings.
+
+Keep certificate verification enabled and use HTTPS when connecting with an administrator password. Leave `ssl_version` at `0` unless your host requires a specific cURL SSL version.
+
+<Note>
+Omitting `verify_certificate` uses the Dashboard's global certificate setting during registration and later connections. Explicit choices are saved for that site. Existing sites keep their saved settings. Use `verify_certificate` for this ability; `ssl_verify` is not an accepted input name.
+</Note>
 
 **Response:**
 
@@ -457,6 +470,10 @@ curl -G -u 'admin:xxxx' \
 ```
 
 ---
+
+## Preview Plugin and Theme Changes
+
+Starting with MainWP Dashboard 6.4.1, `mainwp/activate-site-plugins-v1`, `mainwp/deactivate-site-plugins-v1`, and `mainwp/activate-site-theme-v1` accept `dry_run: true` to preview changes. With MainWP MCP, review and confirm the preview before the change runs. With direct Abilities API calls, omitting `dry_run` applies the change immediately and `confirm` remains optional for these three abilities.
 
 ## mainwp/activate-site-plugins-v1
 
@@ -879,17 +896,39 @@ curl -G -u 'admin:xxxx' \
   "site_id": 1,
   "costs": [
     {
-      "id": 1,
-      "name": "Hosting",
-      "amount": 29.99,
-      "frequency": "monthly",
-      "next_due": "2024-02-15"
+      "id": 12,
+      "name": "Shared Hosting",
+      "type": "subscription",
+      "price": 89,
+      "renewal_type": "monthly",
+      "payment_method": "credit_debit",
+      "product_type": "hosting",
+      "last_renewal": "2026-06-29T00:00:00+00:00",
+      "next_renewal": "2026-11-29T00:00:00+00:00",
+      "purchase_date": "2026-06-29T00:00:00+00:00",
+      "license_type": "multi_site",
+      "sites_count": 10,
+      "site_share": 8.9
     }
   ],
-  "total_monthly": 29.99,
-  "total_yearly": 359.88
+  "total": 1
 }
 ```
+
+**Response fields for each cost:**
+
+| Field | Description |
+|-------|-------------|
+| `id`, `name` | Cost ID and name |
+| `type` | `subscription` (recurring) or `lifetime` (one-time) |
+| `price` | Price for one renewal period. For `single_site`, this price applies to each covered site. For `multi_site`, this is the total price split across covered sites |
+| `renewal_type` | How often it renews: `weekly`, `monthly`, `quarterly`, `yearly` or `disabled` |
+| `purchase_date` | Date the cost was bought |
+| `last_renewal` | Same value as `purchase_date`. Still returned for existing integrations; it does not move forward as renewals pass |
+| `next_renewal` | Next renewal date, the same date the Cost Tracker shows. `null` for lifetime costs and costs that aren't active |
+| `license_type` | `single_site` (full price for each site) or `multi_site` (price split across the cost's sites) |
+| `sites_count` | Number of sites the cost covers, including sites added through groups or clients |
+| `site_share` | This site's part of the price for each renewal period: the full price for a single-site license, or the price divided by `sites_count` for a multiple-site license. `0` when the cost isn't active |
 
 <Note>
 This ability requires the Cost Tracker module. If inactive, returns `mainwp_module_not_available` error.

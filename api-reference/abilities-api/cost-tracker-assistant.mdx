@@ -1,0 +1,174 @@
+---
+title: Cost Tracker Assistant Abilities
+sidebarTitle: "Cost Tracker Assistant Abilities"
+description: >-
+  Read Cost Tracker Assistant status and list costs inside the renewal alert window with the MainWP Cost Tracker Assistant Abilities API.
+---
+
+Cost Tracker Assistant registers two read-only abilities in the `mainwp-cost-tracker-assistant` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- Read whether the Assistant and renewal alerts are enabled
+- Check the alert lead time and the scheduled alert check
+- List costs that fall inside the renewal alert window
+- Interpret the `alert_due` flag and paginate results
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support
+- A Cost Tracker Assistant release with Abilities support, active in MainWP Dashboard
+- An authenticated WordPress user with `manage_options` and access to the Cost Tracker Assistant Add-on
+
+Team Control and other extension-access restrictions apply. Users without Add-on access receive `mainwp_permission_denied`.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-cost-tracker-assistant-status-v1` | GET | Read Assistant and renewal alert settings and the alert schedule |
+| `mainwp/list-upcoming-cost-renewal-alerts-v1` | GET | List active costs inside the renewal alert window |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-cost-tracker-assistant'
+```
+
+Both abilities are read-only. They do not send emails, run or reschedule the alert check, or change costs or settings.
+
+## Get Assistant Status
+
+**Ability:** `mainwp/get-cost-tracker-assistant-status-v1`<br />
+**Method:** GET
+
+This ability takes no input. Send no input, an empty object, or `null`. Any other property is rejected.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-cost-tracker-assistant-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "assistant_enabled": true,
+  "renewal_alerts_enabled": true,
+  "days_before_notification": 7,
+  "email_notification_enabled": true,
+  "alert_check_scheduled": true,
+  "next_alert_check": "2026-10-30T09:00:00Z",
+  "last_alert_run": "2026-10-29T09:00:00Z"
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `assistant_enabled` | Whether the Cost Tracker Assistant is enabled. Reports `false` when the setting has never been saved |
+| `renewal_alerts_enabled` | Whether **Email notifications** is enabled in **Cost Tracker Settings** |
+| `days_before_notification` | The **Expiration notification threshold** in days. Defaults to `7` |
+| `email_notification_enabled` | Whether the **Cost Tracker Assistant Notification** email is enabled in **Email Settings** |
+| `alert_check_scheduled` | Whether the renewal alert check is scheduled in WP-Cron |
+| `next_alert_check` | Next scheduled alert check in UTC, or `null` |
+| `last_alert_run` | Last time the alert check ran in UTC, or `null` |
+
+The response does not include email recipients, subjects, or templates.
+
+<Note>
+`assistant_enabled` follows the setting the alert check uses. If you have never saved the Assistant toggle, the Dashboard can show the Assistant as on while this field reports `false`. Save the setting once to make both values match.
+</Note>
+
+## List Upcoming Renewal Alerts
+
+**Ability:** `mainwp/list-upcoming-cost-renewal-alerts-v1`<br />
+**Method:** GET
+
+Returns the costs the renewal alert check considers. A cost is included when it:
+
+- Has an active status
+- Is not a lifetime cost
+- Has a next renewal date that is now or within the next `days_before_notification` days
+
+Results are sorted by next renewal date, earliest first.
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `page` | integer | `1` | Page number, `1` or greater |
+| `per_page` | integer | `20` | Items per page, `1` to `100` |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-upcoming-cost-renewal-alerts-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "items": [
+    {
+      "id": 12,
+      "name": "Premium SEO Plugin",
+      "renewal_type": "yearly",
+      "product_type": "plugin",
+      "next_renewal": "2026-11-02T00:00:00Z",
+      "price": "99.00",
+      "last_alert": null,
+      "alert_due": true,
+      "currency": "USD"
+    },
+    {
+      "id": 7,
+      "name": "Hosting Plan",
+      "renewal_type": "monthly",
+      "product_type": "hosting",
+      "next_renewal": "2026-11-04T00:00:00Z",
+      "price": "25.50",
+      "last_alert": "2026-10-27T09:00:00Z",
+      "alert_due": false,
+      "currency": "USD"
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `id` | Cost Tracker entry ID |
+| `name` | Cost name |
+| `renewal_type` | Renewal frequency stored for the cost |
+| `product_type` | Product type stored for the cost |
+| `next_renewal` | Next renewal date in UTC |
+| `price` | Stored price as an exact decimal string |
+| `currency` | Configured Cost Tracker currency. Omitted when no currency is set |
+| `last_alert` | Last renewal alert sent for this cost in UTC, or `null` |
+| `alert_due` | `true` when no alert was sent for this cost in the last seven days |
+| `total` | Number of matching costs across all pages |
+
+Costs alerted within the last seven days stay in the list with `alert_due: false`. `alert_due` reflects only this seven-day resend rule. Whether an email actually sends also depends on the status fields above.
+
+The response excludes notes, URLs, payment details, license keys, and assigned sites, clients, or tags. If the Cost Tracker tables do not exist, the ability returns an empty `items` list with `total: 0`.
+
+## Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_cost_tracker_assistant_invalid_input` | 400 | Remove unsupported properties and send `page` and `per_page` as positive integers within range |
+| `mainwp_permission_denied` | 403 | Check `manage_options` and access to the Cost Tracker Assistant Add-on |
+
+MainWP Dashboard can also return its own authentication errors, such as HTTP 401 for unauthenticated requests.
+
+## Related Resources
+
+- [Cost Tracker Assistant](/add-ons/client/cost-tracker-assistant-extension) - Renewal notification settings and upload automation
+- [Cost Tracker](/clients/cost-tracker) - Core cost tracking features
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats

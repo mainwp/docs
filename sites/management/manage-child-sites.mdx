@@ -84,7 +84,7 @@ Click **Show Optional Settings**.
 | Select icon | Choose from built-in icons (uploaded icon takes priority) |
 | Tags | Add to existing tags or create new ones |
 | Client | Associate with a client |
-| Verify SSL certificate | Enable for sites with valid SSL. Disable for self-signed or outdated certificates |
+| Verify SSL certificate | Keep verification enabled and use a valid certificate on the Child Site |
 | SSL version | Leave **Auto detect** unless the site requires a specific version |
 | HTTP username/password | Required if site uses HTTP Basic Authentication |
 </Step>
@@ -213,7 +213,7 @@ MainWP requires CSV format. TXT and other text formats will not work.
 
 <Steps>
 <Step title="Open Tools">
-Go to **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
+Go to **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
 </Step>
 <Step title="Export">
 Click **Export Child Sites**.
@@ -248,7 +248,7 @@ Locate the site, open the actions menu, and click **Sync Data**.
 </Steps>
 
 <Note>
-MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **MainWP menu (three lines, top right) > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Note>
 
 ### Child Site Cron Warnings
@@ -297,7 +297,7 @@ Per-site settings provide translation ignore control. Configure automatic transl
 
 ### Site URL and Detected Address
 
-Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **top-right user menu > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`), under **Miscellaneous Settings**.
+Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`), under **Miscellaneous Settings**.
 
 When the stored address differs from the reported address only by protocol or `www`, the site's settings show **The child site reports its address as:** and a **Use detected** button. The hint is not shown for a different domain or port, or for a path-only difference.
 
@@ -333,7 +333,7 @@ See [Jump to WP Admin troubleshooting](/troubleshooting/troubleshooting-issues-w
 
 | Setting | Description |
 |---------|-------------|
-| SSL verification | Adjust if experiencing certificate issues |
+| SSL verification | Keep enabled; resolve certificate problems with the host |
 | SSL Version | Leave Auto Detect unless specific version needed |
 | HTTP username/password | Configure if site uses HTTP Basic Authentication |
 
@@ -396,8 +396,8 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Issue | Description | Fix Action |
 |-------|-------------|------------|
 | WordPress Version | Checks whether WordPress core is up to date | **Update WordPress** |
-| PHP Version | Checks whether PHP is version 8.0 or later; this is a fixed check, not a live support-status lookup | No direct action in this table |
-| PHP Error Reporting | Checks whether PHP error reporting is disabled | **Disable PHP Error Reporting** / **Reenable PHP Error Reporting** |
+| PHP Version | Checks the site's PHP branch and security release against cached PHP.net release data | Ask your host to update PHP or confirm any backported security fixes |
+| PHP Error Reporting | Checks that both `display_errors` and `display_startup_errors` are disabled | **Disable PHP Error Reporting** / **Reenable PHP Error Reporting** |
 | Database Error Reporting | Checks whether database error reporting is disabled | **Disable DB Error Reporting** / **Reenable DB Error Reporting** |
 | SSL Protocol | Checks whether SSL is enabled | No direct action in this table |
 | Debug Mode | Checks whether WordPress debug mode is disabled | No direct action in this table |
@@ -405,6 +405,8 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Inactive Plugins | Checks for inactive plugins | **Manage Plugins** |
 | Outdated Themes | Checks for outdated themes | **Manage Updates** |
 | Inactive Themes | Checks for inactive themes | **Manage Themes** |
+
+The PHP check uses the version reported by the Child Site. If release data is unavailable or the reported version cannot be verified, MainWP reports that it could not verify the security release status. Sync the site again after upgrading PHP. This check is separate from the Dashboard's PHP 8.3 minimum requirement.
 
 ![Security Issues table](/images/dashboard/sites-management-7c13e2.png)
 
@@ -597,7 +599,7 @@ Monitoring configuration now lives in the dedicated [Uptime Monitoring](/sites/m
 | Problem | Likely Cause | Fix |
 |---------|--------------|-----|
 | Site won't connect | MainWP Child plugin not activated | Verify the Child plugin is installed and activated on the site |
-| Connection fails with SSL error | Invalid or self-signed SSL certificate | Disable **Verify SSL certificate** in the site's connection settings |
+| Connection fails with SSL error | Invalid or self-signed SSL certificate | Ask the host to correct the certificate and chain, then retry with verification enabled |
 | Site shows as disconnected | Connection settings changed or the connected administrator account is unavailable | Check the site URL and administrator username in **Settings**, then use **Reconnect**. Changing only the administrator password does not break an established connection |
 | Sync fails for a site | Firewall or security plugin blocking requests | Whitelist your Dashboard IP in the site's firewall settings |
 | Security scan shows issues already fixed | Another plugin fixed the issue | MainWP detects the fix; no action needed |
