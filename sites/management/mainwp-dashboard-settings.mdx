@@ -28,7 +28,7 @@ The MainWP Dashboard Settings page controls how your Dashboard communicates with
 
 ## Access Dashboard Settings
 
-Open the **user menu in the top-right corner** of MainWP Dashboard and select **MainWP Settings** (`/wp-admin/admin.php?page=Settings`). The control displays your avatar or a user icon. **General Settings** opens by default; use the tabs on that page for the other settings areas.
+Open the three-line **MainWP menu** in the top-right corner of MainWP Dashboard and select **MainWP Settings** (`/wp-admin/admin.php?page=Settings`). **General Settings** opens by default; use the tabs on that page for the other settings areas.
 
 <video className="w-full rounded-xl" autoPlay loop muted playsInline src="/images/dashboard/mainwp-settings.mp4" />
 
@@ -49,7 +49,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
 
 <AccordionGroup>
   <Accordion title="General Settings" icon="gear" defaultOpen>
-    **Page:** **top-right user menu > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`)
 
     ### General Settings
 
@@ -74,8 +74,8 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
     - **Advanced automatic updates delay** (Default: 1 day): Delays new updates for the selected number of days before auto-installing.
     - **Show WordPress language updates** (Default: Enabled): Shows translation updates in update management views.
     - **Update confirmations** (`Enable`, `Disable`, `Disable for single updates`): Controls confirmation prompts before update actions.
-    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Requires a recent backup before updates started from Manage Sites. Built-in backups accept completed full, database-only, or incremental backups.
-    - **Days without of a full backup tolerance** (Default: 7): Sets the allowed backup age for the backup-before-update check.
+    - **Require a backup before an update** (Default: Disabled; shown when a primary backup system is available): Requires a recent backup before updates started from Manage Sites. In MainWP Dashboard 6.4.1 and later, the same check applies on the Updates, Plugins, and Themes pages. Built-in backups accept completed full, database-only, or incremental backups.
+    - **Days without a full backup (tolerance)** (Default: 7): Sets the allowed backup age for the backup-before-update check.
     - **Require an offsite-verified backup** (Default: Disabled; built-in backups): Also requires verified copies on remote storage. Local Path destinations do not count as offsite storage. See [Backups Before Updates](/sites/backups/manage-backups#require-a-backup-before-updates).
     - **Abandoned plugins/themes tolerance** (Default: 365 days): Marks plugin and theme items as possibly abandoned if they have not been updated within the threshold.
     - **Abandoned check by local file date** (Default: Disabled; Dashboard 6.3): Uses the installed plugin's main file or theme's `style.css` modification date when WordPress.org has no usable last-updated date. It uses the same tolerance above. Sync the affected sites after changing it so MainWP Child 6.3 or later receives the setting. See [abandoned detection](/sites/updates/what-does-possibly-abandoned-mean#local-file-date-fallback-in-6-3) for its limits.
@@ -83,7 +83,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Advanced Settings" icon="sliders">
-    **Page:** **top-right user menu > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`)
 
     Configure request, concurrency, caching, and connection settings to tune MainWP Dashboard performance and stability.
 
@@ -136,7 +136,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Monitoring Settings" icon="heart-pulse">
-    **Page:** **top-right user menu > MainWP Settings > Monitoring Settings** (`/wp-admin/admin.php?page=MonitoringSettings`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Monitoring Settings** (`/wp-admin/admin.php?page=MonitoringSettings`)
 
     This page contains **Uptime Monitoring**, **Site Health Monitoring**, and post-update HTTP response checks.
 
@@ -168,7 +168,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Backup Settings" icon="hard-drive">
-    **Page:** **top-right user menu > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`)
 
     Configure [MainWP Built-In Backups](/sites/backups/manage-backups) for connected Child Sites in MainWP 6.4 and later.
 
@@ -193,7 +193,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Email Settings" icon="envelope">
-    **Page:** **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`)
 
     Configure global notification emails and edit per-notification templates.
 
@@ -210,7 +210,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
 
     ### Disable an Email Notification
 
-    1. Go to **top-right user menu > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`).
+    1. Go to **MainWP menu (three lines, top right) > MainWP Settings > Email Settings** (`/wp-admin/admin.php?page=SettingsEmail`).
     2. Click **Manage** beside the notification you want to disable.
     3. Turn the **Enable** toggle off and click **Save Settings**.
 
@@ -220,7 +220,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Premium Updates" icon="arrows-rotate">
-    **Page:** **top-right user menu > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Premium Updates** (`/wp-admin/admin.php?page=PremiumUpdates`)
 
     MainWP Dashboard 6.2 automatically provides update compatibility for supported premium plugins and themes. Review **Detected Plugins** and **Detected Themes**, or use **Custom Identifiers** to add a product that needs additional compatibility or a renamed theme folder.
 
@@ -230,7 +230,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Cost Tracker Settings" icon="money-bill-wave">
-    **Page:** **top-right user menu > MainWP Settings > Cost Tracker Settings** (`/wp-admin/admin.php?page=CostTrackerSettings`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Cost Tracker Settings** (`/wp-admin/admin.php?page=CostTrackerSettings`)
 
     This page configures cost tracking format and taxonomy data for the Cost Tracker module.
 
@@ -250,7 +250,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Network Activity Settings" icon="timeline">
-    **Page:** **top-right user menu > MainWP Settings > Network Activity Settings** (`/wp-admin/admin.php?page=SettingsInsights`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > Network Activity Settings** (`/wp-admin/admin.php?page=SettingsInsights`)
 
     This module-based settings page controls logging used by both **Network Activity** and **Dashboard Insights**.
 
@@ -268,7 +268,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="API Backups Settings" icon="server">
-    **Page:** **top-right user menu > MainWP Settings > API Backups Settings** (`/wp-admin/admin.php?page=SettingsApiBackups`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Settings > API Backups Settings** (`/wp-admin/admin.php?page=SettingsApiBackups`)
 
     Connect your hosting provider's backup service through [API Backups](/sites/backups/api-backups).
 
@@ -287,7 +287,7 @@ Open the **user menu in the top-right corner** of MainWP Dashboard and select **
   </Accordion>
 
   <Accordion title="Tools" icon="wrench">
-    **Page:** **top-right user menu > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`)
+    **Page:** **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`)
 
     ![MainWP Tools section showing theme selection and various utility options](/images/dashboard/tools-page.png)
 

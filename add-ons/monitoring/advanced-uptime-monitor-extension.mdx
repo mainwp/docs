@@ -290,6 +290,30 @@ The Settings tab also supports:
 - **NodePing** - Enter the NodePing API Token.
 - **Better Uptime** - Enter the Better Uptime API Key.
 
+### Credential save errors
+
+If a credential save does not reach the database, the integration restores the previously stored key so it stays readable, and shows an error instead of a success message:
+
+| Provider | Message |
+|----------|---------|
+| NodePing, Better Uptime | The API token could not be saved. Please try again. |
+| Uptime Robot | The API key could not be saved. Please try again. |
+| Site24x7 | The Site24x7 credentials could not be saved. Please try again. |
+
+Save the settings again after you see one of these messages.
+
+If an Uptime Robot monitor synchronization is running when you save a new API key, the Settings tab shows **A UptimeRobot monitor synchronization is currently processing. Please wait a moment and save the API key again.**
+
+### Site24x7 authorization
+
+When you change the Site24x7 Client ID or Client Secret, the integration clears the Administrator, Reports, and Operations tokens from the previous account before it stores the new client. The Settings tab then shows **Site24x7 credentials were saved. Please authorize Site24x7 again before reloading monitors.** Complete the authorization steps again for the new client.
+
+Site24x7 authorization notices:
+
+- If the integration cannot store the access token returned by an authorization step, it shows **The Site24x7 access token could not be saved. Please try again.** The previous token and its expiry stay in place.
+- **Re-generate** refreshes each authorized scope and skips scopes that were never authorized. If any scope fails to refresh or save, it shows **One or more Site24x7 access tokens could not be refreshed or saved. Please try again.** Scopes that refreshed keep their new tokens, and the failed scope keeps its previous token.
+- When every authorized scope refreshes, Re-generate shows **Access generated successfully.**
+
 ### API limitations of the free Uptime Robot plan
 
 Uptime Robot has recently reduced the limit to only **10 requests per minute**. Requests include creating new monitors through the MainWP integration and fetching information about existing monitors. Reaching the limit is fairly easy for a large number of sites.
@@ -331,7 +355,7 @@ To get the Better Uptime API token:
 
 The upcoming Abilities-enabled release adds seven MainWP abilities for listing cached monitors and events, reading live uptime summaries, creating monitors, pausing or resuming them, deleting monitors, and synchronizing provider inventory. Supported providers are UptimeRobot, Site24x7, NodePing, and Better Stack.
 
-Use WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an Advanced Uptime Monitor build that registers the `mainwp-advanced-uptime-monitor` category. Site permissions and Team Control restrictions apply. Inventory synchronization requires unrestricted administrator access, and deletion and synchronization support previews and require explicit confirmation before changes.
+Use WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an Advanced Uptime Monitor build that registers the `mainwp-advanced-uptime-monitor` category. Site permissions and Team Control restrictions apply. Inventory synchronization requires unrestricted administrator access, and deletion and synchronization support previews and require explicit confirmation before changes. The abilities require `manage_options`, so Team Control staff roles without that capability cannot use them yet.
 
 See [Advanced Uptime Monitor Abilities](/api-reference/abilities-api/advanced-uptime-monitor) for discovery, authentication, request examples, cached-versus-live results, provider limits, and error handling. These calls are available only after updating to the Abilities-enabled release.
 
