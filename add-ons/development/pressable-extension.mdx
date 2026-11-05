@@ -99,6 +99,25 @@ Enter the Client ID and Client Secret and click the **Save Settings** button ![M
 ## Team Control compatibility
 
 The Pressable Integration respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). Only team members whose role grants access to the Pressable Integration will see the Pressable menu and be able to perform Pressable actions. If a user does not have permission, the integration UI and bulk actions are hidden for them.
+
+### Site-level access for Pressable actions
+
+The integration also checks the role's **Allowed Sites** before it sends any request to Pressable. A team member can only perform Pressable actions on child sites their role can access. This check applies to:
+
+- Reloading Pressable API data for a site
+- Enabling, disabling, and deleting sites
+- Converting sites between Staging and Live
+- Enabling and disabling CDN
+- Opening phpMyAdmin
+- Downloading backups and opening backup restore links
+- Restoring a backup. The user needs access to both the source site and the destination site.
+
+If the user cannot access the site, MainWP stops the action and shows *You are not allowed to access this site.* with an HTTP `403` response. Pressable does not receive the request.
+
+Each action also requires the Pressable site to be matched to a MainWP child site. If no matching child site exists, MainWP blocks the action for every user, including administrators. To fix this, add the site to your MainWP Dashboard as a child site, then reload Pressable API data. See [Site matching by primary URL and custom domains](#site-matching-by-primary-url-and-custom-domains).
+
+To give a team member access to Pressable actions on a site, edit their role in the [Team Control Extension](/add-ons/agency/team-control-extension) and add the site under **Allowed Sites**.
+
 ## Clearing Pressable credentials
 
 To disconnect the integration from your Pressable account, open the **Settings** tab, clear both the **Client ID** and **Client Secret** fields, and click **Save Settings**. Saving empty values removes the stored credentials and the cached access token. The Dashboard tab then shows an empty-state placeholder prompting you to add credentials again.
