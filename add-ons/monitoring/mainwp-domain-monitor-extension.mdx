@@ -13,6 +13,7 @@ addonType: "integration"
 - Scheduling automated domain checks
 - Overriding general settings for individual sites
 - Using Pro Reports tokens for domain data
+- Automating Domain Monitor through MainWP Abilities
 
 ---
 
@@ -220,6 +221,14 @@ wp mainwp-domain-monitor results --all
 
 MainWP REST API calls, including Domain Monitor endpoints, full documentation, and examples, are available in the [MainWP Postman workspace](https://www.postman.com/mainwp/workspace/mainwp/overview). Refer to our [REST API documentation](/api-reference/rest-api/overview) for more details on enabling REST API and managing API keys.
 
+## Domain Monitor Abilities API
+
+The Abilities-enabled Domain Monitor release registers nine MainWP abilities in the `mainwp-domain-monitor` category. Use them to read stored domain expiry summaries and profiles, read or replace global and per-site monitoring settings, replace manually entered domain information, check a site's domain, and request background domain checks or expiry-alert evaluations for selected sites.
+
+The abilities require WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Domain Monitor release with Abilities support. The user needs permission to use MainWP abilities, access to the Domain Monitor Add-on, and access to each site. Changing the global settings requires access to all sites. Write abilities use revisions, and checks, manual profile changes, and batch requests require a preview or explicit confirmation.
+
+See [Domain Monitor Abilities](/api-reference/abilities-api/domain-monitor) for request examples, response fields, and error handling.
+
 ## Available Reports Tokens
 
 - `[domain.monitor.domain.name]` - Displays the domain name.
@@ -238,4 +247,5 @@ MainWP REST API calls, including Domain Monitor endpoints, full documentation, a
 - [Database Health Check](/dashboard/overview/mainwp-database-health-check) - Check the Add-on's Dashboard database table and column definitions
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
 - [SSL Monitor](/add-ons/monitoring/mainwp-ssl-monitor-extension) - Monitor SSL certificates
+- [Domain Monitor Abilities](/api-reference/abilities-api/domain-monitor) - Read domain data, manage settings, and request checks through MainWP Abilities
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview) - Include domain data in reports
