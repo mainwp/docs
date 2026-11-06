@@ -120,7 +120,7 @@ Start here if the server won't connect or a tool call fails. Each entry names th
   </Accordion>
 
   <Accordion title="Rate limit exceeded">
-    Too many API calls in one minute. Wait and retry, or raise `rateLimit`. Setting it to `0` disables limiting and is not recommended in production.
+    The token bucket normally slows calls by waiting for the next token. A call fails if that wait would exceed about 30 seconds. Wait and retry, or raise `rateLimit`. Setting it to `0` disables limiting and is not recommended in production.
   </Accordion>
 </AccordionGroup>
 

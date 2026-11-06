@@ -209,11 +209,11 @@ Go to **MainWP > Add-ons > Analytics > Google Search Console** and use these tab
 
 Scheduled refreshes skip overlapping runs. The last successful scheduled refresh time advances only when at least one refresh succeeds; it does not mean every site's data was refreshed. Automatic refreshes also depend on the MainWP Dashboard's configured cron system running.
 
-## AI Assistant and Abilities API
+## MainWP MCP and Abilities API
 
-Version 6.3 adds ten abilities for MainWP AI Assistant and API clients to inspect connections and properties, manage site assignments and refresh settings, read cached performance summaries, and request refreshes.
+Version 6.3 adds ten abilities for MainWP MCP and API clients to inspect connections and properties, manage site assignments and refresh settings, read cached performance summaries, and request refreshes.
 
-For example, ask the AI Assistant to show a site's Google Search Console mapping or cached search performance, review automatic refresh settings, or request a site refresh. Mapping changes, refresh-setting changes, and connection catalog refreshes support a preview before confirmation. In builds with strict boolean parsing, a change runs only when `confirm` is true; the string `"false"` never counts as a confirmation. Refresh requests run in the background and return a job ID for checking completion.
+For example, ask your MCP client to show a site's Google Search Console mapping or cached search performance, review automatic refresh settings, or request a site refresh. Mapping changes, refresh-setting changes, and connection catalog refreshes support a preview before confirmation. In builds with strict boolean parsing, a change runs only when `confirm` is true; the string `"false"` never counts as a confirmation. Refresh requests run in the background and return a job ID for checking completion.
 
 See [Google Search Console Abilities](/api-reference/abilities-api/google-search-console) for requirements, permissions, request examples, and job-status handling. The ability that reads performance data returns aggregate metrics; it does not include search queries or individual page URLs.
 
