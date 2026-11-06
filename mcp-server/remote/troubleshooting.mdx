@@ -66,7 +66,7 @@ This `info` line always appears first.
 | Line | Fix |
 | --- | --- |
 | "Remote AI connections need PHP 8.1 or newer; this server runs" with your version | Ask your host to move the site to PHP 8.1 or newer. |
-| "Remote AI connections need WordPress 6.9 or newer." | Update WordPress. |
+| "MainWP MCP and MainWP Control require WordPress 6.9 or later. Update WordPress on this Dashboard to set up a connection." This replaces the whole page, so the self-test can't run. | Update WordPress. |
 
 On a multisite network the connector doesn't load at all, so there's no panel and no self-test. Use a single-site install for the Dashboard.
 
@@ -204,7 +204,7 @@ Something answers `http://` requests to the MCP address with a success response.
 
 > Last 24 hours: requests without an Authorization header: 3; tokens rejected: 0.
 
-A count of requests without an `Authorization` header turns this line into a warning with "Requests that arrive without their Authorization header usually mean the web server or a proxy strips it." See [Authorization header](#authorization-header). Rejected tokens are usually expired or revoked connections that the app keeps trying.
+Every app's first request has no `Authorization` header, so a count here is normal. The line only warns when no request has arrived with the header in the last 24 hours: "No request with an Authorization header has reached WordPress in the last 24 hours. If an app can't connect, the web server or a proxy may be stripping it." See [Authorization header](#authorization-header). Rejected tokens are usually expired or revoked connections that the app keeps trying.
 
 > Unknown apps refused in the last 24 hours: 2.
 

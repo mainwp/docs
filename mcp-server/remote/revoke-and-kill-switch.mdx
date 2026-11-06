@@ -50,7 +50,7 @@ If ending the connections doesn't fully complete, the panel shows "Remote AI con
 
 - **Apps on this computer**: **Remove** ends every user's connections through that app and deletes its registration. The app then shows "This app needs to be added again" when it tries to sign in. Removing an app is for administrators without Team Control limits, because other users may use the same registration.
 - **Web apps**: switching one off, **Reissue secret** and **Delete** each end every connection through that app. See [Open WebUI](/mcp-server/remote/connect-apps#open-webui).
-- **Cursor and Gemini CLI**: switching off the Cursor (`mainwp-cursor`) or Gemini CLI (`mainwp-gemini-cli`) row under **Which apps can connect** refuses every request with that client ID, including from apps that are already connected. To remove those connections from the list, revoke them.
+- **Cursor and Gemini CLI**: switching off the Cursor (`mainwp-cursor`) or Gemini CLI (`mainwp-gemini-cli`) row under **Which apps can connect** ends every connection that uses that client ID. Switching it back on doesn't restore them, so each app has to connect again.
 
 ## Connections that end on their own
 

@@ -37,14 +37,24 @@ These are the tiers under **Standard**. Tool names are the ones AI apps see.
 | Tier | Core tools |
 | --- | --- |
 | Read | Every core `list_*`, `get_*` and `count_*` tool, for example `list_sites_v1`, `get_site_updates_v1`, `list_knowledge_v1` |
-| Write | `sync_sites_v1`, `check_site_v1`, `check_sites_v1`, `reconnect_site_v1`, `reconnect_sites_v1`, `activate_site_plugins_v1`, `activate_site_theme_v1`, `unsuspend_site_v1`, `unsuspend_client_v1`, `ignore_site_core_v1`, `ignore_site_plugins_v1`, `ignore_site_themes_v1`, `set_ignored_updates_v1`, `add_tag_v1`, `update_tag_v1` |
-| Confirm | `run_updates_v1`, `update_all_v1`, `update_site_core_v1`, `update_site_plugins_v1`, `update_site_themes_v1`, `update_site_translations_v1`, `unignore_site_updates_v1`, `deactivate_site_plugins_v1`, `suspend_site_v1`, `suspend_sites_v1`, `suspend_client_v1`, `delete_tag_v1`, `create_knowledge_record_v1`, `update_knowledge_record_v1`, `delete_knowledge_record_v1` |
-| Dashboard | `delete_site_v1`, `delete_client_v1`, `delete_site_plugins_v1`, `delete_site_themes_v1`, `disconnect_site_v1`, `disconnect_sites_v1`, `add_site_v1` |
+| Write | `sync_sites_v1`, `check_site_v1`, `check_sites_v1`, `reconnect_site_v1`, `reconnect_sites_v1`, `unsuspend_site_v1`, `unsuspend_client_v1`, `ignore_site_core_v1`, `ignore_site_plugins_v1`, `ignore_site_themes_v1`, `set_ignored_updates_v1`, `add_tag_v1`, `update_tag_v1`, `resume_backup_task_v1`, `test_backup_destination_v1` |
+| Confirm | `run_updates_v1`, `update_all_v1`, `update_site_core_v1`, `update_site_plugins_v1`, `update_site_themes_v1`, `update_site_translations_v1`, `unignore_site_updates_v1`, `activate_site_plugins_v1`, `activate_site_theme_v1`, `deactivate_site_plugins_v1`, `suspend_site_v1`, `suspend_sites_v1`, `suspend_client_v1`, `delete_tag_v1`, `create_knowledge_record_v1`, `update_knowledge_record_v1`, `delete_knowledge_record_v1`, `run_site_backup_v1`, `run_backup_task_v1`, `cancel_site_backup_v1`, `reset_backup_task_run_v1`, `create_backup_task_v1`, `pause_backup_task_v1`, `set_default_backup_destination_v1`, `update_backup_destination_v1` |
+| Dashboard | `delete_site_v1`, `delete_client_v1`, `delete_site_plugins_v1`, `delete_site_themes_v1`, `disconnect_site_v1`, `disconnect_sites_v1`, `add_site_v1`, `restore_site_snapshot_v1`, `rollback_restore_v1`, `cancel_restore_v1`, `delete_backup_snapshot_v1`, `cleanup_site_backups_v1`, `delete_backup_task_v1`, `delete_backup_destination_v1`, `update_backup_settings_v1` |
 
-Three core tools change tier with their arguments:
+Four core tools change tier with their arguments:
 
 - `update_site_v1` is **Dashboard** when the call sets `url`, `verify_certificate`, `ssl_version`, `http_user` or `http_pass`; **Confirm** when it sets `suspended`; and **Write** otherwise.
 - `add_client_v1` and `update_client_v1` are **Confirm** when the call includes `selected_sites`, because that moves sites between clients, and **Write** otherwise.
+- `update_backup_destination_v1` is **Dashboard** when the call sets `minimum_remote_retention_days`, because `0` removes the protection on older remote backups, and **Confirm** otherwise.
+
+### Backup calls that are refused
+
+These calls are refused under every policy, and the message says what to do instead:
+
+- `create_backup_task_v1` with groups: "AI apps can't create backup tasks that use groups yet, because the sites in a group can change after you approve. Use the site IDs instead, or create the task in MainWP under Backups."
+- `create_backup_task_v1` with site addresses: "AI apps can't create backup tasks from site addresses yet, because an address can point to a different site after you approve. Use the site IDs instead, or create the task in MainWP under Backups."
+- `update_backup_task_v1`: "AI apps can't edit backup tasks yet. Edit the task in MainWP under Backups."
+- `delete_backup_task_v1` with its backups, when there are too many to list: "This task has too many backups to list for approval, so an AI app can't delete it together with its backups. Delete it in MainWP under Backups, or delete the task and keep its backups."
 
 ### Extension tools
 
@@ -80,8 +90,12 @@ Dashboard-tier tools move to **Confirm**, so the app only needs a confirmation i
 - `add_site_v1`
 - `update_site_v1` when the call sets `url`, `verify_certificate` or `ssl_version`
 - `replace_custom_dashboard_snippet_v1`
+- `restore_site_snapshot_v1`, `rollback_restore_v1` and `cancel_restore_v1`
+- `delete_backup_snapshot_v1`, `cleanup_site_backups_v1` and `delete_backup_task_v1`
+- `update_backup_settings_v1` when the call sets `on_demand_retention_count`
+- `update_backup_destination_v1` when the call sets `minimum_remote_retention_days`
 
-Those are the changes that could send a site's keys to another address or run code on the Dashboard.
+The first three could send a site's keys to another address or run code on the Dashboard. The backup calls could overwrite a live site or remove the backups you'd recover from.
 
 Hands-off is offered only to users without Team Control limits. If the user gains limits later, the connection behaves as Standard until its policy is changed.
 
@@ -164,4 +178,4 @@ An approved action over more than 10 sites runs as a background job, 10 sites at
 
 ## The activity log
 
-While **Enable Network Activity logging** is on, the Dashboard records every AI app call in the activity log. While it's off, the read tools MainWP has reviewed still run, but nothing records them. Changes and tools MainWP hasn't reviewed are refused with "Changes and tools MainWP hasn't reviewed need the MainWP activity log, so each call is recorded. Turn on Enable Network Activity logging under MainWP Settings > Network Activity Settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."
+While **Enable Network Activity logging** is on, the Dashboard records every AI app call in the activity log, and changes an app makes show **via MainWP MCP** beside the user. While it's off, the read tools MainWP has reviewed still run, but nothing records them. Changes and tools MainWP hasn't reviewed are refused with "Changes and tools MainWP hasn't reviewed need the MainWP activity log, so each call is recorded. Turn on Enable Network Activity logging under MainWP Settings > Network Activity Settings.", and the approval page shows "Nothing ran: remote AI connections need the activity log turned on."
