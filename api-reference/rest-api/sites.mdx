@@ -83,7 +83,7 @@ When adding or editing sites, use the expected JSON types instead of relying on 
 |---|---|---|
 | `force_use_ipv4` | Add and edit | `0` to disable, `1` to force IPv4, or `2` to use the global setting; JSON `false` and `true` are also accepted for `0` and `1` |
 | `ssl_verify` | Add | JSON `true` or `false`; `null` is rejected |
-| `ssl_version` | Add | cURL SSL version selection; `0` uses automatic detection |
+| `ssl_version` | Add (`/sites/add`), optional | String: `"0"` (Auto detect, default), `"1"` (TLS v1.x), `"2"` (SSL v2), `"3"` (SSL v3), `"4"` (TLS v1.0), `"5"` (TLS v1.1), or `"6"` (TLS v1.2). Omit it or send `""` or `"0"` to use auto-detect (`0`). |
 | `uniqueid` | Add and edit | String containing the child's Unique Security ID; `uniqueId` is accepted as a fallback alias |
 | `groupids` | Add and edit | Comma-separated tag IDs in a string, such as `"3,7"` |
 
