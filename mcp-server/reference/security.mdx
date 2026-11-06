@@ -15,10 +15,10 @@ This page is for the person deciding whether to trust the MainWP MCP Server with
 └─────────────────┘     └─────────────────┘     └─────────────────┘
         │                       │                       │
    You control            Passthrough             Your sites
-   the prompts            (no storage)            (full access)
+   the prompts            (local settings)            (full access)
 ```
 
-The AI assistant has the same access as the WordPress user whose credentials you configure. Every tool call executes with that user's capabilities. The server itself is a passthrough: it stores nothing, caches responses only briefly, and holds credentials only in memory during execution.
+The AI assistant has the same access as the WordPress user whose credentials you configure. Every tool call executes with that user's capabilities. The server forwards calls to your Dashboard and caches responses briefly. Using `mainwp_configure` saves connection settings, including your Application Password, to `~/.config/mainwp-mcp/settings.json` with owner-only permissions (0600, in a 0700 directory). See [Configuration](/mcp-server/reference/configuration).
 
 The Dashboard enforces the permission boundary, whatever the AI asks for. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A limited WordPress role therefore does not work as a restriction. To limit which operations the AI can run, use [tool filtering](/mcp-server/guides/restrict-tools) and [safe mode](/mcp-server/safety#safe-mode-block-deletions-entirely).
 
@@ -44,9 +44,9 @@ The server does not log passwords or tokens, tool arguments (which may contain s
 WordPress separately logs Application Password usage, so your Dashboard's admin shows which application authenticated and when.
 
 <Note>
-**Web server logs can contain operation inputs.** The current MCP server sends inputs for read-only GET requests and destructive, idempotent DELETE requests in the URL query string. Other write operations use a POST JSON body. Query-string inputs can appear in your Dashboard web server's access logs; authentication credentials travel in headers. Restrict access-log visibility and set retention accordingly.
+**Web server logs can contain operation inputs.** The MCP server sends GET inputs in the URL query string. For a `mainwp/` DELETE ability with a required nullable input, it sends a JSON body to preserve null values. Other DELETE inputs still use the query string. Other write operations use a POST JSON body. Query-string inputs can appear in your Dashboard web server's access logs; authentication credentials travel in headers. Restrict access-log visibility and set retention accordingly.
 
-MainWP Dashboard also supports a JSON body for DELETE requests through its [Abilities input handling](/api-reference/abilities-api/overview#input-handling). Direct integrations can use that option to keep DELETE inputs out of URLs, but this Dashboard capability does not change the current MCP server's query-string behavior.
+MainWP Dashboard also supports a JSON body for DELETE requests through its [Abilities input handling](/api-reference/abilities-api/overview#input-handling). Direct integrations can also use that option to keep DELETE inputs out of URLs.
 </Note>
 
 ## Destructive-operation classification
