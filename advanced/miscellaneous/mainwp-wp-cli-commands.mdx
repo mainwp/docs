@@ -26,6 +26,20 @@ MainWP includes WP-CLI integration for managing your MainWP Dashboard, configuri
 
 For more information about WP-CLI, visit the [official WP-CLI documentation](https://wp-cli.org/).
 
+## Built-In Help
+
+WP-CLI lists every option for a command, including the ones that take a value such as `--site-url`, `--type`, `--slug`, `--ver` and `--ssl_verify`, with a short description and examples:
+
+```bash
+wp help mainwp sites
+wp help mainwp site
+wp help mainwp updates
+```
+
+<Note>
+Running `wp mainwp sites` with no option prints a table of all child sites. The older `--list` and `--count` options still print the same table, but they are no longer listed in the help.
+</Note>
+
 ---
 
 <Tabs>
@@ -97,12 +111,28 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
     ```
 
     Verifies the status of all child sites.
+
+    ### Disconnect Sites
+
+    ```bash
+    wp mainwp sites --disconnect-sites 2,5
+    ```
+
+    Disconnects the child sites with the given comma-separated IDs.
+
+    If a site cannot be disconnected, the command prints a warning for that site and moves on to the next one. If any site failed, the command ends with `Disconnect completed with errors` and a non-zero exit code, so scripts can detect the failure.
+
+    <Warning>
+    Without site IDs, `--disconnect-sites` disconnects all of your child sites.
+    </Warning>
   </Tab>
 
   <Tab title="Site">
     ## Single Site Operations
 
     Commands for managing individual child sites. Replace `<id>` with the site ID.
+
+    Every `wp mainwp site` command except `--add-site` needs a site ID. Without one, the command stops with `Empty site id.`
 
     ### Site Information
 
@@ -251,6 +281,8 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
 
     Lists ignored updates for a specific child site.
 
+    `--site-ignored-plugins-updates`, `--site-ignored-themes-updates`, `--ignore-update` and `--unignore-update` need a site ID. Without one, the command stops with `Empty site id.`
+
     ### Ignore Updates Globally
 
     ```bash
@@ -270,7 +302,7 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
     ### Unignore Updates Globally
 
     ```bash
-    wp mainwp updates --unignore-updates --type=<plugin|theme> --slug=<slug> --name=<name>
+    wp mainwp updates --unignore-updates --type=<plugin|theme> --slug=<slug> [--ver=<version>]
     ```
 
     Reverses a global update ignore.
@@ -278,10 +310,30 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
     ### Unignore Updates on Specific Site
 
     ```bash
-    wp mainwp updates --unignore-update <id> --type=<plugin|theme> --slug=<slug> --name=<name>
+    wp mainwp updates --unignore-update <id> --type=<plugin|theme> --slug=<slug> [--ver=<version>]
     ```
 
     Reverses a site-specific update ignore.
+
+    ### Unignore Options
+
+    | Option | Description |
+    |--------|-------------|
+    | `--type` | `plugin` or `theme` (required) |
+    | `--slug` | Plugin file, such as `akismet/akismet.php`, or theme folder name (required) |
+    | `--ver` | Version to unignore. Leave it out to unignore all versions. |
+
+    Without `--ver`, the command unignores all versions, which is what `--ignore-updates` and `--ignore-update` store. A specific `--ver`, such as `--ver=5.3.1`, removes only that version from the ignored list and does not undo an ignore that covers all versions.
+
+    `--ver` needs a value. The command refuses a bare `--ver`, an empty value or `0`, because those would otherwise unignore all versions on a site.
+
+    ```bash
+    # Remove the global ignore for all versions of Akismet
+    wp mainwp updates --unignore-updates --type=plugin --slug=akismet/akismet.php
+
+    # Unignore version 5.3.1 of Akismet on site 3
+    wp mainwp updates --unignore-update 3 --type=plugin --slug=akismet/akismet.php --ver=5.3.1
+    ```
   </Tab>
 
   <Tab title="MainWP Child">
