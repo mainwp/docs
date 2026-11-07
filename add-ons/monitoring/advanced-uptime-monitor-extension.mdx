@@ -261,6 +261,10 @@ Before being able to create, display, or manage Uptime Robot monitors, you need 
 
 After you connect your account, you can set the default alert contact.
 
+The **Default alert contact** field and the **alert contacts to notify** field in the monitor form list both your Uptime Robot alert contacts (such as email addresses) and your Uptime Robot integrations (such as Slack or other team channels). To notify a Slack channel when a monitor goes down, add the integration in your Uptime Robot account first, then select it in either field. If an integration has no name in Uptime Robot, it appears as its type followed by its ID.
+
+If the integration cannot load contacts from Uptime Robot for your saved API key, it shows the error and keeps listing the contacts it stored previously.
+
 The integration validates the API key when you click **Save Settings**. If Uptime Robot rejects the key, the integration keeps your previous key and shows the validation error. When you save a different API key, the integration clears stored uptime data and synchronizes monitors from the new account.
 
 ### Uptime Robot API key permissions
