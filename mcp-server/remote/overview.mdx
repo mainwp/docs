@@ -31,7 +31,7 @@ Both can be used side by side. If your app can't connect remotely, the local ser
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
 - **A single-site WordPress install.** Remote AI connections aren't available on multisite networks, and the MainWP MCP page shows only the local server setup there.
 - **The activity log turned on.** AI apps can only make changes, or use tools MainWP hasn't reviewed, while each call is recorded, so the connector can't be turned on until **Enable Network Activity logging** is on under **MainWP Settings > Network Activity Settings**. If you turn the log off later, the Dashboard refuses those calls until you turn it back on. The read tools MainWP has reviewed keep running, but they aren't recorded while the log is off.
-- **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability.
+- **An administrator account.** Managing the panel and connecting an app both need the `manage_options` capability. Turning the connector on or off, and the switches under **Tools** and **Which apps can connect**, also need an administrator without Team Control limits.
 - **A web server that passes two addresses to WordPress:** `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration`. Apps read them to learn how to sign in. The self-test checks this for you.
 
 Port 443 is the safe choice. If your site address uses another port, the self-test warns that remote AI apps may not reach it.
@@ -108,7 +108,7 @@ The connection's approval policy moves tools between tiers. The Dashboard tier i
 
 **You control the tools.** The **Tools** section of the panel has a switch per category and per tool. A tool you switch off is neither listed nor callable. Extension tools that MainWP hasn't reviewed appear under **Not reviewed by MainWP** and always need your approval on the Dashboard, unless the connection uses Hands-off.
 
-**Large jobs run in the background.** An action over more than 10 sites runs as a background job in steps of 10 sites. The app follows its progress with the `get_remote_job_status_v1` tool.
+**Large jobs run in the background.** By default, an action over more than 10 sites runs as a background job in steps of 10 sites. The app follows its progress with the `get_remote_job_status_v1` tool.
 
 **You can stop everything.** Revoke one connection, disconnect all of yours, or force the connector off with a `wp-config.php` constant. See [Revoke Connections and the Kill Switch](/mcp-server/remote/revoke-and-kill-switch).
 

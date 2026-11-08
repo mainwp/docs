@@ -447,7 +447,7 @@ When you reconnect, pick **View and make changes** on the consent screen. To go 
 
 ## If an app can't connect
 
-- **"MainWP doesn't support this app yet"**: the app isn't one of the apps on this page, its switch under **Which apps can connect** is off, or it tried to register while **Let apps on your own computer connect** was off.
+- **"MainWP doesn't support this app yet"**: the app isn't one of the apps on this page, or its switch under **Which apps can connect** is off. If **Let apps on your own computer connect** is off, an app that registers itself can't register at all, and it reports a "not found" error from the Dashboard.
 - **"This app needs to be added again"**: the app's registration was removed. Remove MainWP from the app and add it again.
 - **"This app can't connect right now"** after an app changed its callback addresses: updating MainWP Dashboard may fix it, because the Dashboard ships each known app's addresses.
 - **"Sign in first"** or **"You can't connect apps"**: sign in to the Dashboard with an administrator account, then start again from the app.

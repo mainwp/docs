@@ -41,6 +41,8 @@ These are the tiers under **Standard**. Tool names are the ones AI apps see.
 | Confirm | `run_updates_v1`, `update_all_v1`, `update_site_core_v1`, `update_site_plugins_v1`, `update_site_themes_v1`, `update_site_translations_v1`, `unignore_site_updates_v1`, `activate_site_plugins_v1`, `activate_site_theme_v1`, `deactivate_site_plugins_v1`, `suspend_site_v1`, `suspend_sites_v1`, `suspend_client_v1`, `delete_tag_v1`, `create_knowledge_record_v1`, `update_knowledge_record_v1`, `delete_knowledge_record_v1`, `run_site_backup_v1`, `run_backup_task_v1`, `cancel_site_backup_v1`, `reset_backup_task_run_v1`, `create_backup_task_v1`, `pause_backup_task_v1`, `set_default_backup_destination_v1`, `update_backup_destination_v1` |
 | Dashboard | `delete_site_v1`, `delete_client_v1`, `delete_site_plugins_v1`, `delete_site_themes_v1`, `disconnect_site_v1`, `disconnect_sites_v1`, `add_site_v1`, `restore_site_snapshot_v1`, `rollback_restore_v1`, `cancel_restore_v1`, `delete_backup_snapshot_v1`, `cleanup_site_backups_v1`, `delete_backup_task_v1`, `delete_backup_destination_v1`, `update_backup_settings_v1` |
 
+Tools that change Team Control roles and users are always **Dashboard**, except under Hands-off, where they are **Confirm**.
+
 Four core tools change tier with their arguments:
 
 - `update_site_v1` is **Dashboard** when the call sets `url`, `verify_certificate`, `ssl_version`, `http_user` or `http_pass`; **Confirm** when it sets `suspended`; and **Write** otherwise.
@@ -174,7 +176,7 @@ In both cases the action runs only when the app calls the tool again.
 
 ### Large actions
 
-An approved action over more than 10 sites runs as a background job, 10 sites at a time. The app gets a job ID and follows it with `get_remote_job_status_v1`. Before each step the Dashboard checks the connection again: revoking it, changing its policy, turning the activity log off or using the kill switch cancels the rest of the job.
+By default, an approved action over more than 10 sites runs as a background job, 10 sites at a time. The app gets a job ID and follows it with `get_remote_job_status_v1`. Before each step the Dashboard checks the connection again: revoking it, changing its policy, turning the activity log off or using the kill switch cancels the rest of the job.
 
 ## The activity log
 

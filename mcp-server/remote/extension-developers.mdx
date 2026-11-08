@@ -11,7 +11,7 @@ Remote AI connections serve abilities from the [WordPress Abilities API](/api-re
 
 The Dashboard serves every ability in the `mainwp/` namespace that sets `show_in_rest` to `true` in its `meta`. The tool name is the ability name without `mainwp/`, with hyphens turned into underscores: `mainwp/acme-purge-cache-v1` becomes `acme_purge_cache_v1`. If two abilities produce the same tool name, neither is served.
 
-Register your abilities in a category of your own. A `mainwp/` ability in one of MainWP's core categories (`mainwp-batch`, `mainwp-clients`, `mainwp-knowledge`, `mainwp-sites`, `mainwp-tags`, `mainwp-updates`) that MainWP's own tier table doesn't list is always **Dashboard** tier (**Confirm** under Hands-off), whatever its annotations or contract say.
+Register your abilities in a category of your own. A `mainwp/` ability in one of MainWP's core categories (`mainwp-backups`, `mainwp-batch`, `mainwp-clients`, `mainwp-knowledge`, `mainwp-sites`, `mainwp-tags`, `mainwp-updates`) that MainWP's own tier table doesn't list is always **Dashboard** tier (**Confirm** under Hands-off), whatever its annotations or contract say.
 
 ## How an ability gets its tier
 
