@@ -64,9 +64,29 @@ When a cron script is called by web address without a key, administrators see a 
 - The URL with the key for the script that was called
 - A **Copy** button for that URL
 
-You can't dismiss the notice. It goes away after the first call that includes the key. MainWP doesn't send an email about this, so check your Dashboard after you update.
+You can't dismiss the notice. It clears after a call that includes the key, and it comes back whenever a call without the key arrives, even if a keyed call cleared it before. MainWP doesn't send an email about this, so check your Dashboard after you update.
 
 MainWP also writes a warning to its log, at most once per hour for each script. The log entry names the script but never includes the key.
+
+### If the notice keeps coming back
+
+If your cron job with the key runs and its log shows success, but the notice is still there, something else still calls a MainWP cron script without the key. Usually the old cron job is still running next to the new one.
+
+<Steps>
+  <Step title="Check every cron job">
+    Look through the cron jobs in your hosting control panel and in any external cron service you use.
+  </Step>
+  <Step title="Remove or update the keyless jobs">
+    Delete each job that calls a URL in the MainWP `cron` folder without `?key=`, or add the key to it.
+  </Step>
+  <Step title="Wait for the next call with the key">
+    The notice goes away after the next call that includes the key. Reload a MainWP page to check.
+  </Step>
+</Steps>
+
+The notice names the script from the most recent call without the key. If it names a different script after you fix one job, update that job the same way.
+
+If you can't find the caller, search your server's access log for requests to `/wp-content/plugins/mainwp/cron/` without `?key=`. The IP address and user agent show which service sends them.
 
 ---
 
