@@ -1,0 +1,116 @@
+---
+title: Troubleshoot MainWP Assistant
+sidebarTitle: Troubleshooting
+description: >-
+  Fix common MainWP Assistant problems: a missing panel, consent messages, Sites
+  mode that needs an AI provider, spend and usage limits, and blocked actions.
+---
+
+Find the message or symptom you see, then follow the fix.
+
+## What You'll Learn
+
+- Why the Assistant panel or sidebar item may be missing
+- How to fix Sites mode and AI provider messages
+- What the documentation service and spend limit messages mean
+- Why an action was blocked
+
+## Prerequisites
+
+- Access to **Assistant Settings**. Some fixes need a WordPress administrator with the **Access MainWP Settings** permission.
+
+## The Assistant Doesn't Show
+
+**The Assistant item is missing from the sidebar, and Command + K has no Assistant results.**
+
+- **The Assistant is turned off.** Turn it on under **MainWP menu (three lines, top right) > MainWP Tools > Privacy & Third-Party Services Permissions** or at `/wp-admin/admin.php?page=AssistantSettings&tab=policies`. See [Turn the Assistant On or Off](/dashboard/mainwp-assistant/settings-and-privacy#turn-the-assistant-on-or-off).
+- **Your account can't use it.** The Assistant opens only for WordPress administrators who can access the Dashboard's **Overview**.
+- **You're not on a MainWP page.** The panel loads on MainWP Dashboard pages only, not on other WP Admin screens.
+
+**The Support Assistant card in the Support modal is greyed out.** The Assistant is off or your account can't use it. If you switched the card on in the modal, click **Save Support Settings**. Clicking the card then reloads the page once so the Assistant can load.
+
+## Consent Messages
+
+**"Assistant features are off. Ask a dashboard administrator to enable them."**
+No administrator has accepted the privacy notice yet, and your account can't accept it. Ask an administrator with the **Access MainWP Settings** permission to open the Assistant and click **Enable & Continue**.
+
+**"The Assistant needs privacy consent before it can answer. An administrator can grant it in Assistant settings."**
+Consent was withdrawn. An administrator can click **Enable Assistant Features** under **Assistant Settings > AI Access Policies > Assistant Features Consent**.
+
+## Sites Mode and AI Provider Messages
+
+**"Sites mode needs an AI provider with a working API key. Add or check one in Settings > Connectors, then try again."**
+**"No AI connection configured. Add a provider API key under Settings > Connectors."**
+**"No AI connection is configured, so Sites mode cannot answer. Add a provider API key under Settings > Connectors."**
+
+Sites mode has no provider it can use. Connect one on **Assistant Settings > AI Connection**, either with **Connect free AI** or under **Manage AI Connectors**. See [Connect an AI Provider](/dashboard/mainwp-assistant/settings-and-privacy#connect-an-ai-provider). Docs mode keeps working while you set this up.
+
+**"Answered from MainWP docs. Sites mode needs an AI connection with a provider API key under Settings > Connectors."**
+You sent a request in Sites mode, but no provider was available, so Docs answered instead and the panel switched back to Docs. Connect a provider, then select **Sites** again.
+
+**"Sites mode needs WordPress 7.0 or newer. Docs mode works on this version."**
+Update WordPress on your Dashboard site to 7.0 or later. Until then, use Docs mode.
+
+**"Your AI provider rejected the API key for this dashboard. Check the key under Settings > Connectors."**
+The provider didn't accept the key, for example because it is wrong or was revoked. Replace it under **Settings > Connectors**, or click **Replace key** on **AI Connection** if you used **Connect free AI**.
+
+**"AI provider rate limit reached. Wait a moment and try again."**
+Your provider limits how many requests you can send. Wait and try again. If the message shows a **Try again in** countdown, wait for it to finish.
+
+**"Gemini free-tier quota reached. A per-minute limit clears within a minute; the daily quota resets at midnight Pacific."**
+You reached a limit on Google's free tier. Wait, or switch to a paid key.
+
+**"Could not reach your AI provider. Check the connection and try again."** or **"Your AI provider is having trouble right now. Please try again in a moment."**
+The provider didn't answer. Try again later. Docs mode isn't affected.
+
+## Limits
+
+**"This dashboard reached its daily AI spend limit, so Sites mode requests are blocked until tomorrow."**
+The Dashboard's estimated Sites mode spend for today reached the **Daily AI spend limit (USD)**. Wait until tomorrow, or click **Change the limit** and raise it. A per-user limit can also block your requests. See [Spend Limits](/dashboard/mainwp-assistant/settings-and-privacy#spend-limits).
+
+**"This dashboard reached its monthly documentation usage limit. Please try again later."**
+Docs mode has a monthly usage limit for each Dashboard. Try again later.
+
+**"Too many documentation requests right now. Please try again later."**
+Docs mode received too many requests in a short time. Wait a moment and try again.
+
+**"The Assistant reached its action limit for this request. Try a smaller or more specific request."**
+Sites mode ran as many actions as it can for one request. Split the work into smaller requests, for example one site or one task at a time.
+
+**"Message is too long. Please keep it under 2000 characters."**
+Shorten your message.
+
+## Documentation Service Messages
+
+**"The MainWP documentation service is temporarily unreachable. Please try again in a moment."**
+Try again later. Check that your Dashboard site can make outgoing HTTPS requests.
+
+**"This dashboard is not registered with the MainWP documentation service yet. Saving the Assistant settings re-registers it."**
+**"The MainWP documentation service rejected this dashboard's credentials. Save the Assistant settings to re-register this dashboard."**
+The Dashboard tries to register again on its own when the service rejects it, so ask your question again first. If the message keeps coming back, an administrator can register the Dashboard again: on **Assistant Settings > AI Access Policies**, click **Disable Assistant Features**, confirm, then click **Enable Assistant Features**. The Assistant is off for everyone between those two clicks.
+
+## Blocked Actions
+
+**"Action blocked. You are in read-only mode."**
+Your access mode is **Read Only**. To let Sites mode make changes, choose **Read & Write (with confirmation)** or **Full Access** under **Assistant Settings > AI Access Policies**. See [Access Mode and Confirmations](/dashboard/mainwp-assistant/settings-and-privacy#access-mode-and-confirmations).
+
+**"Cancelled. The action was not executed."**
+You clicked **Cancel** or typed "cancel" on a confirmation. Nothing ran. Ask again if you want to run it.
+
+**"This action was already confirmed or cancelled elsewhere, so nothing ran here."**
+The same confirmation was answered in another browser tab. Check that tab.
+
+## History and Support
+
+**"Conversation history is disabled for your account."**
+You turned off conversation history, so the **Messages** tab has nothing to list. Turn it back on under **Assistant Settings > History & Privacy**.
+
+**"We couldn't send this. You can reach MainWP Support at mainwp.com/contact."**
+The support request didn't go through. Use the link to contact MainWP Support directly. See [Contact MainWP Support](/dashboard/mainwp-assistant/contact-support).
+
+## Related Resources
+
+- [MainWP Assistant Overview](/dashboard/mainwp-assistant/overview)
+- [Asking Questions](/dashboard/mainwp-assistant/asking-questions)
+- [Settings, Privacy, and History](/dashboard/mainwp-assistant/settings-and-privacy)
+- [Contact MainWP Support](/dashboard/mainwp-assistant/contact-support)
