@@ -76,8 +76,8 @@ If your cron job with the key runs and its log shows success, but the notice is 
   <Step title="Check every cron job">
     Look through the cron jobs in your hosting control panel and in any external cron service you use.
   </Step>
-  <Step title="Remove or update the keyless jobs">
-    Delete each job that calls a URL in the MainWP `cron` folder without `?key=`, or add the key to it.
+  <Step title="Update the keyless jobs">
+    Add the key to each job that calls a URL in the MainWP `cron` folder without one. Delete a job only if another job already calls the same script with the key. Each script runs different work, so a keyed job for `updatescheck.php` doesn't replace a job for `backups.php`.
   </Step>
   <Step title="Wait for the next call with the key">
     The notice goes away after the next call that includes the key. Reload a MainWP page to check.
@@ -86,7 +86,7 @@ If your cron job with the key runs and its log shows success, but the notice is 
 
 The notice names the script from the most recent call without the key. If it names a different script after you fix one job, update that job the same way.
 
-If you can't find the caller, search your server's access log for requests to `/wp-content/plugins/mainwp/cron/` without `?key=`. The IP address and user agent show which service sends them.
+If you can't find the caller, search your server's access log for requests to `/wp-content/plugins/mainwp/cron/` that have no `key` value in the query string. A request ending in `?key=` with nothing after it counts as a call without the key. The IP address and user agent show which service sends them.
 
 ---
 
