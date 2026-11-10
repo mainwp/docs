@@ -416,7 +416,26 @@ Running `wp mainwp sites` with no option prints a table of all child sites. The 
 
     With MainWP Child 6.4.2 or later, a full or database restore keeps the destination site's **Site Address (URL)** (`home`) and **WordPress Address (URL)** (`siteurl`). MainWP rewrites source URLs in the restored database for the destination. If `WP_HOME` or `WP_SITEURL` is defined in `wp-config.php`, WordPress continues to use those definitions.
 
-    Record both destination URLs before you restore. If MainWP reports that it rolled back the database, it restored the previous values. If it reports that the destination URLs could not be confirmed and prints a correction command, follow that command using the pre-restore value for the named option. Then verify both addresses and check the site's links.
+    Record both destination URLs before you restore. They can differ, for example when WordPress is installed in a subdirectory.
+
+    If MainWP reports that it rolled back the database, it restored the previous values. If MainWP reports that it could not confirm the destination URLs, follow the correction it prints. For `wp option update`, replace each placeholder with that option's pre-restore destination URL. If MainWP prints `wp option delete`, the named option was absent before the restore. Then verify both addresses and check the site's links.
+
+    #### Verify Stored URLs When Constants Are Set
+
+    When `WP_HOME` or `WP_SITEURL` is set, the effective URL can look correct while the stored option still points to the source site. On the destination site, check the option values with those two WordPress filters removed for this command only.
+
+    ```bash
+    wp eval 'remove_filter( "option_home", "_config_wp_home" ); remove_filter( "option_siteurl", "_config_wp_siteurl" ); var_export( array( "home" => get_option( "home" ), "siteurl" => get_option( "siteurl" ) ) );'
+    ```
+
+    If a stored URL needs correcting, run the matching command below. Replace the example URL with the value you recorded for that option before the restore.
+
+    ```bash
+    wp eval 'remove_filter( "option_home", "_config_wp_home" ); update_option( "home", "https://destination.example" );'
+    wp eval 'remove_filter( "option_siteurl", "_config_wp_siteurl" ); update_option( "siteurl", "https://destination.example/wordpress" );'
+    ```
+
+    Run the inspection command again and check links on the restored site. These commands leave the constants in `wp-config.php` in effect.
 
     ### If the Restore Fails
 
