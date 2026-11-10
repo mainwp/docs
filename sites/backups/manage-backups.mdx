@@ -559,13 +559,19 @@ After a failed database restore, resolve the reported database problem before re
 
 After you check the restored site and decide you no longer need to undo that restore, open its **Restore History** entry and select **Delete Safety Backup**. Confirm the warning to remove that restore's safety backup from the Child Site.
 
+![A completed restore with Delete Safety Backup and Roll Back controls.](/images/sites/built-in-backups/delete-safety-backup.png)
+
 <Warning>
 Deleting the safety backup permanently removes that restore's **Roll Back** option. Keep it until you have checked the restored site.
 </Warning>
 
+![The confirmation warns that deleting the safety backup permanently removes Roll Back.](/images/sites/built-in-backups/delete-safety-backup-confirmation.png)
+
 You need permission to restore the site. Deletion is refused while a restore or rollback is active, while recovery still needs the backup, or when the Child Site cannot verify the selected safety backup. Other backups and shared backup inventory files are kept.
 
 The entry shows the safety backup as removed after the Child Site confirms deletion. If you see **Removal not confirmed**, use **Check removal** to read its status before using **Roll Back**. A lost connection does not confirm whether the file was deleted.
+
+![The restore entry confirms that the safety backup was removed and Roll Back is no longer available.](/images/sites/built-in-backups/safety-backup-removed.png)
 
 ### Restore From the Command Line
 
