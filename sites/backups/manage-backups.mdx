@@ -157,6 +157,8 @@ Enter the details listed below for your provider. The account needs permission t
 Click **Test Connection & Save**. Resolve any connection error before assigning the destination to a backup task.
 
 For Dropbox, use **Connect Dropbox** to approve the connection. A successful connection tests and saves the destination.
+
+For pCloud, paste the authorization code first. See [Connect pCloud](#connect-pcloud).
 </Step>
 
 <Step title="Assign the destination">
@@ -171,6 +173,7 @@ Choose **Use as default destination** or **Make Default** to preselect a destina
 | S3 Compatible Storage | Bucket, Region, Access key, and Secret key. Leave Endpoint empty for Amazon S3; enter your service's endpoint for other S3-compatible storage. Enable [Path style addressing](#s3-bucket-names-with-dots) when your service requires it. |
 | Google Cloud Storage | Bucket, HMAC access key, and HMAC secret from your storage interoperability settings. |
 | Dropbox | App key, App secret, and an optional Folder. Register the exact Redirect URI shown in MainWP in your Dropbox app, then use Connect Dropbox. The app needs `files.content.write`, `files.content.read`, and `files.metadata.read` permissions. |
+| pCloud | An optional Folder, then the Authorization code from **Connect pCloud**. Available in MainWP Dashboard 6.4.2 and later. See [Connect pCloud](#connect-pcloud). |
 | SFTP | Host, Port, Username, and an existing absolute Directory path. Use a Password or a PEM Private key. When a private key is supplied, Password is its passphrase. |
 | Local Path | An absolute Directory path on the Dashboard server, such as a mounted storage directory. It must be writable by the Dashboard. |
 
@@ -179,6 +182,40 @@ For SFTP, you can supply the server's **Host key fingerprint** to verify its ide
 **Local Path** does not count as offsite storage, even on a mounted drive, and cannot satisfy **Require an offsite-verified backup**.
 
 Set **Minimum retention (days)** on a destination to protect its copies from automatic cleanup for a minimum period. The default is zero, which disables this protection. See [Minimum Retention at a Destination](#minimum-retention-at-a-destination).
+
+### Connect pCloud
+
+In MainWP Dashboard 6.4.2 and later, you can store backup copies in a pCloud account. MainWP connects with an authorization code from pCloud, so you do not need to create your own pCloud app.
+
+<Steps>
+<Step title="Choose pCloud">
+Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and click **Add Storage Destination**. Enter a **Destination name** and select **pCloud** as the **Provider**.
+</Step>
+
+<Step title="Choose a folder">
+Enter a **Folder**, such as `MainWP Backups`. MainWP stores backups under this folder. Leave it empty to use the root of the pCloud account.
+</Step>
+
+<Step title="Get the authorization code">
+Click **Connect pCloud**. pCloud opens in a new tab. Sign in, approve access, and copy the code pCloud shows.
+</Step>
+
+<Step title="Paste the code and save">
+Paste the code into **Authorization code** and click **Test Connection & Save**.
+
+A code works only once, so **Test Connection** does not use it. Use **Test Connection & Save** to connect.
+</Step>
+</Steps>
+
+MainWP detects whether the account stores data in pCloud's US or EU region. The destination list shows the region, the folder, and **Connected as** with the account's email address.
+
+Keep these pCloud limits in mind:
+
+- pCloud allows one MainWP connection per account. Connecting the same pCloud account from another Dashboard disconnects it from this one.
+- When MainWP removes a backup from pCloud, through retention or by deleting its cloud copies, the files stay in pCloud Trash for 15 days on free plans and 30 days on paid plans.
+- Deleting the destination in MainWP does not revoke MainWP's access. To revoke it, open pCloud and remove MainWP Dashboard under **Settings > Linked Accounts > Linked Apps**.
+
+To reconnect an existing destination, edit it, click **Connect pCloud**, and paste a new code. Leave **Authorization code** empty to keep the current connection. If the new code belongs to a different pCloud account, MainWP asks you to confirm the switch. Backups already stored in the previous account stay there, and the destination can no longer restore or clean them up.
 
 ### S3 Bucket Names with Dots
 
@@ -328,11 +365,22 @@ Backup work uses resources on both the Child Site's server and the MainWP Dashbo
 Completion times depend on database size, file count, archive size, server resources, and transfer speeds. Site count alone does not determine the resources your setup needs.
 
 - Create separate scheduled tasks for groups of sites and give them different start times. Spread backups throughout the day, especially for sites that share a server.
+- In MainWP Dashboard 6.4.2 and later, set **Spread scheduled backup starts** to stagger tasks scheduled for the same time. See [Spread Scheduled Backup Starts](#spread-scheduled-backup-starts).
 - Start with a small, representative group that includes a larger site. Check backup and upload completion times, server load, free disk space, and bandwidth use on the Dashboard and Child Site servers before expanding to more sites.
 - Consider [incremental backups](#choose-a-backup-type) to reduce the file data saved after the initial full backup. Each run still includes a fresh database dump.
 - Review [archive formats and exclusions](#archive-format-and-exclusions) to avoid repeatedly archiving caches, old backups, and other folders you do not need to recover. Use [retention limits](#retention-and-cleanup) to control storage use.
 
 Keep [Dashboard cron](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard) working so scheduled backups and background uploads can continue. Check that both backup creation and storage uploads finish within the time available before the next run.
+
+### Spread Scheduled Backup Starts
+
+When several tasks are scheduled for the same time, they all start at once. In MainWP Dashboard 6.4.2 and later, you can delay each task's start by a few minutes:
+
+1. Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings** (`/wp-admin/admin.php?page=BackupSettings`).
+2. Enter the maximum delay in minutes in **Spread scheduled backup starts**. Use a whole number from 0 to 60.
+3. Click **Save Settings**.
+
+Each daily, weekly, and monthly task then starts up to that many minutes after its scheduled time. A task keeps the same delay on every run. Tasks set to **Every N hours** are not affected. The default is 0, which turns this off.
 
 ## Check Backup Health
 
