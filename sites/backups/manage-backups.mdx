@@ -529,7 +529,7 @@ Wait for **Restore completed**, then click **Visit site**. Check key pages, sign
 
 A database or full restore keeps the destination site's existing `home` and `siteurl` values. If those values differ, each keeps its own value. `WP_HOME` and `WP_SITEURL` definitions in `wp-config.php` continue to control the site's effective URLs.
 
-When restoring through `wp mainwp-child backup restore`, a destination URL that cannot be saved causes the restore to report an error instead of success. The error identifies the remaining correction with a `wp option update home` or `wp option update siteurl` command. Run the reported command with the intended destination URL, then check both options and the site's links before using the restored site.
+When restoring through `wp mainwp-child backup restore`, a destination URL that cannot be saved causes the restore to report an error instead of success. The error identifies the remaining correction with a `wp option update home` or `wp option update siteurl` command. If the destination option was absent before the restore, the correction uses `wp option delete` to restore that absence. Run the reported command, replacing any URL placeholder with the intended destination URL, then check both options and the site's links before using the restored site.
 
 ### How Files and Database Tables Are Restored
 
