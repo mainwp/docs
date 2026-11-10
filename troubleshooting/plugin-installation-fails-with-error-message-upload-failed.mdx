@@ -117,6 +117,33 @@ After confirming uploads work, consider alternative security measures that don't
 </Step>
 </Steps>
 
+### Access layers that protect /wp-admin/
+
+When you install a plugin or theme from an uploaded .zip file, each child site downloads the file from your Dashboard through a signed link. By default, this link points to your Dashboard's `/wp-admin/` URL.
+
+If `/wp-admin/` sits behind an access layer that child sites cannot pass, such as an identity-aware proxy (for example, Cloudflare Access) or an IP allowlist, the child site receives the access layer's login page instead of the .zip file. The installation then fails.
+
+Starting with MainWP Dashboard 6.4.2, you can use the `mainwp_download_url` filter to move the download link to your Dashboard's front end. The signature in the link still protects the file, so the front-end URL does not expose it.
+
+Add this code on the **MainWP Dashboard site**, for example in the PHP section of the [MainWP Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension) or a custom plugin:
+
+```php
+add_filter( 'mainwp_download_url', 'mycustom_mainwp_download_url', 10, 2 );
+function mycustom_mainwp_download_url( $url, $query ) {
+    // Serve the signed download link from the front end instead of /wp-admin/.
+    return home_url( '/' . $query );
+}
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `$url` | Default download URL, built from your Dashboard's `/wp-admin/` URL |
+| `$query` | Signed query string, starting with `?sig=` |
+| `$what` | Download type, such as `bulk` |
+| `$filename` | Name of the file being downloaded |
+
+Make sure child sites can reach the URL you return. After adding the code, attempt the upload again.
+
 ---
 
 ## Localhost Limitations
