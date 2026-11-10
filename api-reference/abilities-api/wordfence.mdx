@@ -1,0 +1,211 @@
+---
+title: Wordfence Abilities
+sidebarTitle: "Wordfence Abilities"
+description: >-
+  Read stored Wordfence scan status, issue and blocked-attack summaries, and selected settings for one site through MainWP Abilities.
+---
+
+The MainWP Wordfence Add-on registers three read-only abilities in the `mainwp-wordfence` category. All three use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use them to check a site's Wordfence status from a script, a report, or an AI tool. They return Wordfence data already stored on your Dashboard, from site syncs and saved settings. They do not start a scan, contact the Child site, or change settings.
+
+## What You'll Learn
+
+- Read a site's stored scan status and last scan time
+- Read whether the last completed scan found issues, plus blocked-attack counts
+- Read a site's Wordfence settings without exposing keys or private data
+- Handle permission and input errors
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- A Wordfence Add-on release with Abilities support, active in MainWP Dashboard
+- An authenticated user with `manage_options` and access to the Wordfence Add-on
+- Dashboard access to the site you want to read
+- At least one sync of that site after Wordfence is installed on it, so the Dashboard has stored Wordfence data
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+Each ability checks permissions again when it runs. If you use Team Control, the user needs access to the Wordfence Add-on and to the requested site.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/wordfence-scan-status-v1` | GET | Read the stored Wordfence status, scan state, and last scan time |
+| `mainwp/wordfence-issues-summary-v1` | GET | Read whether the last completed scan found issues, and blocked-attack counts |
+| `mainwp/wordfence-settings-v1` | GET | Read license and server flags, API key presence, and a fixed list of settings |
+
+Discover the full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-wordfence'
+```
+
+All three abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`. Inputs and outputs reject extra properties.
+
+## Request Rules
+
+Each ability reads one site at a time and takes one input:
+
+| Input | Required | Meaning |
+|-------|----------|---------|
+| `site_id` | Yes | MainWP site ID, as a positive JSON integer |
+
+Send no other properties. Every response starts with `site_id` and `site_name`, the site's name in MainWP Dashboard.
+
+## Read the Scan Status
+
+**Ability:** `mainwp/wordfence-scan-status-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/wordfence-scan-status-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "site_name": "Example Site",
+  "plugin_status": 2,
+  "scan_state": "issues_found",
+  "last_scan": "2026-11-03T14:20:05Z",
+  "is_hidden": false
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `plugin_status` | The status number the Dashboard stored at the last sync. It does not show whether Wordfence is active on the site right now |
+| `scan_state` | `issues_found` when the last completed scan found issues. Otherwise `unknown` |
+| `last_scan` | Last scan time in UTC, or `null` |
+| `is_hidden` | `true` when the Wordfence plugin is hidden on the Child site |
+
+<Note>
+`unknown` does not mean the site has problems. The Dashboard stores status `2` only when a completed scan finds issues. It has no record that proves a scan finished clean, so the ability does not claim one. `last_scan` can also be the time a scan started rather than finished.
+</Note>
+
+## Read the Issues Summary
+
+**Ability:** `mainwp/wordfence-issues-summary-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/wordfence-issues-summary-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "site_name": "Example Site",
+  "issues_found": true,
+  "attacks_blocked_today": 0,
+  "attacks_blocked_week": 0,
+  "attacks_blocked_month": 0,
+  "last_scan": "2026-11-03T14:20:05Z"
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `issues_found` | `true` when the last completed scan found issues. Otherwise `null`, for the same reason `scan_state` is `unknown` |
+| `attacks_blocked_today` | Attacks Wordfence blocked today, as stored at the last sync |
+| `attacks_blocked_week` | Attacks blocked this week |
+| `attacks_blocked_month` | Attacks blocked this month |
+| `last_scan` | Last scan time in UTC, or `null` |
+
+The Dashboard does not store how many issues a scan found, so the response has no issue count. To see the issues, open the site in the [Wordfence Dashboard](/add-ons/security/wordfence-extension#wordfence-dashboard).
+
+<Note>
+The attack counts can stay at `0` when the Child site sends no counts during sync. A `0` here does not prove that no attacks were blocked.
+</Note>
+
+## Read the Settings
+
+**Ability:** `mainwp/wordfence-settings-v1`<br />
+**Method:** GET
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":1}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/wordfence-settings-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 1,
+  "site_name": "Example Site",
+  "uses_general_settings": true,
+  "is_paid": false,
+  "is_nginx": false,
+  "cache_type": "",
+  "api_key_set": true,
+  "settings": {
+    "scheduleScan": "daily",
+    "wafStatus": "enabled",
+    "scheduledScansEnabled": true,
+    "firewallEnabled": true,
+    "loginSecurityEnabled": true,
+    "loginSec_maskLoginErrors": true,
+    "liveTrafficEnabled": false
+  }
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `uses_general_settings` | `true` when the site follows the [global Wordfence settings](/add-ons/security/wordfence-extension#global-settings). `false` when it has its own [site settings](/add-ons/security/wordfence-extension#individual-site-settings) |
+| `is_paid` | `true` when the stored data marks the site as using a paid Wordfence license |
+| `is_nginx` | `true` when the stored data marks the site as running on Nginx |
+| `cache_type` | Cache type last applied to the site, or an empty string |
+| `api_key_set` | `true` when a Wordfence API key is stored for the site. The key itself is never returned |
+| `settings` | The settings listed below, read from the global or site settings to match `uses_general_settings` |
+
+The `settings` object contains only these keys. A setting that is missing or stored in an unexpected format is left out, so `settings` can be an empty object.
+
+| Setting | Values | Meaning |
+|---------|--------|---------|
+| `scheduleScan` | `disabled`, `twicedaily`, `daily`, `weekly`, `monthly` | Scan schedule |
+| `wafStatus` | `enabled`, `learning-mode`, `disabled` | Firewall status last applied to the site |
+| `scheduledScansEnabled` | `true` or `false` | Scheduled scans are on |
+| `firewallEnabled` | `true` or `false` | The Wordfence firewall is on |
+| `loginSecurityEnabled` | `true` or `false` | Login security is on |
+| `loginSec_lockInvalidUsers` | `true` or `false` | Lock out logins that use an invalid username |
+| `loginSec_breachPasswds_enabled` | `true` or `false` | Block passwords leaked in data breaches |
+| `loginSec_strongPasswds_enabled` | `true` or `false` | Require strong passwords |
+| `loginSec_maskLoginErrors` | `true` or `false` | Hide whether the username or the password was wrong |
+| `loginSec_blockAdminReg` | `true` or `false` | Block registrations that use the `admin` username |
+| `loginSec_disableAuthorScan` | `true` or `false` | Stop visitors from finding usernames through `/?author=N` scans and similar lookups |
+| `loginSec_disableApplicationPasswords` | `true` or `false` | Turn off WordPress application passwords |
+| `liveTrafficEnabled` | `true` or `false` | `true` records all traffic. `false` records security events only |
+
+The response never includes the API key, license details, email addresses, IP lists, firewall rule data, or free-text settings. To change settings, use the [Wordfence settings](/add-ons/security/wordfence-extension#wordfence-settings) in MainWP Dashboard.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_permission_denied` | 403 | Check `manage_options`, Dashboard API permissions, and Wordfence Add-on access in Team Control |
+| `mainwp_access_denied` | 403 | Check that the user can access the requested `site_id` |
+| `mainwp_site_not_found` | 404 | Check that the `site_id` exists in MainWP Dashboard. If it does, sync the site so the Dashboard stores its Wordfence data |
+| `mainwp_wordfence_invalid_input` | 400 | Send only `site_id`, as a positive integer |
+
+MainWP Dashboard returns HTTP 401 for unauthenticated requests. WordPress can also reject input that does not match the schema before the Add-on runs.
+
+## Related Resources
+
+- [Wordfence](/add-ons/security/wordfence-extension) - Setup, scans, settings, and live traffic
+- [Team Control](/add-ons/agency/team-control-extension) - Grant access to the Wordfence Add-on
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
