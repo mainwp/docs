@@ -79,7 +79,7 @@ When creating a site through REST API, the site URL and administrator username a
 
 Use `status=available_update` on `GET /sites` to list sites with pending updates. In MainWP Dashboard 6.4.2 and later, this includes sites whose only updates are for premium plugins or themes.
 
-With `with_tags=false`, `full_data=false`, `include`, or `exclude`, the `total` field counts the sites on the current page. The same applies when the Abilities API is unavailable. In these cases, keep requesting pages until `data` is empty.
+With `with_tags=false`, `full_data=false`, `include`, or `exclude`, the `total` field counts the sites on the current page. The same applies when the Abilities API is unavailable. To paginate these results, send `page` and a fixed `per_page` value, such as `20`. Increase `page` until `data` is empty.
 
 Use `custom_fields` with a comma-separated list of field names to include additional values. You can combine it with `include` or `exclude` to limit the result by site ID. Field names can contain ASCII letters, digits, and underscores. MainWP skips unsupported names, such as `license-key`, and reserved names, such as `health_site_status`. Built-in values such as the site ID and URL take precedence.
 
