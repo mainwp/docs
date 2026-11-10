@@ -234,6 +234,7 @@
             "icon": "hard-drive",
             "pages": [
               "sites/backups/manage-backups",
+              "sites/backups/connect-pcloud",
               "sites/backups/api-backups"
             ]
           },
