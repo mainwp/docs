@@ -113,6 +113,14 @@ MainWP attempts to create the directory automatically. If you see **Private back
 
 A folder outside one WordPress installation may still be publicly served by another website. This matters when the Dashboard is in a subdirectory, on an addon domain, or inside another site's folder. Choose a location outside every website's public folders.
 
+<Warning>
+**Confirm your private backup directory**
+
+If you see this notice in **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings**, MainWP could not verify that the Dashboard's backup directory is private. Backups that use this directory stop before writing files. This includes existing scheduled backups.
+
+Ask your host to verify that no domain or web server alias serves the directory shown. Once your host confirms it is private, click **Confirm private directory** and retry the backup. You only need to confirm that directory once. If your host cannot verify that it is private, set up a different private directory using the steps above.
+</Warning>
+
 If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
 ## What a Site Needs Before a Backup Can Run
