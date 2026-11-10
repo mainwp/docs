@@ -360,6 +360,12 @@ For more information about WP-CLI, visit the [official WP-CLI documentation](htt
     The `--passphrase=<passphrase>` option also works with `--bundle`, but it exposes the passphrase in process lists and shell history. Use the environment variable instead.
     </Note>
 
+    ### Restore to a Different Domain
+
+    With MainWP Child 6.4.2 or later, you can restore an archive created on a site with a different URL. The restore keeps the destination site's **Site Address (URL)** (`home`) and **WordPress Address (URL)** (`siteurl`) and rewrites links from the source site to the destination URLs.
+
+    If MainWP Child cannot confirm the destination URLs after the database restore, the restore fails with `The destination URLs could not be confirmed.` The message includes the `wp option update` commands to run. Replace the placeholders with the site's URLs from before the restore.
+
     ### If the Restore Fails
 
     The command prints the error message and error code. If the site is left in maintenance mode, the command shows a warning. After investigating, delete the `.maintenance` file in the WordPress root directory to bring the site back online.
