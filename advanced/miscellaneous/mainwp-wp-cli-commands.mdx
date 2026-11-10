@@ -418,7 +418,12 @@ Running `wp mainwp sites` with no option prints a table of all child sites. The 
 
     Record both destination URLs before you restore. They can differ, for example when WordPress is installed in a subdirectory. If a URL constant is set, also record both stored option values using the check below.
 
-    If MainWP reports that it rolled back the database, it restored the previous values. If MainWP reports that it could not confirm the destination URLs, follow the correction it prints. For `wp option update`, replace each placeholder with that option's pre-restore stored value. If MainWP prints `wp option delete`, the named option was absent before the restore. Then verify both addresses and check the site's links.
+    If MainWP reports that it rolled back the database, it restored the previous values. If it could not confirm the destination URLs, check which correction it prints.
+
+    - If it prints `wp option update` and the matching URL constant is set, use the corresponding `wp eval` correction below. Otherwise, replace the placeholder in the printed command with the option's pre-restore stored value.
+    - If it prints `wp option delete`, use that command to remove the option that was absent before the restore.
+
+    Verify both stored values and check the site's links.
 
     #### Verify Stored URLs When Constants Are Set
 
