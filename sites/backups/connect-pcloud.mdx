@@ -1,0 +1,71 @@
+---
+title: Connect pCloud to Built-In Backups
+sidebarTitle: pCloud Storage
+description: Authorize a US or EU pCloud account in MainWP Dashboard, assign it to a built-in backup task, and restore the connection if pCloud refuses access.
+keywords: [pCloud, built-in backups, remote storage]
+---
+
+MainWP Dashboard 6.4.2 and later can upload Built-In Backups to pCloud. Connect your pCloud account on the Dashboard, then assign the destination to the backup tasks that should send copies there.
+
+## Connect and Test pCloud
+
+<Steps>
+<Step title="Add a pCloud destination">
+Open **Backups > Storage** and click **Add Storage Destination**. Enter a **Destination name** and choose **pCloud** as the **Provider**. Enter a **Folder** such as `MainWP Backups`, or leave it blank to use the account root.
+</Step>
+
+<Step title="Authorize the connection">
+Click **Connect pCloud**. Sign in and approve access in the new tab, then copy the code pCloud displays.
+</Step>
+
+<Step title="Paste the code and save">
+Return to MainWP, paste the code into **Authorization code**, and click **Test Connection & Save**. Use this button to redeem the one-time code. If it is rejected or has already been used, get a new one with **Connect pCloud**.
+
+MainWP detects whether your account uses pCloud's US or EU region. Check the region, folder, and connected account in **Backups > Storage**.
+</Step>
+
+<Step title="Send a test backup">
+Edit a backup task and select the pCloud destination under **Upload to storage**. Save the task, click **Run Now**, and check the [snapshot's upload status](/sites/backups/manage-backups#check-backup-status).
+</Step>
+</Steps>
+
+Watch MainWP's walkthrough to see how to authorize pCloud, assign it to a backup task, and check that the upload completes.
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/NU4IhIs46MI"
+  title="How to Use pCloud with MainWP Built-In Backups"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+/>
+
+## Reconnect or Change Accounts
+
+Leave **Authorization code** empty when editing a destination to keep its current connection. To reconnect, click **Connect pCloud** and save a fresh code. pCloud allows one MainWP connection per account. Connecting the same pCloud account from a second Dashboard disconnects the first.
+
+If you authorize a different account, MainWP asks you to confirm the switch. Existing backup files stay in the previous account. This destination can no longer use those files for restores or cleanup after the switch.
+
+To revoke access, open pCloud and remove **MainWP Dashboard** under **Settings > Linked Accounts > Linked Apps**. Deleting the destination in MainWP does not revoke access in pCloud.
+
+When MainWP prunes copies from pCloud, pCloud moves them to Trash. Check Trash when freeing storage space after deleting backups.
+
+## Use Your Own pCloud App
+
+MainWP uses its own pCloud app by default. To use your app, set both constants in the Dashboard site's `wp-config.php`, before the line that loads `wp-settings.php`:
+
+```php
+define( 'MAINWP_PCLOUD_CLIENT_ID', 'your-pcloud-client-id' );
+define( 'MAINWP_PCLOUD_CLIENT_SECRET', 'your-pcloud-client-secret' );
+```
+
+To move an existing destination to your app, click **Connect pCloud** and save a new code. The existing destination keeps using its current authorization until you reconnect it.
+
+## Troubleshoot Uploads
+
+| Message | What to do |
+| --- | --- |
+| pCloud refused the saved access | Edit the destination and reconnect it with a new authorization code. |
+| pCloud storage quota exceeded | Free up space in pCloud, then run the backup again. Check pCloud Trash if you recently removed backup copies. |
+
+For other upload errors, see [Built-In Backups troubleshooting](/sites/backups/manage-backups#troubleshooting-and-limitations).

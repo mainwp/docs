@@ -53,7 +53,7 @@ MainWP Cache Control can automatically purge cache after MainWP Dashboard update
 
 Cache Control supports Cloudflare and the following cache plugins or cache services:
 
-AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
+AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCache, RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
 
 If a MainWP Child site has both Cloudflare and a supported cache plugin enabled, Cache Control can purge both during the same operation. When the Rocket.net CDN Cache Plugin is detected, Cloudflare purging is skipped to avoid double-purging the same Cloudflare-backed cache layer.
 
@@ -162,6 +162,8 @@ Review each site's result after a bulk purge. If the cache plugin succeeds but C
 Sites with warnings or failures remain available for retry. Sync the affected sites, review **Cache Control > Logs**, and correct the reported issue. Then select the sites that need another attempt and run **Purge Cache (Cache Control)** again.
 
 With MainWP Child 6.3, a Pressable Cache Management purge reports success only when object cache and any applicable Batcache or Edge cache purges succeed. If a layer fails, check the reported failure before retrying.
+
+With MainWP Child 6.4.2 or later, the `Cache purge dispatched` message means MainWP sent the purge request to RunCache. Check the site if stale content remains.
 
 A recent **Last Purged** time alone does not prove every cache layer succeeded. For example, Cloudflare can succeed while the site's cache plugin fails. Review the per-site result and logs together.
 

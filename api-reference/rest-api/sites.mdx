@@ -25,7 +25,7 @@ The [per-user ownership rules](/api-reference/rest-api/overview#permission-scope
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| GET | `/sites` | List sites | `page`, `per_page`, `search`, `include`, `exclude`, `status`, `with_tags`, `full_data` |
+| GET | `/sites` | List sites | `page`, `per_page`, `search`, `include`, `exclude`, `status`, `with_tags`, `full_data`, `custom_fields` |
 | GET | `/sites/basic` | List lightweight site records | `page`, `per_page`, `search`, `include`, `exclude`, `status` |
 | GET | `/sites/count` | Count sites | `include`, `exclude`, `status` |
 | POST, PUT, PATCH | `/sites/sync` | Trigger sync for all sites | Optional filters like `include`, `exclude` |
@@ -74,6 +74,12 @@ When creating a site through REST API, the site URL and administrator username a
 ---
 
 ## Representative Requests
+
+### List Sites with Updates or Custom Fields
+
+Use `status=available_update` on `GET /sites` to list sites with pending updates. In MainWP Dashboard 6.4.2 and later, the filter and its pagination totals include sites whose only updates are for premium plugins or themes.
+
+Use `custom_fields` with a comma-separated list of field names to include additional values. You can combine it with `include` or `exclude` to limit the result by site ID. Custom field requests cannot replace built-in values such as the site ID or URL.
 
 ### Connection Input Types
 

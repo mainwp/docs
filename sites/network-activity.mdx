@@ -80,6 +80,8 @@ Network Activity includes events from two sources:
 
 ---
 
+For Dashboard events initiated through MainWP MCP, MainWP Dashboard 6.4.2 and later shows **via MainWP MCP** beside the authenticated user's name.
+
 ## Version and Role Changes
 
 MainWP Child 6.3 corrects the before-and-after details recorded for WordPress core updates and user role changes. Keep Child sites updated when reviewing these events. The fixes apply to newly recorded activity; they do not rewrite older entries.
@@ -104,7 +106,7 @@ Filter selections are saved for your user account until you reset them.
 
 ## View Only Non-MainWP Changes
 
-Non-MainWP Changes are a subset of Network Activity data. They show activity that did not originate from MainWP Dashboard.
+Non-MainWP Changes show activity that did not originate from MainWP Dashboard.
 
 ### Filter in the Network Activity Widget
 
@@ -170,7 +172,7 @@ Open **MainWP menu (three lines, top right) > MainWP Settings > Network Activity
 
 Click **Save Settings** after making changes. The next sync sends the logging, event-selection, and Child-site retention settings to your child sites. Any sync works: a scheduled sync, clicking **Sync**, or a sync started through the REST API, WP-CLI, or the Abilities API. To apply the settings right away, sync the sites manually.
 
-Every sync also fetches new Non-MainWP Changes from each child site, up to 100 events per site. If a site has more waiting, later syncs fetch the rest, oldest first. Child sites delete these events once they are older than the Child-site retention period. If a site logs more than 100 events between syncs for longer than that period, some events never reach your Dashboard.
+In MainWP Dashboard 6.4.2 and later, each of these sync methods also fetches new Non-MainWP Changes when logging is enabled, up to 100 events per site. If a site has more waiting, later syncs fetch the rest, oldest first. Child sites delete these events once they are older than the Child-site retention period. If a site logs more than 100 events between syncs for longer than that period, some events never reach your Dashboard.
 
 Dashboard logging and archiving settings affect both Network Activity and Dashboard Insights because both features use the same logs dataset.
 

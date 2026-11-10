@@ -88,7 +88,7 @@ Only unrestricted Dashboard administrators can enable v1 compatibility. Team Con
 ![Add API key with v1 compatibility enabled](/images/api-reference/rest-api-add-key-v1-compatibility.png)
 </Step>
 <Step title="Save and store credentials">
-Click **Save Key**, then copy the generated credentials and store them safely.
+Copy the generated credentials while they are visible and store them securely. Then click **Save API Key**.
 
 <Warning>
 The API key (Bearer token) is shown once and cannot be revealed later. If you enable v1 compatibility, the Consumer Key and Consumer Secret are also shown once.
@@ -188,13 +188,7 @@ MainWP still supports legacy v1 endpoints (`/wp-json/mainwp/v1/`) for backward c
 
 In the UI flow (**MainWP Dashboard > API Access > API Keys > Add API Keys**), you can enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret along with the v2 Bearer token.
 
-Only unrestricted Dashboard administrators can create or edit legacy v1 keys. Team Control staff cannot manage these keys, even if their role grants API key permissions.
-
-The v2 API key endpoints create and manage v2 keys and do not create legacy v1 credentials.
-
-<Note>
-Enabling v1 compatibility or editing legacy v1 keys requires an unrestricted Dashboard administrator. Legacy keys apply across the whole Dashboard. Existing keys are unchanged.
-</Note>
+Only unrestricted Dashboard administrators can create, migrate, or edit v1-compatible keys, even when a Team Control role grants API key permissions. Legacy keys apply across the whole Dashboard. The v2 API key endpoints manage v2 keys.
 
 ```bash
 curl -u "CONSUMER_KEY:CONSUMER_SECRET" \
@@ -223,7 +217,9 @@ Some update endpoints start background work and return a start or queue confirma
 
 Depending on your Dashboard version and execution mode, responses can also include fields such as `job_id` and `queued_count`.
 
-After you receive a start or queued response, wait for the process to finish, then sync your Dashboard or recheck update endpoints.
+A start response confirms queueing. Wait for the process to finish, then sync your Dashboard or recheck the update endpoints.
+
+In MainWP Dashboard 6.4.2 and later, when the Abilities API is unavailable, a batch start can return `failed_site_ids` for sites it could not queue. Other sites in that response can continue processing. If every queue attempt fails, the endpoint returns HTTP 500 with code `mainwp_rest_updates_queue_error`. Check the result before retrying.
 
 ---
 
