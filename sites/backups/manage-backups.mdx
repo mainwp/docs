@@ -531,6 +531,21 @@ A database or full restore keeps the destination site's existing `home` and `sit
 
 When restoring through `wp mainwp-child backup restore`, a destination URL that cannot be saved causes the restore to report an error instead of success. The error identifies the remaining correction with a `wp option update home` or `wp option update siteurl` command. If the destination option was absent before the restore, the correction uses `wp option delete` to restore that absence. Run the reported command, replacing any URL placeholder with the intended destination URL, then check both options and the site's links before using the restored site.
 
+If `WP_HOME` or `WP_SITEURL` is defined, WordPress filters option reads through that constant. An update can therefore appear successful while the stored row still contains another URL. Inspect the stored values with those two filters removed for this command only:
+
+```bash
+wp eval 'remove_filter( "option_home", "_config_wp_home" ); remove_filter( "option_siteurl", "_config_wp_siteurl" ); var_export( array( "home" => get_option( "home" ), "siteurl" => get_option( "siteurl" ) ) );'
+```
+
+For a stored row that needs correction, remove its filter within the same command as the update. Replace each example URL with that option's intended destination value; the two values may differ:
+
+```bash
+wp eval 'remove_filter( "option_home", "_config_wp_home" ); update_option( "home", "https://destination.example" );'
+wp eval 'remove_filter( "option_siteurl", "_config_wp_siteurl" ); update_option( "siteurl", "https://destination.example" );'
+```
+
+Run the inspection command again to confirm the stored values. These commands leave the constants in `wp-config.php` unchanged. If an option should be absent, use the reported `wp option delete` command instead. Check the restored site's links afterward.
+
 ### How Files and Database Tables Are Restored
 
 MainWP restores the snapshot in place. It does not delete the entire site and database before restoring.
