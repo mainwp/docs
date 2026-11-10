@@ -205,7 +205,7 @@ Build new integrations on v2 first. Use v1 only where an existing integration st
 
 ## Batch Update Response Handling
 
-Some update endpoints start background work and return a start or queue confirmation immediately instead of waiting for completion.
+Batch update endpoints can queue work, return completed results, or report an existing run.
 
 ```json
 {
@@ -215,9 +215,11 @@ Some update endpoints start background work and return a start or queue confirma
 }
 ```
 
-Depending on your Dashboard version and execution mode, responses can also include fields such as `job_id` and `queued_count`.
+Check the response before deciding what to do next:
 
-A start response confirms queueing. Wait for the process to finish, then sync your Dashboard or recheck the update endpoints.
+- If MainWP reports a new background run, wait for it to finish, then sync your Dashboard or recheck the update endpoints. A queued response can include `job_id` and `queued_count`.
+- If MainWP reports completion and includes a `summary`, read the result there.
+- If MainWP reports that a batch is already running, check that run before sending another start request.
 
 In MainWP Dashboard 6.4.2 and later, when the Abilities API is unavailable, a batch start can return `failed_site_ids` for sites it could not queue. Other sites in that response can continue processing. If every queue attempt fails, the endpoint returns HTTP 500 with code `mainwp_rest_updates_queue_error`. Check the result before retrying.
 

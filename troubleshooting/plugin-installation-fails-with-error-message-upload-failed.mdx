@@ -131,7 +131,7 @@ Add this code on the **MainWP Dashboard site**, for example in the PHP section o
 add_filter( 'mainwp_download_url', 'mycustom_mainwp_download_url', 10, 2 );
 function mycustom_mainwp_download_url( $url, $query ) {
     // Serve the signed download link from the front end instead of /wp-admin/.
-    return home_url( '/' . $query );
+    return home_url( '/' . $query, 'https' );
 }
 ```
 
