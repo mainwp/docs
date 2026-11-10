@@ -598,6 +598,7 @@ Actions support a preview before confirmation. Backup and restore jobs continue 
 | An error names a folder on the child site, the Dashboard server, or the SFTP server | See [Find Where a Folder Error Comes From](#find-where-a-folder-error-comes-from) |
 | A site cannot be backed up | Check [What a Site Needs Before a Backup Can Run](#what-a-site-needs-before-a-backup-can-run) |
 | Backup stays on the Dashboard | Check Upload to storage on the task, or read the destination message before Back Up Now |
+| Backup fails with "Archive download failed: HTTP 401" or another HTTP status | The archive download received that HTTP response. Check the child site's web server and any cache, firewall, or access rules that could block archive downloads. Include the status and failed run time in your support request. The message never includes the download link or token. |
 | Upload fails | Use Test on the destination, check credentials, available space, and access to the configured bucket or directory |
 | S3 storage test returns `cURL error 60` with "no alternative certificate subject name matches target hostname" | Check whether the bucket name contains a dot. If it does, see [S3 Bucket Names with Dots](#s3-bucket-names-with-dots). Other cURL error 60 messages can have different causes. |
 | Scheduled work or background uploads stall | Check Dashboard cron, server loopback requests, and the task error. See [Cron configuration](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard). |
