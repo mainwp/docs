@@ -271,6 +271,12 @@ When you click **Run Snippet**, the Console opens and shows the current process 
 
 The Console also shows progress counts, site-level status icons, returned output for **Return Info** snippets, and a **Stop Process** button for stopping queued or in-progress processing.
 
+## Database Health Check
+
+The Code Snippets Extension supplies its snippets table and expected column definitions to MainWP Dashboard's database schema checks. The snippets table stores your saved code snippets on the Dashboard. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_codesnippet` to find the Code Snippets table and check for a missing table, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair saved snippets or check snippets saved on Child Sites.
+
 ## Useful Code Snippets
 
 MainWP is not responsible for the code that you run on your sites. Use this tool with extreme care and at your own risk. It is recommended that you run any code on a test site before releasing it on live sites. In case you damage your site by using a bad code snippet, read [Remove a Code Snippet From a Broken Site](#remove-a-code-snippet-from-a-broken-site) to see how to fix it.
