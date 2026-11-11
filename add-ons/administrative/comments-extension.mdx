@@ -261,6 +261,8 @@ The synced list reads the last completed sync; it does not fetch fresh comments.
 
 Moderation accepts `approve`, `unapprove`, `spam`, `unspam`, `trash`, and `restore`. Each item supplies a positive `comment_id` and the `expected_status` you observed (`approved`, `pending`, `spam`, or `trash`). Requests contain at most 100 distinct items on one site. Refresh before acting and inspect every result: a batch can contain applied, conflict, not-found, and failed outcomes.
 
+With a Child that includes the v2 trash guard, `trash` is refused when the site's `EMPTY_TRASH_DAYS` setting is zero. WordPress would permanently delete the comment in that configuration. The item returns `failed` with `mutation_failed`; its state stays unchanged. The separate permanent-delete operation retains its preview, confirmation, and already-trashed requirements. The legacy Comments action retains WordPress's trash-disabled behavior, so this refusal applies specifically to v2 moderation.
+
 For example, the input for approving a pending comment is:
 
 ```json
