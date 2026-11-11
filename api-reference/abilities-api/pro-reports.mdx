@@ -69,13 +69,13 @@ Review the preview before confirming. Keep the same other fields, including `req
 
 The references in the examples show the required format. Replace them with returned values. Keep recipient addresses and subjects from your own configuration: definition reads do not return those private fields.
 
-For any write example below, save its JSON body as `request.json` and call the named ability:
+For any write example below, save its JSON body as `request.json`. Replace `ABILITY_NAME` in this command with the name after `mainwp/` in that section, such as `send-pro-report-run-v1`:
 
 ```bash
 curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
   -H 'Content-Type: application/json' \
   --data-binary @request.json \
-  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-pro-report-definition-v1/run'
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/ABILITY_NAME/run'
 ```
 
 ## List report definitions
