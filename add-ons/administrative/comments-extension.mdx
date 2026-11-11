@@ -241,6 +241,42 @@ See [Add-on Endpoints](/api-reference/rest-api/extensions#comments) for the full
 
 ---
 
+## Automate comments with Abilities
+
+The Comments extension registers five WordPress Abilities. Use an administrator account with permission to use MainWP's Abilities API. Team Control extension rights and assigned-site restrictions are checked again before requests are sent. A staff role's extension right alone does not grant access through the Abilities bridge.
+
+Live get, moderation, and permanent deletion require a Child that supports the v2 comments contract. An unsupported or unreadable reply produces an error, not a confirmed change. See [Abilities API authentication](/api-reference/abilities-api/overview) for connection details.
+
+| Ability | Inputs | Result |
+|---|---|---|
+| `mainwp/list-comments-v1` | Optional `site_ids`, `status`, `keyword`, `start_date`, `end_date`, `post_id`, `maximum_per_site`, `page`, `per_page` | Live `comments`, per-site `site_results`, `total`, `partial`, and `pagination` |
+| `mainwp/get-comment-v1` | `site_id`, `comment_id` | One `comment`, its `site`, and `observed_at` |
+| `mainwp/list-synced-recent-comments-v1` | Optional `site_ids`, `status`, `page`, `per_page` | Cached `comments`, per-site results, sync times, truncation indicators, and pagination |
+| `mainwp/moderate-comments-v1` | `site_id`, `action`, `items` | Requested and applied counts, `partial`, and a result for each comment |
+| `mainwp/delete-comments-permanently-v1` | `site_id`, `items`, `dry_run`, `confirm` | Eligible and deleted counts, plus a result for each comment |
+
+The live list defaults to 50 comments per site and accepts at most 100. Site pages contain at most 100 sites. `status: "all"` includes approved and pending comments. Date boundaries use the Child site's local comment date: after 00:00 on `start_date`, before 00:00 on `end_date`. To request one day, use the following day as the end date. Equal dates return no matches. A `post_id` filter cannot be combined with a keyword or date range.
+
+The synced list reads the last completed sync; it does not fetch fresh comments. It covers approved and pending comments and may be truncated. Check each site's sync time and status before treating it as current. Live and synced lists preserve comments with no attached post as `post_id: 0`; the stricter v2 get route returns an error for those records. Unusable GMT dates can fail a site's read.
+
+Moderation accepts `approve`, `unapprove`, `spam`, `unspam`, `trash`, and `restore`. Each item supplies a positive `comment_id` and the `expected_status` you observed (`approved`, `pending`, `spam`, or `trash`). Requests contain at most 100 distinct items on one site. Refresh before acting and inspect every result: a batch can contain applied, conflict, not-found, and failed outcomes.
+
+For example, the input for approving a pending comment is:
+
+```json
+{"site_id": 12, "action": "approve", "items": [{"comment_id": 482, "expected_status": "pending"}]}
+```
+
+Permanent deletion accepts only comments expected to be in `trash`. Preview first:
+
+```json
+{"site_id": 12, "items": [{"comment_id": 482, "expected_status": "trash"}], "dry_run": true, "confirm": false}
+```
+
+After reviewing the preview and obtaining explicit confirmation, submit the same items with `dry_run: false` and `confirm: true`. Both fields must be booleans; exactly one must be true. Deletion is irreversible. A preview does not delete anything.
+
+These operations check expected state before changing a comment. A repeat request may report a conflict or not-found instead of applying the same change again. If the reply says the outcome is unknown, some work may have completed. Read the comments again before deciding which items to retry. Network Activity records only confirmed changed IDs.
+
 ## Related Resources
 
 - [Administrative Add-ons](/add-ons/administrative) - Browse administrative add-ons

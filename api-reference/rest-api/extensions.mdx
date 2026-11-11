@@ -35,7 +35,17 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 Allowed `action` values: `approve`, `unapprove`, `spam`, `unspam`, `trash`, `restore`, `delete`.
 
-Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`). The `maximum` parameter caps the number of comments returned per site (default `50`, max `500`).
+Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`, meaning approved and pending). The `maximum` parameter caps the number of comments returned per site (default `50`, max `100`).
+
+The all-sites route pages through at most 100 sites per request. Use `page` and `per_page` (maximum 100). When `X-MainWP-Comments-Has-More` is true, request the next page. `maximum` applies separately to each site.
+
+API keys need an owner with `manage_options`. Team Control users must also have the Comments extension right and access to the requested sites. Hidden and unknown sites return the same not-found response.
+
+Invalid filters and unknown actions return 400; insufficient permissions return 403; an unknown site returns 404. A read where every site fails returns 502. Bulk requests accept at most 100 distinct comment IDs. With an updated Child legacy moderation handler, a missing comment returns 404 and an invalid status transition returns 409. Older Child handlers may acknowledge actions without verifying the final state; update Child before relying on these outcomes.
+
+An unreadable mutation reply reports an unknown outcome. Some comments may already have changed. Read their current states before retrying. Network Activity records only IDs whose changes the response confirms; a count-only partial reply cannot identify those IDs and produces no success log.
+
+List results can include `post_id: 0` when a comment has no attached post. An unusable GMT timestamp can fail that site's read instead of returning an incomplete success.
 
 ### SSL Monitor
 
