@@ -116,6 +116,8 @@ Before you clear a stuck request, check the plugin on the child site. Confirm th
 The **Clear Stuck Request** button stays hidden while the original request may still be running. Wait until the request timeout and safety margin have passed, then reload the page. Reloading immediately does not make the button appear.
 
 The default wait is 20 hours plus one minute. A different Dashboard request timeout changes the wait for new requests. If you try to clear a request too soon, the Dashboard tells you approximately how long to wait.
+
+The wait also applies if **Update Now** reports a connection error before the timeout. Check the plugin on the child site before you retry; the wait does not prove its database update has stopped.
 </Step>
 <Step title="Expand the plugin row and locate the site">
 </Step>
