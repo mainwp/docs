@@ -11,7 +11,7 @@ MainWP Dashboard 6.4.2 and later can upload Built-In Backups to pCloud. Connect 
 
 <Steps>
 <Step title="Add a pCloud destination">
-Open **Backups > Storage** and click **Add Storage Destination**. Enter a **Destination name** and choose **pCloud** as the **Provider**. Enter a **Folder** such as `MainWP Backups`, or leave it blank to use the account root.
+Open **Backups > Storage** and click **Add Storage Destination**. Enter a **Destination name** and choose **pCloud** as the **Provider**. Enter a **Folder** such as `MainWP Backups`, or leave it blank to use the account root. MainWP creates the folder if it is missing when you test and save the destination.
 </Step>
 
 <Step title="Authorize the connection">
@@ -21,7 +21,7 @@ Click **Connect pCloud**. Sign in and approve access in the new tab, then copy t
 <Step title="Paste the code and save">
 Return to MainWP, paste the code into **Authorization code**, and click **Test Connection & Save**. Use this button to redeem the one-time code. If it is rejected or has already been used, get a new one with **Connect pCloud**.
 
-MainWP detects whether your account uses pCloud's US or EU region. Check the region, folder, and connected account in **Backups > Storage**.
+MainWP detects whether your account uses pCloud's US or EU region. Check the region, folder, and connected account in **Backups > Storage**. The destination shows the account email when pCloud supplies it.
 </Step>
 
 <Step title="Send a test backup">
@@ -48,7 +48,7 @@ If you authorize a different account, MainWP asks you to confirm the switch. Exi
 
 To revoke access, open pCloud and remove **MainWP Dashboard** under **Settings > Linked Accounts > Linked Apps**. Deleting the destination in MainWP does not revoke access in pCloud.
 
-When MainWP prunes copies from pCloud, pCloud moves them to Trash. Check Trash when freeing storage space after deleting backups.
+When MainWP prunes copies from pCloud, pCloud moves them to Trash. Recovery time depends on your plan and available Trash space. When Trash fills up, pCloud clears the oldest files first. See [pCloud's Trash guidance](https://blog.pcloud.com/know-your-trash/).
 
 ## Use Your Own pCloud App
 
