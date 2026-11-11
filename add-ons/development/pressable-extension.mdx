@@ -101,7 +101,9 @@ Enter the Client ID and Client Secret and click the **Save Settings** button ![M
 The Pressable Integration respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). Only team members whose role grants access to the Pressable Integration will see the Pressable menu and be able to perform Pressable actions. If a user does not have permission, the integration UI and bulk actions are hidden for them.
 ## Clearing Pressable credentials
 
-To disconnect the integration from your Pressable account, open the **Settings** tab, clear both the **Client ID** and **Client Secret** fields, and click **Save Settings**. Saving empty values removes the stored credentials and the cached access token. The Dashboard tab then shows an empty-state placeholder prompting you to add credentials again.
+The Settings tab shows whether credentials are configured. The Client ID and Client Secret fields stay blank to protect the saved values. Leave both fields empty to keep the existing connection. To replace it, enter both new values and save. Invalid credentials leave the working connection in place.
+
+To disconnect, select **Clear the configured Pressable credentials** and click **Save Settings**. This clears the saved connection and synced site data. It does not delete sites at Pressable.
 
 ## Empty-state placeholders
 
@@ -114,9 +116,11 @@ These replace the previous empty table so the next step is always clear.
 
 ## Site matching by primary URL and custom domains
 
-The integration matches Pressable sites to MainWP child sites using both the Pressable primary URL and any custom domains configured on the Pressable site. If a child site's URL matches any domain assigned to a Pressable site, it is linked automatically — no manual mapping is required when you point a child site at a custom domain instead of the default `*.mystagingwebsite.com` URL.
+The mapping page suggests MainWP child sites whose URLs match a Pressable primary URL or custom domain. Review and apply the suggested association before managing the site through MainWP.
 
-Reload Pressable API data from the Dashboard tab to refresh the mapping after adding or changing custom domains in Pressable.
+Reload Pressable API data after adding or changing sites. Use the mapping page's custom-domain discovery action to look for additional matches. Discovery requires an unrestricted administrator with Pressable Manage Account, Manage Hosting and Dashboard settings rights. Restricted users cannot use it to view domains for unmapped sites.
+
+Site actions require access to the mapped MainWP child site. Restores check both the source and destination. MainWP checks permissions again before queued work contacts Pressable.
 
 ## Integration Dashboard Page
 
@@ -147,7 +151,7 @@ The columns of the table that are specific to the Pressable Integration are as f
 <Step title="Enter the information for the new site">
 ![Enter the information for the new site](/images/add-ons/pressable-create-new-site.png)
 
-1.  Enter the desired **Site Name** **NOTE:** Periods, spaces, and other special characters are not permitted in site names. Dashes are fine, but the name cannot start or end with a dash. The name must be at least 3 characters in length.
+1.  Enter a **Site Name** with 4–63 lowercase letters, digits or dashes. Start and end with a letter or digit.
     2.  Choose whether the site should be **Staging** or not
     3.  From the **Site Type** dropdown, select either WordPress or WooCommerce
     4.  From the **PHP Version** dropdown, select the available PHP version
@@ -160,7 +164,7 @@ The columns of the table that are specific to the Pressable Integration are as f
 
 ## Available Actions for Child Sites
 
-Available actions you can perform on the child sites are located in the ellipsis menu. Hosting actions are also available in the Bulk Actions menu: Enable Sites, Disable Sites, Delete Sites, Convert Live to Staging, Convert Staging to Live, Enable CDN, Disable CDN, and Go to phpMyAdmin. ![Animation showing available actions in the site ellipsis menu and Bulk Actions](/images/add-ons/pressable-bulk-actions.gif)
+Site actions are in the ellipsis menu. The Bulk Actions menu also supports enabling, disabling or deleting sites, converting between live and staging, and enabling or disabling CDN.
 
 -   **Sync Data:** Synchronizes the child site through the MainWP Dashboard site sync
 -   **Overview**: Opens the Child Site Overview on the MainWP Dashboard
@@ -169,8 +173,11 @@ Available actions you can perform on the child sites are located in the ellipsis
 -   **Delete Site:** Deletes the site from the Pressable hosting account
 -   **Convert to Staging** / **Staging to Live:** Converts the site either from Staging to Live, or from Live to Staging
 -   **Enable/Disable CDN:** Either enables or disables the CDN feature on the Pressable hosting account
--   **Go to phpMyAdmin:** Opens the phpMyAdmin page for that child site on the Pressable hosting account
--   **Manage Backups:** Opens the Pressable Backups page for that Child Site. You can either initialize a Site Restore or download one of the existing backup files. ![Pressable Backups page with Site Restore and download options](/images/add-ons/pressable-sites-dashboard.png)
+-   **Manage Backups:** Opens the site's Pressable backups. Choose the source backup, destination site and available files or database before requesting a restore. A restore overwrites destination content; keep a separate backup of that destination first.
+
+## Automate Pressable hosting tasks
+
+The [Pressable Abilities API](/api-reference/abilities-api/pressable) can read cached status, manage the connection and mappings, refresh hosting information, change site state, create or delete sites, and restore backups. Changes require a preview and confirmation. Queued work returns an operation ID so your tool can check completion.
 
 ---
 
