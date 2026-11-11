@@ -243,6 +243,8 @@ See [Add-on Endpoints](/api-reference/rest-api/extensions#comments) for the full
 
 ## Automate comments with Abilities
 
+Comments row-action replies appear as plain text. Error messages no longer display links or formatting supplied in a site reply. Successful actions still show a green check and fade the row. Blank or unusable errors receive a generic message.
+
 The Comments extension registers five WordPress Abilities. Use an administrator account with permission to use MainWP's Abilities API. Team Control extension rights and assigned-site restrictions are checked again before requests are sent. A staff role's extension right alone does not grant access through the Abilities bridge.
 
 Live get, moderation, and permanent deletion require a Child that supports the v2 comments contract. An unsupported or unreadable reply produces an error, not a confirmed change. See [Abilities API authentication](/api-reference/abilities-api/overview) for connection details.
