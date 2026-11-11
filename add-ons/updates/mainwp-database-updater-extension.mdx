@@ -113,7 +113,9 @@ Before you clear a stuck request, check the plugin on the child site. Confirm th
 
 <Steps>
 <Step title="Go to Sites > Updates > Database">
-If you just ran **Update Now**, reload the page. The **Clear Stuck Request** button appears only when the page loads.
+The **Clear Stuck Request** button stays hidden while the original request may still be running. Wait until the request timeout and safety margin have passed, then reload the page. Reloading immediately does not make the button appear.
+
+The default wait is 20 hours plus one minute. A different Dashboard request timeout changes the wait for new requests. If you try to clear a request too soon, the Dashboard tells you approximately how long to wait.
 </Step>
 <Step title="Expand the plugin row and locate the site">
 </Step>
@@ -125,7 +127,9 @@ The extension removes the stuck request, and the button disappears. Click **Upda
 </Steps>
 
 <Note>
-**Clear Stuck Request** appears only for requests that are still waiting for confirmation. You can't clear a request that the child site accepted or declined. To clear a request, you need the same permissions as **Update Now**: access to the Database Updater extension, the `update_plugins` capability, and access to the site.
+**Clear Stuck Request** appears only for unconfirmed requests old enough to clear. The Dashboard also checks the request age when you click the button. You can't clear a request that the child site accepted or declined. To clear a request, you need the same permissions as **Update Now**: access to the Database Updater extension, the `update_plugins` capability, and access to the site.
+
+For unconfirmed requests recorded before this safeguard was added, the wait starts when the extension first sees the request and lasts at least 20 hours plus one minute.
 </Note>
 
 The extension never clears stuck requests on its own. It removes records of confirmed requests 30 days after they finish, using a daily scheduled task. When you uninstall the extension, it deletes all of its request records.
