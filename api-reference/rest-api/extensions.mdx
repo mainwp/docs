@@ -28,14 +28,33 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| GET | `/comments` | List comments across selected sites | `websites`, `groups`, `clients`, `status`, `keyword`, `dtsstart`, `dtsstop`, `maximum` |
-| GET | `/comments/{id_or_domain}` | List comments for one site | `status`, `keyword`, `dtsstart`, `dtsstop`, `maximum` |
+| GET | `/comments` | List comments across selected sites | `websites`, `groups`, `clients`, `status`, `keyword`, `dtsstart`, `dtsstop`, `post_id`, `maximum`, `page`, `per_page` |
+| GET | `/comments/{id_or_domain}` | List comments for one site | `status`, `keyword`, `dtsstart`, `dtsstop`, `post_id`, `maximum` |
 | PUT, PATCH | `/comments/{id_or_domain}/{id_comment}/action` | Perform an action on a single comment | `action` |
 | PUT, PATCH | `/comments/{id_or_domain}/bulk-action` | Perform an action on multiple comments | `action`, `comment_ids` |
 
 Allowed `action` values: `approve`, `unapprove`, `spam`, `unspam`, `trash`, `restore`, `delete`.
 
-Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`). The `maximum` parameter caps the number of comments returned per site (default `50`, max `500`).
+Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`). The `maximum` parameter caps the number of comments returned per site (default `50`, max `100`). `keyword` accepts up to 200 characters, and `dtsstart` and `dtsstop` use `Y-m-d`. `post_id` returns comments on one post and cannot be combined with `keyword`, `dtsstart`, or `dtsstop`. Invalid filter values return `invalid_comment_filters` with HTTP 400 instead of being ignored.
+
+`GET /comments` queries at most 100 sites per call. Use `page` (default `1`) and `per_page` (`1` to `100`, default `100`) to page through sites. The response reports paging in these headers:
+
+| Header | Meaning |
+|---|---|
+| `X-MainWP-Comments-Page` | Current page of sites |
+| `X-MainWP-Comments-Per-Page` | Sites per page |
+| `X-MainWP-Comments-Total-Sites` | Sites that match the request |
+| `X-MainWP-Comments-Has-More` | `true` when another page of sites is available |
+| `X-MainWP-Comments-Partial` | `true` when some sites returned comments and others failed |
+| `X-MainWP-Comments-Failed-Sites` | Number of sites on this page that failed |
+
+When every queried site fails, the read returns `mainwp_comments_child_error` with HTTP 502.
+
+`bulk-action` accepts 1 to 100 unique IDs in `comment_ids`. Longer lists or duplicate IDs return `invalid_comment_ids` with HTTP 400. An unknown `action` also returns HTTP 400.
+
+Comment routes require an API key whose user has the `manage_options` capability, or a Team Control user with assigned sites and access to the Comments extension. Other keys receive HTTP 403. A site outside the user's Team Control scope is treated as not found.
+
+With MainWP Child 6.3 or later, the single-comment action returns `comment_not_found` (HTTP 404) for a missing comment and `comment_status_conflict` (HTTP 409) when the action does not apply to the comment's status, for example approving an approved comment. Bulk responses list those IDs in `not_found` and `failed`. When the child site's reply cannot be read, the action returns `comment_action_outcome_unknown` (HTTP 502). Some comments may already have changed, so list them again before you retry.
 
 ### SSL Monitor
 
