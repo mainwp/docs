@@ -147,6 +147,12 @@ Navigate to the Time Tracker **Logs** page, locate the running task, and from th
 
 The extension provides widgets on the individual site overview and client overview pages, displaying tasks related to the selected site or client. ![Time Tracker widget](/images/add-ons/time-tracker-widget.webp) It also adds a **Tasks** column to the Manage Sites and Manage Clients tables that shows in-progress and completed task counts. The in-progress count includes both paused and working tasks. ![Time tracker table column](/images/add-ons/time-tracker-table-column.webp)
 
+## Database Health Check
+
+The Time Tracker Extension supplies its tables and their expected column definitions to MainWP Dashboard's database schema checks. These cover the buckets, tasks, timer, and task metadata tables, plus the tables used by Time Tracker Abilities. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_time_tracker` to find the Time Tracker tables and check for missing tables, missing columns, or incorrect column definitions.
+
+Run this check when tasks, buckets, or timer durations fail to load or save, or when MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair tables, restore tracked time, or check Child Site databases.
+
 ## Time Tracker REST API
 
 The Time Tracker extension supports REST API for integration with the MainWP Browser Extension, allowing for seamless time tracking and management across platforms. All MainWP REST API calls, including full documentation and examples, are now publicly available on [Postman](https://www.postman.com/mainwp/workspace/mainwp/overview). Version 1 registers routes under `wp-json/mainwp/v1/time-tracker/...` when the MainWP REST API is enabled. Version 2 registers routes under `wp-json/mainwp/v2/time-tracker/...` for tasks, settings, clients, sites, and buckets. For authentication and key management, see [REST API Overview](/api-reference/rest-api/overview).
