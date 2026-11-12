@@ -2,8 +2,8 @@
 title: MainWP Early Access Extension
 sidebarTitle: "Early Access"
 description: >-
-  Test Early Access versions of MainWP Dashboard and MainWP Child before they
-  are officially released on WordPress.org.
+  Opt in to nightly MainWP Dashboard and MainWP Child builds from mainwp.com,
+  review what changed in each build, and roll back to stable releases.
 ---
 
 <iframe
@@ -15,13 +15,16 @@ description: >-
   allowFullScreen
 ></iframe>
 
-The MainWP Early Access Extension lets you opt into Early Access versions of both the MainWP Dashboard plugin and the MainWP Child plugin. This allows you to test upcoming features, help evaluate changes before they reach WordPress.org, or prepare workflows for new versions still in development.
+The MainWP Early Access Extension lets you opt into nightly builds of both the MainWP Dashboard plugin and the MainWP Child plugin. This allows you to test upcoming features, help evaluate changes before they reach WordPress.org, or prepare workflows for new versions still in development.
+
+Nightly builds are pre-release builds of MainWP that mainwp.com publishes most days. They are less tested than stable releases. Early Access delivers them only after you give nightly consent.
 
 ## What You'll Learn
 
 - How to install and configure the Early Access Extension
+- How to give nightly consent and choose whether nightly builds install automatically
 - How to enable Early Access updates globally or per-site
-- How to create a GitHub Personal Access Token for higher rate limits
+- How to review what changed in recent nightly builds
 - How to roll back to stable versions
 
 ## Prerequisites
@@ -77,44 +80,22 @@ The add-on provides two settings locations:
 
 ![Early Access global settings page with Dashboard plugin options](/images/miscellaneous/advanced-miscellaneous-731b89.png)
 
-### Enable Early Access for MainWP Dashboard
+### Nightly consent
 
-Toggle this option to receive Early Access updates for your Dashboard plugin. When enabled, update checks include GitHub releases marked as prereleases.
+The Early Access settings page shows a summary of your current nightly setup: whether Dashboard nightlies are on, whether the Child default is on, and how many sites you explicitly enabled. Nightly builds install only after you consent.
 
-### GitHub Personal Access Token (PAT)
+- **I agree to receive nightly builds**: Turns on nightly delivery for the updates you enable on this page. Clear it to opt out.
+- **Let WordPress automatic updates install nightly builds**: Leave it cleared to install nightly builds only when you start the update yourself. MainWP saves a change to this option even when you change nothing else.
 
-If you manage many sites, GitHub rate limits may slow update checks. Adding a PAT increases your limit from 60 requests/hour to 5,000 requests/hour.
-
-<Steps>
-<Step title="Open GitHub Developer Settings">
-Go to [GitHub Developer Settings](https://github.com/settings/apps).
-</Step>
-<Step title="Navigate to tokens">
-Click **Personal access tokens > Fine-Grained tokens**.
-</Step>
-<Step title="Generate new token">
-Click **Generate new token**.
-</Step>
-<Step title="Name the token">
-Give the token a descriptive name (e.g., "MainWP Early Access").
-</Step>
-<Step title="Set expiration">
-Select an expiration date. We recommend longer than the default 30 days.
-</Step>
-<Step title="Select scopes">
-Use the default scope (Public repositories, no additional permissions). This provides the minimal required permission level.
-</Step>
-<Step title="Generate and copy">
-Click **Generate token** and copy the token immediately.
-</Step>
-<Step title="Save in MainWP">
-Paste your PAT into the Early Access settings field and save.
-</Step>
-</Steps>
+After an Extension update that switches Early Access to nightly builds, MainWP Dashboard shows the notice **Early Access now delivers nightly builds.** Early Access updates are paused until you choose. Click **Review and opt in** to open the settings page, or click **Stay on stable releases** to decline.
 
 <Note>
-The PAT key is securely encrypted by the Dashboard.
+Before MainWP Dashboard installs a nightly update on your Dashboard site, it checks that the package comes from mainwp.com and that its SHA-256 checksum matches the published one. When a check fails, MainWP stops the installation and deletes the downloaded package. Stable updates keep working without nightly consent.
 </Note>
+
+### Enable Early Access for MainWP Dashboard
+
+Toggle this option to check for nightly Dashboard builds from mainwp.com after you give nightly consent.
 
 ### Roll Back to Latest Stable Release
 
@@ -123,6 +104,10 @@ This reinstalls the current stable version of the MainWP Dashboard plugin from W
 Use this option if:
 - You no longer want to stay on Early Access builds
 - An Early Access build causes compatibility issues
+
+### Roll back add-ons to stable
+
+For each activated MainWP add-on, the settings page shows a **Roll back (add-on name) to stable** button. After you confirm, MainWP replaces the add-on with its latest stable release and verifies its version and activation.
 
 ---
 
@@ -134,17 +119,19 @@ These settings control Early Access for the MainWP Child plugin on your connecte
 
 ### Enable Early Access for MainWP Child Plugin
 
-When enabled, all child sites will use the Early Access track unless an individual site overrides this setting.
+When enabled, and after you give nightly consent, all child sites receive nightly MainWP Child updates unless an individual site overrides this setting. This option is off by default.
 
-### Update MainWP Child Plugin on Sites to Pre-Release Version
+### Update MainWP Child Plugin on Sites to Nightly Build
 
-Runs a bulk update across all eligible sites after you confirm the action. MainWP prepares sites for the update only when you start this action. Invalid site selections don't start the preparation.
+Click **Update to Nightly Build** to update MainWP Child to the latest nightly build from mainwp.com on all eligible sites after you confirm the action. A site is eligible when you gave nightly consent and Early Access is enabled for it, either through the global Child setting or its own setting. MainWP prepares sites for the update only when you start this action. Invalid site selections don't start the preparation.
 
 A modal window then lists each site with a **Pending** status. The progress bar starts at zero and counts up to the total number of prepared sites as MainWP reports site-by-site results.
 
+MainWP rolls out the nightly build to one site first and continues with the remaining sites only if that site succeeds. The rollout stops when the first site fails or when two sites fail. The modal then lists the sites that were not updated. After each install, MainWP checks that the site runs the expected MainWP Child version and that the plugin is active.
+
 ### Check for Updates
 
-If a new Early Access version is available, this link forces a fresh update check.
+If a new nightly build is available, this link forces a fresh update check.
 
 ### Roll Back Child Plugins on Sites to Latest Stable Release
 
@@ -163,9 +150,9 @@ A dropdown lets you choose:
 - **Enable** - Force Early Access on for this site
 - **Disable** - Force Early Access off for this site
 
-### Update MainWP Child Plugin on Site to Pre-Release Version
+### Update MainWP Child Plugin on Site to Nightly Build
 
-Runs the same action as the global updater but affects only that single site. A **Check for updates** link refreshes Early Access update availability for that site.
+Runs the same action as the global updater but affects only that single site. If the site is not eligible, MainWP shows **This site is not eligible for nightly Child updates.** A **Check for updates** link refreshes Early Access update availability for that site.
 
 ### Roll Back Child Plugin on Site to Latest Stable Release
 
@@ -175,11 +162,28 @@ This action affects only the site you are viewing. Your other child sites keep t
 
 ---
 
+## Nightly Changes
+
+Open the **Nightly Changes** tab on the Early Access settings page to see what changed in recent nightly builds before you install them. This tab only lists changes. Nothing installs until you opt in on the **Early Access** tab.
+
+The table shows a row for MainWP Dashboard and MainWP Child with these columns:
+
+| Column | Description |
+|--------|-------------|
+| **Product** | MainWP Dashboard or MainWP Child |
+| **Installed version** | The version you run. For MainWP Child, each reported version shows how many sites run it. |
+| **Newest nightly** | The latest nightly build available from mainwp.com |
+| **Changes** | Entries labeled **Added**, **Fixed**, **Updated**, or **Removed** for each recent build |
+
+Builds older than your installed version appear under **Older builds**. When you already run the newest build, the row shows **Up to date**. MainWP caches the change list for about two hours. If mainwp.com can't be reached, the tab shows **Changes could not be loaded from mainwp.com. The next attempt is in about two hours.**
+
+---
+
 ## What to Expect During Updates
 
-- Updating MainWP Child to a pre-release version and rolling it back both require permission to install plugins in MainWP Dashboard. Users without this permission see **No available sites to perform this action.**
+- Updating MainWP Child to a nightly build and rolling it back both require permission to install plugins in MainWP Dashboard. Users without this permission see **No available sites to perform this action.**
 - Manual **Check for updates** links are available on both global and per-site pages
-- If an Early Access version of MainWP Child is available and Early Access is enabled, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
+- If a nightly build of MainWP Child is available and you enabled nightly Child updates, the Dashboard may display an admin notice with a shortcut to the Early Access settings page
 - When the Early Access Extension license is active, plugin row meta will include a **Check for updates now** link
 
 ---
@@ -197,8 +201,8 @@ This action affects only the site you are viewing. Your other child sites keep t
 
 - [ ] Early Access Extension installed and activated
 - [ ] License activated for the add-on
+- [ ] Nightly consent given, with automatic installs on or off as you prefer
 - [ ] Global settings configured for Dashboard and/or Child plugin
-- [ ] GitHub PAT added (optional, for higher rate limits)
 - [ ] Per-site overrides configured where needed
 - [ ] Testing on staging environment (not production)
 
