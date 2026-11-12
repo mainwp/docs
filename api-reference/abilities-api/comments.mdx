@@ -22,7 +22,7 @@ Use these abilities when a script, AI assistant, or [MCP client](/mcp-server/ove
 - WordPress 6.9 or later on the MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - Comments Add-on 6.1.0 or later, active in MainWP Dashboard
-- MainWP Child 6.2 or later on the target site for `mainwp/get-comment-v1`, `mainwp/moderate-comments-v1`, and `mainwp/delete-comments-permanently-v1`
+- A current MainWP Child build supporting the Comments v2 contract on target sites for `mainwp/get-comment-v1`, `mainwp/moderate-comments-v1`, and `mainwp/delete-comments-permanently-v1`. An older or unreadable response fails rather than confirming an action.
 - An authenticated WordPress user with permission to use MainWP abilities and access to the Comments Add-on
 
 Team Control restrictions apply. Each ability checks the Dashboard abilities permission, the user's access to the Comments Add-on, and the user's access to every selected site.
@@ -107,10 +107,12 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 }
 ```
 
-- `comment_date` is a Unix timestamp.
+- `comment_date` is a Unix timestamp. An unusable timestamp can fail that site's read.
 - `post_id` is `0` when the comment is not attached to a post.
 - `site_results` has one entry per site on the page. A failed site does not stop the others, and `partial` is `true` when some sites succeeded and some failed.
 - `pagination` pages over sites, not comments. When `has_more` is `true`, request the next `page`.
+
+Date filters use exclusive midnight boundaries: to read one day, use the following day as `end_date`. Equal start and end dates return no matches.
 
 When every selected site fails, the ability returns `mainwp_comments_child_error` with HTTP 502.
 
@@ -145,7 +147,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 }
 ```
 
-`comment_status` is `approved`, `pending`, `spam`, `trash`, or `post-trashed` (the comment's post is in Trash). `observed_at` is the UTC time the Dashboard received the result. Use this ability to check a comment's current status before you moderate it.
+`comment_status` is `approved`, `pending`, `spam`, `trash`, or `post-trashed` (the comment's post is in Trash). `observed_at` is the UTC time the Dashboard received the result. Use this ability to check a comment's current status before you moderate it. A comment without an attached post can appear in list results as `post_id: 0`, but the current v2 detail reader rejects it.
 
 ## List Synced Recent Comments
 
@@ -233,6 +235,12 @@ The batch is not all-or-nothing. `results` has exactly one entry for every reque
 | `not_found` | The comment does not exist on the site |
 | `failed` | The result could not be verified. Read the comment again before you retry. |
 
+<Warning>
+Keep WordPress Trash enabled on target sites before using the `trash` moderation action. If `EMPTY_TRASH_DAYS` is `0`, WordPress can delete a comment permanently instead of moving it to Trash. The current Child v2 handler calls WordPress's trash action and cannot guarantee reversibility in that configuration. A failed or unknown response does not prove that the comment still exists.
+</Warning>
+
+Read each comment again after a failed or unknown result before deciding whether to retry. Repeating an already applied action can return a conflict or not-found result.
+
 Successful changes are recorded in [Network Activity](/sites/network-activity).
 
 ## Permanently Delete Comments
@@ -310,3 +318,4 @@ WordPress can reject invalid input against the public schema before the Add-on c
 - [Add-on Endpoints](/api-reference/rest-api/extensions#comments) - Comments REST API reference
 - [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
 - [MCP Server Overview](/mcp-server/overview) - Use abilities from AI assistants
+

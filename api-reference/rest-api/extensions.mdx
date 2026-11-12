@@ -35,7 +35,7 @@ Use the [MainWP Postman collection](https://www.postman.com/mainwp/mainwp/collec
 
 Allowed `action` values: `approve`, `unapprove`, `spam`, `unspam`, `trash`, `restore`, `delete`.
 
-Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`). The `maximum` parameter caps the number of comments returned per site (default `50`, max `100`). `keyword` accepts up to 200 characters, and `dtsstart` and `dtsstop` use `Y-m-d`. `post_id` returns comments on one post and cannot be combined with `keyword`, `dtsstart`, or `dtsstop`. Invalid filter values return `invalid_comment_filters` with HTTP 400 instead of being ignored.
+Allowed `status` filter values: `approved`, `pending`, `spam`, `trash`, `all` (default `all`, meaning approved and pending). The `maximum` parameter caps the number of comments returned per site (default `50`, max `100`). `keyword` accepts up to 200 characters, and `dtsstart` and `dtsstop` use `Y-m-d`. `post_id` returns comments on one post and cannot be combined with `keyword`, `dtsstart`, or `dtsstop`. Invalid filter values return `invalid_comment_filters` with HTTP 400 instead of being ignored.
 
 `GET /comments` queries at most 100 sites per call. Use `page` (default `1`) and `per_page` (`1` to `100`, default `100`) to page through sites. The response reports paging in these headers:
 
@@ -54,7 +54,11 @@ When every queried site fails, the read returns `mainwp_comments_child_error` wi
 
 Comment routes require an API key whose user has the `manage_options` capability, or a Team Control user with assigned sites and access to the Comments extension. Other keys receive HTTP 403. A site outside the user's Team Control scope is treated as not found.
 
-With MainWP Child 6.3 or later, the single-comment action returns `comment_not_found` (HTTP 404) for a missing comment and `comment_status_conflict` (HTTP 409) when the action does not apply to the comment's status, for example approving an approved comment. Bulk responses list those IDs in `not_found` and `failed`. When the child site's reply cannot be read, the action returns `comment_action_outcome_unknown` (HTTP 502). Some comments may already have changed, so list them again before you retry.
+With a current MainWP Child build that verifies legacy comment actions, the single-comment action returns `comment_not_found` (HTTP 404) for a missing comment and `comment_status_conflict` (HTTP 409) when the action does not apply to the comment's status, for example approving an approved comment. Bulk responses list those IDs in `not_found` and `failed`. When the child site's reply cannot be read, the action returns `comment_action_outcome_unknown` (HTTP 502). Some comments may already have changed, so list them again before you retry. Older Child handlers may acknowledge an action without verifying its final state; update MainWP Child before relying on the verified outcomes.
+
+Date filters use exclusive midnight boundaries in the child site\'s local timezone. Use the next day as `dtsstop` to include a whole day; equal dates return no matches. Lists preserve comments with no attached post as `post_id: 0`.
+
+Network Activity records only confirmed changed IDs. A count-only partial bulk reply cannot identify those IDs and does not produce a success log.
 
 ### SSL Monitor
 
@@ -257,3 +261,4 @@ curl -X POST \
 - [Lighthouse Integration](/add-ons/monitoring/mainwp-lighthouse-extension)
 - [Pro Reports Extension](/add-ons/agency/pro-reports-extension-overview)
 - [Time Tracker Extension](/add-ons/client/mainwp-time-tracker-extension)
+
