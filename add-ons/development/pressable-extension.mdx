@@ -118,6 +118,12 @@ These replace the previous empty table so the next step is always clear.
 
 The mapping page suggests MainWP child sites whose URLs match a Pressable primary URL or custom domain. Review and apply the suggested association before managing the site through MainWP.
 
+1. Open **MainWP > Add-ons > Pressable > Dashboard** and click **Reload Pressable API Data** to refresh the account.
+2. Find **Unmapped Pressable sites**. Review the selected **MainWP site** for each row. **Suggested from URL match** is a proposal, not a saved association.
+3. Click **Map** for one reviewed row, or **Map all suggested** after reviewing every suggested target. If there is **No unique match** or **Several matches**, select the intended MainWP site yourself.
+
+The section shows up to 50 unmapped sites at a time. Map or refresh to see more. Reload any Pressable pages left open during an update before using their controls.
+
 Reload Pressable API data after adding or changing sites. Open the mapping section to look for additional custom-domain matches. Discovery requires an unrestricted administrator with Pressable Manage Account, Manage Hosting and Dashboard settings rights. Restricted users cannot use it to view domains for unmapped sites.
 
 Site actions require access to the mapped MainWP child site. Restores check both the source and destination. MainWP checks permissions again before queued work contacts Pressable.
@@ -151,7 +157,7 @@ The columns of the table that are specific to the Pressable Integration are as f
 <Step title="Enter the information for the new site">
 ![Enter the information for the new site](/images/add-ons/pressable-create-new-site.png)
 
-1.  Enter a **Site Name** with 4–63 lowercase letters, digits or dashes. Start and end with a letter or digit.
+1.  Enter a **Site Name** with 4-63 lowercase letters, digits or dashes. Start and end with a letter or digit.
     2.  Choose whether the site should be **Staging** or not
     3.  From the **Site Type** dropdown, select either WordPress or WooCommerce
     4.  From the **PHP Version** dropdown, select the available PHP version
@@ -186,3 +192,4 @@ The [Pressable Abilities API](/api-reference/abilities-api/pressable) can read c
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Hosting provider information
 - [Manage Child Sites](/sites/management/manage-child-sites) - Site management guide
+
