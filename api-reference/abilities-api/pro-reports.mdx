@@ -9,6 +9,10 @@ Pro Reports registers eleven abilities in the `mainwp-pro-reports` category. Use
 
 A **definition** is a saved set of report settings. A **run** is one request to generate or send that report for a specific period. Each run keeps its own sites and recipients, so later changes apply to a new run.
 
+<Note>
+These abilities require a Pro Reports build that includes the background-delivery features. Discover the category on your Dashboard before using the examples; earlier released builds do not provide this contract.
+</Note>
+
 ## Access and availability
 
 You need WordPress 6.9 or later, MainWP Dashboard with Abilities API support, and an active Pro Reports release that includes these abilities. The examples use Dashboard 6.2 or later for typed JSON input.
@@ -332,3 +336,4 @@ A stale revision means the saved report changed. Read it again and preview your 
 Invalid client addresses block that site's delivery. A bad site can fail while the other sites continue. Read the per-site results before correcting configuration and requesting new work. A storage error does not confirm whether a report was saved or sent. Use the same request UUID when recovering from an uncertain response.
 
 For the editor and template setup, see the [Pro Reports guide](/add-ons/agency/pro-reports-extension-overview).
+
