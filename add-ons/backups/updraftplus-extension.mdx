@@ -140,6 +140,8 @@ If you use the Premium version of the UpdraftPlus Plugin, make sure the Use Prem
 
 ### SFTP Host Key Fingerprints
 
+When you select **SFTP/SCP** as the remote storage option, the settings include a **Fingerprint** field below the private key. Enter the host key fingerprint of your SFTP or SCP server there, for example a value that starts with `SHA256:`. UpdraftPlus uses the saved fingerprint to confirm it is connecting to the expected server. MainWP sends the fingerprint to your child sites together with the other SFTP/SCP settings.
+
 With MainWP Child 6.4.2 or later, MainWP can save an SFTP server fingerprint when the UpdraftPlus settings include a new value. If no replacement is sent, MainWP preserves the fingerprint already configured on the child site. Verify a new fingerprint with the SFTP server administrator before saving it.
 
 ### pCloud Remote Storage
