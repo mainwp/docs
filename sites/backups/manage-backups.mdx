@@ -492,6 +492,9 @@ For **Back Up Now**, set **On-demand backups to keep** under **MainWP menu (thre
 On **Snapshots & Restore**:
 
 - Use **Delete** to remove a backup. Select **Also delete cloud copies** to remove its copies from storage destinations.
+- To delete several backups, select their row checkboxes, choose **Delete** from **Bulk actions**, and click **Apply**. The checkbox in the table header selects backups on the current page; selections on other pages remain selected.
+- Review the number of selected backups, warnings, and cloud-copy settings, then click **Delete** to confirm. Deletion cannot be undone. By default, each backup uses its task's cloud-copy setting.
+- Review each result after deletion. Backups that could not be deleted stay in the list with the reason. If a backup belongs to an incremental chain, select all affected backups before using bulk delete. MainWP will not delete an unselected chain member.
 - Use **Clean Up** to remove leftover files from interrupted backups, prune on-demand backups beyond the keep count, and delete snapshots whose task was deleted.
 - Enable **Show removed backups** to see removal history and reasons.
 
