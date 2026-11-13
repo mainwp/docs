@@ -328,6 +328,12 @@ function mycustom_mainwp_child_branding_init_options( $option ) {
 Use the [MainWP Code Snippets Extension](https://mainwp.com/extension/code-snippets/) to deploy these filters to all child sites at once.
 </Tip>
 
+## Database Health Check
+
+The White Label Extension supplies its table and expected column definitions to MainWP Dashboard's database schema checks. The table stores per-site White Label settings. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_child_branding` to find the White Label table and check for a missing table, missing columns, or incorrect column definitions.
+
+Run this check when per-site White Label settings fail to save or load, or when MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair tables, restore settings, or check Child Site databases.
+
 ---
 
 ## Related Resources
