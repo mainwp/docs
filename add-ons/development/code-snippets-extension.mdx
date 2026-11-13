@@ -16,7 +16,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-code-snippets-extension/"
   data-owned-by="Jestart LLC"
@@ -121,7 +121,7 @@ The **Snippets** tab lists saved snippets in a table with these columns:
 
 ### See Which Snippets Target a Child Site
 
-If your version of Code Snippets includes the site picker, use it to review saved snippet assignments for one site.
+In Code Snippets 5.2 and later, use the site picker to review saved snippet assignments for one site.
 
 1. Go to **MainWP > Add-ons > Administrative > Code Snippets** and open the **Snippets** tab.
 2. Choose a child site in the site picker and click **Show Snippets**.
@@ -270,6 +270,12 @@ This process removes the existing saved copy from child sites and then re-adds i
 When you click **Run Snippet**, the Console opens and shows the current process status. Depending on the snippet type and whether the snippet already exists on child sites, you may see steps such as checking existing snippets, saving snippets on child sites, and executing snippets on child sites.
 
 The Console also shows progress counts, site-level status icons, returned output for **Return Info** snippets, and a **Stop Process** button for stopping queued or in-progress processing.
+
+## Database Health Check
+
+Code Snippets Extension 5.2 supplies its snippets table and expected column definitions to MainWP Dashboard's database schema checks. The snippets table stores your saved code snippets on the Dashboard. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_codesnippet` to find the Code Snippets table and check for a missing table, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair saved snippets or check snippets saved on Child Sites.
 
 ## Useful Code Snippets
 
