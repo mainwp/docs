@@ -98,7 +98,14 @@ Enter the Client ID and Client Secret and click the **Save Settings** button ![M
 
 ## Team Control compatibility
 
-The Pressable Integration respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). Only team members whose role grants access to the Pressable Integration will see the Pressable menu and be able to perform Pressable actions. If a user does not have permission, the integration UI and bulk actions are hidden for them.
+The Pressable Integration respects access restrictions configured by the [Team Control Extension](/add-ons/agency/team-control-extension). Add-on access controls whether a team member can see the Pressable menu. It does not, by itself, authorize hosting actions.
+
+### Site-level access for Pressable actions
+
+Site refreshes, enable/disable, deletion, environment changes, CDN changes, and restores require access to the mapped MainWP child site. Restores require access to both the source and destination. An unmapped or inaccessible site cannot be used, including by an administrator. Follow [Site matching by primary URL and custom domains](#site-matching-by-primary-url-and-custom-domains) to review and save the mapping; reloading data alone does not apply a suggested match.
+
+Review the user's role in Team Control under **Edit Role / Manage Permissions**, including its Pressable permissions and **Allowed Sites**. Hosting controls also require the WordPress `manage_options` capability and Pressable **Manage Hosting**; account operations can require **Manage Account**. See [Pressable access requirements](/api-reference/abilities-api/pressable#before-you-start) before granting access.
+
 ## Clearing Pressable credentials
 
 The Settings tab shows whether credentials are configured. The Client ID and Client Secret fields stay blank to protect the saved values. Leave both fields empty to keep the existing connection. To replace it, enter both new values and save. Invalid credentials leave the working connection in place.
@@ -179,7 +186,9 @@ Site actions are in the ellipsis menu. The Bulk Actions menu also supports enabl
 -   **Delete Site:** Deletes the site from the Pressable hosting account
 -   **Convert to Staging** / **Staging to Live:** Converts the site either from Staging to Live, or from Live to Staging
 -   **Enable/Disable CDN:** Either enables or disables the CDN feature on the Pressable hosting account
--   **Manage Backups:** Opens the site's Pressable backups. Choose the source backup, destination site and available files or database before requesting a restore. A restore overwrites destination content; keep a separate backup of that destination first.
+-   **Manage Backups:** Opens the site's Pressable backups. Click **Restore Site**, then choose the source backup, destination site, and available files or database. If you select both files and database, choose the same backup point for both. A restore overwrites destination content; keep a separate backup of that destination first.
+
+The current integration does not provide a **Go to phpMyAdmin** shortcut or backup download links. Older backup download and restore links redirect to **Manage Backups** with the message "This backup link is no longer available. Use the Restore Site action on this page." Open **Restore Site** to make a new restore selection.
 
 ## Automate Pressable hosting tasks
 
@@ -192,4 +201,5 @@ The [Pressable Abilities API](/api-reference/abilities-api/pressable) can read c
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [Hosting Compatibility](/advanced/miscellaneous/hosting-compatibility) - Hosting provider information
 - [Manage Child Sites](/sites/management/manage-child-sites) - Site management guide
+
 
