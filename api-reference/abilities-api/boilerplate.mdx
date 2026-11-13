@@ -1,0 +1,627 @@
+---
+title: Boilerplate Abilities
+sidebarTitle: "Boilerplate Abilities"
+description: "Read Boilerplate templates and token values, preview site content, and remove confirmed Child deployments through the Abilities API."
+---
+
+Use these ten abilities to prepare reusable content for a client site and manage its saved deployment. They run on your MainWP Dashboard in the `mainwp-boilerplate` category. Publishing a template still uses the [Boilerplate workflow](/add-ons/posts-pages/boilerplate-extension).
+
+## Access and setup
+
+Activate Boilerplate on a MainWP Dashboard with Abilities API support. The Dashboard must provide the MainWP ability permission utilities. Confirm the update is installed by listing the abilities:
+
+```bash
+curl --user 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-boilerplate'
+```
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or another authentication method supported by the [Abilities API](/api-reference/abilities-api/overview). Keep passwords out of saved scripts and shared logs.
+
+Every ability requires authenticated REST access and permission to use the Boilerplate extension. **Global** abilities also require MainWP administrator authority. **Site** abilities require permission for the exact `site_id`, including MainWP and Team Control site restrictions. Missing permissions or permission utilities refuse the call.
+
+Read abilities use GET. Changes use POST, and destructive abilities use DELETE. The route is `/wp-json/wp-abilities/v1/abilities/ABILITY_NAME/run`. The examples below show the JSON input and response fields for each ability. For GET, send the JSON through `input_json`:
+
+```bash
+curl --get --user 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":17}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-site-boilerplate-token-values-v1/run'
+```
+
+For POST or DELETE, send a JSON body with an `input` object. Use a JSON boolean for `confirm` and an integer for counts:
+
+```bash
+curl --request DELETE --user 'USERNAME:APPLICATION_PASSWORD' \
+  --header 'Content-Type: application/json' \
+  --data '{"input":{"boilerplate_id":42,"site_id":17,"confirm":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-boilerplate-site-post-v1/run'
+```
+
+IDs accept positive integers or canonical decimal strings such as `17` or `"17"`. Zero, leading zeros, fractions, trailing whitespace and overflowing IDs are refused. Pagination defaults to page 1 with 25 items and allows at most 100 items per page. Query-string pagination also accepts canonical decimal strings. All input objects reject extra properties. Token text limits are measured in bytes at runtime, so multibyte text may reach a limit before the schema’s character count.
+
+## List token definitions
+
+**Ability:** `mainwp/list-boilerplate-tokens-v1`  
+**Method:** GET  
+**Who may use it:** Global authority described above.
+
+Read token names, descriptions and counts of stored site values. Private token values are omitted.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `page` | No | integer; minimum 1; default `1` |
+| `per_page` | No | integer; minimum 1; maximum 100; default `25` |
+| `type` | No | string; `built_in`, `custom`, `all`; default `"all"` |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `page` | Yes | integer; minimum 1 |
+| `per_page` | Yes | integer; minimum 1; maximum 100 |
+| `total` | Yes | integer; minimum 0 |
+| `tokens` | Yes | array; maximum items 100 |
+| `tokens[].token_id` | Yes | integer; minimum 1 |
+| `tokens[].name` | Yes | string; minimum length 1; maximum length 512 |
+| `tokens[].description` | Yes | string; minimum length 1; maximum length 2000 |
+| `tokens[].type` | Yes | string; `built_in`, `custom` |
+| `tokens[].site_value_count` | Yes | integer; minimum 0 |
+
+### Example
+
+Input:
+
+```json
+{}
+```
+
+Response:
+
+```json
+{
+  "page": 1,
+  "per_page": 25,
+  "total": 1,
+  "tokens": [
+    {
+      "token_id": 8,
+      "name": "office.phone",
+      "description": "Office phone",
+      "type": "custom",
+      "site_value_count": 2
+    }
+  ]
+}
+```
+
+Repeat freely. This reads Dashboard data and changes nothing.
+
+## Read one site’s token values
+
+**Ability:** `mainwp/get-site-boilerplate-token-values-v1`  
+**Method:** GET  
+**Who may use it:** Authority for this exact site, as described above.
+
+Read the substitutions used for one site. Treat the returned values as private client data.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `site_id` | Yes | positive integer or canonical decimal string |
+| `page` | No | integer; minimum 1; default `1` |
+| `per_page` | No | integer; minimum 1; maximum 100; default `25` |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `site_id` | Yes | integer; minimum 1 |
+| `page` | Yes | integer; minimum 1 |
+| `per_page` | Yes | integer; minimum 1; maximum 100 |
+| `total` | Yes | integer; minimum 0 |
+| `values` | Yes | array; maximum items 100 |
+| `values[].token_id` | Yes | integer; minimum 1 |
+| `values[].name` | Yes | string; minimum length 1; maximum length 512 |
+| `values[].value` | Yes | string; maximum length 512 |
+| `values[].source` | Yes | string; `dashboard_stored`, `built_in_site`, `empty` |
+
+### Example
+
+Input:
+
+```json
+{
+  "site_id": 17
+}
+```
+
+Response:
+
+```json
+{
+  "site_id": 17,
+  "page": 1,
+  "per_page": 25,
+  "total": 1,
+  "values": [
+    {
+      "token_id": 8,
+      "name": "office.phone",
+      "value": "555-0100",
+      "source": "dashboard_stored"
+    }
+  ]
+}
+```
+
+Repeat freely. The source is dashboard_stored for a saved override, built_in_site for the site name or URL default, or empty when no value is available.
+
+## Set one site’s token values
+
+**Ability:** `mainwp/set-site-boilerplate-token-values-v1`  
+**Method:** POST  
+**Who may use it:** Authority for this exact site, as described above.
+
+Change only the supplied token values. Tokens omitted from the request keep their existing values.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `site_id` | Yes | positive integer or canonical decimal string |
+| `values` | Yes | array; minimum items 1; maximum items 100; unique items |
+| `values[].token_id` | Yes | positive integer or canonical decimal string |
+| `values[].value` | Yes | string; maximum length 512 |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `site_id` | Yes | integer; minimum 1 |
+| `updated_token_ids` | Yes | array; maximum items 100 |
+| `unchanged_token_ids` | Yes | array; maximum items 100 |
+
+### Example
+
+Input:
+
+```json
+{
+  "site_id": 17,
+  "values": [
+    {
+      "token_id": 8,
+      "value": "555-0100"
+    }
+  ]
+}
+```
+
+Response:
+
+```json
+{
+  "site_id": 17,
+  "updated_token_ids": [
+    8
+  ],
+  "unchanged_token_ids": []
+}
+```
+
+Repeating the same successful patch leaves the same values; the IDs then appear in `unchanged_token_ids`. Use each token ID once. Unchanged empty or built-in defaults remain defaults; they do not create saved overrides.
+
+## Ensure a custom token exists
+
+**Ability:** `mainwp/ensure-boilerplate-token-v1`  
+**Method:** POST  
+**Who may use it:** Global authority described above.
+
+Create a custom token, or return the matching definition if it already exists. A differing definition is refused; it is not overwritten.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `name` | Yes | string; minimum length 1; maximum length 128; pattern `^[A-Za-z0-9._-]+$` |
+| `description` | Yes | string; minimum length 1; maximum length 512 |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `token_id` | Yes | integer; minimum 1 |
+| `name` | Yes | string; minimum length 1; maximum length 128; pattern `^[A-Za-z0-9._-]+$` |
+| `description` | Yes | string; minimum length 1; maximum length 512 |
+| `type` | Yes | string; must be `"custom"` |
+| `created` | Yes | boolean |
+
+### Example
+
+Input:
+
+```json
+{
+  "name": "office.phone",
+  "description": "Office phone"
+}
+```
+
+Response:
+
+```json
+{
+  "token_id": 8,
+  "name": "office.phone",
+  "description": "Office phone",
+  "type": "custom",
+  "created": true
+}
+```
+
+Repeat with the same name and description to get the same token with created:false. Built-in definitions are not converted to custom tokens.
+
+## Delete a custom token
+
+**Ability:** `mainwp/delete-boilerplate-token-v1`  
+**Method:** DELETE  
+**Who may use it:** Global authority described above.
+
+Remove one custom token definition and its stored site values. First list token definitions and use its current site_value_count as expected_site_value_count.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `token_id` | Yes | positive integer or canonical decimal string |
+| `expected_site_value_count` | Yes | integer; minimum 0 |
+| `confirm` | Yes | boolean; must be `true` |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `token_id` | Yes | integer; minimum 1 |
+| `deleted` | Yes | boolean |
+| `already_absent` | Yes | boolean |
+| `deleted_site_value_count` | Yes | integer; minimum 0 |
+
+### Example
+
+Input:
+
+```json
+{
+  "token_id": 8,
+  "expected_site_value_count": 2,
+  "confirm": true
+}
+```
+
+Response:
+
+```json
+{
+  "token_id": 8,
+  "deleted": true,
+  "already_absent": false,
+  "deleted_site_value_count": 2
+}
+```
+
+A repeat after confirmed deletion returns already_absent:true. A changed value count causes a conflict rather than deleting unexpected values. Built-in tokens cannot be deleted.
+
+## List saved Boilerplates
+
+**Ability:** `mainwp/list-boilerplates-v1`  
+**Method:** GET  
+**Who may use it:** Global authority described above.
+
+Browse saved Dashboard templates by kind and status. This list omits content and site mappings.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `page` | No | integer; minimum 1; default `1` |
+| `per_page` | No | integer; minimum 1; maximum 100; default `25` |
+| `kind` | No | string; `post`, `page`, `all`; default `"all"` |
+| `status` | No | string; `publish`, `pending`, `future`, `private`, `draft`, `all`; default `"all"` |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `page` | Yes | integer; minimum 1 |
+| `per_page` | Yes | integer; minimum 1; maximum 100 |
+| `total` | Yes | integer; minimum 0 |
+| `boilerplates` | Yes | array; maximum items 100 |
+| `boilerplates[].boilerplate_id` | Yes | integer; minimum 1 |
+| `boilerplates[].kind` | Yes | string; `post`, `page` |
+| `boilerplates[].title` | Yes | string; maximum length 1000 |
+| `boilerplates[].status` | Yes | string; `publish`, `pending`, `future`, `private`, `draft` |
+| `boilerplates[].slug` | Yes | string; maximum length 200 |
+| `boilerplates[].modified_at` | Yes | integer; minimum 0 |
+
+### Example
+
+Input:
+
+```json
+{
+  "kind": "page",
+  "status": "publish"
+}
+```
+
+Response:
+
+```json
+{
+  "page": 1,
+  "per_page": 25,
+  "total": 1,
+  "boilerplates": [
+    {
+      "boilerplate_id": 42,
+      "kind": "page",
+      "title": "About us",
+      "status": "publish",
+      "slug": "about-us",
+      "modified_at": 1794000000
+    }
+  ]
+}
+```
+
+Repeat freely. Page numbers start at 1. Increase page to read the next page until the returned items cover total.
+
+## Read a saved Boilerplate
+
+**Ability:** `mainwp/get-boilerplate-v1`  
+**Method:** GET  
+**Who may use it:** Global authority described above.
+
+Read one Dashboard template before replacing its tokens. The response excludes internal metadata and site token values.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | positive integer or canonical decimal string |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | integer; minimum 1 |
+| `kind` | Yes | string; `post`, `page` |
+| `title` | Yes | string; maximum length 1000 |
+| `content` | Yes | string; maximum length 100000 |
+| `excerpt` | Yes | string; maximum length 10000 |
+| `status` | Yes | string; `publish`, `pending`, `future`, `private`, `draft` |
+| `slug` | Yes | string; maximum length 200 |
+| `modified_at` | Yes | integer; minimum 0 |
+
+### Example
+
+Input:
+
+```json
+{
+  "boilerplate_id": 42
+}
+```
+
+Response:
+
+```json
+{
+  "boilerplate_id": 42,
+  "kind": "page",
+  "title": "About [name.site]",
+  "content": "Call [office.phone].",
+  "excerpt": "",
+  "status": "publish",
+  "slug": "about-us",
+  "modified_at": 1794000000
+}
+```
+
+Repeat freely. Content reads remain bounded: title 1,000 bytes, content 100,000 bytes and excerpt 10,000 bytes. Larger content returns mainwp_boilerplate_content_too_large. These read limits do not prevent deletion of an existing mapped Child post.
+
+## Preview a template for one site
+
+**Ability:** `mainwp/preview-boilerplate-for-site-v1`  
+**Method:** GET  
+**Who may use it:** Authority for this exact site, as described above.
+
+Replace Boilerplate and Client tokens for one authorized site without publishing content or contacting the Child.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | positive integer or canonical decimal string |
+| `site_id` | Yes | positive integer or canonical decimal string |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | integer; minimum 1 |
+| `site_id` | Yes | integer; minimum 1 |
+| `kind` | Yes | string; `post`, `page` |
+| `rendered_title` | Yes | string; maximum length 1000 |
+| `rendered_content` | Yes | string; maximum length 100000 |
+| `unresolved_tokens` | Yes | array; maximum items 100; unique items |
+| `deployment_mode` | Yes | string; `create`, `update` |
+
+### Example
+
+Input:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17
+}
+```
+
+Response:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17,
+  "kind": "page",
+  "rendered_title": "About Example",
+  "rendered_content": "Call 555-0100.",
+  "unresolved_tokens": [],
+  "deployment_mode": "create"
+}
+```
+
+Repeat freely. deployment_mode is create when no mapping exists, or update when one exists. unresolved_tokens lists placeholders that remain. Avoid nested token values that contain other placeholders: their replacement order can differ from the posting workflow. A preview does not publish anything.
+
+## Read a deployment mapping
+
+**Ability:** `mainwp/get-boilerplate-deployment-v1`  
+**Method:** GET  
+**Who may use it:** Authority for this exact site, as described above.
+
+Read the Dashboard’s stored relationship between a template and one Child post. This does not ask the Child whether the post still exists.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | positive integer or canonical decimal string |
+| `site_id` | Yes | positive integer or canonical decimal string |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | integer; minimum 1 |
+| `site_id` | Yes | integer; minimum 1 |
+| `source` | Yes | string; must be `"dashboard_mapping"` |
+| `state` | Yes | string; `mapped`, `not_deployed`, `corrupt` |
+| `remote_post_id` | Yes | positive integer or null |
+
+### Example
+
+Input:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17
+}
+```
+
+Response:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17,
+  "source": "dashboard_mapping",
+  "state": "mapped",
+  "remote_post_id": 91
+}
+```
+
+Repeat freely. state is mapped, not_deployed or corrupt. remote_post_id is a positive integer only for a valid mapping; otherwise it is null. Private mapping links are not returned.
+
+## Delete a mapped Child post
+
+**Ability:** `mainwp/delete-boilerplate-site-post-v1`  
+**Method:** DELETE  
+**Who may use it:** Authority for this exact site, as described above.
+
+Permanently remove the exact Child post recorded in the Dashboard mapping. This also removes that mapping after the Child confirms success. It does not delete the Dashboard template.
+
+### Inputs
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | positive integer or canonical decimal string |
+| `site_id` | Yes | positive integer or canonical decimal string |
+| `confirm` | Yes | boolean; must be `true` |
+
+### Outputs
+
+All listed output fields are present.
+
+| Field | Required | Type and limits |
+|---|---|---|
+| `boilerplate_id` | Yes | integer; minimum 1 |
+| `site_id` | Yes | integer; minimum 1 |
+| `deleted` | Yes | boolean |
+| `already_absent` | Yes | boolean |
+| `mapping_removed` | Yes | boolean |
+
+### Example
+
+Input:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17,
+  "confirm": true
+}
+```
+
+Response:
+
+```json
+{
+  "boilerplate_id": 42,
+  "site_id": 17,
+  "deleted": true,
+  "already_absent": false,
+  "mapping_removed": true
+}
+```
+
+After the mapping is removed, repeating the call returns deleted:false, already_absent:true and mapping_removed:false without contacting the Child. A confirmed Child response proves the post is absent; the wire response does not distinguish deletion now from prior absence. If the outcome is unknown, inspect the Child and current mapping before deciding whether to repeat the operation.
+
+## Confirmed deletion and errors
+
+`mainwp/delete-boilerplate-site-post-v1` requires **MainWP Child 6.2 or later** on the target site. Older Child releases could report success without confirming deletion. The ability refuses an older reported version before sending a delete request. Sync the site after updating Child so the Dashboard has its current version.
+
+Only an exact Child `SUCCESS` response permits mapping removal. A failed or uncertain deletion keeps the mapping. A database conflict or failed mapping cleanup after remote success can also leave the result unknown. Check the Child directly and read the current Dashboard mapping before deciding what to do next; a mapping read alone does not prove the remote post exists.
+
+| Error | Meaning and next step |
+|---|---|
+| `mainwp_boilerplate_child_unsupported` | The reported Child version is older than 6.2. Update Child and sync the site. No delete request was sent. |
+| `mainwp_boilerplate_child_unavailable` | A usable Child version could not be read. Check the connection and sync the site. |
+| `mainwp_boilerplate_operation_failed` | The Child reported `FAIL`, or a local write could not be confirmed. For a Child delete, the mapping is retained. |
+| `mainwp_boilerplate_outcome_unknown` | The remote operation may have happened, or subsequent mapping cleanup could not be confirmed. Do not treat this as success or retry blindly. Inspect the Child and mapping first. |
+| `mainwp_boilerplate_conflict` | The requested state no longer matches current data, or a lock/mapping check could not establish a safe write. Read the current state before submitting another change. |
+| `mainwp_boilerplate_content_too_large` | A content read or preview exceeds its output limits. Existing mapped Child posts can still be deleted. |
+
+Invalid input, missing objects, denied permissions and unavailable storage also return errors. Fix the reported cause rather than treating a failed call as an empty result. The legacy “Yes, Proceed!” action uses the same confirmed deletion rule and retains its existing success/failure response format.
+
