@@ -384,13 +384,16 @@
                   "api-reference/abilities-api/maintenance",
                   "api-reference/abilities-api/matomo",
                   "api-reference/abilities-api/patchstack",
+                  "api-reference/abilities-api/post-plus",
                   "api-reference/abilities-api/ssl-monitor",
                   "api-reference/abilities-api/staging",
                   "api-reference/abilities-api/time-tracker",
                   "api-reference/abilities-api/url-extractor",
                   "api-reference/abilities-api/virusdie",
+                  "api-reference/abilities-api/white-label",
                   "api-reference/abilities-api/woocommerce-shortcuts",
                   "api-reference/abilities-api/woocommerce-status",
+                  "api-reference/abilities-api/wordfence",
                   "api-reference/abilities-api/wordpress-seo",
                   "api-reference/abilities-api/wp-rocket"
                 ]
