@@ -14,6 +14,8 @@ addonType: extension
 - Registering custom post types on your Dashboard
 - Creating and managing CPT posts remotely
 - Bulk editing custom post type content
+- Recovering a publication after an uncertain result
+- Using the extension's WordPress abilities
 
 ---
 
@@ -105,6 +107,52 @@ In the Custom Post Types box, you will be able to see all registered CPTs on you
 <Step title="Click the Publish button">
 </Step>
 </Steps>
+
+## Recover a Blocked Publication
+
+If a publication's result is uncertain, the extension blocks another publication for that Dashboard post and child site to avoid creating a duplicate. Open the Custom Post Types extension page and find **Publication recovery**. Each entry identifies the site, Dashboard post, and post type.
+
+Recovery requires permission to use the extension, access the selected site, and edit the Dashboard post. Only entries you can access appear. If there are no entries, the section says that no publications need recovery for sites and posts you can access.
+
+### The Post Exists on the Child Site
+
+1. Log in to the child site and find the post that belongs to the Dashboard post. Check its content and post type, then copy its WordPress post ID.
+2. Enter that ID in **Child post ID** for the matching recovery entry.
+3. Select **I checked the Child site and this ID is the post for this Dashboard post.**
+4. Click **Adopt Child post**.
+
+The extension checks that the supplied ID exists on the child site and has the expected post type. Your confirmation establishes that it is the correct post. Adoption saves that child post ID as the Dashboard connection and removes the publication block. It does not publish or create a post.
+
+### The Post Is Absent from the Child Site
+
+Check the child site directly before using this option. The recovery section does not know whether the post type is registered there. If its plugin is missing, restore the plugin before checking for the post. A recent-posts list alone cannot prove absence.
+
+<Warning>
+If the post exists on the child site, clearing the block can create a duplicate on the next publish. Clear it only after checking the child site and confirming that the post is absent.
+</Warning>
+
+1. Select **I checked the Child site and this post is not there.** for the matching recovery entry.
+2. Click **Clear publication block**.
+3. Publish through the normal workflow when you are ready. Clearing the block does not start a publication.
+
+Recovery records the operator, time, site/post pair, and supplied ID or absence confirmation in the extension log. It refuses conflicting mappings or a changed publication owner. If an entry reports an active owner or conflicting mapping, preserve the publication evidence for support. If a request expires, reload the page and check the entry again.
+
+## WordPress Abilities
+
+The extension provides four abilities for integrations using the WordPress Abilities API. Availability depends on the Dashboard's Abilities API support and the caller's permissions. Site-specific requests require access to that exact MainWP site; requests for a Dashboard post also require permission to edit it.
+
+| Ability | Input | Result |
+| --- | --- | --- |
+| `mainwp/list-custom-post-types-v1` | Optional `page` and `per_page` | Custom post types registered on the Dashboard. This does not check registration on child sites. |
+| `mainwp/get-custom-post-type-connection-v1` | `site_id`, `post_id` | The Dashboard's stored connection for that site and Dashboard post. This does not check whether the child post still exists. |
+| `mainwp/list-site-custom-taxonomy-terms-v1` | `site_id`, `post_type`; optional `page` and `per_page` | Terms from the last taxonomy snapshot stored on the Dashboard. This is cached information, not a live child-site lookup. |
+| `mainwp/publish-custom-post-type-to-site-v1` | `site_id`, `post_id`; optional `dry_run` or `confirm` | A local publication preview, or a publication to one child site. |
+
+For paginated requests, `page` defaults to `1` and accepts `1–1000`; `per_page` defaults to `50` and accepts `1–100`.
+
+For publication, first request `dry_run: true` to inspect the local intent without contacting the child site. To execute, send the same site and Dashboard post IDs with `confirm: true`, omitting `dry_run`. Do not send both flags as true. Omitting both flags also executes a publication, so integrations should set their intended mode explicitly. A preview does not confirm that the child site is ready.
+
+A publication uses the Dashboard post's status. Inspect the response's `status`, `content_status`, `partial_stage`, and `mapping_saved` fields before treating it as complete. If reconciliation is required, check **Publication recovery** before retrying. Recovery is an operator action in the extension UI, not an additional ability.
 
 ## Manage Custom Post Types
 
