@@ -1,0 +1,102 @@
+---
+title: Revoke Connections and the Kill Switch
+sidebarTitle: "Revoke and Kill Switch"
+description: >-
+  End one AI app connection, all of yours or every connection on the Dashboard, and force remote AI connections off from wp-config.php or a plugin.
+---
+
+You can end AI app connections at several levels, from one connection to the whole connector. All of them are in **MainWP > AI > MainWP MCP > Connect directly**, except the kill switch, which works without the panel.
+
+## Choose the right tool
+
+| You want to | Use | Who can |
+| --- | --- | --- |
+| End one connection or connection token | **Revoke** on its row | The connection's owner, or an administrator without Team Control limits |
+| Keep a connection but stop its changes | **Change to view only** on its row | The connection's owner |
+| End all of your own connections | **Disconnect all my AI apps** | Any user of the panel |
+| End every connection on the Dashboard | **Disconnect all AI apps** | Administrators without Team Control limits |
+| Stop remote connections and end them all | **Turn off and end every connection** | Administrators without Team Control limits |
+| Force the connector off without the panel, and restore it later | The `MAINWP_DISABLE_REMOTE_MCP` constant or the `mainwp_remote_mcp_force_disabled` filter | Whoever can edit `wp-config.php` or install a plugin |
+
+Every way of ending a connection also cancels its waiting approvals and its background jobs.
+
+## Revoke one connection
+
+Under **Connections**, click **Revoke** next to the connection. The panel confirms with "The connection was revoked. The app is signed out on its next request."
+
+You see and revoke your own connections and connection tokens. Administrators without Team Control limits see every user's connections and can revoke any of them, but they can't change another user's access or policy.
+
+The email you get for each new connection includes a link to the panel with that connection highlighted. The link only opens the panel; you still click **Revoke** to end it.
+
+To keep the connection but stop it from making changes, click **Change to view only**. The panel confirms with "This connection is now view only. Its next request uses the new access." Allowing changes again needs a new connection.
+
+## Disconnect all my AI apps
+
+Click **Disconnect all my AI apps** below the connections table. Every connection and connection token you own ends, and the panel shows "All your AI app connections have ended." Other users' connections are untouched.
+
+## Disconnect all AI apps
+
+Administrators without Team Control limits also see **Disconnect all AI apps**. It replaces the Dashboard's signing secret, so every connection of every user ends at once. The panel shows "Every AI app connection on this Dashboard has ended."
+
+Apps on your computer and web apps stay set up. Their users sign in again and approve a new connection.
+
+## Turn the connector off
+
+Click **Turn off and end every connection** in **Remote AI connections**. The panel shows "Remote AI connections are off, and every connection has ended." While it's off, no AI app can reach the Dashboard. Turning it back on doesn't restore the old connections; each app signs in again.
+
+If ending the connections doesn't fully complete, the panel shows "Remote AI connections are off. Ending every connection didn't fully complete; turn them off again to retry."
+
+## Remove an app or a web app
+
+- **Apps on this computer**: **Remove** ends every user's connections through that app and deletes its registration. The app then shows "This app needs to be added again" when it tries to sign in. Removing an app is for administrators without Team Control limits, because other users may use the same registration.
+- **Web apps**: switching one off, **Reissue secret** and **Delete** each end every connection through that app. See [Open WebUI](/mcp-server/remote/connect-apps#open-webui).
+- **Cursor and Gemini CLI**: switching off the Cursor (`mainwp-cursor`) or Gemini CLI (`mainwp-gemini-cli`) row under **Which apps can connect** ends every connection that uses that client ID. Switching it back on doesn't restore them, so each app has to connect again.
+
+## Connections that end on their own
+
+The Dashboard also ends connections when:
+
+- the user who owns them is deleted, changes their password, or loses the `manage_options` capability
+- the Dashboard's site address changes. The panel then shows "Your site address changed. Connected AI apps need to reconnect."
+- a connection reaches its 30-day limit, or a connection token reaches its expiry date
+- a connection goes 14 days without a request
+- you connect the same app a sixth time; each user keeps up to 5 connections per app, and the oldest one ends
+
+## The kill switch
+
+The kill switch forces remote AI connections off for every request, whatever the panel's setting. Use it when you need the connector off immediately, when you can't reach the panel, or when a host or security advisory asks you to.
+
+### The constant
+
+Add this line to `wp-config.php`, above the line that says to stop editing:
+
+```php
+define( 'MAINWP_DISABLE_REMOTE_MCP', true );
+```
+
+Any value that counts as true in PHP turns the connector off. While the constant is true, the filter below isn't consulted, so no plugin can turn the connector back on.
+
+### The filter
+
+A plugin or must-use plugin can force the connector off with the `mainwp_remote_mcp_force_disabled` filter:
+
+```php
+add_filter( 'mainwp_remote_mcp_force_disabled', '__return_true' );
+```
+
+Any return value other than `false` counts as off, so a filter that returns something unexpected keeps the connector off. The filter can only turn the connector off, never on. The Dashboard reads it on every request, so a filter added by a plugin that loads after MainWP still takes effect.
+
+### What the kill switch does
+
+- Every remote AI address on the Dashboard returns `404`: the MCP address, sign-in, token, registration and the approval page.
+- Tokens are refused before any lookup.
+- The panel shows "Remote AI connections are turned off on this site by the MAINWP_DISABLE_REMOTE_MCP setting in wp-config.php." or "Remote AI connections are turned off on this site by a plugin.", and **Turn on** is disabled. The self-test reports the same line.
+- Waiting approvals can't be decided and expire.
+- Background jobs are cancelled at their next step and don't resume.
+- The `/.well-known/` addresses are left to WordPress and other plugins.
+
+### What it doesn't do
+
+The kill switch revokes nothing. Connections, tokens and the signing secret stay as they were and are unusable while it's on. Remove the constant or the filter, and the connector returns to the panel's setting with existing connections working again.
+
+If you also want every connection ended, for example because you think a token leaked, click **Disconnect all AI apps**. It stays available while the kill switch is on. **Turn off and end every connection** is hidden while the kill switch is on, so use it before you set the constant or filter.

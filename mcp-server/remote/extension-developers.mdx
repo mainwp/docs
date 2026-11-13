@@ -1,0 +1,182 @@
+---
+title: Remote AI Connections for Extension Developers
+sidebarTitle: "For Extension Developers"
+description: >-
+  How a MainWP extension's abilities reach remote AI apps, how to declare a contract for a write ability, and how to handle queued work and credential fields.
+---
+
+Remote AI connections serve abilities from the [WordPress Abilities API](/api-reference/abilities-api/overview). If your extension registers abilities, this page explains which of them AI apps can call, which tier each one gets, and what your code can declare to move a write ability out of the unreviewed path. For what the user sees, read [Approval Policies](/mcp-server/remote/approval-policies) first.
+
+## Which abilities are served
+
+The Dashboard serves every ability in the `mainwp/` namespace that sets `show_in_rest` to `true` in its `meta`. The tool name is the ability name without `mainwp/`, with hyphens turned into underscores: `mainwp/acme-purge-cache-v1` becomes `acme_purge_cache_v1`. If two abilities produce the same tool name, neither is served.
+
+Register your abilities in a category of your own. A `mainwp/` ability in one of MainWP's core categories (`mainwp-backups`, `mainwp-batch`, `mainwp-clients`, `mainwp-knowledge`, `mainwp-sites`, `mainwp-tags`, `mainwp-updates`) that MainWP's own tier table doesn't list is always **Dashboard** tier (**Confirm** under Hands-off), whatever its annotations or contract say.
+
+## How an ability gets its tier
+
+The Dashboard looks for an ability's tier in this order and uses the first match:
+
+1. **An audited entry.** MainWP reviews the abilities of its released extensions and ships their tiers with the Dashboard. An audited tier wins over anything your extension declares. Until the extension version it was reviewed against is installed, the tool is listed under **Not available yet**. A few audited entries only open the unreviewed path, and a declared contract replaces those.
+2. **A declared contract** from the `mainwp_remote_mcp_extension_contracts` filter. See [Declare a contract](#declare-a-contract).
+3. **The ability's annotations**, from `meta.annotations`:
+   - `readonly: true` with `destructive: false` makes it a **Read** tool, which runs directly.
+   - `readonly: false` with a boolean `destructive` puts it on the [unreviewed path](#the-unreviewed-path).
+   - Anything else, including missing annotations, lists it under **Not available to AI apps**, and it can't be called.
+
+### The unreviewed path
+
+A write ability with valid annotations and no audited entry or contract is listed in the panel under **Not reviewed by MainWP**. Administrators can switch the section off, or switch off each tool in it. On this path:
+
+- The tier is **Dashboard**, or **Confirm** when the connection uses Hands-off.
+- The approval page carries the heading "MainWP hasn't reviewed which sites this changes".
+- The ability's own `dry_run` is never used as a preview. The user approves the arguments the app sent.
+- The Dashboard keeps no runnable copy of the call. It runs only when the app calls the tool again after approval, and **Run it here instead** isn't offered.
+- An ability whose input schema has a `preview_token` property, or a `dry_run` or `confirm` property that isn't a boolean, is refused with "This tool needs a MainWP contract before AI apps can use it."
+
+The panel warns users that work these tools queue isn't cancelled when a connection is revoked. You can fix that for your own queue with the [deferred work check](#queued-and-deferred-work), whether or not you declare a contract.
+
+## Declare a contract
+
+A contract tells the Dashboard how to preview your ability, which control values to send when it runs, and which sites it touches. Add contracts with the `mainwp_remote_mcp_extension_contracts` filter. It receives an array keyed by ability name. Add your entries and return the array.
+
+This example declares a contract for an ability that purges a cache on a list of sites. Its input schema declares `site_ids_or_domains`, a boolean `dry_run` and a `preview_token` string. A dry run returns the planned purge with a `preview_token`, and a real run needs that token back.
+
+```php
+add_filter( 'mainwp_remote_mcp_extension_contracts', 'acme_remote_mcp_contracts' );
+
+function acme_remote_mcp_contracts( $contracts ) {
+    $contracts['mainwp/acme-purge-cache-v1'] = array(
+        'tier'           => 'confirm',
+        'resolver'       => 'sites',
+        'preview'        => array(
+            'kind'          => 'dry_run',
+            'controls'      => array( 'dry_run' => true ),
+            'capture_token' => 'preview_token',
+        ),
+        'execute'        => array(
+            'controls'           => array( 'dry_run' => false ),
+            'native_token_field' => 'preview_token',
+        ),
+        'compare_fields' => array( 'sites', 'purge_targets' ),
+    );
+    return $contracts;
+}
+```
+
+On the first call, the Dashboard runs the ability with `dry_run: true`, keeps the `preview_token` from the result, and shows the user the preview. When the user confirms, it runs the dry run again for a fresh token, then runs the ability with `dry_run: false` and that token. If the `sites` or `purge_targets` fields of the new preview differ from the ones the user saw, nothing runs and the user is asked again.
+
+### Contract keys
+
+A contract may contain only these keys.
+
+| Key | Required | Value |
+| --- | --- | --- |
+| `tier` | Yes | `confirm` or `dashboard`. |
+| `preview` | Yes | How to preview the call. See [The preview](#the-preview). |
+| `execute` | Yes | `controls`: argument values the Dashboard sets when the ability runs. `native_token_field`: the argument that receives the token captured by the preview. |
+| `resolver` | No | Which sites the call affects. See [Resolvers and adapters](#resolvers-and-adapters). Defaults to `none`. |
+| `adapter` | No | How the call runs. Defaults to `atomic`. |
+| `sensitive` | No | A list of argument names to treat as credentials, on top of the ones the Dashboard finds itself. See [Credential fields](#credential-fields). |
+| `gate_supplied` | No | A list of argument names the Dashboard fills with a fresh UUID for each approval, for example an idempotency key. Values the app sends for them are dropped. |
+| `compare_fields` | With a token | A list of top-level fields of the preview result. They are compared between the preview the user saw and the one taken right before the ability runs. |
+| `deferred` | No | `true` when the ability queues work that runs after the call returns. |
+| `credential_bearing` | No | `true` to treat every call as carrying a credential. |
+
+The Dashboard validates the whole contract. An unknown key, a value of the wrong type or a malformed `preview` makes it ignore the contract, and the ability falls back to its annotations as if no contract existed. That includes a `tier` of `write` or no `tier` at all: a declared contract can't make an ability run without a confirmation or an approval.
+
+One rule is enforced differently. A contract with a `native_token_field` must list `compare_fields`. Without them, the Dashboard couldn't tell whether the action changed between the user's confirmation and the run. Such a contract isn't ignored: every call to the tool is refused with "This tool needs a MainWP contract before AI apps can use it."
+
+### The preview
+
+`preview` takes these keys:
+
+- `kind`: `dry_run` runs the ability itself with the preview `controls`. `ability` runs a separate preview ability. `plan` runs no preview, and the user sees the arguments only.
+- `ability`: the name of the preview ability. Set it when `kind` is `ability`, and only then.
+- `arg_map`: for `kind: ability`, which arguments to pass to the preview ability, as `'argument' => 'preview argument'`. Arguments not in the map aren't passed.
+- `controls`: argument values the Dashboard sets for the preview, such as `'dry_run' => true`. Values are scalars or `null`.
+- `capture_token`: the field of the preview result that holds your ability's own confirmation token.
+
+A `native_token_field` needs a `capture_token`, and doesn't work with `kind: plan`.
+
+Pick `compare_fields` that describe the effect: which sites, which items, which values. A field that changes on every run, such as a timestamp, makes every confirmation look stale. The token itself is never compared.
+
+### What the app can't send
+
+Before your ability sees the arguments, the Dashboard keeps only the properties your input schema declares and drops `dry_run`, `confirm`, `preview_token`, the names in your contract's `controls`, your `native_token_field` and your `gate_supplied` fields. Those values come only from the contract and the Dashboard. An argument that holds a URL with a user name or password in it is refused.
+
+### Resolvers and adapters
+
+The resolver reads the call's arguments and turns them into a fixed list of sites the user can reach. The approval shows those sites, and the call runs on exactly them. If any part can't be resolved, the call is refused rather than narrowed.
+
+| Resolver | Reads | Sites |
+| --- | --- | --- |
+| `none` | Nothing | None tracked |
+| `site` | `site_id_or_domain` or `site_id` | One site |
+| `sites` | `site_ids_or_domains` | The listed sites. An empty list means every site the user can reach. |
+| `client` | `client_id_or_email` or `client_id` | Every site of the client at the time of the call |
+| `tag` | `tag_id` | Every site with the tag at the time of the call |
+
+When the call runs, the Dashboard replaces the site or client argument with the resolved IDs (a `tag_id` is already an ID), so a domain, an email or an empty list can't select different sites later.
+
+For a declared contract, use `atomic`, the default, which runs the ability once, or `chunked_sites`, which works with the `site` and `sites` resolvers and splits the sites into steps of 10. A call over more than 10 sites then runs as a background job. A contract with a `native_token_field` must use `atomic`, because a token belongs to one preview of one call. `direct` and `updates` are used by MainWP's own tools.
+
+## Queued and deferred work
+
+If your ability queues work instead of finishing it during the call, that work could run after the user revoked the connection. Two hooks let your worker check first.
+
+`mainwp_remote_mcp_deferred_context` is a filter that returns `null`, except while the Dashboard runs your ability for a remote AI connection. Then it returns `array( 'grant_id' => int, 'policy_version' => int )` for the connection that authorized the call. Read it inside your ability's execute callback, and store both values with the queued item.
+
+`mainwp_remote_mcp_authorization_active( $grant_id, $policy_version )` returns `true` while that authorization still holds. It returns `false` once the connection is revoked or expires, its approval policy changes, it's changed to view only, or remote AI connections are turned off or forced off by the kill switch. Call it before every dispatch, not once when you queue.
+
+```php
+// In the ability's execute callback, when queuing work.
+$item    = array( 'site_id' => $site_id );
+$context = apply_filters( 'mainwp_remote_mcp_deferred_context', null );
+if ( is_array( $context ) ) {
+    $item['remote_grant_id']       = (int) $context['grant_id'];
+    $item['remote_policy_version'] = (int) $context['policy_version'];
+}
+acme_queue_purge( $item );
+
+// In the worker, before dispatching each item.
+if ( isset( $item['remote_grant_id'] ) ) {
+    $active = function_exists( 'mainwp_remote_mcp_authorization_active' )
+        && mainwp_remote_mcp_authorization_active( $item['remote_grant_id'], $item['remote_policy_version'] );
+    if ( ! $active ) {
+        acme_cancel_queued_item( $item );
+        return;
+    }
+}
+```
+
+The filter also returns `null` while the Dashboard runs your preview, and for work queued from the Dashboard's own screens, the REST API or cron. That work needs no check. Treat a missing function as inactive: the item was queued under a remote connection, and the Dashboard can no longer confirm it.
+
+Don't hand remote work to MainWP's core batch queue. If your ability answers with a core batch job, the call fails with "The Dashboard queued this work to run later instead of running it now, so this call can't report its result."
+
+## Credential fields
+
+The Dashboard treats an argument as a credential when:
+
+- its name contains `pass`, `secret`, `token` or `key`, in any case. This also matches names such as `keyword`.
+- its name is `adminpassword`, `http_pass`, `http_user` or `uniqueid`.
+- its schema sets `writeOnly: true`, at any depth of that property's schema, including nested `properties`, `items` and `anyOf`, `oneOf` and `allOf` branches.
+- it's listed in your contract's `sensitive`.
+
+Mark secret inputs `writeOnly` in your input schema, so every consumer of the ability knows not to echo or store them:
+
+```php
+'api_key' => array(
+    'type'      => 'string',
+    'writeOnly' => true,
+),
+```
+
+A call that carries a credential value, or any call to an ability with `credential_bearing: true`, is handled without storing it:
+
+- The credential never enters a stored approval or a background job. The call runs only when the app calls the tool again with the same arguments, and **Run it here instead** isn't offered.
+- It runs in one step while the app waits, never as a background job. A credential-carrying call that would need more than one step, over 10 sites, is refused.
+- The approval page and the chat summary show the argument as "supplied".
+- In previews and results, credential fields at any depth show as `[redacted]`, and any string containing a credential value from the call has that value replaced with `[redacted]`.
+
+The activity log never records argument values.
