@@ -366,6 +366,7 @@
                 "pages": [
                   "api-reference/abilities-api/advanced-uptime-monitor",
                   "api-reference/abilities-api/article-uploader",
+                  "api-reference/abilities-api/boilerplate",
                   "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/clone",
                   "api-reference/abilities-api/cost-tracker-assistant",
