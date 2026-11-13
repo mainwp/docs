@@ -53,7 +53,11 @@ MainWP Cache Control can automatically purge cache after MainWP Dashboard update
 
 Cache Control supports Cloudflare and the following cache plugins or cache services:
 
-AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCache (MainWP Child 6.4.2 or later), RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
+AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCache, RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
+
+RunCache requires a MainWP Child version that includes RunCache support. After updating MainWP Child, sync the site to show **RunCache** as its cache solution.
+
+RunCache clears its own page-cache files when it accepts a purge. MainWP reports that the purge was sent. Downstream Redis and edge layers do not report their results, so MainWP cannot confirm that those layers were cleared. If RunCache reports a failure, MainWP shows an error and keeps the previous last-purged time.
 
 Hummingbird support is limited to the free **Hummingbird Performance** plugin. **Hummingbird Pro** is currently unsupported.
 
