@@ -121,6 +121,8 @@ If you see this notice in **MainWP menu (three lines, top right) > MainWP Settin
 Ask your host to verify that no domain or web server alias serves the directory shown. Once your host confirms it is private, click **Confirm private directory** and retry the backup. You only need to confirm that directory once. If your host cannot verify that it is private, set up a different private directory using the steps above.
 </Warning>
 
+If Backup Settings shows **Backup directory is publicly accessible** instead, the web server serves the directory. MainWP blocks backup writes to it, and the notice has no **Confirm private directory** button. Ask your host to block web access to the directory, or set up a different private directory using the steps above.
+
 If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
 ## What a Site Needs Before a Backup Can Run
@@ -141,7 +143,7 @@ In MainWP Dashboard 6.4.2 and later, this list also appears under **Back Up Now*
 **On the Dashboard server:**
 
 - [ ] PHP has the cURL and OpenSSL extensions.
-- [ ] The Dashboard has a private folder that the web server can write to and no website serves. By default, it creates a `mainwp-private` folder beside the WordPress folder. On hosts that provide a `private_html` or `private` folder, it can use that instead. If none of these work, see [Set Up the Private Backup Directory](#set-up-the-private-backup-directory).
+- [ ] The Dashboard has a private folder that the web server can write to and no website serves. By default, it creates a `mainwp-private` folder beside the WordPress folder. If it cannot, it can create one inside a `private` folder that the host provides. If none of these work, see [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). A custom directory, or an existing one inside `private_html`, must be [confirmed](#set-up-the-private-backup-directory) before backups can use it.
 - [ ] The disk has room for the backups the Dashboard downloads.
 
 ## Configure Storage
@@ -441,6 +443,7 @@ These are the folder errors you may see, grouped by machine:
   - "The folder ... does not exist on the Dashboard server." or "The web server cannot write to the folder ... on the Dashboard server." These come from testing a **Local Path** destination.
   - "Backup directory ... on the Dashboard server cannot be used." Check the **Directory path** of the **Local Path** destination.
   - "Private backup directory ... is unavailable." Check the [private backup directory](#set-up-the-private-backup-directory).
+  - "MainWP could not verify that the backup directory ... is private." [Confirm the private backup directory](#set-up-the-private-backup-directory).
 - **SFTP server:**
   - "The folder does not exist on the SFTP server."
 
