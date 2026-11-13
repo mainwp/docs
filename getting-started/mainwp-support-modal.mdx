@@ -3,13 +3,13 @@ title: MainWP Support Modal
 description: Learn how to open the MainWP Support modal, use each support option, and manage support-related permissions from the modal or MainWP Tools.
 ---
 
-The MainWP Dashboard Support modal gives you quick access to help resources directly inside the Dashboard. You can launch the AI Support Assistant, start guided tours, open page video tutorials, and jump to MainWP Support contact options.
+The MainWP Dashboard Support modal gives you quick access to help resources directly inside the Dashboard. You can open the MainWP Assistant, start guided tours, open page video tutorials, and jump to MainWP Support contact options.
 
 ## What You'll Learn
 
 - How to open the Support modal from the Dashboard sidebar
 - What each Support modal option does
-- How to enable or disable Support Assistant, guided tours, and video tutorials
+- How to enable or disable the MainWP Assistant, guided tours, and video tutorials
 - How permissions in the modal map to MainWP Tools settings
 
 ## Prerequisites
@@ -39,22 +39,32 @@ The **Get Help** item in the MainWP menu (three lines, top right) opens the Help
 
 The modal includes the following cards:
 
-![MainWP Support modal showing Support Assistant, Quick Tour, Video Tour, and Contact Support options](/images/getting-started/support-module.png)
+![MainWP Support modal showing the Support Assistant, Take a Quick Tour, MainWP 101 Video Tour, and Contact MainWP Support cards](/images/getting-started/support-modal-assistant.jpg)
 
 | Option | What it does | Availability |
 |---|---|---|
-| Support Assistant | Opens the AI support chat inside the modal | Available when **Chatbase (AI-Powered Chat Support)** is enabled |
+| Support Assistant | Closes the modal and opens the [MainWP Assistant](/dashboard/mainwp-assistant/overview) chat panel | Available when **MainWP Assistant (AI-Powered Chat Support)** is enabled and your account can use the Assistant |
 | Take a Quick Tour | Starts the guided tour for the current page | Available when **Usetiful (Interactive Guides & Tips)** is enabled |
 | MainWP 101 Video Tour | Opens an embedded tutorial video for the current page | Available when **Youtube Embeds (Video Tutorials)** is enabled and a video is mapped to that page |
 | Contact MainWP Support | Opens the MainWP community support page in a new tab | Always available |
 
 The contact option opens: [https://community.mainwp.com/](https://community.mainwp.com/)
 
+### Support Assistant Card
+
+The **Support Assistant** card opens the MainWP Assistant. Click **Open Support Assistant** to close the modal and start a chat. The card lists how the Assistant works:
+
+- Docs answers come from MainWP documentation
+- Sites mode uses your own AI provider
+- Read-only until you allow changes
+
+See [MainWP Assistant](/dashboard/mainwp-assistant/overview) for the two modes, and [Contact MainWP Support from the Assistant](/dashboard/mainwp-assistant/contact-support) to send a question to MainWP Support with your conversation.
+
 ---
 
 ## Update Permissions in the Modal
 
-Each modal card has a **Turn On / Turn Off** permission toggle (except the support contact card). Use the **Update Permissions** button to save changes.
+Each modal card has an **Enabled / Disabled** toggle, except the support contact card, which is **Always On**. Use the **Save Support Settings** button to save changes.
 
 <Steps>
 <Step title="Open the modal">
@@ -64,14 +74,14 @@ Open **Support**.
 Enable or disable the cards you want to use.
 </Step>
 <Step title="Save">
-Click **Update Permissions**.
+Click **Save Support Settings**. If you changed guided tours, the page reloads. The **Take a Quick Tour** card also has a **Save and Reload** button.
 </Step>
 </Steps>
 
 Permission toggles in the modal map to:
 
 - **Usetiful (Interactive Guides & Tips)**: Guided tours, tooltips, and onboarding
-- **Chatbase (AI-Powered Chat Support)**: AI Support Assistant
+- **MainWP Assistant (AI-Powered Chat Support)**: MainWP Assistant
 - **Youtube Embeds (Video Tutorials)**: Embedded page video guides
 
 You can also manage the same permission toggles in **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
@@ -90,7 +100,9 @@ The Support modal options above use third-party services that you control via pe
 
 ## Troubleshooting
 
-- **A card is disabled:** Enable its toggle in the modal and click **Update Permissions**.
+- **A card is disabled:** Enable its toggle in the modal and click **Save Support Settings**.
+- **The Support Assistant toggle can't be changed:** Only administrators with access to MainWP Settings can turn the Assistant on or off.
+- **The Support Assistant card is enabled but doesn't open:** See [Troubleshoot MainWP Assistant](/dashboard/mainwp-assistant/troubleshooting).
 - **Video tour is missing on a page:** Not all pages have a mapped **MainWP 101 Video Tour**.
 - **Tours did not start after enabling:** Reload the page, then launch the tour again.
 - **Looking for the old Need Help flow:** Use **Support** in the left navigation to open the Support modal.

@@ -204,6 +204,16 @@
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
               "dashboard/overview/mainwp-command-palette",
               "dashboard/overview/mainwp-ai",
+              {
+                "group": "MainWP Assistant",
+                "pages": [
+                  "dashboard/mainwp-assistant/overview",
+                  "dashboard/mainwp-assistant/asking-questions",
+                  "dashboard/mainwp-assistant/contact-support",
+                  "dashboard/mainwp-assistant/settings-and-privacy",
+                  "dashboard/mainwp-assistant/troubleshooting"
+                ]
+              },
               "dashboard/overview/mainwp-knowledge",
               "dashboard/overview/mainwp-database-health-check",
               "dashboard/overview/manage-extensions",
