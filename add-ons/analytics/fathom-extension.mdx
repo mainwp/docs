@@ -203,6 +203,12 @@ The **Visitor Data** page only shows sites the staff user can access. Requests f
 Team Control staff who could connect accounts, remove accounts, or change Settings in earlier versions lose those controls after the update. An administrator must perform those tasks. There is no separate permission that restores them for staff.
 </Warning>
 
+## Database health check
+
+The Fathom Extension reports its tables and their expected columns to the MainWP Dashboard database schema checks. These tables store connected Fathom accounts, Child Site to Fathom site assignments, and cached visitor stats. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_fathom` to find the Fathom tables and check for missing tables, missing columns, or incorrect column definitions.
+
+Run this check when connected accounts, site assignments, or visitor data fail to save or load, or when MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for how to read the results and prepare a support report. These checks only report the Dashboard database structure. They do not repair tables, restore Fathom data, or check Child Site databases.
+
 ## MainWP Abilities
 
 The Fathom Integration registers abilities in the `mainwp-fathom` category of the [MainWP Abilities API](/api-reference/abilities-api/overview). Use them to connect accounts, refresh discovered Fathom sites, manage site assignments and settings, read reports and current visitors, refresh cached analytics, and remove account connections from scripts or AI tools.
