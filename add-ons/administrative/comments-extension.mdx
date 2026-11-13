@@ -203,7 +203,14 @@ Once the list of found comments appears
 
 In the comments list, the **Delete Permanently** action is available for comments that are already in **Trash** or marked as **Spam**.
 
-The comments table also includes **Restore** and **Not Spam** bulk actions. When a comment is in **Trash**, its row actions include **Restore** and **Not Spam**.
+The comments table also includes **Restore** and **Not Spam** bulk actions. The actions menu on each row depends on the comment's status:
+
+| Comment status | Row actions |
+|---|---|
+| Approved | **Unapprove**, **Edit**, **Spam**, **Trash** |
+| Pending | **Approve**, **Edit**, **Spam**, **Trash** |
+| Spam | **Not Spam**, **Delete Permanently** |
+| Trash | **Restore**, **Spam**, **Delete Permanently** |
 
 ## Set Custom Comment Display Length
 
