@@ -14,6 +14,7 @@ addonType: extension
 - Publishing and editing saved drafts
 - Randomizing authors, categories, and dates
 - Using the Post Plus randomizer options
+- Reading saved drafts through MainWP Abilities
 
 ---
 
@@ -263,8 +264,20 @@ To set a random publishing date,
 
 ---
 
+## MainWP Abilities
+
+The Abilities-enabled Post Plus release adds two read-only abilities for saved drafts:
+
+- `mainwp/list-post-plus-drafts-v1` lists saved post and page drafts, with an optional `post` or `page` filter
+- `mainwp/get-post-plus-draft-v1` reads one saved draft with its slug and a masked plain-text excerpt of up to 300 characters
+
+Use them to review saved drafts from an AI assistant or script before you publish them. Both require `manage_options` and access to Post Plus. Target sites you cannot access are counted but not named. Client-targeted drafts return their client IDs without expanding them to sites. The abilities do not create, edit, publish, or delete drafts, and they do not contact Child sites. See the [Post Plus Abilities reference](/api-reference/abilities-api/post-plus) for request examples and response fields.
+
+---
+
 ## Related Resources
 
+- [Post Plus Abilities](/api-reference/abilities-api/post-plus) - List and read saved drafts
 - [Posts/Pages Add-ons](/add-ons/posts-pages) - Browse all content tools
 - [Manage Posts](/sites/content/manage-posts) - Post management guide
 - [Boilerplate Extension](/add-ons/posts-pages/boilerplate-extension) - Reusable content templates
