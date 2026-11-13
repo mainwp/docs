@@ -182,7 +182,7 @@ These guard against runaway operations and oversized responses.
 
 | Setting | Default | Behavior when exceeded |
 | --- | --- | --- |
-| `rateLimit` | 60/min | Calls fail until the window passes; `0` disables |
+| `rateLimit` | 60/min | Calls wait for a token; fail if the wait would exceed about 30 seconds; `0` disables |
 | `requestTimeout` | 30000 ms | The request is aborted |
 | `maxResponseSize` | 10 MB | The single response is rejected |
 | `maxSessionData` | 50 MB | Subsequent calls fail with `RESOURCE_EXHAUSTED` until the server restarts |

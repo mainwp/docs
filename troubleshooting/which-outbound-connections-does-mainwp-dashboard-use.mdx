@@ -54,7 +54,26 @@ The MainWP updater can consume a package URL returned by the MainWP API. In some
 |------|----------|-------|
 | `api.wordpress.org` | Plugin and theme information lookups through WordPress.org APIs | Supports repository-backed plugin and theme details in the Dashboard |
 | `downloads.wordpress.org` | MainWP Child download button | Recommended if you want the Dashboard to download the MainWP Child plugin directly |
-| `s0.wp.com` | Screenshot and site preview thumbnails | Cosmetic only; core management does not depend on it |
+| `s0.wp.com` | Screenshot and site preview thumbnails | Cosmetic only; core management does not depend on it. You can [turn off site screenshots](#turn-off-site-screenshots) |
+
+### Turn off site screenshots
+
+The Dashboard loads site screenshots from mShots, a WordPress.com service served from `s0.wp.com`. To render a screenshot, mShots fetches the child site's homepage, so each child site URL is sent to WordPress.com.
+
+In MainWP Dashboard 6.4.2 and later, you can turn off screenshot previews across the Dashboard. Add the following filter on the Dashboard site, for example in the **PHP** tab of the [Custom Dashboard Add-on](/add-ons/development/mainwp-custom-dashboard-extension).
+
+```php
+add_filter( 'mainwp_site_preview_enabled', '__return_false' );
+```
+
+When the filter returns `false`, MainWP suppresses mShots previews and their controls in the following places.
+
+- The site preview image in the sidebar of an individual site's overview page
+- The camera button in the **Sites > Manage Sites** table. The column stays, and you can hide it in **Page Settings**
+- The camera button in the sites list on the **Tags** page
+- The site screenshots on the Manage Sites page in Grid mode
+
+Screenshots are shown by default. Remove the filter to show them again.
 
 ### WordPress.org asset hosts
 
