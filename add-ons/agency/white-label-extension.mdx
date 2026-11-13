@@ -131,6 +131,8 @@ Go to **MainWP > Add-ons > White Label** and select the **Remove & Disable Optio
 </Tab>
 <Tab title="Single Site">
 Go to **MainWP > Sites > Manage Sites**, open the site's **Settings**, navigate to the **White Label** tab, enable **Override general settings**, then locate **Remove & Disable Options**.
+
+The **Prevent theme alterations** checkbox shows the site's saved value when you reopen the form. Saving another setting keeps this value unless you change the checkbox.
 </Tab>
 </Tabs>
 
@@ -145,6 +147,15 @@ Go to **MainWP > Sites > Manage Sites**, open the site's **Settings**, navigate 
 | Hide the WordPress Tools page | Removes the **Tools** menu from WP Admin |
 | Hide the WordPress General settings page | Removes the **Settings** menu from WP Admin |
 | Hide the Permalinks settings page | Removes the **Permalinks** settings page from WP Admin |
+
+## Read Stored Settings Through the Abilities API
+
+With an Abilities-enabled White Label release, you can read general settings and a page of accessible sites with stored settings through two read-only abilities:
+
+- `mainwp/get-white-label-settings-v1` returns general flags and the accessible override count.
+- `mainwp/list-white-label-sites-v1` returns stored per-site flags, override status, and pagination.
+
+Both require an authenticated Dashboard administrator with `manage_options` and access to White Label. Team Control site restrictions apply. They do not save settings or contact Child sites, and they omit support emails, messages, custom CSS, image URLs, and credentials. See [White Label Abilities](/api-reference/abilities-api/white-label) for permissions, parameters, and response fields.
 
 ## WordPress Options
 
