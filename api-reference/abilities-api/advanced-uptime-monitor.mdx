@@ -26,7 +26,7 @@ The Abilities-enabled Advanced Uptime Monitor release registers seven abilities 
 - A configured uptime provider for operations that contact the provider
 - An authenticated user with `manage_options`, or a Team Control role with **Use MainWP abilities and MCP**, plus access to the Add-on and to the selected site
 
-Every call starts with the Dashboard's ability permission check. An administrator with `manage_options` passes it for every ability. A Team Control staff role without `manage_options` passes it when the role has **Use MainWP abilities and MCP**, for every ability except `mainwp/sync-uptime-monitors-v1`. The Add-on then checks the Advanced Uptime Monitor extension right and the selected site's scope on every call. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
+Every call starts with the Dashboard's ability permission check. An administrator with `manage_options` passes it for every ability. A Team Control staff role without `manage_options` passes it for every ability except `mainwp/sync-uptime-monitors-v1` when the role has **Use MainWP abilities and MCP** and the Dashboard checks Team Control support for each ability. On older Dashboards, staff cannot use these abilities. The Add-on then checks the Advanced Uptime Monitor extension right and the selected site's scope on every call. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
 
 Team Control and permitted-site restrictions apply. Inventory synchronization requires an administrator with unrestricted access to all sites; staff roles and users restricted to selected sites cannot synchronize provider inventory.
 
