@@ -24,11 +24,11 @@ The Abilities-enabled Advanced Uptime Monitor release registers seven abilities 
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples
 - An active Advanced Uptime Monitor build that registers these abilities
 - A configured uptime provider for operations that contact the provider
-- An authenticated user with `manage_options`, access to the Add-on, and access to the selected site
+- An authenticated user with `manage_options`, or a Team Control role with **Use MainWP abilities and MCP**, plus access to the Add-on and to the selected site
 
-Every call starts with the Dashboard's ability permission check, which requires `manage_options`. The Add-on then checks the Advanced Uptime Monitor extension right and the selected site's scope on every call. Team Control staff roles without `manage_options` receive 403 for every call.
+Every call starts with the Dashboard's ability permission check. An administrator with `manage_options` passes it for every ability. A Team Control staff role without `manage_options` passes it when the role has **Use MainWP abilities and MCP**, for every ability except `mainwp/sync-uptime-monitors-v1`. The Add-on then checks the Advanced Uptime Monitor extension right and the selected site's scope on every call. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
 
-Team Control and permitted-site restrictions apply. Inventory synchronization requires an administrator with unrestricted access to all sites; a user restricted to selected sites cannot synchronize provider inventory.
+Team Control and permitted-site restrictions apply. Inventory synchronization requires an administrator with unrestricted access to all sites; staff roles and users restricted to selected sites cannot synchronize provider inventory.
 
 A user whom the Dashboard's site permission check denies receives 403 for that site. The same user also receives 403 for a site ID that does not exist. An administrator with access to all sites receives 404 `mainwp_aum_site_not_found` for a site ID that does not exist.
 
