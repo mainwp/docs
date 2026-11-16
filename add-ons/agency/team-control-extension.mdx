@@ -395,8 +395,8 @@ Each result describes the site at the time of the check. Nothing rechecks automa
 | Result | What it means | What to do |
 |---|---|---|
 | **Administrator found** | The account exists and is an administrator. | Nothing. |
-| **Found but not an administrator** | The account exists without administrator rights. The site will refuse this staff member's actions. | Make the account an administrator, or pick a different username or the shared administrator for this site. Then click **Check Again**. |
-| **Username not found** | No account on the site has that username. The site will refuse this staff member's actions. | Create the account or correct the username, or choose **Use the shared administrator** for this site. Then click **Check Again**. |
+| **Found but not an administrator** | The account exists without administrator rights. The site will refuse this staff member's actions. | Make the account an administrator and click **Check Again**. Or pick a different username or the shared administrator for this site and click **Save**, which runs the check again. |
+| **Username not found** | No account on the site has that username. The site will refuse this staff member's actions. | Create the account on the site and click **Check Again**. Or correct the username, or choose **Use the shared administrator** for this site, and click **Save**, which runs the check again. |
 | **MainWP Child too old. Update it to run this check.** | The site runs a MainWP Child version without this feature. | Update MainWP Child on the site, then click **Check Again**. |
 | **Check failed** | The Dashboard couldn't complete the check. The cause follows the label, for example that the Child site did not respond. This doesn't mean the account is missing. | Fix the connection to the site, then click **Check Again**. |
 | **Uses the shared administrator** | The site is set to **Use the shared administrator**, or it uses the default and no default username is set. | Nothing. |
@@ -414,7 +414,7 @@ This happens when:
 - The account lost its administrator rights.
 - The site's setup check reported a problem and nobody fixed it.
 
-To fix it, recreate the account or restore its administrator role on the Child site. You can also change that site's username choice in **Child site logins**, either to another username or to **Use the shared administrator**. Then click **Check Again** to confirm the result.
+To fix it, recreate the account or restore its administrator role on the Child site, then click **Check Again** to confirm the result. You can also change that site's username choice in **Child site logins**, either to another username or to **Use the shared administrator**, and click **Save**. Saving runs the check again.
 
 ### Sites with an Older MainWP Child
 
