@@ -14,6 +14,7 @@ addonType: extension
 - Create custom roles and assign them to team members
 - Define permissions, allowed add-ons, and allowed Child sites
 - Control access to MainWP abilities and MCP
+- Give each staff member their own WordPress account on Child sites
 
 ---
 
@@ -343,6 +344,87 @@ If any users currently have that role, choose a replacement role for each user i
 <Step title="Click the Delete Role button in the confirmation dialog">
 </Step>
 </Steps>
+
+## Per-Staff Child Site Logins
+
+Without a mapping, every Dashboard user reaches a Child site as the shared administrator account the site was connected with. Team Control can map each staff member to their own WordPress account on Child sites. With a mapping in place:
+
+- WordPress post locking can tell two staff members apart, so the second person to open a post sees that the first is already editing it.
+- Post authors, revisions, and activity log plugins on the Child site record the staff member's own account instead of the shared administrator.
+- When someone leaves, you can delete their account on each Child site, which ends their WordPress sessions there without signing out anyone else. Remove their Team Control access as well.
+
+**Go to WP Admin**, syncs, and updates that the staff member starts run as their mapped account on that site. So do large queued syncs and Assistant jobs they start. Scheduled maintenance and WP-CLI commands keep using the shared administrator.
+
+Staff members with no mapping keep using the shared administrator, as before.
+
+### Before You Set Up Logins
+
+- Mapped accounts must be administrators on the Child site. Other WordPress roles aren't supported yet.
+- Team Control doesn't create the accounts. Create them on each Child site yourself.
+- Each Child site needs the MainWP Child release that includes this feature. See [Sites with an older MainWP Child](#sites-with-an-older-mainwp-child).
+
+### Set Up Child Site Logins
+
+<Steps>
+<Step title="Create an administrator account for the staff member on each Child site">
+Using the same username on every site lets one default username cover all of them.
+</Step>
+<Step title="Log in to your MainWP Dashboard as a Team Control owner">
+</Step>
+<Step title="Open Team Control and go to the Dashboard Users tab">
+</Step>
+<Step title="Expand Child site logins under the staff member's username">
+The table lists only the Child sites that person can access.
+</Step>
+<Step title="Enter the Default WordPress username on child sites">
+Every site set to **Use the default username** uses this account. If you leave it empty, those sites use the shared administrator.
+</Step>
+<Step title="Change the username choice for sites that need something else">
+Choose **Use a different username** and enter the account for that site, or choose **Use the shared administrator** to keep the shared account on that site.
+</Step>
+<Step title="Click Save">
+</Step>
+</Steps>
+
+### Read the Setup Check
+
+After you save, Team Control checks each site in the table once and shows the result with the date and time of the check. It looks for an account whose username matches exactly. The check never blocks the save: the mapping is saved even when some sites report a problem.
+
+Each result describes the site at the time of the check. Nothing rechecks automatically, so an account deleted later still shows its old result. Click **Check Again** on a site to rerun its check, for example after you create a missing account. **Check Again** is unavailable while the form has unsaved changes.
+
+| Result | What it means | What to do |
+|---|---|---|
+| **Administrator found** | The account exists and is an administrator. | Nothing. |
+| **Found but not an administrator** | The account exists without administrator rights. The site will refuse this staff member's actions. | Make the account an administrator, or pick a different username or the shared administrator for this site. Then click **Check Again**. |
+| **Username not found** | No account on the site has that username. The site will refuse this staff member's actions. | Create the account or correct the username, or choose **Use the shared administrator** for this site. Then click **Check Again**. |
+| **MainWP Child too old. Update it to run this check.** | The site runs a MainWP Child version without this feature. | Update MainWP Child on the site, then click **Check Again**. |
+| **Check failed** | The Dashboard couldn't complete the check. The cause follows the label, for example that the Child site did not respond. This doesn't mean the account is missing. | Fix the connection to the site, then click **Check Again**. |
+| **Uses the shared administrator** | The site is set to **Use the shared administrator**, or it uses the default and no default username is set. | Nothing. |
+
+### When a Child Site Refuses a Staff Member
+
+If the mapped account is missing or isn't an administrator when the staff member acts on a site, the Child site refuses the request. It doesn't fall back to the shared administrator. The message names the account and the site, for example:
+
+- `The account "jane" was not found on example.com.`
+- `The account "jane" is not an administrator on example.com.`
+
+This happens when:
+
+- The account was deleted after setup.
+- The account lost its administrator rights.
+- The site's setup check reported a problem and nobody fixed it.
+
+To fix it, recreate the account or restore its administrator role on the Child site. You can also change that site's username choice in **Child site logins**, either to another username or to **Use the shared administrator**. Then click **Check Again** to confirm the result.
+
+### Sites with an Older MainWP Child
+
+A site running an older MainWP Child still logs the staff member in as the shared administrator when the mapped account is missing. The setup check labels these sites **MainWP Child too old**. Update MainWP Child on the site to the release that includes this feature.
+
+### Limits
+
+- Mapped accounts must be administrators on the Child site.
+- Removing a mapping or choosing **Use the shared administrator** gives that person shared administrator access on those sites again. Neither one revokes access. To revoke a staff member's access, remove their Team Control access.
+- Scheduled maintenance and WP-CLI commands always use the shared administrator.
 
 ## Team Control Abilities
 
