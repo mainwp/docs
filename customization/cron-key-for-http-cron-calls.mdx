@@ -77,7 +77,7 @@ If your cron job with the key runs and its log shows success, but the notice is 
     Look through the cron jobs in your hosting control panel and in any external cron service you use.
   </Step>
   <Step title="Update the keyless jobs">
-    Add the key to each job that calls a URL in the MainWP `cron` folder without one. Delete a job only if another job already calls the same script with the key. Each script runs different work, so a keyed job for `updatescheck.php` doesn't replace a job for `backups.php`.
+    Use a direct `https://` URL before adding the key to each job that calls a URL in the MainWP `cron` folder without one. An HTTP-to-HTTPS redirect does not protect a key sent in the initial HTTP request. If HTTPS is unavailable, use a PHP command-line cron job instead. Delete a job only if another job already calls the same script with the key. Each script runs different work, so a keyed job for `updatescheck.php` doesn't replace a job for `backups.php`.
   </Step>
   <Step title="Wait for the next call with the key">
     The notice goes away after the next call that includes the key. Reload a MainWP page to check.
