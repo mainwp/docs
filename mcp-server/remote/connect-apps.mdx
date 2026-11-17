@@ -368,13 +368,15 @@ Open WebUI is a multi-user web app that returns to its own HTTPS address after s
     Name: MainWP
     Type: MCP (Streamable HTTP)
     URL: https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp
-    Authentication: OAuth
+    Authentication: OAuth 2.1 (Static)
     Client ID: <client ID from Add a web app>
     Client secret: <secret shown when adding the web app>
     ```
+
+    Click **Register Client**, then **Save**. See [Open WebUI's static OAuth setup](https://docs.openwebui.com/features/extensibility/mcp/#oauth-21-static-setup).
   </Step>
   <Step title="Each user connects">
-    Each user signs in to the Dashboard from Open WebUI and approves their own connection. The consent screen names the app with the administrator who added it, for example "Open WebUI, added by Jane Admin on October 1, 2026. You'll return to chat.example.com."
+    Each user opens a chat, selects **+ > Tools**, enables the MainWP tool, and signs in to the Dashboard to approve their own connection. The consent screen names the app with the administrator who added it, for example "Open WebUI, added by Jane Admin on October 1, 2026. You'll return to chat.example.com."
   </Step>
 </Steps>
 

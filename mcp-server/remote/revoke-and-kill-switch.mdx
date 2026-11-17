@@ -18,7 +18,7 @@ You can end AI app connections at several levels, from one connection to the who
 | Stop remote connections and end them all | **Turn off and end every connection** | Administrators without Team Control limits |
 | Force the connector off without the panel, and restore it later | The `MAINWP_DISABLE_REMOTE_MCP` constant or the `mainwp_remote_mcp_force_disabled` filter | Whoever can edit `wp-config.php` or install a plugin |
 
-Every way of ending a connection also cancels its waiting approvals and its background jobs.
+Ending a connection cancels its waiting approvals and Dashboard-managed background jobs. Extension-managed work stops only if the extension checks that the connection is still authorized before each dispatch. See [Queued and Deferred Work](/mcp-server/remote/extension-developers#queued-and-deferred-work).
 
 ## Revoke one connection
 
@@ -92,7 +92,7 @@ Any return value other than `false` counts as off, so a filter that returns some
 - Tokens are refused before any lookup.
 - The panel shows "Remote AI connections are turned off on this site by the MAINWP_DISABLE_REMOTE_MCP setting in wp-config.php." or "Remote AI connections are turned off on this site by a plugin.", and **Turn on** is disabled. The self-test reports the same line.
 - Waiting approvals can't be decided and expire.
-- Background jobs are cancelled at their next step and don't resume.
+- Dashboard-managed background jobs are cancelled at their next step and do not resume. Extension-managed queues need the authorization check described above.
 - The `/.well-known/` addresses are left to WordPress and other plugins.
 
 ### What it doesn't do

@@ -61,14 +61,13 @@ A request the Dashboard can't match to any connection only shows up in the self-
 
 This `info` line always appears first.
 
-### PHP, WordPress and multisite
+### PHP and WordPress
 
 | Line | Fix |
 | --- | --- |
-| "Remote AI connections need PHP 8.1 or newer; this server runs" with your version | Ask your host to move the site to PHP 8.1 or newer. |
+| "Remote AI connections need PHP 8.1 or newer; this server runs" with your version | Use PHP 8.3 or newer, as required by MainWP Dashboard 6.5. |
 | "MainWP MCP and MainWP Control require WordPress 6.9 or later. Update WordPress on this Dashboard to set up a connection." This replaces the whole page, so the self-test can't run. | Update WordPress. |
 
-On a multisite network the connector doesn't load at all, so there's no panel and no self-test. Use a single-site install for the Dashboard.
 
 ### HTTPS site address
 
@@ -185,7 +184,7 @@ if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X
 ```
 
 <Warning>
-Add it only when every request reaches WordPress through that proxy, and the proxy always sets `X-Forwarded-Proto` itself. If visitors can reach the server directly, anyone can send that header. The Dashboard never reads it on its own for that reason.
+First confirm that credentials remain encrypted between the client, proxy, and origin. This block only tells WordPress how the request arrived; it does not encrypt an HTTP connection. Add it only when every request reaches WordPress through that trusted proxy, and the proxy always sets `X-Forwarded-Proto` itself. If visitors can reach the server directly, anyone can send that header. The Dashboard never reads it on its own for that reason.
 </Warning>
 
 ### The probe didn't reach WordPress
@@ -233,10 +232,11 @@ If you switch permalink modes later, the MCP address changes, and every app has 
 
 This section covers both nginx and Apache.
 
-On nginx, a rule that denies paths starting with a dot (often `location ~ /\.`) also blocks `/.well-known/…` and `/dashboard/.well-known/…`. For a Dashboard in a subdirectory, the self-test shows this rule, which was tested on nginx. Add it in the `server` block, before the `location` blocks, with your path in place of `/dashboard`:
+On nginx, a rule that denies paths starting with a dot (often `location ~ /\.`) also blocks `/.well-known/…` and `/dashboard/.well-known/…`. For a Dashboard in a subdirectory, use both rules below in the `server` block, before the `location` blocks, with your path in place of `/dashboard`. The first covers the root discovery form; the second covers the subdirectory form:
 
 ```nginx
 rewrite ^/\.well-known/(oauth-authorization-server|openid-configuration)/dashboard(/.*)?$ /dashboard/index.php last;
+rewrite ^/dashboard/\.well-known/(oauth-authorization-server|openid-configuration)(/.*)?$ /dashboard/index.php last;
 ```
 
 The self-test also shows the Apache form, labeled as untested, for the `.htaccess` file at the root of the domain:
