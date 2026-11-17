@@ -133,7 +133,7 @@ If the widget shows **Failed to create the primary monitor for this site**, open
 
 When Site Health Monitoring is enabled, the Monitoring page includes a **Site Health** column so you can review health state alongside uptime data.
 
-These indicators use the Site Health counts from the last synchronization. MainWP displays **Good** when its calculated score is at least 80 and there are no critical issues; otherwise, it displays **Should be improved**. To investigate, open **Tools > Site Health** (`site-health.php`) on the child site and synchronize again after refreshing its results.
+These indicators use the Site Health counts from the last synchronization. Your MainWP Dashboard displays **Good** when its calculated score is at least 80 and there are no critical issues; otherwise, it displays **Should be improved**. To investigate, open **Tools > Site Health** (`site-health.php`) on the child site and synchronize again after refreshing its results.
 
 ---
 
@@ -157,7 +157,7 @@ Uptime notifications are sent on important status changes, including when a site
 A down alert can arrive later than the moment a site goes offline. Several factors affect the timing:
 
 - **Monitor Interval:** The configured interval affects when the next scheduled check is due. An outage is detected when a check runs.
-- **Down Confirmation Check:** When enabled, MainWP can show **PENDING** while it retries a failed check. A down alert is queued after downtime is confirmed.
+- **Down Confirmation Check:** When enabled, your Dashboard can show **PENDING** while it retries a failed check. A down alert is queued after downtime is confirmed.
 - **WP Cron:** By default, WP Cron depends on requests to the Dashboard site. On a low-traffic Dashboard, both checks and scheduled emails can run late unless an external trigger runs cron regularly.
 - **Batched checks:** Each scheduled run checks a limited number of monitors, controlled by **Maximum simultaneous uptime monitoring requests**. With many monitors due, checks and confirmation retries can take several runs.
 - **Email processing:** Confirmed status changes are queued for a separate scheduled notification process. The email may be sent after the Monitoring table shows **DOWN**.

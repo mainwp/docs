@@ -43,7 +43,7 @@ To manage your hosting provider's backups, use [API Backups](/sites/backups/api-
 - Working WordPress cron on the Dashboard for schedules and background tasks
 - Storage credentials if you want copies outside the Dashboard
 
-For the full list of what MainWP checks on each machine, see [What a Site Needs Before a Backup Can Run](#what-a-site-needs-before-a-backup-can-run).
+For the full list of what your Dashboard checks on each machine, see [What a Site Needs Before a Backup Can Run](#what-a-site-needs-before-a-backup-can-run).
 
 Keep a separate backup of your MainWP Dashboard installation, including its database and backup encryption keys.
 
@@ -99,7 +99,7 @@ If you selected remote storage, wait for the upload to finish. See [Check Backup
 
 MainWP Dashboard needs a private directory on its own server to store downloaded backups and working files, even when you use remote storage. This is separate from the temporary backup files MainWP Child creates on each Child Site.
 
-MainWP attempts to create the directory automatically. If you see **Private backup directory is unavailable**, configure a writable private location on the **Dashboard server**:
+The Dashboard attempts to create the directory automatically. If you see **Private backup directory is unavailable**, configure a writable private location on the **Dashboard server**:
 
 1. Create a directory outside the Dashboard's WordPress and `wp-content` directories, in a location that no website serves over the web. Make it writable by the PHP process running your Dashboard.
 2. Back up your Dashboard's `wp-config.php`, then add or update `MAINWP_BACKUP_PRIVATE_DIR` before the line that loads `wp-settings.php`:
@@ -116,12 +116,12 @@ A folder outside one WordPress installation may still be publicly served by anot
 <Warning>
 **Confirm your private backup directory**
 
-If you see this notice in **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings**, MainWP could not verify that the Dashboard's backup directory is private. Backups that use this directory stop before writing files. This includes existing scheduled backups.
+If you see this notice in **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings**, your Dashboard could not verify that the Dashboard's backup directory is private. Backups that use this directory stop before writing files. This includes existing scheduled backups.
 
 Ask your host to verify that no domain or web server alias serves the directory shown. Once your host confirms it is private, click **Confirm private directory** and retry the backup. You only need to confirm that directory once. If your host cannot verify that it is private, set up a different private directory using the steps above.
 </Warning>
 
-If Backup Settings shows **Backup directory is publicly accessible** instead, the web server serves the directory. MainWP blocks backup writes to it, and the notice has no **Confirm private directory** button. Ask your host to block web access to the directory, or set up a different private directory using the steps above.
+If Backup Settings shows **Backup directory is publicly accessible** instead, the web server serves the directory. The Dashboard blocks backup writes to it, and the notice has no **Confirm private directory** button. Ask your host to block web access to the directory, or set up a different private directory using the steps above.
 
 If backups already exist and you change this setting, move the existing `sites/` folder into the new private backup directory so older backups remain visible and included in retention. See [Preserve Built-In Backup Files](/advanced/how-to-migrate-the-mainwp-dashboard#preserve-built-in-backup-files).
 
@@ -136,7 +136,7 @@ In MainWP Dashboard 6.4.2 and later, this list also appears under **Back Up Now*
 - [ ] MainWP Child is a version that supports Built-In Backups. If it is too old, the backup stops and asks you to update MainWP Child and sync the site.
 - [ ] The site is connected to the Dashboard. Disconnected and suspended sites cannot be backed up.
 - [ ] The web server can write to the MainWP backup folder in the site's uploads folder, usually `wp-content/uploads`. MainWP Child keeps its working files there.
-- [ ] The disk has room for the backup plus a reserve: a tenth of the disk, at least 100 MB and at most 1 GB. The Dashboard also will not start a backup when the site reports less than 50 MB free. Some hosts turn off the PHP functions that report disk space; MainWP then skips this check.
+- [ ] The disk has room for the backup plus a reserve: a tenth of the disk, at least 100 MB and at most 1 GB. The Dashboard also will not start a backup when the site reports less than 50 MB free. Some hosts turn off the PHP functions that report disk space; your Dashboard then skips this check.
 - [ ] For file backups, the `wp-content` and uploads folders are inside the WordPress folder. Hosts that move them, such as Pressable, WordPress.com, and Bedrock installs, can run database backups but not file backups yet.
 - [ ] For backups that include the database, the site uses one database server. Sites that spread the database across several servers with a `db.php` drop-in, such as HyperDB or LudicrousDB, can only run a **Files Only Backup**.
 
@@ -193,7 +193,7 @@ Set **Minimum retention (days)** on a destination to protect its copies from aut
 
 ### S3 Bucket Names with Dots
 
-By default, MainWP places the bucket name before the storage endpoint in the request hostname. If the bucket name contains a dot, such as `example.com`, HTTPS requests can fail with an SSL certificate hostname mismatch.
+By default, your Dashboard places the bucket name before the storage endpoint in the request hostname. If the bucket name contains a dot, such as `example.com`, HTTPS requests can fail with an SSL certificate hostname mismatch.
 
 For Amazon S3 or Wasabi buckets containing dots, enable **Path style addressing**. This places the bucket name in the URL path instead. Other S3-compatible services may have different addressing requirements; follow your provider's guidance.
 
@@ -216,7 +216,7 @@ For background, see [Amazon S3's dotted-bucket certificate limitation](https://d
 
 You can use one private Amazon S3 or Backblaze B2 bucket for multiple Child Sites connected to the same MainWP Dashboard. For B2, select **S3 Compatible Storage** and enter the bucket's S3-compatible endpoint.
 
-MainWP stores each site's snapshots under separate paths in the bucket. The Dashboard uploads the backups and keeps the storage credentials; it does not send those credentials to Child Sites. Sharing a destination does not give a Child Site permission to browse or download another site's backups.
+The Dashboard stores each site's snapshots under separate paths in the bucket. The Dashboard uploads the backups and keeps the storage credentials; it does not send those credentials to Child Sites. Sharing a destination does not give a Child Site permission to browse or download another site's backups.
 
 For eligible restores of unencrypted backups, the Dashboard can send the Child Site temporary download links for the required backup files. These links expire after one hour and grant access only to the specified files. Encrypted backups are downloaded and decrypted on the Dashboard before being transferred to the Child Site.
 
@@ -248,13 +248,13 @@ Open **MainWP menu (three lines, top right) > MainWP Settings > Backup Settings*
 
 ![Backup Settings with archive encryption enabled and fields for the current and new recovery passphrases.](/images/sites/built-in-backups/backup-encryption.jpg)
 
-MainWP encrypts new archives before uploading them. Existing snapshots remain unchanged. To change the recovery passphrase, enter the current and new passphrases. Leave the fields blank to keep the existing passphrase.
+The Dashboard encrypts new archives before uploading them. Existing snapshots remain unchanged. To change the recovery passphrase, enter the current and new passphrases. Leave the fields blank to keep the existing passphrase.
 
 <Warning>
 Keep the recovery passphrase and your Dashboard's encryption keys safe. The passphrase can recover a lost encryption key, but you still need backups of the Dashboard database and backup files.
 </Warning>
 
-S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside MainWP's archive encryption. To stop requesting provider-side encryption from MainWP, select **None** and click **Test Connection & Save**. Your bucket's own encryption settings still apply.
+S3 **Server-side encryption** encrypts the stored copy at the provider. You can use it alongside your Dashboard's archive encryption. To stop requesting provider-side encryption from MainWP, select **None** and click **Test Connection & Save**. Your bucket's own encryption settings still apply.
 
 ## Create a Scheduled Backup
 
@@ -297,9 +297,9 @@ Check the result for each site, then confirm the task's **Next Run**.
 | Files Only Backup | Site files without the database, subject to exclusions | Restores files while keeping the current database, when the Child Site supports files-only restore |
 | Incremental Backup | A full first backup, then changed files and a fresh database dump on each later run | Reconstructs the selected point in time using its backup chain |
 
-An incremental **chain** includes the initial full backup and the later incremental backups that depend on it. Keep the chain together so MainWP can restore the selected snapshot.
+An incremental **chain** includes the initial full backup and the later incremental backups that depend on it. Keep the chain together so your Dashboard can restore the selected snapshot.
 
-The first incremental task run is full even when started with **Run Now**. If a Child Site lacks incremental support, MainWP takes full backups and records a note on the task. Keep MainWP Child updated and sync the site after updating.
+The first incremental task run is full even when started with **Run Now**. If a Child Site lacks incremental support, your Dashboard takes full backups and records a note on the task. Keep MainWP Child updated and sync the site after updating.
 
 ### Database and Disk Usage
 
@@ -320,7 +320,7 @@ Retention removes backup files and their associated upload records, but keeps sn
 
 **Archive type** can use the site setting, the global setting, or an explicit format. The available formats are Zip, Tar, Tar GZip, and Tar BZip2.
 
-For large sites, use **Tar GZip**. MainWP can switch large Zip backups to Tar GZip unless **Keep Zip even when the site is large** is enabled.
+For large sites, use **Tar GZip**. The Dashboard can switch large Zip backups to Tar GZip unless **Keep Zip even when the site is large** is enabled.
 
 Review the exclusion switches for known backup locations, known cache locations, non-WordPress folders, and ZIP archives. In MainWP Child 6.4.2 and later, **Known backup locations** covers the standard backup folders for All-in-One WP Migration, UpdraftPlus, and Duplicator. Excluding old backup archives avoids repeatedly backing up earlier backups. Do not exclude files you expect to recover.
 
@@ -328,7 +328,7 @@ Enter **Custom excludes** as paths relative to the Child Site's WordPress direct
 
 ### Database Dumps and the Clone Folder
 
-The database portion of a backup contains a separate `.sql.php` file for each table. Each file starts with `<?php exit(); ?>`, followed by SQL. The `.php` extension allows a PHP-enabled web server to run this guard and stop before displaying the database contents if the file is requested over HTTP. MainWP reads this format automatically during a restore.
+The database portion of a backup contains a separate `.sql.php` file for each table. Each file starts with `<?php exit(); ?>`, followed by SQL. The `.php` extension allows a PHP-enabled web server to run this guard and stop before displaying the database contents if the file is requested over HTTP. The Dashboard reads this format automatically during a restore.
 
 In a full backup archive, the database dump files are placed under `wp-content`. This location is part of MainWP's archive format. There is no setting to move them to the archive root or another subfolder.
 
@@ -336,7 +336,7 @@ The `clone` folder contains `config.txt`, which holds metadata used by MainWP's 
 
 ### Performance on Larger Setups
 
-Backup work uses resources on both the Child Site's server and the MainWP Dashboard. The Child Site creates the database dump and archive. The Dashboard downloads and stores the backup, encrypts it when enabled, and uploads copies to the selected storage destinations. Remote storage still requires disk space and transfer bandwidth on the Dashboard.
+Backup work uses resources on both the Child Site's server and your MainWP Dashboard. The Child Site creates the database dump and archive. The Dashboard downloads and stores the backup, encrypts it when enabled, and uploads copies to the selected storage destinations. Remote storage still requires disk space and transfer bandwidth on the Dashboard.
 
 Completion times depend on database size, file count, archive size, server resources, and transfer speeds. Site count alone does not determine the resources your setup needs.
 
@@ -388,7 +388,7 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 | --- | --- |
 | Uploading / Waiting to Upload | The copy has not finished reaching its destination |
 | Partially Uploaded | Some configured remote copies completed, but others have not |
-| Retrying | A temporary upload error occurred. MainWP will try again in the background. |
+| Retrying | A temporary upload error occurred. The Dashboard will try again in the background. |
 | Upload Failed / Re-enter Credentials | Inspect the error and test or update the affected storage connection |
 | Offsite Verified | All remote uploads for this snapshot completed and passed verification |
 | Damaged Archive | A backup archive failed an integrity check. Review the reported error and create a new full backup. |
@@ -397,7 +397,7 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 
 ### Read Test Restore Results
 
-The **Test Restore** column shows the results of automatic checks on selected backups. MainWP tests them in a temporary environment on the Dashboard. Hover over the result for details, including the reason a test failed or could not run.
+The **Test Restore** column shows the results of automatic checks on selected backups. The Dashboard tests them in a temporary environment on the Dashboard. Hover over the result for details, including the reason a test failed or could not run.
 
 If **Couldn't test here** mentions database permissions, ask your hosting provider to let the Dashboard database account create and drop its own temporary `mainwp_tr_` databases and import and read the tables in them. Permissions on the Dashboard's existing database alone are insufficient. The same status can indicate an unsupported backup format or a missing server extension. Check the tooltip to distinguish these cases.
 
@@ -413,15 +413,15 @@ After you close the window, a message on **Snapshots & Restore** keeps the short
 
 | Label | What it means | What to do |
 | --- | --- | --- |
-| Backup could not start. | MainWP stopped before the backup began. For example, a restore is already running on the site, or Built-In Backups was turned off after the page loaded. | Read the full error, fix what it names, and click **Back Up Now** again. |
+| Backup could not start. | The Dashboard stopped before the backup began. For example, a restore is already running on the site, or Built-In Backups was turned off after the page loaded. | Read the full error, fix what it names, and click **Back Up Now** again. |
 | Backup failed. | The backup started but did not finish. | Read the full error. If it names a folder, see [Find Where a Folder Error Comes From](#find-where-a-folder-error-comes-from). |
 | Backup failed on the Dashboard server. | The Dashboard could not use its private backup folder. | See [Set Up the Private Backup Directory](#set-up-the-private-backup-directory). |
-| Could not cancel the backup. | MainWP could not stop the backup. | Read the full error, then reopen the progress window to see whether the backup is still running. Try **Cancel backup** again if it is. |
+| Could not cancel the backup. | The Dashboard could not stop the backup. | Read the full error, then reopen the progress window to see whether the backup is still running. Try **Cancel backup** again if it is. |
 | Full cleanup error | **Clean Up** could not finish removing leftover files. The banner shows the full reason with no **View details** link. | Fix the issue named in the banner and try **Clean Up** again. |
 
 ### Errors in Run Now
 
-When you click **Run Now** on **Manage Backups**, the progress window lists each site in the task. In MainWP Dashboard 6.4.2 and later, a site that fails shows its error in red under the site name. If MainWP received no details, the line reads **Backup task failed.** Screen readers announce the error when it first appears and again only if it changes.
+When you click **Run Now** on **Manage Backups**, the progress window lists each site in the task. In MainWP Dashboard 6.4.2 and later, a site that fails shows its error in red under the site name. If your Dashboard received no details, the line reads **Backup task failed.** Screen readers announce the error when it first appears and again only if it changes.
 
 ### Find Where a Folder Error Comes From
 
@@ -480,7 +480,7 @@ Each scheduled task has its own **Backup Retention** settings, applied separatel
 
 When task retention removes a backup, it removes the Dashboard's backup files. Enable **Remove cloud copies too** to include the corresponding remote copies in that cleanup. If it is off, the remote copies remain.
 
-Enable **Remove local archives after upload** to save disk space on the Dashboard after uploads finish. It applies to new backups created by the task, including runs started with **Run Now**, and leaves existing backup archives unchanged. MainWP keeps the file inventories needed for incremental backups. Snapshots whose archives are available only remotely show **Remote only** and can still be restored, but cannot be downloaded through the Dashboard. Normal task retention still applies.
+Enable **Remove local archives after upload** to save disk space on the Dashboard after uploads finish. It applies to new backups created by the task, including runs started with **Run Now**, and leaves existing backup archives unchanged. The Dashboard keeps the file inventories needed for incremental backups. Snapshots whose archives are available only remotely show **Remote only** and can still be restored, but cannot be downloaded through the Dashboard. Normal task retention still applies.
 
 Leave a retention limit blank or enter zero for no limit. Each enabled limit can make older backups eligible for removal. For example, **Keep last** set to seven can remove an older backup before a 30-day age limit is reached. For age-based cleanup alone, leave **Keep last** and **Storage cap (MB)** blank. The age limit is a cleanup threshold, not a guaranteed minimum storage period.
 
@@ -513,7 +513,7 @@ Use the Dashboard controls for cleanup. Do not delete individual incremental cha
 
 Open **Backups > Storage** (`/wp-admin/admin.php?page=ManageBackupsStorage`) and add or edit a destination. Set **Minimum retention (days)** to the minimum time its copies should remain before automatic cleanup can remove them. Set it to zero to disable this protection.
 
-The period starts when the upload is verified. For older backups without a recorded upload time, MainWP uses the snapshot's creation time. Task count, age, and storage limits do not override this minimum. A protected snapshot can also keep its incremental chain from being removed automatically.
+The period starts when the upload is verified. For older backups without a recorded upload time, your Dashboard uses the snapshot's creation time. Task count, age, and storage limits do not override this minimum. A protected snapshot can also keep its incremental chain from being removed automatically.
 
 Manual deletion can override the minimum. Review the confirmation before deleting a snapshot or its cloud copies.
 
@@ -525,7 +525,7 @@ You can restore a snapshot to its original Child Site. Connect the site and wait
 <Step title="Select the site and snapshot">
 Open **Backups > Snapshots & Restore** (`/wp-admin/admin.php?page=ManageBackupsSnapshots`). Select the site, check the snapshot date and type, and click **Restore**.
 
-MainWP can use an available local or completed remote copy. For incremental backups, the required chain must be available.
+The Dashboard can use an available local or completed remote copy. For incremental backups, the required chain must be available.
 </Step>
 
 <Step title="Review what will be replaced">
@@ -551,9 +551,9 @@ Wait for **Restore completed**, then click **Visit site**. Check key pages, sign
 
 ### How Files and Database Tables Are Restored
 
-MainWP restores the snapshot in place. It does not delete the entire site and database before restoring.
+MainWP Child restores the snapshot in place. It does not delete the entire site and database before restoring.
 
-**Files:** MainWP restores the backed-up files, then compares the site against a file inventory saved automatically with the backup. It removes files that are absent from that inventory within the backup's scope, with these exceptions:
+**Files:** MainWP Child restores the backed-up files, then compares the site against a file inventory saved automatically with the backup. It removes files that are absent from that inventory within the backup's scope, with these exceptions:
 
 - `wp-config.php` and `wp-content/object-cache.php`
 - MainWP Child and MainWP's data and backup directories
@@ -563,9 +563,9 @@ MainWP restores the snapshot in place. It does not delete the entire site and da
 
 Files-only restores also keep additional files in the uploads directory because the current database remains in use.
 
-If the backup's file inventory is unavailable or cannot be verified, MainWP skips the additional-file cleanup and displays a warning. Review restore warnings even when the restore completes.
+If the backup's file inventory is unavailable or cannot be verified, your Dashboard skips the additional-file cleanup and displays a warning. Review restore warnings even when the restore completes.
 
-**Database tables:** MainWP replaces restored tables with the backup's version instead of merging their contents with current rows. Existing tables that are absent from the backup are not automatically deleted.
+**Database tables:** MainWP Child replaces restored tables with the backup's version instead of merging their contents with current rows. Existing tables that are absent from the backup are not automatically deleted.
 
 <Warning>
 A built-in restore is not a complete site wipe or a guaranteed malware cleanup. Malicious files or database tables can remain in preserved or excluded areas.
@@ -575,7 +575,7 @@ A built-in restore is not a complete site wipe or a guaranteed malware cleanup. 
 
 **Cancel Restore** stops further processing but does not undo files already replaced. If a safety backup is available, use **Roll Back** to return to the site's state before the restore.
 
-In 6.4.2 and later, rollback can remove files introduced by the restore when they fall within the safety backup's scope and MainWP can verify its file inventory. Review any rollback warnings and check the site afterward.
+In 6.4.2 and later, rollback can remove files introduced by the restore when they fall within the safety backup's scope and your Dashboard can verify its file inventory. Review any rollback warnings and check the site afterward.
 
 If the restore finished on the Child Site but the Dashboard cannot reconnect, click **Stop Checking** to end the connection checks. This marks the restore as failed without rolling it back. Visit the site to check its state.
 

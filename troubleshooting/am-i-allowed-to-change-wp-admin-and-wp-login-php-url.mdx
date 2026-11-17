@@ -2,18 +2,18 @@
 title: Can I change wp-admin and wp-login.php URLs?
 sidebarTitle: "Custom Admin URLs"
 description: >-
-  MainWP supports custom wp-admin and wp-login.php URLs on child sites. Custom
+  Your MainWP Dashboard supports custom wp-admin and wp-login.php URLs on child sites. Custom
   wp-admin paths work automatically, while custom login URLs are supported on
   both Dashboard and child sites.
 ---
 
-MainWP is compatible with sites that use custom WordPress admin and login URLs. This is common when using security plugins that rename these paths to reduce brute force attacks.
+The Dashboard is compatible with sites that use custom WordPress admin and login URLs. This is common when using security plugins that rename these paths to reduce brute force attacks.
 
 ## What You'll Learn
 
-- Whether MainWP supports custom admin URLs
+- Whether your Dashboard supports custom admin URLs
 - Which changes are safe on child sites vs. Dashboard
-- How MainWP handles custom paths automatically
+- How your Dashboard handles custom paths automatically
 
 ## Prerequisites
 
@@ -24,11 +24,11 @@ MainWP is compatible with sites that use custom WordPress admin and login URLs. 
 
 ## Custom wp-admin Path
 
-MainWP supports customized `/wp-admin/` paths on child sites.
+The Dashboard supports customized `/wp-admin/` paths on child sites.
 
 ### How It Works
 
-When connecting to a child site, MainWP attempts to reach `http://url.com/wp-admin/admin-ajax.php`. If that fails, it automatically retries with `http://url.com`. This fallback mechanism allows MainWP to work with most custom wp-admin configurations.
+When connecting to a child site, your Dashboard attempts to reach `http://url.com/wp-admin/admin-ajax.php`. If that fails, it automatically retries with `http://url.com`. This fallback mechanism allows MainWP to work with most custom wp-admin configurations.
 
 ### Compatibility Summary
 
@@ -45,7 +45,7 @@ Do not change the wp-admin path on your MainWP Dashboard site. This can cause va
 
 ## Custom wp-login.php URL
 
-MainWP supports renamed `wp-login.php` URLs on both child sites and your Dashboard.
+The Dashboard supports renamed `wp-login.php` URLs on both child sites and your Dashboard.
 
 ### Compatibility Summary
 

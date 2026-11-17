@@ -364,7 +364,7 @@ After clicking the Update button, the boilerplate page will be removed from the 
 
 ## Database Health Check
 
-Boilerplate 5.1 and later report their two token tables and their expected columns to the MainWP Dashboard database schema checks. The `mainwp_boilerplate_token` table stores your default and custom token definitions. The `mainwp_boilerplate_site_token` table stores the token values you set for each Child Site. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_boilerplate` to find both tables and check for a missing table, missing columns, or incorrect column definitions.
+Boilerplate 5.1 and later report their two token tables and their expected columns to your Dashboard's database schema checks. The `mainwp_boilerplate_token` table stores your default and custom token definitions. The `mainwp_boilerplate_site_token` table stores the token values you set for each Child Site. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_boilerplate` to find both tables and check for a missing table, missing columns, or incorrect column definitions.
 
 Run this check when tokens or token values fail to save or load, or when MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for how to read the results and prepare a support report. These checks only report the Dashboard database structure. They do not repair the tables, restore token values, or check Child Site databases.
 

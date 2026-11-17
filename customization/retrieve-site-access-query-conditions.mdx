@@ -9,7 +9,7 @@ MainWP Dashboard 6.4 adds `mainwp_get_sql_where_allow_access_sites`. Call this f
 
 ## Retrieve the Conditions
 
-Run the code after MainWP has initialized its hooks:
+Run the code after your MainWP Dashboard has initialized its hooks:
 
 ```php
 $where = apply_filters( 'mainwp_get_sql_where_allow_access_sites', '', 'wp' );
@@ -19,11 +19,11 @@ The third argument is the table alias used for the MainWP sites table in your qu
 
 | Argument | Type | Description |
 | --- | --- | --- |
-| Initial value | string | Pass an empty string; MainWP's callback does not use this value |
+| Initial value | string | Pass an empty string; your Dashboard's callback does not use this value |
 | Table alias | string | Alias for the sites table; defaults to `wp` |
 | Return value | string | SQL conditions beginning with `AND`, suitable after an existing `WHERE` condition |
 
-The returned conditions use MainWP's existing site-access query logic and exclude staging sites. The result depends on the current execution context.
+The returned conditions use your Dashboard's existing site-access query logic and exclude staging sites. The result depends on the current execution context.
 
 ## Preserve Permission Checks
 

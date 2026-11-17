@@ -2,7 +2,7 @@
 title: MainWP Introduction
 description: >-
   Learn what MainWP is and how it works. MainWP is a free, open-source,
-  self-hosted WordPress management solution using the MainWP Dashboard
+  self-hosted WordPress management solution using your MainWP Dashboard
   and Child plugins with signed requests and HTTPS for secure communication.
 ---
 
@@ -33,7 +33,7 @@ The Child plugin enables secure communication between your Dashboard and managed
 
 ### Request Signing and Encryption
 
-MainWP Dashboard creates a 2048-bit RSA key pair for each child site and signs requests with that site's private key. MainWP Child verifies the signatures using the public key saved during connection. New connections have their private keys encrypted automatically. For connections created before version 5.3, complete the [private-key encryption steps](/advanced/openssl-keys-encryption) if you have not already done so.
+Your MainWP Dashboard creates a 2048-bit RSA key pair for each child site and signs requests with that site's private key. MainWP Child verifies the signatures using the public key saved during connection. New connections have their private keys encrypted automatically. For connections created before version 5.3, complete the [private-key encryption steps](/advanced/openssl-keys-encryption) if you have not already done so.
 
 OpenSSL is the default signing library and uses SHA-256 by default. PHPSecLib is an alternative you select in the global or per-site [connection settings](/advanced/custom-signature-algorithm-and-phpseclib-as-alternative-to-openssl).
 
@@ -43,13 +43,13 @@ To disconnect a child site, you need access to that site's WordPress admin crede
 
 ### Privacy Philosophy
 
-Since MainWP operates entirely on your server with open-source, unencrypted code, you can audit the complete codebase via [GitHub](https://github.com/mainwp/mainwp). We do not track or keep any information about your child sites.
+Since your Dashboard operates entirely on your server with open-source, unencrypted code, you can audit the complete codebase via [GitHub](https://github.com/mainwp/mainwp). We do not track or keep any information about your child sites.
 
 ## How it Works
 
 ### Communication Protocol
 
-MainWP communicates with your child sites using:
+The Dashboard communicates with your child sites using:
 
 - **Ports**: 80 (HTTP) and 443 (HTTPS)
 - **Request signing**: OpenSSL by default, or PHPSecLib when selected

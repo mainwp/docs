@@ -21,7 +21,7 @@ When you push changes between a live site and its staging copy (or vice versa), 
 
 ## Why This Happens
 
-MainWP uses digital signatures to authenticate requests from MainWP Dashboard. When a child site connects to your Dashboard:
+Digital signatures authenticate requests from your MainWP Dashboard. When a child site connects to your Dashboard:
 
 1. MainWP Dashboard generates a unique public/private key pair for the site
 2. This key is stored in the child site's database as `mainwp_child_pubkey` (in the `wp_options` table)

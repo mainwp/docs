@@ -6,7 +6,7 @@ description: >-
   affecting plugin installation and update detection.
 ---
 
-Some hosting environments have restricted access to WordPress.org resources. This affects the ability to install plugins and themes or retrieve update information through standard WordPress APIs. While MainWP itself continues to function normally, child sites in affected environments may experience limitations when managing updates through your Dashboard.
+Some hosting environments have restricted access to WordPress.org resources. This affects the ability to install plugins and themes or retrieve update information through standard WordPress APIs. While your MainWP Dashboard itself continues to function normally, child sites in affected environments may experience limitations when managing updates through your Dashboard.
 
 ## What You'll Learn
 
@@ -36,7 +36,7 @@ When you try to install plugins or themes from WordPress.org through MainWP on a
 
 ### Update Detection
 
-Affected child sites cannot retrieve update information from WordPress.org. MainWP relies on each child site to report available updates. If a site cannot check WordPress.org, MainWP won't show pending updates for that site's WordPress.org plugins and themes.
+Affected child sites cannot retrieve update information from WordPress.org. The Dashboard relies on each child site to report available updates. If a site cannot check WordPress.org, your Dashboard won't show pending updates for that site's WordPress.org plugins and themes.
 
 ### Common Error Messages
 
@@ -110,7 +110,7 @@ If update detection is affected:
 - Keep local copies of essential plugin ZIP files
 - Use the Favorites extension to maintain a deployment library
 
-MainWP's self-hosted architecture means your Dashboard and child sites communicate directly without routing through MainWP servers. The restriction affects only the connection between your sites and WordPress.org.
+Your self-hosted Dashboard and child sites communicate directly without routing through MainWP servers. The restriction affects only the connection between your sites and WordPress.org.
 
 ---
 

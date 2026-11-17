@@ -17,7 +17,7 @@ description: >-
 
 Knowledge gives connected AI assistants a saved briefing for your work. Keep your agency's standards, a client's preferences, a site's constraints, and the results of earlier work in your MainWP Dashboard so you do not have to explain them in every conversation.
 
-You manage the records in the MainWP Dashboard. Assistants connected through the [MainWP MCP Server](/mcp-server/overview) can read them and, when permitted, propose and save new records for your review.
+You manage the records in your MainWP Dashboard. Assistants connected through the [MainWP MCP Server](/mcp-server/overview) can read them and, when permitted, propose and save new records for your review.
 
 ## What You'll Learn
 
@@ -158,7 +158,7 @@ The assistant receives these rules for combining verified Context and applicable
 Only a person using the Dashboard can set or clear Required, or edit or delete a Required record. Managing Required also requires unrestricted access to the Dashboard's sites. An AI assistant cannot change these records through the Knowledge tools.
 
 <Warning>
-Required is guidance for the assistant. It does not override your instructions, MCP policy, permissions, or confirmation gates. A Knowledge rule that holds an update back guides the assistant's recommendations and actions; it does not change MainWP's scheduled or manual updates.
+Required is guidance for the assistant. It does not override your instructions, MCP policy, permissions, or confirmation gates. A Knowledge rule that holds an update back guides the assistant's recommendations and actions; it does not change your Dashboard's scheduled or manual updates.
 </Warning>
 
 ## Review AI-Submitted Knowledge
@@ -235,7 +235,7 @@ Different AI clients decide how to use this guidance. Check the assistant's resp
 
 ### Knowledge Tools
 
-MainWP exposes seven Knowledge abilities through MCP. Tool availability depends on your Dashboard version, account permissions, and MCP tool filters.
+The Dashboard exposes seven Knowledge abilities through MCP. Tool availability depends on your Dashboard version, account permissions, and MCP tool filters.
 
 | MCP tool | Purpose |
 | --- | --- |
@@ -253,7 +253,7 @@ AI tools cannot verify records, set Required, or change a record's level during 
 
 ## Permissions, Storage, and Record Lifecycle
 
-Knowledge is stored in your MainWP Dashboard's database. Connected assistants read it through the tools and account access you provide. MainWP does not provide a Knowledge export in this release.
+Knowledge is stored in your MainWP Dashboard's database. Connected assistants read it through the tools and account access you provide. The Dashboard does not provide a Knowledge export in this release.
 
 Dashboard and API access require the WordPress `manage_options` capability. Team Control rights and site restrictions further determine which records an account can read or change:
 

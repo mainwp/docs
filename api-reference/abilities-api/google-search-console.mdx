@@ -17,7 +17,7 @@ MainWP Google Search Console 6.3 registers ten abilities in the `mainwp-google-s
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
 - Google Search Console 6.3 or later, active on MainWP Dashboard
 - An authenticated WordPress user with `manage_options` and access to the Google Search Console Add-on
@@ -354,7 +354,7 @@ The result contains `properties_added`, `properties_updated`, `properties_remove
 
 Ability errors use the `mainwp_google_search_console_` prefix. Authentication and access errors require an authorized user. A 409 `confirmation_required` error means neither `dry_run` nor `confirm` was true; a 400 `invalid_input` error can mean both were true. See [True and False Inputs](#true-and-false-inputs). For a stale revision, read the current resource and review the intended change again. For credential or provider authorization failures, repair the connection through the Add-on before requesting another refresh.
 
-A successful request to queue work is not proof that Google data was refreshed. Poll the returned job, inspect its terminal result, then read the updated mapping, catalog, or observation. If a job remains queued, check that WordPress cron is running on the MainWP Dashboard site.
+A successful request to queue work is not proof that Google data was refreshed. Poll the returned job, inspect its terminal result, then read the updated mapping, catalog, or observation. If a job remains queued, check that WordPress cron is running on your MainWP Dashboard site.
 
 ## Related Resources
 

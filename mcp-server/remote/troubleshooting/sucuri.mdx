@@ -31,7 +31,7 @@ With plain permalinks, the MCP address is `/?rest_route=/mainwp-remote/v1/mcp`.
 
 If you applied the plugin's hardening rules, check that they don't block `/.well-known/` paths or the `Authorization` header. The self-test lines for [the well-known addresses](/mcp-server/remote/troubleshooting#requests-for-the-well-known-addresses) and [the Authorization header](/mcp-server/remote/troubleshooting#authorization-header) show whether they do.
 
-Keep the firewall on. MainWP still enforces its own sign-in, permission, and approval checks. Limit exceptions to the requests actually blocked.
+Keep the firewall on. Your MainWP Dashboard still enforces its own sign-in, permission, and approval checks. Limit exceptions to the requests actually blocked.
 
 If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
 
