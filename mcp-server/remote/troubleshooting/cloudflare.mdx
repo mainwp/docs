@@ -1,0 +1,51 @@
+---
+title: Remote AI Connections Behind Cloudflare
+sidebarTitle: "Cloudflare"
+description: >-
+  Cloudflare SSL modes, bot protection, caching and timeouts that affect AI apps connecting to a MainWP Dashboard.
+---
+
+The Dashboard links here when your own admin requests carry Cloudflare's `CF-Ray` header, which means the site is proxied through Cloudflare. AI apps reach your Dashboard through Cloudflare too, so Cloudflare's settings decide whether their requests arrive.
+
+## Start with the checks
+
+In **MainWP > AI > MainWP MCP > Connect directly**, click **Run the self-test**, then **Check from the internet**. The self-test only sees your server; the check from the internet goes through Cloudflare like a real app. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line.
+
+## SSL/TLS encryption mode
+
+If the self-test reports "Requests reach WordPress as http://; see the reverse proxy guide.", Cloudflare is probably connecting to your server over plain HTTP. That happens in the **Flexible** encryption mode.
+
+Set the encryption mode to **Full (strict)** in Cloudflare's SSL/TLS settings and install a valid origin certificate, such as a Cloudflare Origin CA certificate or a public one. Confirm that Cloudflare connects to the origin over HTTPS before enabling remote connections. A WordPress HTTPS override does not encrypt that connection. [Flexible mode sends origin traffic over HTTP](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/), including credentials.
+
+## Bot protection and challenges
+
+AI apps can't solve a challenge page, so a challenge blocks them where your browser gets through. If the check from the internet reports "Something in front of WordPress blocks the well-known address: an error page, a server error or a challenge page." or "The MCP address didn't answer with a sign-in request (HTTP 401).", look at these settings:
+
+- **Bot Fight Mode** or **Super Bot Fight Mode**
+- **Security Level**, especially **I'm Under Attack** mode
+- WAF custom rules or managed rules that challenge or block requests
+
+Cloudflare's security events log shows which rule acted on the request. Create a WAF custom rule that skips the challenge for these paths:
+
+```text
+/.well-known/oauth-authorization-server
+/.well-known/openid-configuration
+/wp-json/mainwp-remote/
+/mainwp-oauth/
+```
+
+With plain permalinks, also match the query forms: `rest_route` pointing into `/mainwp-remote/`, and requests with a `mainwp_oauth` parameter. For example, the MCP address is `/?rest_route=/mainwp-remote/v1/mcp`. Include the Dashboard subdirectory in path rules if it is not installed at the domain root.
+
+Cloudflare documents that Bot Fight Mode can't be skipped with a WAF rule. If it blocks the app, turn Bot Fight Mode off for the zone, or use a plan that offers Super Bot Fight Mode with skip rules.
+
+Keep the skip as narrow as these paths. MainWP still enforces its own sign-in, permission, and approval checks.
+
+## Caching
+
+The Dashboard marks remote AI responses as not cacheable. If a **Cache Everything** or cache-eligibility rule applies, add a cache-bypass rule for the paths above and their query forms. Cover requests whose query has `rest_route` pointing into `/mainwp-remote/`, plus requests with a `mainwp_oauth` parameter. Put the bypass after any matching cache-eligibility rules: [the last matching cache setting wins](https://developers.cloudflare.com/cache/how-to/cache-rules/order/).
+
+## Timeouts
+
+Cloudflare's default [Proxy Read Timeout](https://developers.cloudflare.com/fundamentals/reference/connection-limits/) is 125 seconds. The Dashboard runs approved actions over more than 10 sites as background jobs, so most calls finish well within that limit. A single call to a slow child site can still take longer. If an app reports a timeout on a single call, check the server's load, PHP time limits and the child site it was working on.
+
+If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
