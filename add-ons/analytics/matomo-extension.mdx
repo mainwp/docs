@@ -15,7 +15,7 @@ thirdPartyPlugin: Matomo
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2.1"
+  data-version="5.2.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-matomo-piwik-extension/"
   data-integrates-with="Matomo"
@@ -103,6 +103,8 @@ If MainWP reports that the saved connection cannot be verified or needs credenti
 
 Matomo 5.2 always verifies TLS certificates. The old `mainwp_piwik_sslVerifyCertificate` option no longer disables verification. Use a valid certificate and resolve certificate or trust-chain errors on the Matomo server before retrying the connection.
 
+Matomo Integration 5.2.2 and later send Matomo API requests over HTTP/1.1. Earlier versions could fail to connect to Matomo servers that reject HTTP/1.0, including some Matomo Cloud setups. If the connection fails on an earlier version, update to 5.2.2 or later, then retry the connection.
+
 ## Assign Matomo Properties to Sites
 
 <Steps>
@@ -142,6 +144,8 @@ Open **MainWP > Add-ons > Matomo > Settings** and check any migration notices. L
 If you use the [Team Control Add-on](/add-ons/agency/team-control-extension), users need access to the Matomo Add-on to view or change **Matomo account property** when editing a site. Users without that permission cannot manage the mapping.
 
 To grant access, enable the Matomo extension permission when editing the role in **MainWP > Add-ons > Agency > Team Control**. Matomo abilities also enforce the Add-on permission and the selected site's access and edit permissions.
+
+In Matomo Integration 5.2.2 and later, Matomo widgets show cached analytics only for sites the user has permission to view.
 
 Client Reports and Pro Reports have a separate read path. Report requests can read the six summary values below without the Matomo extension capability. Site access, Team Control restrictions, edit rights, a connected MainWP site, and a current Matomo assignment still apply. This access does not grant permission to change the connection or site mappings.
 
