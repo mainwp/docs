@@ -115,6 +115,7 @@ The web server answers `/.well-known/oauth-authorization-server` and `/.well-kno
 The rule for a Dashboard at the root of its domain is:
 
 ```apache
+RewriteEngine On
 RewriteRule ^\.well-known/(oauth-authorization-server|openid-configuration)$ /index.php [L]
 ```
 
@@ -242,6 +243,7 @@ rewrite ^/dashboard/\.well-known/(oauth-authorization-server|openid-configuratio
 The self-test also shows the Apache form, labeled as untested, for the `.htaccess` file at the root of the domain:
 
 ```apache
+RewriteEngine On
 RewriteRule ^\.well-known/(oauth-authorization-server|openid-configuration)/dashboard(/.*)?$ /dashboard/index.php [L]
 ```
 

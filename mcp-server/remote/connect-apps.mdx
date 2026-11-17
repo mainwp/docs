@@ -30,7 +30,7 @@ Jan and LM Studio can also use a connection token.
 
 **Fixed client IDs.** Cursor and Gemini CLI use the client IDs `mainwp-cursor` and `mainwp-gemini-cli`, which their configurations below already contain. Each has a switch under **Which apps can connect** in the panel, on by default. The panel and the consent screen name Cursor as "Cursor, or another program using Cursor's settings" and Gemini CLI as "Gemini CLI, or another program on your computer using Gemini CLI's settings", because any program can use those client IDs.
 
-**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (`127.0.0.1`, `[::1]` or `localhost`). This needs **Let apps on your own computer connect** switched on under **Which apps can connect**; it is on by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning the switch off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
+**Apps on your computer.** Apps that run on your machine can register with the Dashboard on their own, as long as their callback address is on that computer (a loopback callback). This needs **Let apps on your own computer connect** switched on under **Which apps can connect**; it is on by default. Registered apps appear under **Apps on this computer**, marked **name not checked**, because any program can choose its own name. Their consent screen says the same. Turning the switch off stops new registrations. Apps that already registered keep working until you **Remove** them under **Apps on this computer**.
 
 **Signing in.** After you add the configuration, the app opens your Dashboard in a browser. Sign in if WordPress asks, review the consent screen, and click **Approve**. See [what the consent screen shows](/mcp-server/remote/overview#what-you-see-when-an-app-connects).
 
@@ -79,14 +79,14 @@ Authentication: OAuth
 
 <Steps>
   <Step title="Add the connector">
-    In ChatGPT's connector settings, create a connector for **MainWP** with the MCP address as its URL and **OAuth** as the authentication.
+    In ChatGPT, open **Plugins**, select **+ > Add custom MCP server**, and enter **MainWP** with the MCP address and **OAuth** authentication. Review the server's risk warning before creating the plugin. Your account and workspace must allow custom MCP servers; follow [OpenAI's current setup and workspace-permission instructions](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt).
   </Step>
   <Step title="Connect">
     ChatGPT opens your Dashboard's consent screen, which names the app **ChatGPT (chatgpt.com)**. Approve it.
   </Step>
 </Steps>
 
-Which ChatGPT plans allow connectors that make changes is ChatGPT's decision; check your plan if write tools don't appear.
+Custom MCP availability and write tools depend on your ChatGPT plan and workspace policies. The current Plugins flow does not require Developer Mode; older interfaces may differ. Check OpenAI's linked instructions if the setup controls are missing.
 
 ChatGPT keeps its own copy of the tool list. The Dashboard always lists the write tools, even on a view-only connection, so they are in that copy when you later allow changes. If you change which tools are switched on in the panel, refresh the connector in ChatGPT so its copy matches.
 
@@ -106,7 +106,7 @@ For [Dashboard-tier actions](/mcp-server/remote/approval-policies#the-approval-p
 
 ### VS Code
 
-Add this to your MCP configuration file, either `.vscode/mcp.json` in a workspace or your user configuration:
+Add this to your MCP configuration file, either the workspace MCP configuration or your user configuration:
 
 ```json
 {
@@ -123,7 +123,7 @@ Start the server from VS Code. VS Code asks you to sign in and opens the consent
 
 ### Codex CLI
 
-Add this to `~/.codex/config.toml`:
+Add this to Codex's `config.toml` MCP configuration:
 
 ```toml
 [mcp_servers.mainwp]
@@ -165,7 +165,7 @@ Goose opens the consent screen when it starts the extension. Goose picks a new c
 
 ### Cursor
 
-Add this to `~/.cursor/mcp.json`:
+Add this to Cursor's `mcp.json` configuration:
 
 ```json
 {
@@ -180,11 +180,11 @@ Add this to `~/.cursor/mcp.json`:
 }
 ```
 
-Then connect the **mainwp** server from Cursor's MCP settings. The `mainwp-cursor` client ID works with Cursor's desktop callback, `http://localhost:8787/callback`, and with its cloud agents' callback. It needs the Cursor switch (`mainwp-cursor`) on under **Which apps can connect**.
+Then connect the **mainwp** server from Cursor's MCP settings. The `mainwp-cursor` client ID works with Cursor's desktop and cloud-agent callbacks. It needs the Cursor switch (`mainwp-cursor`) on under **Which apps can connect**.
 
 ### Gemini CLI
 
-Add this to `~/.gemini/settings.json`:
+Add this to Gemini CLI's `settings.json` configuration:
 
 ```json
 {
@@ -200,7 +200,7 @@ Add this to `~/.gemini/settings.json`:
 }
 ```
 
-Then run `/mcp auth mainwp` in Gemini CLI. The client ID accepts callbacks of the form `http://localhost:<port>/oauth/callback` and needs the Gemini CLI switch (`mainwp-gemini-cli`) on under **Which apps can connect**.
+Then run `/mcp auth mainwp` in Gemini CLI. The client ID accepts Gemini CLI's loopback OAuth callbacks and needs the Gemini CLI switch (`mainwp-gemini-cli`) on under **Which apps can connect**.
 
 ### Qwen Code
 
@@ -271,6 +271,7 @@ Add this MCP server in Jan:
 {
     "mcpServers": {
         "mainwp": {
+            "type": "http",
             "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp"
         }
     }
@@ -283,6 +284,7 @@ Jan registers itself as an app on your computer, then opens the consent screen. 
 {
     "mcpServers": {
         "mainwp": {
+            "type": "http",
             "url": "https://your-dashboard.com/wp-json/mainwp-remote/v1/mcp",
             "headers": {
                 "Authorization": "Bearer mwpct_..."
