@@ -8,7 +8,7 @@ Use these ten abilities to prepare reusable content for a client site and manage
 
 ## Access and setup
 
-Activate Boilerplate on a MainWP Dashboard with Abilities API support. The Dashboard must provide the MainWP ability permission utilities. Confirm the update is installed by listing the abilities:
+Activate Boilerplate 5.1 or later on a MainWP Dashboard with WordPress 6.9 or later and Abilities API support. The `input_json` examples require MainWP Dashboard 6.2 or later. The Dashboard must provide the MainWP ability permission utilities. Confirm the update is installed by listing the abilities:
 
 ```bash
 curl --user 'USERNAME:APPLICATION_PASSWORD' \
@@ -36,7 +36,7 @@ curl --request DELETE --user 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-boilerplate-site-post-v1/run'
 ```
 
-IDs accept positive integers or canonical decimal strings such as `17` or `"17"`. Zero, leading zeros, fractions, trailing whitespace and overflowing IDs are refused. Pagination defaults to page 1 with 25 items and allows at most 100 items per page. Query-string pagination also accepts canonical decimal strings. All input objects reject extra properties. Token text limits are measured in bytes at runtime, so multibyte text may reach a limit before the schema’s character count.
+IDs accept positive integers or canonical decimal strings such as `17` or `"17"`. Zero, leading zeros, fractions, trailing whitespace and overflowing IDs are refused. Pagination defaults to page 1 with 25 items and allows at most 100 items per page. Query-string pagination also accepts canonical decimal strings. All input objects reject extra properties. Token text limits are measured in bytes at runtime, so multibyte text may reach a limit before the schema's character count.
 
 ## List token definitions
 
@@ -99,7 +99,7 @@ Response:
 
 Repeat freely. This reads Dashboard data and changes nothing.
 
-## Read one site’s token values
+## Read one site's token values
 
 **Ability:** `mainwp/get-site-boilerplate-token-values-v1`  
 **Method:** GET  
@@ -162,7 +162,7 @@ Response:
 
 Repeat freely. The source is dashboard_stored for a saved override, built_in_site for the site name or URL default, or empty when no value is available.
 
-## Set one site’s token values
+## Set one site's token values
 
 **Ability:** `mainwp/set-site-boilerplate-token-values-v1`  
 **Method:** POST  
@@ -508,7 +508,7 @@ Repeat freely. deployment_mode is create when no mapping exists, or update when 
 **Method:** GET  
 **Who may use it:** Authority for this exact site, as described above.
 
-Read the Dashboard’s stored relationship between a template and one Child post. This does not ask the Child whether the post still exists.
+Read the Dashboard's stored relationship between a template and one Child post. This does not ask the Child whether the post still exists.
 
 ### Inputs
 
@@ -623,5 +623,5 @@ Only an exact Child `SUCCESS` response permits mapping removal. A failed or unce
 | `mainwp_boilerplate_conflict` | The requested state no longer matches current data, or a lock/mapping check could not establish a safe write. Read the current state before submitting another change. |
 | `mainwp_boilerplate_content_too_large` | A content read or preview exceeds its output limits. Existing mapped Child posts can still be deleted. |
 
-Invalid input, missing objects, denied permissions and unavailable storage also return errors. Fix the reported cause rather than treating a failed call as an empty result. The legacy “Yes, Proceed!” action uses the same confirmed deletion rule and retains its existing success/failure response format.
+Invalid input, missing objects, denied permissions and unavailable storage also return errors. Fix the reported cause rather than treating a failed call as an empty result. The legacy "Yes, Proceed!" action uses the same confirmed deletion rule and retains its existing success/failure response format.
 
