@@ -2,10 +2,11 @@
 title: Privacy & Data Handling
 description: >-
   MainWP stable releases include no telemetry or phone-home functionality. Your
-  Dashboard operates independently on your server with no data sent to MainWP.
+  Dashboard sends data to MainWP only for features you use, such as the MainWP
+  Assistant or add-on license checks.
 ---
 
-MainWP stable releases include no telemetry or phone-home functionality. Your Dashboard operates independently on your own server, and no data is transmitted to MainWP.
+MainWP stable releases include no telemetry or phone-home functionality. Your Dashboard runs independently on your own server. It sends data to MainWP only for features you use, such as the MainWP Assistant and add-on license checks, each described below.
 
 ## Free Plugins: Zero Data Collection
 
@@ -18,12 +19,14 @@ MainWP includes an optional permissions area under **MainWP Tools** called **Pri
 You can open it from:
 - Three-line **MainWP menu** in the top-right corner > **MainWP Tools**
 
-The following options are disabled by default and can be enabled or disabled at any time:
+You can enable or disable these options at any time:
 - **Usetiful (Interactive Guides & Tips)** (BETA)
-- **Chatbase (AI-Powered Chat Support)** (BETA)
+- **MainWP Assistant (AI-Powered Chat Support)** (BETA)
 - **Youtube Embeds (Video Tutorials)**
 
-These features are implemented using third-party JavaScript/services and are subject to their respective privacy policies.
+Usetiful and YouTube embeds are off by default. They are implemented using third-party JavaScript/services and are subject to their respective privacy policies.
+
+MainWP Assistant is on for new installs, but it sends nothing until an administrator accepts its privacy notice. After that, Docs mode sends your questions to the MainWP documentation service, and Sites mode sends your requests to the AI provider you connect. See [What the Assistant Sends and Where](/dashboard/mainwp-assistant/settings-and-privacy#what-the-assistant-sends-and-where).
 
 ## Add-on License Verification
 
