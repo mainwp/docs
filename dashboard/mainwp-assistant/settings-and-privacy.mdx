@@ -7,7 +7,7 @@ description: >-
   turn the Assistant on or off, and review usage in Insights.
 ---
 
-The **Assistant Settings** page controls how the Assistant connects to AI, what it may do on your sites, and how long conversations are kept.
+The **Assistant Settings** page controls how the Assistant connects to your ChatGPT plan or an API provider, what it may do on your sites, and how long conversations are kept.
 
 ## What You'll Learn
 
@@ -23,7 +23,7 @@ The **Assistant Settings** page controls how the Assistant connects to AI, what 
 ## Prerequisites
 
 - A WordPress administrator account
-- The **Access MainWP Settings** permission if you use [Team Control](/add-ons/agency/team-control-extension). Accounts without it see only the **History & Privacy** tab.
+- The **Access MainWP Settings** permission if you use [Team Control](/add-ons/agency/team-control-extension). Accounts without it can connect their own ChatGPT plan and manage their own history; Dashboard-wide API-key settings still require that permission.
 
 ## Open Assistant Settings
 
@@ -33,13 +33,23 @@ The page has three tabs:
 
 | Tab | Applies to | Use it to |
 |---|---|---|
-| **AI Connection** | The whole Dashboard | Connect an AI provider for Sites mode and set a preferred model |
+| **AI Connection** | Your ChatGPT connection; Dashboard-wide API-key settings | Connect your plan or an API provider for Sites mode, and choose a model |
 | **AI Access Policies** | Your account, plus Dashboard-wide consent, availability, and spend limits | Choose what Sites mode may do, protect tagged sites, and set limits |
 | **History & Privacy** | Your account | Set how long your conversations are kept, export them, or delete them |
 
 ## Connect an AI Provider
 
-Sites mode uses the AI providers configured in WordPress on your Dashboard site, with your own API key and provider account. Docs mode doesn't need this.
+Sites mode can use your own ChatGPT plan or an AI provider API key. It needs WordPress 7.0 or later. Docs mode does not need an AI connection.
+
+### Connect Your ChatGPT Plan
+
+Under **Use your ChatGPT plan**, click **Continue with ChatGPT**. Sign in in the new tab and approve MainWP. The tab then ends on an error page such as "This site can't be reached"; this is expected for this connection flow. Copy the full address from that tab, paste it into **Paste the address from the error page** on your MainWP Dashboard, and click **Finish connecting**. Paste it only into your own Dashboard because it contains temporary sign-in credentials.
+
+Each Dashboard user connects their own account. When connected, the card shows **Using ChatGPT plan**. Use **Model** to choose from your account's available models, **Manage usage** to review usage, or **Disconnect** to stop using the plan.
+
+While your plan is connected, your Sites requests use it rather than a saved API key. Disconnect the plan to use an API key yourself. Other Dashboard users without a connected plan use the configured API provider. If the plan needs reconnection or is turned off for MainWP, reconnect or explicitly disconnect it before switching to an API key; MainWP does not silently fall back.
+
+### Use an API Key
 
 Open **Assistant Settings > AI Connection**. The tab shows:
 
@@ -47,14 +57,12 @@ Open **Assistant Settings > AI Connection**. The tab shows:
 - **AI Client**: **Available** when WordPress can send AI requests. **Disabled on this site** means AI features are turned off in WordPress. **Requires WordPress 7.0 or newer** means the site needs an update.
 - **Sites mode**: **Ready. Found a configured AI provider.** or a message that no provider was found.
 
-![AI Connection tab showing WordPress version, AI Client status, Sites mode status, the Connect free AI option, and Manage AI Connectors](/images/dashboard/mainwp-assistant-ai-connection.jpg)
-
 ### Option 1: Connect a Free Google Gemini Key
 
 If no provider is set up, the **Google Gemini** row offers **Connect free AI**. It stores a Google AI Studio key for you and picks a free-tier model.
 
 <Warning>
-Google may use free-tier requests, including human review, to improve its products. Paid keys and users in the EEA, UK, and Switzerland are excluded. Don't send anything through a free-tier key that you wouldn't want reviewed.
+Google may use unpaid-service requests, including human review, to improve its products. Review [Google's current data-use terms](https://ai.google.dev/gemini-api/terms) before connecting a key, including the regional and paid-service conditions. Do not include confidential information in requests that may be reviewed.
 </Warning>
 
 <Steps>
@@ -80,7 +88,7 @@ Click **Manage AI Connectors** to open **Settings > Connectors** in WP Admin. In
 
 ### Preferred Model
 
-Under **Model Preference**, **Preferred model** is optional. Enter a model ID, such as `gpt-5-mini`, and click **Save**. The Assistant asks for that model first and falls back to any available model. Leave it empty to let WordPress choose.
+For API-key connections, **Model Preference > Preferred model** is optional. A connected ChatGPT plan uses the **Model** selector on its own card instead. Enter a model ID, such as `gpt-5-mini`, and click **Save**. The Assistant asks for that model first and falls back to any available model. Leave it empty to let WordPress choose.
 
 ## Access Mode and Confirmations
 
@@ -111,7 +119,7 @@ Select tags under **Protected tags**. Sites with these tags need an extra confir
 
 ## Spend Limits
 
-Sites mode costs depend on your AI provider's prices. The Assistant estimates spend from token counts and published provider prices; your provider's bill may differ. Both limits are on **AI Access Policies** and need administrator access.
+Sites mode costs depend on your AI provider's prices. The Assistant estimates spend from token counts and published provider prices; your provider's bill may differ. Both limits are on **AI Access Policies** and need administrator access. MainWP records ChatGPT plan requests without an API dollar charge; review and limit that usage in ChatGPT. These dollar estimates do not measure your plan allowance.
 
 | Setting | Default | What it does |
 |---|---|---|
@@ -129,10 +137,10 @@ The **Enable Assistant Features** dialog lists these points before anyone can ch
 | Your Dashboard | Your conversations | Unless you turn off conversation history. They are kept for the number of days you set. |
 | MainWP documentation service | Your question, your Dashboard's address, the MainWP page you have open, and a summary of your Assistant access settings | Each time you ask in Docs mode. On first use, the Dashboard also registers its address with the service. |
 | MainWP documentation service | Your rating | When you click **Helpful answer** or **Unhelpful answer** |
-| Your AI provider | Your requests and the results of the MainWP actions the Assistant runs | Each time you ask in Sites mode. The provider handles them under its own terms. |
+| Your connected ChatGPT account or API provider | Your requests and the results of the MainWP actions the Assistant runs | Each time you ask in Sites mode. The provider handles them under its own terms. |
 | MainWP Support | Your email address, note, recent conversation, and version numbers | Only when you click **Send** on the support form. See [What Is Sent](/dashboard/mainwp-assistant/contact-support#what-is-sent). |
 
-The Assistant doesn't send your stored site credentials.
+The Assistant does not automatically attach stored site credentials. Review what you type or paste into a conversation before sending it.
 
 Guided tours and video tutorials use their own external services when those options are turned on. See [Privacy & Data Handling](/getting-started/are-you-guys-watching-what-i-am-doing).
 

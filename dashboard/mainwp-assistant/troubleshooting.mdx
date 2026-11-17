@@ -40,10 +40,10 @@ Consent was withdrawn. An administrator can click **Enable Assistant Features** 
 ## Sites Mode and AI Provider Messages
 
 **"Sites mode needs an AI provider with a working API key. Add or check one in Settings > Connectors, then try again."**
-**"No AI connection configured. Add a provider API key under Settings > Connectors."**
-**"No AI connection is configured, so Sites mode cannot answer. Add a provider API key under Settings > Connectors."**
+**"No AI connection is configured."**
+**"No AI connection is configured, so Sites mode cannot answer."**
 
-Sites mode has no provider it can use. Connect one on **Assistant Settings > AI Connection**, either with **Connect free AI** or under **Manage AI Connectors**. See [Connect an AI Provider](/dashboard/mainwp-assistant/settings-and-privacy#connect-an-ai-provider). Docs mode keeps working while you set this up.
+Sites mode has no connection it can use. Open **Assistant Settings > AI Connection** and choose **Continue with ChatGPT** for your own plan, or connect an API key with **Connect free AI** or **Manage AI Connectors**. See [Connect an AI Provider](/dashboard/mainwp-assistant/settings-and-privacy#connect-an-ai-provider). Docs mode keeps working while you set this up.
 
 **"Answered from MainWP docs. Sites mode needs an AI connection with a provider API key under Settings > Connectors."**
 You sent a request in Sites mode, but no provider was available, so Docs answered instead and the panel switched back to Docs. Connect a provider, then select **Sites** again.
@@ -63,6 +63,15 @@ You reached a limit on Google's free tier. Wait, or switch to a paid key.
 **"Could not reach your AI provider. Check the connection and try again."** or **"Your AI provider is having trouble right now. Please try again in a moment."**
 The provider didn't answer. Try again later. Docs mode isn't affected.
 
+### ChatGPT Plan Messages
+
+- **"Connect your ChatGPT account again to use your plan."** Open **AI Connection** and reconnect.
+- **"You've reached your ChatGPT plan limit for MainWP."** Use **Manage usage** on the connection card to review the plan limit.
+- **"This ChatGPT account can't use its plan in other apps."** The account is not eligible for this connection. Use an eligible account or disconnect the plan and configure an API key.
+- **"ChatGPT is not available right now. Try again in a few minutes."** Retry later.
+
+A failed plan connection does not silently switch your requests to a paid API key.
+
 ## Limits
 
 **"This dashboard reached its daily AI spend limit, so Sites mode requests are blocked until tomorrow."**
@@ -72,7 +81,7 @@ The Dashboard's estimated Sites mode spend for today reached the **Daily AI spen
 Your own estimated Sites mode spend for today reached the **Per-user daily AI spend limit (USD)**. Other users aren't affected. Wait until tomorrow, or ask an administrator to raise the limit. See [Spend Limits](/dashboard/mainwp-assistant/settings-and-privacy#spend-limits).
 
 **"The AI spend total could not be read, so Sites mode requests are blocked while a daily spend limit is set."**
-The Dashboard couldn't read today's spend, so it can't check the limit. Reload the page and try again. If the message stays, set both spend limits to `0` under [Spend Limits](/dashboard/mainwp-assistant/settings-and-privacy#spend-limits) to use Sites mode without a limit, and contact MainWP Support.
+The Dashboard could not read today's spend, so it cannot enforce the limit. Reload the page and try again. If the message stays, contact MainWP Support to check the Dashboard database and spend accounting. Changing a limit does not repair the accounting problem.
 
 **"This dashboard reached its monthly documentation usage limit. Please try again later."**
 Docs mode has a monthly usage limit for each Dashboard. Try again later.
@@ -93,7 +102,7 @@ Try again later. Check that your Dashboard site can make outgoing HTTPS requests
 
 **"This dashboard is not registered with the MainWP documentation service yet. Please try again in a few minutes."**
 **"The MainWP documentation service rejected this dashboard's credentials. Please try again in a few minutes."**
-The Dashboard registers on its own when you ask a question, and tries again when the service rejects it, so wait a few minutes and ask again. If the message keeps coming back, an administrator can register the Dashboard again: on **Assistant Settings > AI Access Policies**, click **Disable Assistant Features**, confirm, then click **Enable Assistant Features**. The Assistant is off for everyone between those two clicks.
+The Dashboard registers when you ask a question and retries after rejected credentials. Wait briefly and ask again. If the message persists, contact MainWP Support before resetting Dashboard-wide consent. If a consent reset is needed, an administrator can retry registration: on **Assistant Settings > AI Access Policies**, click **Disable Assistant Features**, confirm, then click **Enable Assistant Features**. The Assistant is off for everyone between those two clicks.
 
 ## Blocked Actions
 
