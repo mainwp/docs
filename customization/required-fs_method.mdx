@@ -2,11 +2,11 @@
 title: How to Set FS_METHOD Properly
 sidebarTitle: "FS_METHOD Setting"
 description: >-
-  MainWP requires the Filesystem Method to be set to direct on Child Sites for
+  MainWP Child requires the Filesystem Method to be set to direct on Child Sites for
   updates to work properly. Add the FS_METHOD constant to wp-config.php.
 ---
 
-WordPress supports multiple filesystem access methods for installing and updating plugins and themes. MainWP requires the "direct" method to function properly on child sites.
+WordPress supports multiple filesystem access methods for installing and updating plugins and themes. MainWP Child requires the "direct" method to function properly on child sites.
 
 ## What You'll Learn
 
@@ -27,7 +27,7 @@ WordPress can access the filesystem through several methods:
 | **ftpext** | Uses PHP's FTP extension |
 | **ftpsockets** | Uses FTP via sockets |
 
-MainWP needs direct filesystem access to perform updates, install plugins/themes, and manage files efficiently. When WordPress uses FTP or SSH methods, MainWP operations may timeout or fail.
+MainWP Child needs direct filesystem access to perform updates, install plugins/themes, and manage files efficiently. When WordPress uses FTP or SSH methods, these operations may timeout or fail.
 
 ---
 

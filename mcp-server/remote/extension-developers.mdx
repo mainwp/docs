@@ -152,7 +152,7 @@ if ( isset( $item['remote_grant_id'] ) ) {
 
 The filter also returns `null` while the Dashboard runs your preview, and for work queued from the Dashboard's own screens, the REST API or cron. That work needs no check. Treat a missing function as inactive: the item was queued under a remote connection, and the Dashboard can no longer confirm it.
 
-Don't hand remote work to MainWP's core batch queue. If your ability answers with a core batch job, the call fails with "The Dashboard queued this work to run later instead of running it now, so this call can't report its result."
+Don't hand remote work to your Dashboard's core batch queue. If your ability answers with a core batch job, the call fails with "The Dashboard queued this work to run later instead of running it now, so this call can't report its result."
 
 ## Credential fields
 

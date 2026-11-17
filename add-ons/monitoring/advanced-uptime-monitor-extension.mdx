@@ -44,7 +44,7 @@ addonType: integration
   allowFullScreen
 ></iframe>
 
-The MainWP Advanced Uptime Monitor Integration allows you to monitor your websites' uptime by integrating with uptime monitoring services through their APIs. This add-on enables you to create, edit, display, start, pause, or delete your monitors directly from the MainWP Dashboard.
+The MainWP Advanced Uptime Monitor Integration allows you to monitor your websites' uptime by integrating with uptime monitoring services through their APIs. This add-on enables you to create, edit, display, start, pause, or delete your monitors directly from your MainWP Dashboard.
 
 The integration currently supports these uptime monitoring services:
 
@@ -271,7 +271,7 @@ The integration validates the API key when you click **Save Settings**. If Uptim
 
 The integration connects to the Uptime Robot REST API v3 and detects the permission level of your API key:
 
-- A key with **write access** allows all monitor actions from the MainWP Dashboard.
+- A key with **write access** allows all monitor actions from your MainWP Dashboard.
 - A **read-only** key lets you view monitors and uptime statistics only. The Settings tab shows a **Connected — read-only** notice, and the Create New Monitor, Edit, Delete, Start/Pause, and bulk action controls are disabled.
 - If Uptime Robot rejects the key entirely, the Settings tab shows **Authentication failed — the API key must be replaced**. Create a new API key in your Uptime Robot account and save it in the Settings tab.
 
@@ -365,7 +365,7 @@ To get the Better Uptime API token:
 
 The upcoming Abilities-enabled release adds seven MainWP abilities for listing cached monitors and events, reading live uptime summaries, creating monitors, pausing or resuming them, deleting monitors, and synchronizing provider inventory. Supported providers are UptimeRobot, Site24x7, NodePing, and Better Stack.
 
-Use WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an Advanced Uptime Monitor build that registers the `mainwp-advanced-uptime-monitor` category. Site permissions and Team Control restrictions apply. Inventory synchronization requires unrestricted administrator access, and deletion and synchronization support previews and require explicit confirmation before changes. The abilities require `manage_options`, so Team Control staff roles without that capability cannot use them yet.
+Use WordPress 6.9 or later on your MainWP Dashboard site, MainWP Dashboard with Abilities API support, and an Advanced Uptime Monitor build that registers the `mainwp-advanced-uptime-monitor` category. Site permissions and Team Control restrictions apply. Inventory synchronization requires unrestricted administrator access, and deletion and synchronization support previews and require explicit confirmation before changes. The abilities require `manage_options`, so Team Control staff roles without that capability cannot use them yet.
 
 See [Advanced Uptime Monitor Abilities](/api-reference/abilities-api/advanced-uptime-monitor) for discovery, authentication, request examples, cached-versus-live results, provider limits, and error handling. These calls are available only after updating to the Abilities-enabled release.
 

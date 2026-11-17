@@ -18,7 +18,7 @@ If your server calls MainWP Dashboard's cron scripts by web address, for example
 
 ## Which cron jobs need the key
 
-The key applies to the scripts in the MainWP Dashboard `cron` folder, such as `updatescheck.php`, when they are called over HTTP:
+The key applies to the scripts in your MainWP Dashboard `cron` folder, such as `updatescheck.php`, when they are called over HTTP:
 
 ```bash
 curl -fsS 'https://example.com/wp-content/plugins/mainwp/cron/updatescheck.php?key=YOUR-CRON-KEY' > /dev/null 2>&1
@@ -64,9 +64,9 @@ When a cron script is called by web address without a key, administrators see a 
 - The URL with the key for the script that was called
 - A **Copy** button for that URL
 
-You can't dismiss the notice. It clears after a call that includes the key, and it comes back whenever a call without the key arrives, even if a keyed call cleared it before. MainWP doesn't send an email about this, so check your Dashboard after you update.
+You can't dismiss the notice. It clears after a call that includes the key, and it comes back whenever a call without the key arrives, even if a keyed call cleared it before. The Dashboard doesn't send an email about this, so check your Dashboard after you update.
 
-MainWP also writes a warning to its log, at most once per hour for each script. The log entry names the script but never includes the key.
+The Dashboard also writes a warning to its log, at most once per hour for each script. The log entry names the script but never includes the key.
 
 ### If the notice keeps coming back
 
@@ -133,7 +133,7 @@ If the key comes from `MAINWP_CRON_SECRET`, the **Rotate key** button isn't show
 
 ## Self-Check Checklist
 
-- [ ] Every HTTP cron job for the MainWP Dashboard `cron` folder includes `?key=`
+- [ ] Every HTTP cron job for your MainWP Dashboard `cron` folder includes `?key=`
 - [ ] The **Update your cron job URL** notice is gone
 - [ ] After a rotation, every HTTP cron job uses the new key
 - [ ] Command-line cron jobs are unchanged

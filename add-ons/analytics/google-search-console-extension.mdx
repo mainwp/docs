@@ -73,8 +73,8 @@ The MainWP Google Search Console Add‑on brings your Google Search Console (GSC
 **Requirements**
 
 -   PHP 8.3 or higher on the Dashboard server when using MainWP Dashboard 6.4 (see [System Requirements](/advanced/miscellaneous/mainwp-system-requirements))
--   PHP **BCMath** extension enabled on the MainWP Dashboard (used by the report generator)
--   The default WordPress REST API endpoint (`/wp-json/`) on the MainWP Dashboard must be reachable. The **Sign in with Google** OAuth flow uses it to pair with the add-on.
+-   PHP **BCMath** extension enabled on your MainWP Dashboard (used by the report generator)
+-   The default WordPress REST API endpoint (`/wp-json/`) on your MainWP Dashboard must be reachable. The **Sign in with Google** OAuth flow uses it to pair with the add-on.
 -   Your sites must be verified in **Google Search Console**
 -   For JSON Import: Google Search Console API
 
@@ -207,7 +207,7 @@ Go to **MainWP > Add-ons > Analytics > Google Search Console** and use these tab
 - **Save Settings**: Apply the reporting period and refresh settings. Changes can invalidate cached reports so they can be regenerated with the new settings.
 - **Refresh Data**: Request an on-demand refresh. Check the reported outcome; a failed request does not mean fresh data was stored.
 
-Scheduled refreshes skip overlapping runs. The last successful scheduled refresh time advances only when at least one refresh succeeds; it does not mean every site's data was refreshed. Automatic refreshes also depend on the MainWP Dashboard's configured cron system running.
+Scheduled refreshes skip overlapping runs. The last successful scheduled refresh time advances only when at least one refresh succeeds; it does not mean every site's data was refreshed. Automatic refreshes also depend on your MainWP Dashboard's configured cron system running.
 
 ## MainWP MCP and Abilities API
 
@@ -249,7 +249,7 @@ If you see either of these messages:
 
 > MainWP Google Search Console could not add its encryption key to wp-config.php.
 
-The add-on could not safely write its encryption key to the MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
+The add-on could not safely write its encryption key to your MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
 
 Add the key manually:
 
@@ -304,7 +304,7 @@ If Google Analytics shows a similar warning, follow the instructions in the [Goo
 
 **"Your server does not have the PHP BCMath extension enabled"**
 
-- The MainWP Google Search Console add-on requires the PHP **BCMath** extension on the MainWP Dashboard server to run the background processes used for Pro Reports.
+- The MainWP Google Search Console add-on requires the PHP **BCMath** extension on your MainWP Dashboard server to run the background processes used for Pro Reports.
 - Ask your host to enable the `bcmath` PHP extension. After it is enabled, refresh the add-on page and the notice will clear.
 
 **No data available**

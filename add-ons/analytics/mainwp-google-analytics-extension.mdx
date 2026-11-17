@@ -197,7 +197,7 @@ If automatic fetching is disabled, visiting MainWP Dashboard pages does not refr
 
 The Abilities-enabled Google Analytics build registers nine abilities in the `mainwp-google-analytics` category. Use them to read connections and cached properties, manage site mappings and refresh settings, read cached aggregate analytics, and request background refreshes.
 
-The abilities require WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Google Analytics build that registers them. Authenticate with a WordPress Application Password. Add-on and site permissions still apply. Mapping changes, refresh-policy changes, and refresh requests require a preview token before confirmation.
+The abilities require WordPress 6.9 or later on your MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Google Analytics build that registers them. Authenticate with a WordPress Application Password. Add-on and site permissions still apply. Mapping changes, refresh-policy changes, and refresh requests require a preview token before confirmation.
 
 See [Google Analytics Abilities](/api-reference/abilities-api/google-analytics) for discovery, permissions, request examples, response fields, and retry handling. Read abilities return stored Dashboard data; request and track a refresh when you need new data from Google.
 
@@ -209,7 +209,7 @@ If you see this message:
 
 > MainWP Google Analytics could not add its encryption key to wp-config.php.
 
-The add-on could not safely write its encryption key to the MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
+The add-on could not safely write its encryption key to your MainWP Dashboard site's `wp-config.php` file. This is separate from the Google Service Account JSON key. File mode `0644` does not always allow the update: only the file owner has write access, so the update fails when PHP runs as a different user. File or directory ownership and other server security controls can also prevent a safe update.
 
 Before generating a key, check whether this Dashboard previously used `MAINWP_GA_ENCRYPTION_KEY`. If it did, restore the original definition from your secure configuration backup. A new key cannot decrypt credentials saved with the previous key. Follow [Recover an existing encryption key](#recover-an-existing-encryption-key) if the notice says saved Google credentials cannot be read.
 
@@ -302,7 +302,7 @@ This can happen on low-traffic MainWP Dashboard sites, cached sites, or hosting 
 To keep OAuth accounts connected:
 
 1. Update the MainWP Google Analytics Extension to the latest version.
-2. Make sure scheduled tasks are running on the MainWP Dashboard site.
+2. Make sure scheduled tasks are running on your MainWP Dashboard site.
 3. Make sure WP-Cron is triggered reliably every 5 to 15 minutes.
 
 The simplest fix is to keep WP-Cron enabled and trigger it directly. If you can add one server cron job, use:
@@ -317,7 +317,7 @@ If you cannot configure a server cron job, configure your uptime monitor to ping
 https://yourdashboard.com/wp-cron.php?doing_wp_cron
 ```
 
-Advanced users can disable WP-Cron and configure individual cron jobs manually, but that is usually not necessary for this issue. See [Disable WP-Cron](/customization/disable-wp-cron) only if you intentionally manage MainWP schedules through server-side cron jobs.
+Advanced users can disable WP-Cron and configure individual cron jobs manually, but that is usually not necessary for this issue. See [Disable WP-Cron](/customization/disable-wp-cron) only if you intentionally manage your Dashboard schedules through server-side cron jobs.
 
 After cron is running reliably, reconnect any affected accounts once from **MainWP > Add-ons > Google Analytics > Manage Accounts** using **Reconnect Account**, then click **Refresh Data** and generate a test Pro Report.
 

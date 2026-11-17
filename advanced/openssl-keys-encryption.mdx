@@ -6,7 +6,7 @@ description: >-
   database, strengthening security for Dashboard-to-Child Site communication.
 ---
 
-MainWP Dashboard version 5.3 introduced encryption for private keys stored in your database. MainWP Dashboard uses these private keys to sign requests to connected child sites. Encryption at rest helps protect the signing keys if the database is exposed without the separate key files.
+MainWP Dashboard version 5.3 introduced encryption for private keys stored in your database. Your MainWP Dashboard uses these private keys to sign requests to connected child sites. Encryption at rest helps protect the signing keys if the database is exposed without the separate key files.
 
 <Frame>
   <img src="/images/miscellaneous/advanced-openssl-keys-encryption.mdx-f67248.png" alt="Shows the UI of MainWP Dashboard and the prompt to encrypt Keys after updating to v5.3" />
@@ -67,7 +67,7 @@ Click **Encrypt Keys Now** when the notification reappears.
 
 Private keys sign requests sent from MainWP Dashboard. Corresponding public keys on child sites verify the authenticity of those requests. Encryption at rest helps protect these private keys if someone obtains a copy of the database without the corresponding key files.
 
-MainWP uses AES-256-CBC to encrypt site private keys. Third-party API keys use a separate AES-GCM workflow described in [API Key Storage](/advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data).
+The Dashboard uses AES-256-CBC to encrypt site private keys. Third-party API keys use a separate AES-GCM workflow described in [API Key Storage](/advanced/security/how-mainwp-stores-3rd-party-api-keys-and-other-sensitive-data).
 
 ---
 

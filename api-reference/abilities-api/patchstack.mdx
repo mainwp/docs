@@ -18,7 +18,7 @@ Use these abilities when an AI assistant, script, or other tool needs Patchstack
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - Patchstack 6.2 or later, active in MainWP Dashboard and [connected to your Patchstack account](/add-ons/security/patchstack-extension#connect-your-patchstack-account)
 - An authenticated user with `manage_options` and access to the Patchstack Add-on
@@ -53,7 +53,7 @@ All inputs reject extra properties.
 
 Site-specific abilities require `site_id`, a positive MainWP site ID such as `1`. Integer strings such as `"1"` are also accepted. Domains and URLs are not accepted.
 
-Times are returned as UTC strings in `YYYY-MM-DDTHH:MM:SSZ` format. A time is `null` when MainWP has no saved value.
+Times are returned as UTC strings in `YYYY-MM-DDTHH:MM:SSZ` format. A time is `null` when your Dashboard has no saved value.
 
 <Note>
 These abilities return the data from the last Patchstack sync. To get newer data, click **Sync Patchstack Data** or **Sync API Data** in **MainWP > Sites > Security > Patchstack Integration**, or wait for the scheduled sync. Then read the ability again.

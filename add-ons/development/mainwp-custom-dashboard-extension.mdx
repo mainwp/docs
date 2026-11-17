@@ -68,7 +68,7 @@ Check out our Github repository where we keep example snippets that will help yo
 
 MainWP Custom Dashboard Extension saves your PHP, CSS, and JS snippets in WordPress options on your MainWP Dashboard site instead of requiring separate PHP, CSS, or JS files.
 CSS and JS snippets are added inline on MainWP admin pages, except Child site tabs. They do not load on other WordPress admin pages or the front end.
-Saved PHP snippets run during WordPress initialization using `eval()`. Their scope includes all WordPress requests on the MainWP Dashboard site, not just MainWP admin pages. Add conditions or hooks in your PHP code when it should run only in a specific context.
+Saved PHP snippets run during WordPress initialization using `eval()`. Their scope includes all WordPress requests on your MainWP Dashboard site, not just MainWP admin pages. Add conditions or hooks in your PHP code when it should run only in a specific context.
 
 MainWP Custom Dashboard Extension is used to apply custom code snippets to the MainWP Dashboard site ONLY!
 It doesn't apply code to child sites.
@@ -141,7 +141,7 @@ Version 5.2 adds four MainWP abilities to read snippet status without returning 
 
 Changes require the current snippet revision and explicit confirmation. Previews report the proposed effect without saving it. PHP previews check syntax; CSS and JavaScript previews do not lint or execute the supplied code.
 
-See [Custom Dashboard Abilities](/api-reference/abilities-api/custom-dashboard) for authentication, permissions, examples, and conflict handling. These abilities affect the MainWP Dashboard site only.
+See [Custom Dashboard Abilities](/api-reference/abilities-api/custom-dashboard) for authentication, permissions, examples, and conflict handling. These abilities affect your MainWP Dashboard site only.
 
 ---
 

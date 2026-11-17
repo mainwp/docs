@@ -6,28 +6,28 @@ description: >-
   creating posts through MainWP Dashboard, and what to check first.
 ---
 
-When you create a post through MainWP Dashboard, the child site does not receive raw image uploads inside the request. Instead, the child site downloads the image from the MainWP Dashboard site's media URL and saves it into its own Media Library.
+When you create a post through MainWP Dashboard, the child site does not receive raw image uploads inside the request. Instead, the child site downloads the image from your MainWP Dashboard site's media URL and saves it into its own Media Library.
 
-The same behavior applies to pages. Inline images are only localized when MainWP can match them to a normal MainWP Dashboard uploads URL.
+The same behavior applies to pages. Inline images are only localized when your Dashboard can match them to a normal MainWP Dashboard uploads URL.
 
 ## Common Symptoms
 
 - The post or page is created, but the featured image is missing on the child site
-- Inline images still point to the MainWP Dashboard domain
+- Inline images still point to your MainWP Dashboard domain
 - Inline images appear broken on the child site front end
 - One or more gallery or content images are missing after posting
 
 ## Why This Happens
 
-The child site server must be able to reach the MainWP Dashboard image URL directly. If that request is blocked, challenged, redirected unexpectedly, or saved under a non-standard URL, the image import can fail.
+The child site server must be able to reach your MainWP Dashboard image URL directly. If that request is blocked, challenged, redirected unexpectedly, or saved under a non-standard URL, the image import can fail.
 
 Common causes include:
 
-- Cloudflare WAF, Bot Fight Mode, rate limiting, or other security challenges on the MainWP Dashboard site
-- Firewall rules, Basic Auth, maintenance mode, IP restrictions, or staging protection on the MainWP Dashboard site
+- Cloudflare WAF, Bot Fight Mode, rate limiting, or other security challenges on your MainWP Dashboard site
+- Firewall rules, Basic Auth, maintenance mode, IP restrictions, or staging protection on your MainWP Dashboard site
 - CDN or image optimization services rewriting the image URL
 - Non-standard image markup or image URLs outside the normal uploads path
-- SSL, DNS, or general connectivity problems between the child site server and the MainWP Dashboard site
+- SSL, DNS, or general connectivity problems between the child site server and your MainWP Dashboard site
 - Child site uploads-directory or filesystem permission issues
 
 Cloudflare is a common real-world cause here. Proxying by itself is not necessarily the issue, but WAF or challenge rules can block the child site's server-to-server image request before the file is downloaded.
@@ -35,17 +35,17 @@ Cloudflare is a common real-world cause here. Proxying by itself is not necessar
 ## What Should Happen
 
 - Featured images should be downloaded into the child site's Media Library and set locally
-- Standard inline images from the MainWP Dashboard uploads directory should be copied locally and rewritten to the child site's media URL
-- If an image still points to the MainWP Dashboard domain after posting, the localization step did not complete
+- Standard inline images from your MainWP Dashboard uploads directory should be copied locally and rewritten to the child site's media URL
+- If an image still points to your MainWP Dashboard domain after posting, the localization step did not complete
 
 ## What to Check
 
 1. Open the post on the child site and inspect the image URL.
-2. Confirm whether the image `src` still points to the MainWP Dashboard domain.
+2. Confirm whether the image `src` still points to your MainWP Dashboard domain.
 3. Check the child site's **Media Library** to see whether the file was imported.
-4. Test the original image URL from the MainWP Dashboard site to make sure it is publicly reachable.
+4. Test the original image URL from your MainWP Dashboard site to make sure it is publicly reachable.
 5. If you use Cloudflare or another WAF, temporarily bypass protection for the uploads path or allowlist the child site server IP and test again.
-6. Retest with a standard JPG or PNG inserted from the MainWP Dashboard Media Library in a normal WordPress Image block.
+6. Retest with a standard JPG or PNG inserted from your MainWP Dashboard Media Library in a normal WordPress Image block.
 
 ## Related Resources
 

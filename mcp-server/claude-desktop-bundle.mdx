@@ -73,16 +73,16 @@ Claude Desktop can make WordPress site changes through MainWP when the required 
    Replace “Example Test Site” with your child site's name.
 
 4. Review the requested tool and its inputs. Click **Allow once** to permit that call. This allows one call; **Always allow** changes the tool's permission for future calls.
-5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If MainWP returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and MainWP's server confirmation are separate steps.
+5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If your MCP server returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and your MCP server's confirmation are separate steps.
 6. Ask Claude to check the result, then verify it on the child site.
 
 | Desktop tool permission | What happens |
 | --- | --- |
 | **Needs approval** | Claude asks before using that tool. **Allow once** permits the pending call. |
 | **Blocked** | Claude cannot call the tool. Change the permission before asking it to apply that operation. |
-| **Always allow** | Claude can call that tool without asking for Desktop approval each time. MainWP's server policies still apply. |
+| **Always allow** | Claude can call that tool without asking for Desktop approval each time. Your MCP server's policies still apply. |
 
-Desktop approval does not override MainWP's server settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep MainWP's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
+Desktop approval does not override your MCP server's settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep your MCP server's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
 
 For the Desktop bundle, put `safeMode`, `allowedTools`, `blockedTools`, and `requireUserConfirmation` in `~/.config/mainwp-mcp/settings.json`. The bundle's **Configure** form has only the three connection fields. Turn the extension off and on after changing the file; see the [configuration file instructions](/mcp-server/reference/configuration#configuration-file).
 

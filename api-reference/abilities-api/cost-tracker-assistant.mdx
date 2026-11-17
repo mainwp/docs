@@ -16,7 +16,7 @@ Cost Tracker Assistant registers two read-only abilities in the `mainwp-cost-tra
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support
 - A Cost Tracker Assistant release with Abilities support, active in MainWP Dashboard
 - An authenticated WordPress user with `manage_options` and access to the Cost Tracker Assistant Add-on
@@ -165,7 +165,7 @@ The response excludes notes, URLs, payment details, license keys, and assigned s
 | `mainwp_cost_tracker_assistant_invalid_input` | 400 | Remove unsupported properties and send `page` and `per_page` as positive integers within range |
 | `mainwp_permission_denied` | 403 | Check `manage_options` and access to the Cost Tracker Assistant Add-on |
 
-MainWP Dashboard can also return its own authentication errors, such as HTTP 401 for unauthenticated requests.
+Your MainWP Dashboard can also return its own authentication errors, such as HTTP 401 for unauthenticated requests.
 
 ## Related Resources
 

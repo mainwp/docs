@@ -23,7 +23,7 @@ The integration checks these additional rights, including during previews:
 | Restore | Access to both source and destination sites and mappings |
 | Read or manage an operation | The same WordPress user who requested it, with current access to its account and targets; account-level operations also require Manage Account |
 
-For site-specific provider calls, MainWP checks access to the mapped child site through `mainwp_check_current_user_can( 'site', <MainWP site ID> )`. Unknown or unmapped sites are refused. Restores require access to both the source and destination, even when a preview was accepted earlier.
+For site-specific provider calls, your Dashboard checks access to the mapped child site through `mainwp_check_current_user_can( 'site', <MainWP site ID> )`. Unknown or unmapped sites are refused. Restores require access to both the source and destination, even when a preview was accepted earlier.
 
 Permission checks run again before queued work contacts Pressable. A changed account, mapping, site identity, or permission can stop work that was previously accepted.
 
@@ -172,7 +172,7 @@ The stored receipt prevents a second connection change for the same request. Cur
 
 **Ability:** `mainwp/replace-pressable-site-mapping-v1` · **Method:** DELETE
 
-A mapping links one Pressable site to one MainWP child site. It changes MainWP's association, not the hosted content. Access is required to the existing and proposed MainWP targets. A child site cannot be assigned to two Pressable sites.
+A mapping links one Pressable site to one MainWP child site. It changes your Dashboard's association, not the hosted content. Access is required to the existing and proposed MainWP targets. A child site cannot be assigned to two Pressable sites.
 
 ```json
 {
@@ -349,9 +349,9 @@ Returns `operation_id`, `kind`, `status`, nullable `site_ref`, boolean `retryabl
 | `queued`, `running` | Work is waiting or in progress. |
 | `succeeded` | The worker verified its completion conditions. |
 | `failed` | Work stopped with an error; inspect `error_code`. |
-| `unknown` | MainWP cannot establish the provider outcome. |
+| `unknown` | The Dashboard cannot establish the provider outcome. |
 | `cancelling` | Cancellation was requested while work was running. |
-| `cancelled` | MainWP stopped its work; this does not roll back an action already sent to Pressable. |
+| `cancelled` | The Dashboard stopped its work; this does not roll back an action already sent to Pressable. |
 
 This repeatable read does not contact Pressable or advance the job. Poll with the requesting user while scheduled tasks run. A `retryable` flag is information about the stored failure, not permission to create another destructive request. Missing, another user's, or no-longer-authorized operations return not found.
 
