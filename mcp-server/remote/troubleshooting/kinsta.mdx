@@ -35,3 +35,5 @@ In **MainWP > AI > MainWP MCP > Connect directly**, click **Run the self-test**,
 - the time you ran the checks
 
 If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
+
+For plain permalinks, include requests whose `rest_route` points into `/mainwp-remote/` and requests with a `mainwp_oauth` parameter in any relevant challenge or cache exception. Keep the exception specific to these endpoints.

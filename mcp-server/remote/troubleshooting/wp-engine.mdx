@@ -45,3 +45,5 @@ With plain permalinks, the MCP address uses `?rest_route=/mainwp-remote/v1/mcp` 
 - the time you ran the checks, so support can find the requests in the server logs
 
 If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
+
+For plain permalinks, include requests whose `rest_route` points into `/mainwp-remote/` and requests with a `mainwp_oauth` parameter in any relevant challenge or cache exception. Keep the exception specific to these endpoints.

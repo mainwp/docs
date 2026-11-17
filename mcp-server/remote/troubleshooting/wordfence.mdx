@@ -35,6 +35,6 @@ Live Traffic shows whether the firewall blocked the request and which rule did i
 - **Rate limiting throttled the app.** An app can send many requests in a short time while it works. If Wordfence rate limiting blocked it, raise the limit or adjust the rule's action for these paths.
 - **A blocked IP or country.** Hosted apps such as Claude and ChatGPT connect from their providers' servers. A country or IP block can stop them even though your own browser gets through.
 
-Don't turn off Wordfence to make the connection work. Every request to these paths still needs a valid token from your Dashboard, so a narrow allowlist entry is enough.
+Don't turn off Wordfence to make the connection work. MainWP still enforces its own sign-in, permission, and approval checks. Limit the exception to the request actually blocked.
 
 If the connection still fails, the [local MCP server](/mcp-server/clients) only needs HTTPS access from your computer and works as a fallback.
