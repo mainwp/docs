@@ -271,6 +271,13 @@ When you click **Run Snippet**, the Console opens and shows the current process 
 
 The Console also shows progress counts, site-level status icons, returned output for **Return Info** snippets, and a **Stop Process** button for stopping queued or in-progress processing.
 
+The Console displays **Return Info** output as plain text. If your snippet returns HTML or `<script>` markup, the Console shows the markup as literal text instead of rendering or running it. To get readable results, return plain-text values from your snippet, as in this example:
+
+```php
+$count = wp_count_posts()->publish;
+echo 'Published posts: ' . $count;
+```
+
 ## Useful Code Snippets
 
 MainWP is not responsible for the code that you run on your sites. Use this tool with extreme care and at your own risk. It is recommended that you run any code on a test site before releasing it on live sites. In case you damage your site by using a bad code snippet, read [Remove a Code Snippet From a Broken Site](#remove-a-code-snippet-from-a-broken-site) to see how to fix it.
