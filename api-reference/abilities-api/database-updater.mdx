@@ -255,7 +255,7 @@ MainWP Dashboard records one dispatch receipt for each site, plugin, and target 
 - `request_ref` is for correlation only. A new `request_ref` does not allow a resend.
 - When a plugin reports a newer target database version, you can dispatch it independently.
 
-A daily scheduled task removes settled receipts after 30 days. Unconfirmed receipts do not expire automatically. After an `outcome_unknown` result, sync the site and check the plugin on the Child site before taking further action. If it is safe to retry, use [Clear Stuck Request](/add-ons/updates/mainwp-database-updater-extension#clear-a-stuck-update-request) before sending another dispatch. Changing `request_ref` alone does not clear the receipt.
+A daily scheduled task removes settled receipts after 30 days. Unconfirmed receipts do not expire automatically. After an `outcome_unknown` result, sync the site and check the plugin on the Child site before taking further action. If it is safe to retry, use [Clear Stuck Request](/add-ons/updates/mainwp-database-updater-extension#clear-a-stuck-update-request) before sending another dispatch. Clear Stuck Request becomes available only after the request's timeout and a one-minute safety margin have passed, about 20 hours by default. Changing `request_ref` alone does not clear the receipt.
 
 ---
 

@@ -2,103 +2,31 @@
 title: MainWP Dashboard Themes
 sidebarTitle: "Dashboard Themes"
 description: >-
-  Learn how MainWP Dashboard Light and Dark themes work, when quick switching
-  appears, and how to manage legacy or custom theme selection.
+  Set MainWP Dashboard to Light, Dark, or System appearance for your account,
+  or choose a custom theme from MainWP Tools.
 ---
 
-MainWP Dashboard themes control the appearance of your **MainWP Dashboard** interface only.
-They do not control WordPress themes on your Child Sites.
+Choose how MainWP Dashboard looks when you sign in. The setting is saved for your user account. To change a WordPress theme on a child site, see [Manage Themes](/sites/themes/managing-themes-with-mainwp).
 
-For Child Site themes, see [Manage Themes](/sites/themes/managing-themes-with-mainwp).
+## Choose Light, Dark, or System
 
-## What You'll Learn
+In MainWP Dashboard 6.4.2 and later, use the **Appearance** controls in the header:
 
-- When the header uses quick Light/Dark switching
-- When the header opens the theme selection modal
-- How to manage theme selection from MainWP Tools
-- How OS mode detection works in Quick Setup
-- Where custom theme files are stored
+| Option | Behavior |
+| --- | --- |
+| **System** (monitor) | Follows your device's light or dark preference and updates when it changes. |
+| **Light** (sun) | Keeps the Dashboard in light mode. |
+| **Dark** (moon) | Keeps the Dashboard in dark mode. |
 
-## Prerequisites
-
-- Access to your MainWP Dashboard admin area
-- FTP or file manager access (for custom themes only)
-
----
-
-## Quick Light and Dark Switching
-
-<Steps>
-<Step title="Open your Dashboard">
-Navigate to your MainWP Dashboard.
-</Step>
-<Step title="Use the header theme switcher">
-Click the **Dark mode** switch in the top-right corner to switch between Light and Dark. The highlighted icon shows the current mode: sun for Light or moon for Dark.
-</Step>
-<Step title="Confirm the new mode">
-The Dashboard reloads and applies the selected mode for your user account.
-</Step>
-</Steps>
-
-![Dark mode switch with the moon selected, next to the three-line MainWP menu](/images/dashboard/header-theme-and-menu.jpg)
-
-MainWP uses quick switching when all of the following are true:
-
-- Your selected theme is `default` (Light) or `default-dark` (Dark).
-- No custom theme files are detected in the uploads themes directory.
-
-Under this path, MainWP switches by writing `mainwp_quick_theme_change` in the URL and saving your user preference as `default` or `default-dark`.
-
----
-
-## When the Theme Modal Appears
-
-The header shows a palette icon and opens the **Select MainWP Theme** modal when quick switching is not used.
-
-Common cases:
-
-- You have one or more custom theme files.
-- You are on a legacy/custom theme path.
-
-In this modal flow, select the desired theme and save settings.
-
----
+If you see a palette button, click **Select MainWP theme**. Choose an option in the **Select MainWP Theme** dialog and save. The palette appears when a legacy theme is active or custom theme files are available.
 
 ## Manage Themes from MainWP Tools
 
-The **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`) page always includes **Select MainWP Dashboard theme**.
+1. Open **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
+2. Find **Select MainWP Dashboard theme** and choose a built-in or custom theme.
+3. Click **Save Settings**.
 
-![MainWP Tools section showing theme selection and various utility options](/images/dashboard/tools-page.png)
-
-<Steps>
-<Step title="Go to MainWP Tools">
-Navigate to **MainWP menu (three lines, top right) > MainWP Tools** (`/wp-admin/admin.php?page=MainWPTools`).
-</Step>
-<Step title="Open Select MainWP Dashboard theme">
-Use the theme dropdown in the Tools section.
-</Step>
-<Step title="Choose a theme">
-Light and Dark are always available.
-
-Legacy options appear when currently selected. Custom `.css` theme files in uploads are also listed.
-</Step>
-<Step title="Save your settings">
-Click **Save Settings**.
-</Step>
-</Steps>
-
----
-
-## OS Preference Detection
-
-MainWP does not continuously auto-sync theme mode with your operating system.
-
-During Quick Setup, MainWP can detect OS color preference and save an initial Light/Dark selection when:
-
-- Your user has no saved MainWP theme preference.
-- The Quick Setup flow condition for an empty connected-sites state applies.
-
-After a theme is saved for your user, that saved preference is used until you change it.
+MainWP also lists a legacy theme if you are currently using it.
 
 ---
 
@@ -144,24 +72,6 @@ If an older `custom-dashboard` folder exists, MainWP migrates it to the `themes`
 
 Custom themes in the uploads directory persist through plugin updates. Built-in themes may be overwritten during updates.
 </Note>
-
----
-
-## Legacy Theme Compatibility
-
-- Legacy theme options remain supported for users already on those themes.
-- If legacy/custom conditions are detected, the header uses the palette button (modal path) instead of direct Light/Dark toggle.
-- For the default experience, use Light or Dark themes.
-
----
-
-## Self-Check Checklist
-
-- [ ] This page is used for MainWP Dashboard appearance, not Child Site themes
-- [ ] Header shows the Dark mode switch when using default Light/Dark with no custom theme files
-- [ ] Header shows palette button and modal path for legacy/custom scenarios
-- [ ] MainWP Tools includes **Select MainWP Dashboard theme**
-- [ ] Theme preference persists for your user after reload
 
 ---
 

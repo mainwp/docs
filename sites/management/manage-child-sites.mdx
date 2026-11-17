@@ -174,7 +174,7 @@ Install and activate MainWP Child Plugin on all sites you want to import.
 Go to **MainWP > Sites > Add New > Import Sites** and download the Sample CSV file.
 </Step>
 <Step title="Edit the CSV">
-Open in a text editor and replace the example site rows below the header with your site details.
+Open the file in a text editor and replace the example site rows below the header with your site details. Keep the column names and order from the sample.
 </Step>
 <Step title="Format entries">
 Use comma-separated values in this order:
@@ -224,6 +224,10 @@ Click **Export Child Sites**.
 Sites export to a CSV file.
 
 ---
+
+## Review Update Counts in Manage Sites
+
+The **Updates** column includes available WordPress core, plugin, and theme updates, including detected premium updates. Use the column to sort sites by the number of available updates. Sync sites to refresh the counts.
 
 ## Synchronize a Child Site
 
@@ -389,7 +393,7 @@ Locate the site and click the **Login** icon.
 
 ## Security Issues
 
-MainWP scans child sites for known security issues and provides tools to fix them.
+MainWP scans child sites for known security issues and provides tools to fix them. The **Site Hardening** controls are available to users with the required permission.
 
 ### Detected Security Issues
 
@@ -450,6 +454,16 @@ Go to **MainWP > Sites > Manage Sites**.
 Locate the disconnected site and click **Reconnect** in the actions menu.
 </Step>
 </Steps>
+
+### Reconnect All from Connection Status
+
+In MainWP Dashboard 6.4.2 and later, administrators can reconnect all disconnected sites they can manage, including sites beyond the first page of the widget's list.
+
+1. Open **Sites > Operations** and find the **Connection Status** widget.
+2. Choose **Disconnected** in the widget menu, then click **Reconnect all**.
+3. Review the result for each site. MainWP continues through the list if a site fails. Use the individual **Reconnect** action to retry that site after addressing the reported error.
+
+To reconnect a selection of sites, use the bulk action in Manage Sites.
 
 ### Bulk Reconnection
 

@@ -25,7 +25,7 @@ The [per-user ownership rules](/api-reference/rest-api/overview#permission-scope
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| GET | `/sites` | List sites | `page`, `per_page`, `search`, `include`, `exclude`, `status`, `with_tags`, `full_data` |
+| GET | `/sites` | List sites | `page`, `per_page`, `search`, `include`, `exclude`, `status`, `with_tags`, `full_data`, `custom_fields` |
 | GET | `/sites/basic` | List lightweight site records | `page`, `per_page`, `search`, `include`, `exclude`, `status` |
 | GET | `/sites/count` | Count sites | `include`, `exclude`, `status` |
 | POST, PUT, PATCH | `/sites/sync` | Trigger sync for all sites | Optional filters like `include`, `exclude` |
@@ -74,6 +74,14 @@ When creating a site through REST API, the site URL and administrator username a
 ---
 
 ## Representative Requests
+
+### List Sites with Updates or Custom Fields
+
+Use `status=available_update` on `GET /sites` to list sites with pending updates. In MainWP Dashboard 6.4.2 and later, this includes sites whose only updates are for premium plugins or themes.
+
+With `with_tags=false`, `full_data=false`, `include`, or `exclude`, the `total` field counts the sites on the current page. The same applies when the Abilities API is unavailable. To paginate these results, send `page` and a fixed `per_page` value, such as `20`. Increase `page` until `data` is empty.
+
+Use `custom_fields` with a comma-separated list of field names to include additional values. You can combine it with `include` or `exclude` to limit the result by site ID. Field names can contain ASCII letters, digits, and underscores. MainWP skips unsupported names, such as `license-key`, and reserved names, such as `health_site_status`. Built-in values such as the site ID and URL take precedence.
 
 ### Connection Input Types
 

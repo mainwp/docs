@@ -261,6 +261,10 @@ Before being able to create, display, or manage Uptime Robot monitors, you need 
 
 After you connect your account, you can set the default alert contact.
 
+The **Default alert contact** field and the **alert contacts to notify** field in the monitor form list both your Uptime Robot alert contacts (such as email addresses) and your Uptime Robot integrations (such as Slack or other team channels). To notify a Slack channel when a monitor goes down, add the integration in your Uptime Robot account first, then select it in either field. If an integration has no name in Uptime Robot, it appears as its type followed by its ID.
+
+If the integration cannot load contacts from Uptime Robot for your saved API key, it shows the error and keeps listing the contacts it stored previously.
+
 The integration validates the API key when you click **Save Settings**. If Uptime Robot rejects the key, the integration keeps your previous key and shows the validation error. When you save a different API key, the integration clears stored uptime data and synchronizes monitors from the new account.
 
 ### Uptime Robot API key permissions
@@ -275,7 +279,8 @@ The integration connects to the Uptime Robot REST API v3 and detects the permiss
 
 The integration stores uptime ratios for each Uptime Robot monitor and refreshes them in the background:
 
-- The monitor list shows the all-time uptime ratio. If the all-time ratio is not available yet, the last 24-hour ratio displays instead.
+- The monitor list shows the last 24-hour uptime ratio. The Uptime Robot REST API v3 does not provide an all-time uptime ratio for individual monitors.
+- Reports include Uptime Robot uptime ratios for the last 7, 15, 30, 45, and 60 days. The all-time uptime ratio is not available for Uptime Robot monitors in reports.
 - When monitors are missing their 24-hour ratio, opening the Monitors tab starts a synchronization dialog. The dialog refreshes each monitor and reports progress as it goes. If Uptime Robot rate limits the requests, the dialog shows a retry countdown and continues automatically after the wait period.
 - A scheduled job named **MainWP AUM UptimeRobot refresh** runs once hourly. Each run refreshes the 24-hour ratio for a small batch of monitors, rotating through all monitors across successive runs, and synchronizes recent incidents from your Uptime Robot account.
 - To reload monitor data from Uptime Robot on demand, click the **Reload Uptime Robot data** button on the Monitors tab.

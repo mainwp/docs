@@ -60,6 +60,8 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
 | `mainwp/list-restore-jobs-v1` | List restore jobs |
 | `mainwp/get-restore-job-v1` | Poll a restore job and inspect its outcome |
 
+In MainWP Dashboard 6.4.2 and later, a task run's upload counts include active uploads and uploads awaiting another attempt under `pending`. The `failed` count includes permanent upload failures and invalid storage credentials. Check these counts separately from the site's backup result when you need to verify a remote copy.
+
 ## Preview and Confirm Changes
 
 Write abilities use `POST` and require either `dry_run: true` to preview or `confirm: true` to execute. Preview the action, review its affected sites, destinations, retention deletions, and warnings, then confirm the same selection. Do not set both flags to true.

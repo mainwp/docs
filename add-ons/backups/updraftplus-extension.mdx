@@ -138,6 +138,10 @@ If you use the Premium version of the UpdraftPlus Plugin, make sure the Use Prem
   <img src="/images/add-ons/updraftplus-premium-toggle.jpg" alt="Screenshot of UpdraftPlus Extension settings with Use Premium Version toggle" />
 </Frame>
 
+### SFTP Host Key Fingerprints
+
+With MainWP Child 6.4.2 or later, MainWP can save an SFTP server fingerprint when the UpdraftPlus settings include a new value. If no replacement is sent, MainWP preserves the fingerprint already configured on the child site. Verify a new fingerprint with the SFTP server administrator before saving it.
+
 ### pCloud Remote Storage
 
 pCloud is an [UpdraftPlus Premium storage option](https://teamupdraft.com/documentation/updraftplus/topics/backing-up/faqs/how-to-backup-with-updraftplus/). Configure the connection and destination folder in UpdraftPlus on each child site before using it for backups from MainWP Dashboard.
@@ -146,7 +150,7 @@ pCloud is an [UpdraftPlus Premium storage option](https://teamupdraft.com/docume
 2. Set the destination folder in the pCloud settings and save the changes. Use a separate folder for each site so its backups are easy to identify.
 3. Run a test backup with remote storage enabled, then confirm that the backup files appear in the intended pCloud folder.
 
-After setup, use [Backup Now options](#backup-now-options) to send a backup to the configured remote destination. If the site has multiple destinations, select pCloud for that backup.
+After setup, use [Backup Now options](#backup-now-options) to send an UpdraftPlus backup to the configured remote destination. For backups created by MainWP itself, see [Connect pCloud to Built-In Backups](/sites/backups/connect-pcloud). If the site has multiple destinations, select pCloud for that backup.
 
 ### Connect UpdraftPlus Premium
 

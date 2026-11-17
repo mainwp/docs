@@ -103,17 +103,21 @@ A database update stays listed as pending until the next site sync refreshes its
 
 If the extension refuses the update, a red X replaces the row's buttons. Hover over the red X to see the reason.
 
-When the last request for that update was sent to the child site but never confirmed, the tooltip reads: "This update was sent but never confirmed. Reload the page, then use Clear Stuck Request to try again." Before you clear the request, check the plugin on the child site to confirm its database update did not already run.
+When the last request for that update was sent to the child site but never confirmed, the tooltip reads: "This update was sent but never confirmed. Reload the page, then use Clear Stuck Request to try again." If the request might still be running, the tooltip instead tells you how long to wait: "This update was sent but never confirmed. Clear Stuck Request will be available in about [time]. Reload the page then to try again." Before you clear the request, check the plugin on the child site to confirm its database update did not already run.
 
 ### Clear a stuck update request
 
 The extension records each database update request it sends to a child site. This record stops the Dashboard from sending the same update twice. If a request times out or hits a connection error, the Dashboard can't confirm whether the child site ran the update. The request then stays pending, and **Update Now** returns the message "This update was sent but never confirmed. Reload the page, then use Clear Stuck Request to try again."
 
+A request that timed out on the Dashboard side can still be running on the child site. To avoid sending the same update twice, the extension waits before it lets you clear a request. **Clear Stuck Request** becomes available only after the request's timeout has passed, plus a one-minute safety margin. With the default timeout, this wait is about 20 hours from when the request was sent. Until then, the tooltip on **Update Now** shows the approximate remaining wait.
+
+For a request that was sent before you updated to a version with this protection, the wait starts the first time the extension checks that request after the update, for example when you load the Database tab. It lasts at least 20 hours.
+
 Before you clear a stuck request, check the plugin on the child site. Confirm that its database update did not already run.
 
 <Steps>
 <Step title="Go to Sites > Updates > Database">
-If you just ran **Update Now**, reload the page. The **Clear Stuck Request** button appears only when the page loads.
+If you just ran **Update Now**, reload the page. The **Clear Stuck Request** button appears only when the page loads and the wait has passed.
 </Step>
 <Step title="Expand the plugin row and locate the site">
 </Step>
@@ -121,11 +125,13 @@ If you just ran **Update Now**, reload the page. The **Clear Stuck Request** but
 </Step>
 <Step title="Confirm the prompt">
 The extension removes the stuck request, and the button disappears. Click **Update Now** to send the update again.
+
+If the request is still within its wait, the extension keeps it and shows: "This update request may still be running. Try again in about [time], then reload the page."
 </Step>
 </Steps>
 
 <Note>
-**Clear Stuck Request** appears only for requests that are still waiting for confirmation. You can't clear a request that the child site accepted or declined. To clear a request, you need the same permissions as **Update Now**: access to the Database Updater extension, the `update_plugins` capability, and access to the site.
+**Clear Stuck Request** appears only for requests that are still waiting for confirmation and whose wait has passed. You can't clear a request that the child site accepted or declined. To clear a request, you need the same permissions as **Update Now**: access to the Database Updater extension, the `update_plugins` capability, and access to the site.
 </Note>
 
 The extension never clears stuck requests on its own. It removes records of confirmed requests 30 days after they finish, using a daily scheduled task. When you uninstall the extension, it deletes all of its request records.

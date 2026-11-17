@@ -16,7 +16,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-code-snippets-extension/"
   data-owned-by="Jestart LLC"
@@ -30,6 +30,7 @@ addonType: extension
 - Selecting Sites, Tags, or Clients for snippets
 - Running and saving code snippets
 - Reviewing saved snippets and target counts
+- Seeing which saved snippets apply to a child site
 - Removing snippets from child sites
 - Recovering from bad snippets
 - Useful wp-config.php snippets
@@ -117,6 +118,16 @@ The **Snippets** tab lists saved snippets in a table with these columns:
 - **Target** - Shows a count with an icon for Sites, Tags, or Clients.
 - **Last Edited** - Shows the relative edit time, with the exact date available on hover.
 - **Actions** - Open or delete the snippet.
+
+### See Which Snippets Target a Child Site
+
+In Code Snippets 5.2 and later, use the site picker to review saved snippet assignments for one site.
+
+1. Go to **MainWP > Add-ons > Administrative > Code Snippets** and open the **Snippets** tab.
+2. Choose a child site in the site picker and click **Show Snippets**.
+3. Check **Targeted Via** to see whether each saved snippet targets the site directly, through a tag, or through its client. Click **Open snippet** to review its settings.
+
+Click **Show all snippets** to return to the full list.
 
 ## Remove a Code Snippet From a Broken Site
 
@@ -259,6 +270,19 @@ This process removes the existing saved copy from child sites and then re-adds i
 When you click **Run Snippet**, the Console opens and shows the current process status. Depending on the snippet type and whether the snippet already exists on child sites, you may see steps such as checking existing snippets, saving snippets on child sites, and executing snippets on child sites.
 
 The Console also shows progress counts, site-level status icons, returned output for **Return Info** snippets, and a **Stop Process** button for stopping queued or in-progress processing.
+
+The Console displays **Return Info** output as plain text. If your snippet returns HTML or `<script>` markup, the Console shows the markup as literal text instead of rendering or running it. To get readable results, return plain-text values from your snippet, as in this example:
+
+```php
+$count = wp_count_posts()->publish;
+echo 'Published posts: ' . $count;
+```
+
+## Database Health Check
+
+Code Snippets Extension 5.2 supplies its snippets table and expected column definitions to MainWP Dashboard's database schema checks. The snippets table stores your saved code snippets on the Dashboard. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_codesnippet` to find the Code Snippets table and check for a missing table, missing columns, or incorrect column definitions.
+
+See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for interpreting the results and preparing a support report. These checks report the Dashboard database structure. They do not repair saved snippets or check snippets saved on Child Sites.
 
 ## Useful Code Snippets
 
