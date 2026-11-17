@@ -271,6 +271,13 @@ When you click **Run Snippet**, the Console opens and shows the current process 
 
 The Console also shows progress counts, site-level status icons, returned output for **Return Info** snippets, and a **Stop Process** button for stopping queued or in-progress processing.
 
+The Console displays **Return Info** output as plain text. If your snippet returns HTML or `<script>` markup, the Console shows the markup as literal text instead of rendering or running it. To get readable results, return plain-text values from your snippet, as in this example:
+
+```php
+$count = wp_count_posts()->publish;
+echo 'Published posts: ' . $count;
+```
+
 ## Database Health Check
 
 Code Snippets Extension 5.2 supplies its snippets table and expected column definitions to MainWP Dashboard's database schema checks. The snippets table stores your saved code snippets on the Dashboard. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_codesnippet` to find the Code Snippets table and check for a missing table, missing columns, or incorrect column definitions.

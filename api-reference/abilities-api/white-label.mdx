@@ -1,0 +1,201 @@
+---
+title: White Label Abilities
+sidebarTitle: "White Label Abilities"
+description: >-
+  Read stored White Label flags for your MainWP Dashboard and a page of authorized sites without changing settings or contacting Child sites.
+---
+
+White Label registers two read-only abilities in the `mainwp-white-label` category. They use the `mainwp/` namespace on your MainWP Dashboard.
+
+## What You'll Learn
+
+- Read the general White Label flags and the number of accessible sites that override them
+- List accessible sites with stored White Label settings, one page at a time
+- Understand which settings the responses leave out
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` example below
+- White Label with Abilities support, active in MainWP Dashboard
+- An authenticated user with `manage_options`
+- Access to the White Label Add-on
+
+Team Control restrictions apply. Both abilities check the user's access to the White Label Add-on. The site list and the override count include only sites the user is allowed to access.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/get-white-label-settings-v1` | GET | Read the general White Label flags and the accessible override count |
+| `mainwp/list-white-label-sites-v1` | GET | Read a page of accessible sites with stored White Label settings |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-white-label'
+```
+
+Both abilities are marked `readonly: true`, `destructive: false`, and `idempotent: true`.
+
+<Note>
+These abilities read what the White Label Add-on has stored on your MainWP Dashboard. They do not save settings, push settings to Child sites, sync sites, or contact Child sites. A stored value does not prove that a Child site currently shows it.
+</Note>
+
+## Get General Settings
+
+**Ability:** `mainwp/get-white-label-settings-v1`<br />
+**Method:** GET
+
+This ability takes no input. Send no input or an empty object; any property is rejected.
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-white-label-settings-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "hide_child_plugin": true,
+  "show_support_button": true,
+  "remove_restore": true,
+  "remove_setting": false,
+  "remove_server_info": true,
+  "remove_wp_tools": false,
+  "remove_wp_setting": false,
+  "disable_switching_theme": false,
+  "custom_plugin_header_set": true,
+  "contact_button_label": "Contact Support",
+  "override_site_count": 2
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `hide_child_plugin` | **Visually hide the MainWP Child plugin** is on |
+| `show_support_button` | **Activate the Support feature** is on |
+| `remove_restore` | **Hide the MainWP Child Restore (Clone) page** is on |
+| `remove_setting` | **Hide the MainWP Child Settings page** is on |
+| `remove_server_info` | **Hide the MainWP Child Server Information page** is on |
+| `remove_wp_tools` | **Hide the WordPress Tools page** is on |
+| `remove_wp_setting` | **Hide the WordPress General settings page** is on |
+| `disable_switching_theme` | **Prevent theme alterations** is on |
+| `custom_plugin_header_set` | At least one custom Child plugin header field is set: name, description, author, plugin URI, or author URI |
+| `contact_button_label` | The **Contact Support button title**, or an empty string. See [Labels](#labels) |
+| `override_site_count` | Number of accessible sites with **Override general settings** turned on |
+
+The response contains only these 11 fields. It does not return the custom plugin header text, the support contact email, support messages, or appearance settings such as logos, colors, and custom CSS.
+
+## List Sites
+
+**Ability:** `mainwp/list-white-label-sites-v1`<br />
+**Method:** GET
+
+Lists accessible sites that have stored White Label settings on the Dashboard. A site with no stored White Label settings does not appear in the list.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | integer | No | Page number, minimum `1`. Default `1` |
+| `per_page` | integer | No | Sites per page, `1` to `100`. Default `20` |
+| `site_id` | integer | No | Return only this MainWP site ID, minimum `1` |
+
+Any other property is rejected.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"page":1,"per_page":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-white-label-sites-v1/run'
+```
+
+To check one site, pass its ID:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":12}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-white-label-sites-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 12,
+      "name": "Example Store",
+      "override": true,
+      "hide_child_plugin": true,
+      "show_support_button": false,
+      "remove_restore": true,
+      "remove_setting": true,
+      "remove_server_info": true,
+      "remove_wp_tools": false,
+      "remove_wp_setting": false,
+      "disable_theme_plugin_change": false,
+      "custom_plugin_header_set": true,
+      "contact_button_label": ""
+    }
+  ],
+  "page": 1,
+  "per_page": 20,
+  "total": 1
+}
+```
+
+| Response field | Meaning |
+|----------------|---------|
+| `sites` | Sites on the requested page |
+| `page` | Page returned |
+| `per_page` | Page size used |
+| `total` | Number of accessible sites with stored White Label settings, across all pages |
+
+A page past the last site returns an empty `sites` array with the same `total`. When `site_id` names an accessible site with no stored White Label settings, the response has an empty `sites` array and `total: 0`.
+
+Each entry in `sites` contains:
+
+| Field | Meaning |
+|-------|---------|
+| `site_id` | MainWP site ID |
+| `name` | Site name in MainWP Dashboard, or an empty string. See [Labels](#labels) |
+| `override` | **Override general settings** is on for this site |
+| `hide_child_plugin`, `show_support_button`, `remove_restore`, `remove_setting`, `remove_server_info`, `remove_wp_tools`, `remove_wp_setting` | The same flags as the general settings, as stored for this site |
+| `disable_theme_plugin_change` | **Prevent theme alterations** is on in this site's stored settings. Stored settings that cannot be read report `false` |
+| `custom_plugin_header_set` | At least one custom Child plugin header field is stored for this site. Stored headers that cannot be read report `false` |
+| `contact_button_label` | The site's stored **Contact Support button title**, or an empty string. See [Labels](#labels) |
+
+Each entry contains only these 13 fields. The site URL, the custom plugin header text, the support contact email, support messages, and appearance settings are not returned. The ability reports what is stored for each site; it does not tell you which settings a Child site received in its last update.
+
+Per-site flags apply when `override` is `true`. Otherwise, the site's stored values do not replace the general settings.
+
+## Labels
+
+`contact_button_label` and `name` are plain text, limited to 128 characters, with HTML removed. A value that looks like contact or link information comes back as an empty string:
+
+- Any value containing `@`, containing `://`, or starting with `//`
+- A `contact_button_label` containing `www.`
+
+An empty string can mean the label is not set or that it was withheld under these rules.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `ability_invalid_input` | 400 | Remove unsupported properties and keep `page`, `per_page`, and `site_id` within their ranges |
+| `mainwp_permission_denied` | 401 | Authenticate the request |
+| `mainwp_permission_denied` | 403 | Check `manage_options` and the user's access to the White Label Add-on |
+| `mainwp_site_not_found` | 404 | Check that the site exists and the user can access it. A site you cannot access returns the same error as a missing site |
+| `mainwp_access_denied` | 403 | Check the user's access to the selected site |
+| `mainwp_white_label_storage_error` | 500 | Check the Dashboard database; the response does not include database details |
+
+If the White Label database table does not exist yet, the site list is empty and `override_site_count` is `0`.
+
+## Related Resources
+
+- [White Label](/add-ons/agency/white-label-extension) - Settings, per-site overrides, and support form
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) - Limit users to selected sites and Add-ons

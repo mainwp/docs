@@ -1,0 +1,321 @@
+---
+title: Comments Abilities
+sidebarTitle: "Comments Abilities"
+description: >-
+  List, read, moderate, and permanently delete comments on your MainWP child sites with the Comments Add-on abilities, including preview before deletion.
+---
+
+The MainWP Comments Add-on registers five abilities in the `mainwp-comments` category. All use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities when a script, AI assistant, or [MCP client](/mcp-server/overview) needs to review or moderate comments across your child sites. For example, you can list pending comments on your client sites, approve the legitimate ones, and move spam to Trash. Two abilities read live comments from child sites, one reads the recent comments stored at the last sync, one applies reversible moderation actions, and one previews or permanently deletes trashed comments.
+
+## What You'll Learn
+
+- List comments from your child sites with status, keyword, date, and post filters
+- Read one comment from a child site
+- Read the recent comments saved at the last sync without contacting child sites
+- Approve, unapprove, spam, unspam, trash, and restore comments with status checks
+- Preview and confirm the permanent deletion of trashed comments
+
+## Prerequisites
+
+- WordPress 6.9 or later on the MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- Comments Add-on 6.1.0 or later, active in MainWP Dashboard
+- A current MainWP Child build supporting the Comments v2 contract on target sites for `mainwp/get-comment-v1`, `mainwp/moderate-comments-v1`, and `mainwp/delete-comments-permanently-v1`. An older or unreadable response fails rather than confirming an action.
+- An authenticated WordPress user with permission to use MainWP abilities and access to the Comments Add-on
+
+Team Control restrictions apply. Each ability checks the Dashboard abilities permission, the user's access to the Comments Add-on, and the user's access to every selected site.
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-comments-v1` | GET | List comments from child sites, with optional filters |
+| `mainwp/get-comment-v1` | GET | Read one comment from one child site |
+| `mainwp/list-synced-recent-comments-v1` | GET | List the recent comments the Dashboard saved at the last sync |
+| `mainwp/moderate-comments-v1` | POST | Apply a reversible moderation action to comments on one site |
+| `mainwp/delete-comments-permanently-v1` | POST | Preview or permanently delete trashed comments on one site |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-comments'
+```
+
+The three read abilities are marked `readonly: true`. `mainwp/moderate-comments-v1` is marked `readonly: false`, `destructive: false`, and `idempotent: true`. `mainwp/delete-comments-permanently-v1` is marked `destructive: true` and `idempotent: false`.
+
+Comments returned by these abilities never include the author's email address, IP address, or URL.
+
+## List Comments
+
+**Ability:** `mainwp/list-comments-v1`<br />
+**Method:** GET
+
+The ability asks each selected child site for its comments. All inputs are optional. Without input, it reads up to 50 approved and pending comments from each of the first 100 sites you can access.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `site_ids` | array of integers | 1 to 100 unique site IDs. Omit to use every site you can access. |
+| `status` | string | `all`, `approved`, `pending`, `spam`, or `trash`. Default `all`, which includes approved and pending comments. |
+| `keyword` | string | Search text, up to 200 characters |
+| `start_date` | string | `YYYY-MM-DD`. Includes comments after midnight on this date in the child site's timezone. |
+| `end_date` | string | `YYYY-MM-DD`. Includes comments before midnight on this date in the child site's timezone. |
+| `post_id` | integer | Return comments on one post. Cannot be combined with `keyword`, `start_date`, or `end_date`. |
+| `maximum_per_site` | integer | Comments requested from each site, from `1` to `100`. Default `50`. |
+| `page` | integer | Page of sites, starting at `1`. Default `1`. |
+| `per_page` | integer | Sites per page, from `1` to `100`. Default `100`. |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_ids":[12,19],"status":"pending","maximum_per_site":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-comments-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "comments": [
+    {
+      "comment_id": 482,
+      "comment_author": "Jane Doe",
+      "comment_content": "Great post!",
+      "comment_date": 1762790400,
+      "comment_status": "pending",
+      "post_id": 341,
+      "post_title": "Quarterly Report",
+      "site": { "id": 12, "url": "https://example.com", "name": "Example" }
+    }
+  ],
+  "site_results": [
+    { "site_id": 12, "success": true, "count": 1 },
+    {
+      "site_id": 19,
+      "success": false,
+      "count": 0,
+      "error_code": "mainwp_comments_child_error",
+      "error_message": "The child site returned an invalid comment response."
+    }
+  ],
+  "total": 1,
+  "partial": true,
+  "pagination": { "page": 1, "per_page": 100, "sites_returned": 2, "total_sites": 2, "has_more": false }
+}
+```
+
+- `comment_date` is a Unix timestamp. An unusable timestamp can fail that site's read.
+- `post_id` is `0` when the comment is not attached to a post.
+- `site_results` has one entry per site on the page. A failed site does not stop the others, and `partial` is `true` when some sites succeeded and some failed.
+- `pagination` pages over sites, not comments. When `has_more` is `true`, request the next `page`.
+
+Date filters use exclusive midnight boundaries: to read one day, use the following day as `end_date`. Equal start and end dates return no matches.
+
+When every selected site fails, the ability returns `mainwp_comments_child_error` with HTTP 502.
+
+## Get a Comment
+
+**Ability:** `mainwp/get-comment-v1`<br />
+**Method:** GET
+
+Reads one comment directly from the child site. Both inputs are required positive integers: `site_id` and `comment_id`.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":12,"comment_id":482}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-comment-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "comment": {
+    "comment_id": 482,
+    "comment_author": "Jane Doe",
+    "comment_content": "Great post!",
+    "comment_date": 1762790400,
+    "comment_status": "pending",
+    "post_id": 341,
+    "post_title": "Quarterly Report"
+  },
+  "site": { "id": 12, "url": "https://example.com", "name": "Example" },
+  "observed_at": "2026-11-11T09:30:00+00:00"
+}
+```
+
+`comment_status` is `approved`, `pending`, `spam`, `trash`, or `post-trashed` (the comment's post is in Trash). `observed_at` is the UTC time the Dashboard received the result. Use this ability to check a comment's current status before you moderate it. A comment without an attached post can appear in list results as `post_id: 0`, but the current v2 detail reader rejects it.
+
+## List Synced Recent Comments
+
+**Ability:** `mainwp/list-synced-recent-comments-v1`<br />
+**Method:** GET
+
+Returns the recent comments the Dashboard stored during the last completed site sync. It does not contact child sites, so it is fast, but the data is only as current as the last sync. Each sync stores at most five approved and five pending comments per site.
+
+All inputs are optional.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `site_ids` | array of integers | 1 to 100 unique site IDs. Omit to use every site you can access. |
+| `status` | string | `all`, `approved`, or `pending`. Default `all`. |
+| `page` | integer | Page of sites, starting at `1`. Default `1`. |
+| `per_page` | integer | Sites per page, from `1` to `100`. Default `100`. |
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"status":"pending"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-synced-recent-comments-v1/run'
+```
+
+The response includes `source` (always `dashboard_sync_cache`), `snapshot_limit_per_status` (always `5`), `comments`, `site_results`, `total`, `partial`, and `pagination`. Each comment also carries `site_id` and `last_sync`, the UTC time of the sync that stored it.
+
+Each entry in `site_results` has a `status`:
+
+| Status | Meaning |
+|--------|---------|
+| `available` | The site's stored comments were read |
+| `no_snapshot` | The site has no stored recent comments |
+| `malformed` | The stored data could not be read |
+
+When `possibly_truncated` is `true` for a site, a selected status reached the five-comment limit, so the site may have more comments. Use `mainwp/list-comments-v1` to read them live.
+
+## Moderate Comments
+
+**Ability:** `mainwp/moderate-comments-v1`<br />
+**Method:** POST
+
+Applies one reversible action to up to 100 comments on one site. Each item names a comment and the status you expect it to have. The child site changes a comment only when its current status matches `expected_status`, so a comment that someone else moderated in the meantime is not changed by mistake.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `site_id` | integer | Required. The site ID. |
+| `action` | string | Required. `approve`, `unapprove`, `spam`, `unspam`, `trash`, or `restore`. |
+| `items` | array | Required. 1 to 100 objects, each with `comment_id` and `expected_status` (`approved`, `pending`, `spam`, or `trash`). Comment IDs must be unique. |
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":12,"action":"approve","items":[{"comment_id":482,"expected_status":"pending"},{"comment_id":483,"expected_status":"pending"}]}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/moderate-comments-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 12,
+  "action": "approve",
+  "requested": 2,
+  "applied": 1,
+  "partial": true,
+  "results": [
+    { "comment_id": 482, "outcome": "applied", "status_before": "pending", "status_after": "approved" },
+    {
+      "comment_id": 483,
+      "outcome": "conflict",
+      "status_before": "approved",
+      "status_after": "approved",
+      "error_code": "status_conflict",
+      "error_message": "The comment status changed before moderation."
+    }
+  ]
+}
+```
+
+The batch is not all-or-nothing. `results` has exactly one entry for every requested comment, with one of these outcomes:
+
+| Outcome | Meaning |
+|---------|---------|
+| `applied` | The action was applied and the new status verified |
+| `conflict` | The comment's status did not match `expected_status`, so it was not changed |
+| `not_found` | The comment does not exist on the site |
+| `failed` | The result could not be verified. Read the comment again before you retry. |
+
+<Warning>
+Keep WordPress Trash enabled on target sites before using the `trash` moderation action. If `EMPTY_TRASH_DAYS` is `0`, WordPress can delete a comment permanently instead of moving it to Trash. The current Child v2 handler calls WordPress's trash action and cannot guarantee reversibility in that configuration. A failed or unknown response does not prove that the comment still exists.
+</Warning>
+
+Read each comment again after a failed or unknown result before deciding whether to retry. Repeating an already applied action can return a conflict or not-found result.
+
+Successful changes are recorded in [Network Activity](/sites/network-activity).
+
+## Permanently Delete Comments
+
+**Ability:** `mainwp/delete-comments-permanently-v1`<br />
+**Method:** POST
+
+<Warning>
+Permanent deletion cannot be undone. Run a preview first and delete only after the user explicitly confirms.
+</Warning>
+
+Deletes up to 100 comments on one site. Only comments in Trash can be deleted, so every item must use `"expected_status": "trash"`.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `site_id` | integer | Required. The site ID. |
+| `items` | array | Required. 1 to 100 objects, each with `comment_id` and `expected_status` set to `trash`. Comment IDs must be unique. |
+| `dry_run` | boolean | Required. `true` to preview without deleting. |
+| `confirm` | boolean | Required. `true` to delete. |
+
+Set exactly one of `dry_run` and `confirm` to `true`. Sending both as `true` or both as `false` returns `mainwp_comments_confirmation_required` with HTTP 400.
+
+<Steps>
+<Step title="Preview the deletion">
+Send the request with `"dry_run": true` and `"confirm": false`. Comments that would be deleted return the outcome `would_delete`.
+
+```bash
+curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":12,"items":[{"comment_id":501,"expected_status":"trash"}],"dry_run":true,"confirm":false}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/delete-comments-permanently-v1/run'
+```
+</Step>
+<Step title="Confirm the deletion">
+After the user approves the preview, send the same items with `"dry_run": false` and `"confirm": true`.
+</Step>
+</Steps>
+
+**Example response:**
+
+```json
+{
+  "site_id": 12,
+  "dry_run": false,
+  "requested": 1,
+  "eligible": 1,
+  "deleted": 1,
+  "partial": false,
+  "warnings": ["Permanent deletion cannot be undone."],
+  "results": [
+    { "comment_id": 501, "outcome": "deleted", "status_before": "trash", "exists_after": false }
+  ]
+}
+```
+
+`eligible` counts the comments that were in Trash before processing, and `deleted` counts the comments confirmed gone afterward. Each result has one of these outcomes: `would_delete` (preview only), `deleted`, `conflict` (the comment is not in Trash), `not_found`, or `failed`.
+
+## Handle Errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `mainwp_comments_invalid_input` | 400 | Send only the documented inputs, with valid values and ranges |
+| `mainwp_comments_confirmation_required` | 400 | Set exactly one of `dry_run` and `confirm` to `true` |
+| `mainwp_comments_access_denied` | 403 | Use an account with access to the Comments Add-on and to every requested site. A site ID that does not exist or that you cannot access also returns this error. |
+| `mainwp_comments_site_not_found` | 404 | No connected site you can access matched the request. Confirm your account has access to at least one site. |
+| `mainwp_comments_comment_not_found` | 404 | Verify the `comment_id` with `mainwp/list-comments-v1` |
+| `mainwp_comments_child_error` | 502 | The child site returned an invalid response. Check that MainWP Child is up to date and the site is reachable. |
+| `mainwp_comments_outcome_unknown` | 502 | The moderation or deletion result could not be verified. Comments may already have changed, so read them again before you retry. |
+
+WordPress can reject invalid input against the public schema before the Add-on callback runs. MainWP Dashboard also returns HTTP 401 for unauthenticated requests.
+
+## Related Resources
+
+- [Comments](/add-ons/administrative/comments-extension) - Manage comments across your child sites
+- [Add-on Endpoints](/api-reference/rest-api/extensions#comments) - Comments REST API reference
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [MCP Server Overview](/mcp-server/overview) - Use abilities from AI assistants
+
