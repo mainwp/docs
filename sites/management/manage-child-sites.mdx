@@ -204,7 +204,7 @@ Save the CSV, upload it to your Dashboard, check **CSV file contains a header** 
 </Steps>
 
 <Warning>
-MainWP requires CSV format. TXT and other text formats will not work.
+The Dashboard requires CSV format. TXT and other text formats will not work.
 </Warning>
 
 ---
@@ -252,7 +252,7 @@ Locate the site, open the actions menu, and click **Sync Data**.
 </Steps>
 
 <Note>
-MainWP schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **MainWP menu (three lines, top right) > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
+The Dashboard schedules automatic syncs using **Daily sync time** and **Frequency of auto sync** in **MainWP menu (three lines, top right) > MainWP Settings > General Settings** (`/wp-admin/admin.php?page=Settings`). The default frequency is twice per day. Scheduled syncs require working WP-Cron or an external cron job. For reliable cron execution, follow [Manage WP Cron on a Low-Traffic MainWP Dashboard](/customization/manage-wp-cron-on-low-traffic-mainwp-dashboard).
 </Note>
 
 ### Child Site Cron Warnings
@@ -301,7 +301,7 @@ Per-site settings provide translation ignore control. Configure automatic transl
 
 ### Site URL and Detected Address
 
-Starting with MainWP Dashboard 6.2, MainWP can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`), under **Miscellaneous Settings**.
+Starting with MainWP Dashboard 6.2, your Dashboard can automatically correct supported `www` and HTTP-to-HTTPS differences using the address reported by the child site. The global **Auto-correct site URLs** setting is enabled by default in **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`), under **Miscellaneous Settings**.
 
 When the stored address differs from the reported address only by protocol or `www`, the site's settings show **The child site reports its address as:** and a **Use detected** button. The hint is not shown for a different domain or port, or for a path-only difference.
 
@@ -323,7 +323,7 @@ Review the selected address and **Lock site URL** state, then click **Save Setti
 
 ![Site URL protocol and www selectors with a green arrow pointing to the disabled Lock site URL toggle in MainWP Dashboard dark mode](/images/dashboard/site-url-lock-dark.svg)
 
-When locked, MainWP keeps the stored URL and uses it unchanged for **Jump to WP Admin**, even if the child site reports a different protocol or `www` variant. You can still change the URL manually.
+When locked, your Dashboard keeps the stored URL and uses it unchanged for **Jump to WP Admin**, even if the child site reports a different protocol or `www` variant. You can still change the URL manually.
 
 If you manually change the URL to differ from the address reported by the child site, MainWP enables the lock automatically when you save. Saving an unrelated setting does not enable it. To allow automatic URL handling again, turn off **Lock site URL** and click **Save Settings**.
 
@@ -345,7 +345,7 @@ See [Jump to WP Admin troubleshooting](/troubleshooting/troubleshooting-issues-w
 
 ## Suspend or Unsuspend a Child Site
 
-When a site is suspended, it stays connected in MainWP Dashboard, but MainWP pauses actions for that site without disconnecting it.
+When a site is suspended, it stays connected in MainWP Dashboard, but your Dashboard pauses actions for that site without disconnecting it.
 
 - Suspended sites are excluded from sync and update operations.
 - Suspended sites show the yellow pause icon in MainWP Dashboard.
@@ -378,7 +378,7 @@ Select **Suspend** or **Unsuspend** from **Bulk Actions** and click **Apply**.
 
 ## Access Child Site WP Admin
 
-MainWP provides one-click access to child site admin areas.
+The Dashboard provides one-click access to child site admin areas.
 
 <Steps>
 <Step title="Navigate to Manage Sites">
@@ -393,7 +393,7 @@ Locate the site and click the **Login** icon.
 
 ## Security Issues
 
-MainWP scans child sites for known security issues and provides tools to fix them. The **Site Hardening** controls are available to users with the required permission.
+The Dashboard scans child sites for known security issues and provides tools to fix them. The **Site Hardening** controls are available to users with the required permission.
 
 ### Detected Security Issues
 
@@ -410,7 +410,7 @@ MainWP scans child sites for known security issues and provides tools to fix the
 | Outdated Themes | Checks for outdated themes | **Manage Updates** |
 | Inactive Themes | Checks for inactive themes | **Manage Themes** |
 
-The PHP check uses the version reported by the Child Site. If release data is unavailable or the reported version cannot be verified, MainWP reports that it could not verify the security release status. Sync the site again after upgrading PHP. This check is separate from the Dashboard's PHP 8.3 minimum requirement.
+The PHP check uses the version reported by the Child Site. If release data is unavailable or the reported version cannot be verified, your Dashboard reports that it could not verify the security release status. Sync the site again after upgrading PHP. This check is separate from the Dashboard's PHP 8.3 minimum requirement.
 
 ![Security Issues table](/images/dashboard/sites-management-7c13e2.png)
 
@@ -419,7 +419,7 @@ MainWP Dashboard 5.4 removed outdated Site Hardening checks. Some current checks
 </Note>
 
 <Note>
-If security issues are fixed by another plugin, MainWP detects them as fixed but cannot use the Unfix function.
+If security issues are fixed by another plugin, your Dashboard detects them as fixed but cannot use the Unfix function.
 </Note>
 
 ### Site Hardening Scan
@@ -461,7 +461,7 @@ In MainWP Dashboard 6.4.2 and later, administrators can reconnect all disconnect
 
 1. Open **Sites > Operations** and find the **Connection Status** widget.
 2. Choose **Disconnected** in the widget menu, then click **Reconnect all**.
-3. Review the result for each site. MainWP continues through the list if a site fails. Use the individual **Reconnect** action to retry that site after addressing the reported error.
+3. Review the result for each site. The Dashboard continues through the list if a site fails. Use the individual **Reconnect** action to retry that site after addressing the reported error.
 
 To reconnect a selection of sites, use the bulk action in Manage Sites.
 
@@ -505,7 +505,7 @@ Select **Remove** from Bulk Actions and click **Apply**.
 </Steps>
 
 <Note>
-Removing a site removes its record from MainWP Dashboard, not the WordPress website. MainWP attempts to deactivate MainWP Child on a connected live site; it skips deactivation for staging sites. If deactivation fails or the site is disconnected, manually deactivate MainWP Child on the site.
+Removing a site removes its record from MainWP Dashboard, not the WordPress website. The Dashboard attempts to deactivate MainWP Child on a connected live site; it skips deactivation for staging sites. If deactivation fails or the site is disconnected, manually deactivate MainWP Child on the site.
 </Note>
 
 ---
@@ -601,7 +601,7 @@ Go to **MainWP > Sites > Tags > Manage Tags**, select the tag, and click the **T
 
 ## Site Health Monitoring
 
-WordPress Site Health checks security and performance. MainWP monitors child site health status and alerts you when sites need attention.
+WordPress Site Health checks security and performance. The Dashboard monitors child site health status and alerts you when sites need attention.
 
 <Note>
 Monitoring configuration now lives in the dedicated [Uptime Monitoring](/sites/management/uptime-monitoring) guide, including **Site Health Monitoring** settings.
@@ -617,7 +617,7 @@ Monitoring configuration now lives in the dedicated [Uptime Monitoring](/sites/m
 | Connection fails with SSL error | Invalid or self-signed SSL certificate | Ask the host to correct the certificate and chain, then retry with verification enabled |
 | Site shows as disconnected | Connection settings changed or the connected administrator account is unavailable | Check the site URL and administrator username in **Settings**, then use **Reconnect**. Changing only the administrator password does not break an established connection |
 | Sync fails for a site | Firewall or security plugin blocking requests | Whitelist your Dashboard IP in the site's firewall settings |
-| Security scan shows issues already fixed | Another plugin fixed the issue | MainWP detects the fix; no action needed |
+| Security scan shows issues already fixed | Another plugin fixed the issue | The Dashboard detects the fix; no action needed |
 | CSV import fails | Wrong file format or missing required fields | Ensure the file is CSV format and includes site name, URL, administrator username, and the required authentication credential for each site |
 
 ---

@@ -14,7 +14,7 @@ This page documents the individual workers currently available for administrator
 
 ## What You'll Learn
 
-- How MainWP's cron control differs from WordPress's `DISABLE_WP_CRON` setting
+- How your Dashboard's cron control differs from WordPress's `DISABLE_WP_CRON` setting
 - How the recommended low-traffic setup differs from direct-worker mode
 - Which MainWP Dashboard and Add-on workers can be invoked directly
 - Which scheduled work direct workers do not cover
@@ -64,7 +64,7 @@ After verifying that the direct `wp-cron.php` trigger runs reliably, you can pre
 define( 'DISABLE_WP_CRON', true );
 ```
 
-When enabled, normal visits no longer spawn WP-Cron, but a direct server request to `wp-cron.php` or a scheduler running `wp cron event run --due-now` continues to process due registered events. If an uptime monitor requests only the Dashboard homepage or another normal page, leave `DISABLE_WP_CRON` undefined or set it to `false`. Enable it only after verifying a direct external runner is reliable. If it is enabled without one, scheduled WordPress events can stop processing. This setting is unrelated to MainWP's **Use WP Cron** toggle.
+When enabled, normal visits no longer spawn WP-Cron, but a direct server request to `wp-cron.php` or a scheduler running `wp cron event run --due-now` continues to process due registered events. If an uptime monitor requests only the Dashboard homepage or another normal page, leave `DISABLE_WP_CRON` undefined or set it to `false`. Enable it only after verifying a direct external runner is reliable. If it is enabled without one, scheduled WordPress events can stop processing. This setting is unrelated to your Dashboard's **Use WP Cron** toggle.
 
 <Warning>
 Avoid mixed or incomplete configurations:
@@ -136,7 +136,7 @@ curl -fsS 'https://example.com/wp-content/plugins/PLUGIN-DIRECTORY/cron/CRON-FIL
 ```
 
 <Note>
-Replace `/path/to/public_html` with the MainWP Dashboard WordPress installation path and `/usr/bin/php` with the correct PHP binary. Hosting providers document cron setup for tools such as [cPanel](https://docs.cpanel.net/cpanel/advanced/cron-jobs/) and [Plesk](https://docs.plesk.com/en-US/obsidian/customer-guide/websites-and-domains/scheduling-tasks-cron-jobs.html).
+Replace `/path/to/public_html` with your MainWP Dashboard WordPress installation path and `/usr/bin/php` with the correct PHP binary. Hosting providers document cron setup for tools such as [cPanel](https://docs.cpanel.net/cpanel/advanced/cron-jobs/) and [Plesk](https://docs.plesk.com/en-US/obsidian/customer-guide/websites-and-domains/scheduling-tasks-cron-jobs.html).
 </Note>
 
 <Warning>
@@ -170,7 +170,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/updatescheck.php > /dev/null 2>&1
     ```
 
-    Runs MainWP's incremental update-check and automatic-update workflow, including continuation and related notification handling.
+    Runs your Dashboard's incremental update-check and automatic-update workflow, including continuation and related notification handling.
 
     #### Ping Child Sites
 
@@ -200,7 +200,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/deactivatedlicensesalert.php > /dev/null 2>&1
     ```
 
-    Sends notifications when MainWP detects deactivated MainWP Add-on licenses and the `deactivated_license_alert` notification is enabled.
+    Sends notifications when your Dashboard detects deactivated MainWP Add-on licenses and the `deactivated_license_alert` notification is enabled.
 
     #### Run General Schedules
 

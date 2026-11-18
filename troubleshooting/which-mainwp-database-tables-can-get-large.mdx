@@ -8,7 +8,7 @@ description: >-
 
 Not every MainWP table is a realistic "database bloat" problem. In most cases, only a small number of tables are responsible when a MainWP Dashboard or child site database becomes noticeably larger.
 
-This guide focuses on the tables that matter most in practice, not every table MainWP creates.
+This guide focuses on the tables that matter most in practice, not every table your MainWP Dashboard creates.
 
 <Note>
 Examples below use the `wp_` table prefix. If your site uses a different prefix, replace `wp_` with your own.
@@ -112,7 +112,7 @@ Deleting a monitor also removes its related heartbeat history, so review or expo
 
 ### `wp_mainwp_monitor_stat_hourly`
 
-This table matters far less in most cases. MainWP automatically trims it to 30 days, so it is usually not the first uptime-related table to investigate for size.
+This table matters far less in most cases. The Dashboard automatically trims it to 30 days, so it is usually not the first uptime-related table to investigate for size.
 
 ---
 
@@ -135,7 +135,7 @@ Busy child sites generate more content, user, plugin, theme, core, and other adm
 - Let the built-in cleanup age out old records instead of treating manual SQL cleanup as normal maintenance.
 - Keep in mind that these are child-site tables, not Dashboard tables.
 
-MainWP Dashboard now syncs this child-site retention value to MainWP Child, where it is stored as the `mainwp_child_changes_logs_ttl` option. The same sync also controls whether child-site Network Activity logging remains enabled.
+Your MainWP Dashboard now syncs this child-site retention value to MainWP Child, where it is stored as the `mainwp_child_changes_logs_ttl` option. The same sync also controls whether child-site Network Activity logging remains enabled.
 
 Before you clean up anything, you can inspect the per-site **Network Activity Table Size** from MainWP Dashboard. If child-site Network Activity tables become large, MainWP Dashboard can surface a cleanup notice in Insights and offer a **Run Cleanup Now** action for the affected child site. Sync the site first and create a database backup before using that cleanup action so you do not remove unsynced log data.
 
@@ -174,7 +174,7 @@ The following tables are important to MainWP, but they are usually not the ones 
 | `wp_mainwp_wp_options` | Stores per-site state and options. Important, but usually not the first "large table" suspect. |
 
 <Note>
-When you remove a child site from MainWP Dashboard, MainWP also removes the related `wp_mainwp_wp_sync`, `wp_mainwp_wp_options`, and uptime monitoring records for that site.
+When you remove a child site from MainWP Dashboard, your Dashboard also removes the related `wp_mainwp_wp_sync`, `wp_mainwp_wp_options`, and uptime monitoring records for that site.
 </Note>
 
 ---

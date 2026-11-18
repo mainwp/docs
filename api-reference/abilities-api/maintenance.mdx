@@ -17,7 +17,7 @@ Use them to audit cleanup schedules, check which schedules are paused or failing
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - A MainWP Maintenance release with Abilities support, active on MainWP Dashboard
 - An authenticated user with `manage_options` and access to the Maintenance Add-on
@@ -125,7 +125,7 @@ The response contains every [schedule field](#schedule-fields) plus two site lis
 
 The example omits some schedule fields for brevity.
 
-- `sites` lists the sites the schedule targets, after MainWP expands selected tags and clients. It includes only sites you can access.
+- `sites` lists the sites the schedule targets, after your Dashboard expands selected tags and clients. It includes only sites you can access.
 - `failed_sites` lists the sites that failed during the last run. It includes only sites you can access. It does not include the recorded error text; review failure details on the **Schedules** screen.
 
 Both lists are always arrays, even when empty.

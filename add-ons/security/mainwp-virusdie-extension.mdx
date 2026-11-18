@@ -239,7 +239,7 @@ Locate the **Add All Child Sites to Virusdie** button and click it ![Screenshot 
 
 When sites are added automatically, MainWP Dashboard first registers the domains with Virusdie and downloads your unique synchronization file from the Virusdie API. MainWP Dashboard temporarily stores the file and sends each child site a signed download URL. MainWP Child then downloads the file from the Dashboard and saves it in the child site's WordPress root directory.
 
-This process requires two-way connectivity: MainWP Dashboard must be able to communicate with each child site, and each child-site server must be able to reach the MainWP Dashboard's signed download URL over HTTPS.
+This process requires two-way connectivity: your MainWP Dashboard must be able to communicate with each child site, and each child-site server must be able to reach the Dashboard's signed download URL over HTTPS.
 
 Alternatively, if you want to add just some of your sites separately, you can use the **Add To Virusdie** action for all sites that are not found in your Virusdie account.
 
@@ -303,11 +303,11 @@ This case applies when the site upload list appears, but individual child sites 
 
 Likely blocking layers include:
 
--   HTTP Basic Authentication or password protection on the MainWP Dashboard
+-   HTTP Basic Authentication or password protection on your MainWP Dashboard
 -   SSO or login-enforcement plugins
--   Security plugins on the MainWP Dashboard
+-   Security plugins on your MainWP Dashboard
 -   Hosting firewalls, WAF rules, or ModSecurity
--   DNS, TLS, or network restrictions that prevent the child-site server from reaching the MainWP Dashboard
+-   DNS, TLS, or network restrictions that prevent the child-site server from reaching your MainWP Dashboard
 
 The signed download URL uses this general format:
 
@@ -317,7 +317,7 @@ The signed download URL uses this general format:
 Do not share a signed download URL. It provides temporary access to the synchronization file.
 </Warning>
 
-MainWP Child currently prefixes every non-200 response from this download with `Error 404`, even when the underlying response is not HTTP 404. Check the accompanying response reason, such as `Unauthorized`, and review the MainWP Dashboard access and security logs at the exact time of the attempt.
+MainWP Child currently prefixes every non-200 response from this download with `Error 404`, even when the underlying response is not HTTP 404. Check the accompanying response reason, such as `Unauthorized`, and review your MainWP Dashboard access and security logs at the exact time of the attempt.
 
 For more details about this child-to-Dashboard reverse-download requirement, see [Plugin Installation Fails With Error Message: Upload failed](/troubleshooting/plugin-installation-fails-with-error-message-upload-failed).
 

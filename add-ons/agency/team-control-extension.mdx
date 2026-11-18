@@ -347,13 +347,15 @@ If any users currently have that role, choose a replacement role for each user i
 
 ## Per-Staff Child Site Logins
 
+This section applies to Team Control builds that show **Child site logins** under a user on the **Dashboard Users** tab.
+
 Without a mapping, every Dashboard user reaches a Child site as the shared administrator account the site was connected with. Team Control can map each staff member to their own WordPress account on Child sites. With a mapping in place:
 
 - WordPress post locking can tell two staff members apart, so the second person to open a post sees that the first is already editing it.
 - Work done while logged in as that account is recorded under it. WordPress attributes new posts and revisions to the account, and activity log plugins on the Child site see it as the acting user instead of the shared administrator.
 - When someone leaves, you can delete their account on each Child site. WordPress ends that account's sessions on the site and leaves everyone else signed in. Their Dashboard access is separate; see [Limits](#limits).
 
-**Go to WP Admin**, syncs, and updates that the staff member starts run as their mapped account on that site. So do large queued syncs and Assistant jobs they start. Scheduled maintenance and WP-CLI commands keep using the shared administrator, and so do queued jobs when your Dashboard runs WP-Cron through WP-CLI.
+**Go to WP Admin**, syncs, and updates that the staff member starts run as their mapped account on that site. Scheduled maintenance and WP-CLI commands use the shared administrator.
 
 Staff members with no mapping keep using the shared administrator, as before.
 
@@ -361,7 +363,7 @@ Staff members with no mapping keep using the shared administrator, as before.
 
 - Mapped accounts must be administrators on the Child site. Other WordPress roles aren't supported yet.
 - Team Control doesn't create the accounts. Create them on each Child site yourself.
-- Each Child site needs the MainWP Child release that includes this feature. See [Sites with an older MainWP Child](#sites-with-an-older-mainwp-child).
+- Use a matching MainWP Dashboard and MainWP Child build that supports per-staff logins. See [Sites with an older MainWP Child](#sites-with-an-older-mainwp-child).
 
 ### Set Up Child Site Logins
 
@@ -395,40 +397,25 @@ Each result describes the site at the time of the check. Nothing rechecks automa
 | Result | What it means | What to do |
 |---|---|---|
 | **Administrator found** | The account exists and is an administrator. | Nothing. |
-| **Found but not an administrator** | The account exists without administrator rights. The site will refuse this staff member's actions. | Make the account an administrator and click **Check Again**. Or pick a different username or the shared administrator for this site and click **Save**, which runs the check again. |
-| **Username not found** | No account on the site has that username. The site will refuse this staff member's actions. | Create the account on the site and click **Check Again**. Or correct the username, or choose **Use the shared administrator** for this site, and click **Save**, which runs the check again. |
+| **Found but not an administrator** | The account exists without administrator rights. Check the account before relying on the mapping. | Make the account an administrator and click **Check Again**. Or pick a different username or the shared administrator for this site and click **Save**, which runs the check again. |
+| **Username not found** | No account on the site has that username. Check the account before relying on the mapping. | Create the account on the site and click **Check Again**. Or correct the username, or choose **Use the shared administrator** for this site, and click **Save**, which runs the check again. |
 | **MainWP Child too old. Update it to run this check.** | The site runs a MainWP Child version without this feature. | Update MainWP Child on the site, then click **Check Again**. |
 | **Check failed** | The Dashboard couldn't complete the check. The cause follows the label, for example that the Child site did not respond. This doesn't mean the account is missing. | Fix the connection to the site, then click **Check Again**. |
 | **Uses the shared administrator** | The site is set to **Use the shared administrator**, or it uses the default and no default username is set. | Nothing. |
 
-### When a Child Site Refuses a Staff Member
-
-If the mapped account is missing or isn't an administrator when the staff member acts on a site, the Child site refuses the request. It doesn't fall back to the shared administrator. The message names the account and the site, for example:
-
-- `The account "jane" was not found on example.com.`
-- `The account "jane" is not an administrator on example.com.`
-
-This happens when:
-
-- The account was deleted after setup.
-- The account lost its administrator rights.
-- The site's setup check reported a problem and nobody fixed it.
-
-To fix it, recreate the account or restore its administrator role on the Child site, then click **Check Again** to confirm the result. You can also change that site's username choice in **Child site logins**, either to another username or to **Use the shared administrator**, and click **Save**. Saving runs the check again.
-
 ### Sites with an Older MainWP Child
 
-A site running an older MainWP Child still logs the staff member in as the shared administrator when the mapped account is missing or isn't an administrator. The setup check shows **MainWP Child too old. Update it to run this check.** for these sites. Update MainWP Child on the site to the release that includes this feature.
+A site running an older MainWP Child can fall back to the shared administrator if the mapped user is missing or lacks administrator rights. If **Check Again** reports that MainWP Child is too old, update the Child plugin and check again. Verify the account shown in WordPress after opening **Go to WP Admin**.
 
 ### Limits
 
 - Mapped accounts must be administrators on the Child site.
 - Removing a mapping or choosing **Use the shared administrator** gives that person shared administrator access on those sites again. Neither one revokes access. To revoke a staff member's Dashboard access, select them on the **Dashboard Users** tab and use **Delete** or **Change role** from the **Bulk actions** menu to move them to a role without Team Control permissions.
-- Scheduled maintenance and WP-CLI commands always use the shared administrator, including queued jobs when WP-Cron runs through WP-CLI.
+- Scheduled maintenance and WP-CLI commands use the shared administrator.
 
 ## Team Control Abilities
 
-Team Control 5.2 registers 12 abilities in the `mainwp-team-control` category. They let an authenticated owner list available permissions, read and manage roles and users, update user notes, and reconcile roles that need recovery. These abilities require the WordPress Abilities API and MainWP Dashboard's abilities integration.
+Team Control 5.2 registers 12 abilities in the `mainwp-team-control` category. Builds with Child login mapping add a thirteenth. They let an authenticated owner list available permissions, read and manage roles and users, update user notes, and reconcile roles that need recovery. These abilities require the WordPress Abilities API and MainWP Dashboard's abilities integration.
 
 Management access remains restricted to registered owners. Assigning **Use MainWP abilities and MCP** to a custom role does not authorize its users to manage Team Control.
 
@@ -437,6 +424,21 @@ Changes through these abilities require a preview followed by confirmation. Auto
 Role and membership changes run one at a time and use database transactions. Team Control validates its table structure and uses InnoDB for its own tables. WordPress options and user metadata can only participate in rollback when their core tables also use transactional storage. After a failed change, review the reported role and membership state before retrying.
 
 ---
+
+### Read or Replace a User's Child Site Logins
+
+On a build that registers `mainwp/replace-team-control-user-child-login-v1`, an authenticated Team Control owner can read the mapping with `mainwp/get-team-control-user-v1` and replace it with a preview and confirmation. The read returns `child_login.default`, `child_login.overrides`, and `child_login.revision`. If the mapping cannot be read, `child_login.error` reports the error code.
+
+| Input | Meaning |
+| --- | --- |
+| `user_ref` | The opaque reference returned by Team Control's user abilities. |
+| `default` | The default WordPress username on Child sites, or an empty string to use the shared administrator where there is no username override. |
+| `overrides` | The full list of site choices. Each entry has a unique allowed `site_id`, a `mode`, and a `username`. Use a nonempty username for `username` mode and an empty string for `default` or `shared_admin`. Omit a site's entry to remove its saved override. |
+| `if_match` | The current `child_login.revision` returned by the read. |
+| `request_ref` | A UUID for this replacement. Reuse it for the preview and confirmation of the same request. |
+| `dry_run`, `confirm`, `preview_token` | For preview, send `true`, `false`, and `null` respectively. For confirmation, send `false`, `true`, and the token returned by the preview, with the same mapping inputs. |
+
+The confirmed response reports `mode: "completed"`, the user reference, and the new mapping revision. If the mapping changes after the preview, read it again and start a new preview. To check whether the mapped account exists and is an administrator, use **Check Again** under [Child site logins](#read-the-setup-check).
 
 ## Related Resources
 
