@@ -30,9 +30,11 @@ Agent access is set per site. In your MainWP Dashboard, go to **Sites**, edit a 
 
 Requests that need approval appear on the **Agent approvals** page in the MainWP menu. Administrators approve or deny requests from staff members. Staff members cannot approve their own requests. While a request waits, the staff member sees "Waiting for an administrator to approve this in MainWP". After an administrator approves it, the change runs when the AI continues.
 
-By default, an administrator's own requests do not wait on the **Agent approvals** page. The administrator's confirmation in the AI client counts as approval. This is the **Never ask** mode. To send administrators' requests to the **Agent approvals** page as well, change **Mode** to **Ask** on the **Rules** tab.
+By default, administrators' requests do not wait on the **Agent approvals** page. Their confirmation in the AI client counts as approval. This is the **Never ask** mode. Staff members named under Mode on the **Rules** tab work the same way. To send everyone's requests to the **Agent approvals** page, change **Mode** to **Ask**.
 
 To stop an approved request before it runs, turn Agent access off for that site or add a Block rule.
+
+A request waits for 15 minutes. If nobody approves it in that time, it expires and the AI has to ask again. Before a change runs, MainWP makes a safety backup of the site when a backup system is available. When none is available, the approval card says so and you can approve the change without a backup.
 
 ## Block rules
 
