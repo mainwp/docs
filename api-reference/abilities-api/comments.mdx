@@ -236,7 +236,7 @@ The batch is not all-or-nothing. `results` has exactly one entry for every reque
 | `failed` | The result could not be verified. Read the comment again before you retry. |
 
 <Warning>
-Keep WordPress Trash enabled on target sites before using the `trash` moderation action. If `EMPTY_TRASH_DAYS` is `0`, WordPress can delete a comment permanently instead of moving it to Trash. The current Child v2 handler calls WordPress's trash action and cannot guarantee reversibility in that configuration. A failed or unknown response does not prove that the comment still exists.
+When WordPress Trash is disabled (`EMPTY_TRASH_DAYS` is `0`), MainWP Child 6.5 and later refuse the `trash` moderation action. The affected item returns `outcome: "failed"` with `error_code: "mutation_failed"`, and its status stays unchanged. On earlier MainWP Child versions that support this ability, WordPress can permanently delete the comment in this configuration. Update MainWP Child or enable Trash before sending the action.
 </Warning>
 
 Read each comment again after a failed or unknown result before deciding whether to retry. Repeating an already applied action can return a conflict or not-found result.
