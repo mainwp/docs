@@ -88,6 +88,8 @@ To retrieve domain information immediately, use one of the manual check actions 
 
 Alternatively, you can use the **Bulk actions** menu to check selected sites, or use the **Check Domain** action from the site **Actions** menu to audit just one site.
 
+When a **Check Domain** lookup succeeds, the row shows **domain lookup completed successfully** and the page reloads after 3 seconds. When the lookup fails, the page does not reload. Domain Monitor restores the row with its **Actions** menu and shows the error message in red under the site name, or in the first visible column if the Site column is hidden. If the lookup returns no error details, the message reads **Domain lookup failed. Please try again.** The message stays in the row when you move between table pages, so you can review it and run **Check Domain** again.
+
 ### Monitor Domains Not Connected to a Child Site
 
 Domain Monitor 5.5 and later can monitor domains that are not MainWP child sites, such as non-WordPress sites or parked domains. These domains appear in the same Domain Monitor table as your child sites.
