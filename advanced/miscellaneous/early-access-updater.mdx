@@ -71,8 +71,8 @@ The add-on provides two settings locations:
 
 | Location | Path |
 |----------|------|
-| Global settings | **MainWP > Add-ons > Early Access** |
-| Per-site settings | **MainWP > Sites > Manage Sites > (Select Site) > MainWP Early Access tab** |
+| Global settings | Go to **MainWP > Labs** and click **Settings** on the Early Access card. |
+| Per-site settings | Go to **MainWP > Sites**, open a site's dashboard, and click **Early Access**. |
 
 ---
 
@@ -88,7 +88,7 @@ Nightly builds are prereleases and may contain bugs. Test them on a staging or t
 
 <Steps>
 <Step title="Open Early Access settings">
-Go to **MainWP > Lab** and click **Settings** on the Early Access card, then select the **Early Access** tab.
+Go to **MainWP > Labs** and click **Settings** on the Early Access card.
 </Step>
 <Step title="Give nightly consent">
 In **General Settings**, turn on **Receive nightly builds** (**I agree to receive nightly builds.**). This consent also applies to supported Add-ons; there is no separate nightly switch for each Add-on.
@@ -107,7 +107,9 @@ Nightly updates come from mainwp.com and do not require a GitHub Personal Access
 
 ### Read Nightly Add-on Changelogs
 
-Open the **Nightly Changes** tab on the Early Access settings page, or click **Nightly Changes** on the Early Access card in **MainWP > Lab**. After nightly consent, the table includes supported Add-ons with activated licenses alongside MainWP Dashboard and MainWP Child.
+Open the **Nightly Changes** tab on the Early Access settings page, or click **Nightly Changes** on the Early Access card in **MainWP > Labs**. The table shows MainWP Dashboard and MainWP Child before you opt in. After you give nightly consent, it also lists supported Add-ons with activated licenses.
+
+![Nightly Changes table before opt-in, showing the Dashboard and Child rows](/images/miscellaneous/early-access-nightly-changes.jpg)
 
 | Column | Shows |
 |---|---|
@@ -115,9 +117,15 @@ Open the **Nightly Changes** tab on the Early Access settings page, or click **N
 | **Installed version** | The version on your Dashboard. For MainWP Child, each reported version shows how many sites run it. |
 | **Newest nightly** | The newest nightly version in the available change list |
 | **Status** | **Update available**, **Up to date**, **No nightly builds**, **Version unknown**, or **Unavailable** |
-| **Changes** | A **View Changes** button that opens the build notes |
+| **Changes** | A **View Changes** button that opens the build notes when available |
 
-Click **View Changes** to open a modal with recent builds, their dates, and **Added**, **Fixed**, **Updated**, or **Removed** entries. Click **View Older Builds** to show entries at or below your installed version, **Hide Older Builds** to collapse them, and **Close** to return to the table. **Up to date** means the change list has no newer build. **No nightly builds** means that product has no nightly entries in the current list. An Add-on does not necessarily have a nightly build available. **Unavailable** means the changes could not be loaded from mainwp.com, and the Extension tries again in about two hours.
+Click **View Changes** to open the build notes. Each build shows its date and any **Added**, **Fixed**, **Updated**, or **Removed** entries. When more older builds are available, click **View Older Builds** to expand the list or **Hide Older Builds** to collapse it. Click **Close** to return to the table.
+
+The example below uses MainWP Dashboard 6.5 release candidate notes.
+
+![View Changes dialog with example build notes and the older builds list expanded](/images/miscellaneous/early-access-view-changes.jpg)
+
+**Up to date** means the list has no newer build. **No nightly builds** means there are no build notes in the list for that product. **Unavailable** in the **Status** column means the changes could not be loaded.
 
 Opening this tab does not install updates.
 
@@ -131,9 +139,9 @@ To reinstall an Add-on's stable release, go to the **Add-ons** section of the **
 
 ## Global Settings
 
-![Early Access global settings page with Dashboard plugin options](/images/miscellaneous/advanced-miscellaneous-731b89.png)
+![Early Access settings with nightly consent, automatic installation, and rollback controls](/images/miscellaneous/early-access-settings.jpg)
 
-The **Early Access** tab is organized into **General Settings**, **MainWP Dashboard**, **MainWP Child**, and **Add-ons** sections.
+The **Early Access** tab includes **General Settings**, **MainWP Dashboard**, **MainWP Child Early Access**, and **Add-ons**.
 
 ### General Settings
 
@@ -144,7 +152,7 @@ This section holds your nightly consent. Its subheader reads **Nightly builds ch
 
 An info message under these switches summarizes your setup: whether Dashboard nightlies are on, whether the Child default is on, and how many sites you explicitly enabled.
 
-After you update to Early Access Extension 6.0, MainWP Dashboard shows the notice **Early Access now delivers nightly builds.** Early Access updates are paused until you choose. Click **Review and opt in** to open the settings page, or click **Stay on stable releases** to decline.
+If you previously enabled Early Access for your Dashboard, for Child sites globally, or for an individual Child site, your Dashboard shows the **Early Access now delivers nightly builds.** notice after you upgrade to 6.0. Your Dashboard and Child preferences carry over, and you must opt in again to receive nightly builds. Click **Review and opt in** to open the settings page, or click **Stay on stable releases** to decline.
 
 <Note>
 Nightly packages are verified before installation. When installation is refused, the Extension deletes the downloaded package. Stable updates keep working without nightly consent.
@@ -170,9 +178,7 @@ The **Add-ons** section lists each license-activated Add-on with a **Roll Back t
 
 ## Child Site Settings
 
-![Early Access Child Site settings with per-site options](/images/miscellaneous/advanced-miscellaneous-da4400.png)
-
-These settings in the **MainWP Child** section control Early Access for the MainWP Child plugin on your connected sites.
+These controls in the **MainWP Child Early Access** section apply to your connected sites.
 
 ### Enable Early Access for MainWP Child Plugin
 
@@ -184,7 +190,7 @@ Click **Update to Nightly Build** to update MainWP Child to the latest nightly b
 
 A modal window then lists each site with a **Pending** status. The progress bar starts at zero and counts up to the total number of prepared sites as your Dashboard reports site-by-site results.
 
-Nightly rollouts update one site first. If that site succeeds, the rollout continues to the remaining sites and stops after two failures. The modal then lists the sites that were skipped. After each install, the Dashboard checks that the site runs the expected MainWP Child version and that the plugin is active.
+Your Dashboard updates one site first and stops the rollout if that site fails. After the first site succeeds, two failures stop the Dashboard from starting new updates. Updates already in progress can finish, and the dialog lists the sites the Dashboard skipped. After each nightly install, the Dashboard verifies that MainWP Child is active and running the expected version.
 
 ### Check for Updates
 
@@ -198,7 +204,9 @@ Reinstalls the stable WordPress.org version of MainWP Child on all eligible site
 
 ## Per-Site Settings
 
-These controls are available inside each site's **MainWP Early Access** tab.
+Open a site's dashboard and click **Early Access** to open **MainWP Early Access Settings**.
+
+![Per-site Early Access settings with the update preference, nightly update, and stable rollback controls](/images/miscellaneous/early-access-child-site-settings.jpg)
 
 ### MainWP Child Early Access
 
