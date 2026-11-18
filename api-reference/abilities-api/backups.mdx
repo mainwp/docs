@@ -112,7 +112,7 @@ Edit destination credentials, hosts, buckets, and paths in **Backups > Storage**
 
 ## Cancel an On-Demand Backup
 
-Use `mainwp/cancel-site-backup-v1` for one site. Provide `site_id_or_domain` and preview with `dry_run: true`. The preview reports whether a run is open and whether your Dashboard knows the Child task ID. After reviewing the preview, send the same target with `confirm: true` and `dry_run: false`.
+Use `mainwp/cancel-site-backup-v1` for one site. Send a [DELETE request with a JSON body](/api-reference/abilities-api/overview#http-methods). Provide `site_id_or_domain` and preview with `dry_run: true`. The preview reports whether a run is open and whether your Dashboard knows the Child task ID. After reviewing the preview, send the same target with `confirm: true` and `dry_run: false`.
 
 MainWP Dashboard 6.5 adds the optional boolean `cancel_download`. Set it to `true` to stop your Dashboard from collecting an archive the Child site already finished creating. If you omit it or set it to `false`, your Dashboard continues collecting and recording the archive.
 
