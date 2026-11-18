@@ -254,13 +254,25 @@ When you update to Team Control 5.2.1, existing roles that have **Manage Dashboa
 
 ### Abilities and MCP Permissions
 
-In the role editor, find **API Access > Abilities and MCP > Use MainWP abilities and MCP**. This permission allows restricted users to run an approved set of MainWP Dashboard abilities, including through the MainWP MCP Server. Their site access and operation permissions continue to apply.
+In the role editor, find **API Access > Abilities and MCP > Use MainWP abilities and MCP**. This permission lets users with the role run MainWP abilities that support Team Control, through the [MainWP MCP Server](/mcp-server/overview) (`@mainwp/mcp`) or the WordPress Abilities REST API. Each user signs in with their own Application Password. Every call still applies the role's MainWP permissions for that operation and its allowed sites and tags. Core abilities report a site outside the role's access as not found.
 
 ![Team Control Edit Role / Manage Permissions modal showing API Access and the checked Use MainWP abilities and MCP permission](/images/add-ons/team-control-5-2-abilities-mcp-permission.jpg)
 
-- On compatible Dashboards with ability scoping, the approved set includes scoped site, client, tag, update, and built-in backup operations. Site creation, tag creation or editing, and batch operations are excluded.
+On MainWP Dashboard 6.5 and later with a Team Control build that supports per-ability access:
+
+- **Core abilities:** every MainWP Dashboard ability supports Team Control except these, which stay administrator-only: `mainwp/add-site-v1`, `mainwp/sync-sites-v1`, `mainwp/get-batch-job-status-v1`, `mainwp/list-upcoming-renewals-v1`, `mainwp/list-api-backups-providers-v1`, `mainwp/list-api-backups-site-status-v1`, `mainwp/update-backup-settings-v1`, `mainwp/test-backup-destination-v1`, `mainwp/set-default-backup-destination-v1`, `mainwp/update-backup-destination-v1`, and `mainwp/delete-backup-destination-v1`.
+- **Advanced Uptime Monitor:** In builds that opt into Team Control, `mainwp/list-uptime-monitors-v1`, `mainwp/list-uptime-monitor-events-v1`, `mainwp/get-site-uptime-summary-v1`, `mainwp/create-site-uptime-monitor-v1`, `mainwp/set-uptime-monitor-state-v1`, and `mainwp/delete-uptime-monitor-v1` support Team Control. They also need the role's Advanced Uptime Monitor permission and access to the site. `mainwp/sync-uptime-monitors-v1` stays administrator-only because it needs access to all sites.
+- **Other add-ons:** their abilities stay administrator-only until each add-on adds Team Control support.
+- The permission does not grant access to Team Control's own management abilities.
+
+Staff can start an operation that the Dashboard queues as a background job, such as updates across more than 200 sites, but `mainwp/get-batch-job-status-v1` is administrator-only, so they cannot poll that job's status. See [Batch Operations](/api-reference/abilities-api/batch-operations).
+
+The **MainWP > AI** pages, including MCP, Knowledge, and Control setup, stay administrator-only. So do the Dashboard's built-in remote MCP connector and the MainWP Assistant.
+
+On older Dashboards, Team Control lends administrator access for a fixed set of core abilities instead. Team Control stops lending that access on a Dashboard that checks Team Control support for each ability.
+
+- On older Dashboards with ability scoping, the fixed set includes scoped site, client, tag, update, and built-in backup operations. Site creation, tag creation or editing, and batch operations are excluded.
 - On MainWP Dashboard 6.2, 6.2.1, 6.2.2, and 6.2.3, restricted users can run only `list-sites`, `count-sites`, and `get-sites-basic`, limited to their allowed sites.
-- The permission does not grant access to Team Control's own management abilities or other add-ons' abilities.
 
 Owners can untick the permission and click **Update Role** to remove it from a role. If a user has several active Team Control roles, another role can still grant it.
 
