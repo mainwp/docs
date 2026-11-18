@@ -15,7 +15,7 @@ thirdPartyPlugin: Matomo
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.2.1"
+  data-version="5.2.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-matomo-piwik-extension/"
   data-integrates-with="Matomo"
@@ -34,7 +34,7 @@ thirdPartyPlugin: Matomo
 ## Prerequisites
 
 - An active MainWP Matomo Integration
-- PHP 8.1 or later on the MainWP Dashboard site for Matomo Integration 5.2.1 or later
+- PHP 8.1 or later on your MainWP Dashboard site for Matomo Integration 5.2.1 or later
 - A Matomo Cloud or Matomo On-Premise instance available over HTTPS; subfolder installations require Matomo Integration 5.2.1 or later
 - A Matomo API token with access to the properties you want to use
 - Sites configured for tracking in Matomo and added to MainWP Dashboard
@@ -45,7 +45,7 @@ This integration reads data from a separate Matomo instance. It does not insert 
 
 ![Matomo Extension dashboard showing analytics data](/images/add-ons/matomo-dashboard-overview.png)
 
-The Matomo Analytics widget displays data on the MainWP Dashboard Overview and individual site Overview pages. Connect your account, then map each managed site to its corresponding Matomo property.
+The Matomo Analytics widget displays data on your MainWP Dashboard Overview and individual site Overview pages. Connect your account, then map each managed site to its corresponding Matomo property.
 
 ## Connect Matomo
 
@@ -64,13 +64,13 @@ The Matomo Analytics widget displays data on the MainWP Dashboard Overview and i
     Enable **Automatically assign properties to sites** if you want MainWP to match Matomo properties to your managed sites automatically.
   </Step>
   <Step title="Save the connection">
-    Click **Save Settings**. MainWP validates the connection and loads the properties available to the token. Resolve any connection or token error shown before continuing.
+    Click **Save Settings**. The Dashboard validates the connection and loads the properties available to the token. Resolve any connection or token error shown before continuing.
   </Step>
 </Steps>
 
 ### Matomo URL rules
 
-MainWP saves a normalized form of the Matomo URL. Matomo 5.2.1 and later accept addresses such as:
+The Dashboard saves a normalized form of the Matomo URL. Matomo 5.2.1 and later accept addresses such as:
 
 ```text
 https://analytics.example.com
@@ -81,7 +81,7 @@ https://example.com:8443/stats/
 
 A trailing `index.php` is removed, so `https://example.com/matomo/index.php` is saved as `https://example.com/matomo/`.
 
-MainWP rejects the URL and keeps the existing settings when:
+The Dashboard rejects the URL and keeps the existing settings when:
 
 - A folder name contains characters other than ASCII letters, digits, `.`, `_`, `~`, and `-`.
 - A folder name is empty (two slashes in a row), `.`, or `..`, or contains `%` codes.
@@ -95,13 +95,15 @@ The **API token** field stays blank after saving. The saved token is protected a
 
 Leave the field blank to retain the saved token when saving settings for the same Matomo installation. The host, port, and subfolder must stay the same. Changing only `http://` to `https://` keeps the saved token. Paste a new token to replace it.
 
-Changing the server, port, or subfolder requires a token for the new installation. MainWP does not send the old token to a different address. Two Matomo installations in different subfolders on one server, such as `/matomo/` and `/stats/`, are separate connections with their own token, site assignments, and cached analytics.
+Changing the server, port, or subfolder requires a token for the new installation. The Dashboard does not send the old token to a different address. Two Matomo installations in different subfolders on one server, such as `/matomo/` and `/stats/`, are separate connections with their own token, site assignments, and cached analytics.
 
-If MainWP reports that the saved connection cannot be verified or needs credential recovery, check the Matomo URL, paste the current API token, and click **Save Settings**.
+If your Dashboard reports that the saved connection cannot be verified or needs credential recovery, check the Matomo URL, paste the current API token, and click **Save Settings**.
 
 ### HTTPS and Certificate Verification
 
 Matomo 5.2 always verifies TLS certificates. The old `mainwp_piwik_sslVerifyCertificate` option no longer disables verification. Use a valid certificate and resolve certificate or trust-chain errors on the Matomo server before retrying the connection.
+
+Matomo Integration 5.2.2 and later send Matomo API requests over HTTP/1.1. Earlier versions could fail to connect to Matomo servers that reject HTTP/1.0, including some Matomo Cloud setups. If the connection fails on an earlier version, update to 5.2.2 or later, then retry the connection.
 
 ## Assign Matomo Properties to Sites
 
@@ -133,7 +135,7 @@ Open **MainWP > Add-ons > Matomo > Settings** and check any migration notices. L
 
 - If the saved address uses HTTP, configure the HTTPS address and click **Save Settings**.
 - Saved subfolder connections from version 5.1.2 migrate automatically. If version 5.2 paused a subfolder connection, update to 5.2.1 or later. The connection resumes on an admin page load within about 15 minutes, without saving the settings again.
-- If MainWP asks you to save the connection again, verify the URL and token and follow the notice.
+- If your Dashboard asks you to save the connection again, verify the URL and token and follow the notice.
 - If site assignments could not be imported, save the connection to reload its property list, then review and save the affected site assignments.
 - Resolve any database or migration error displayed before relying on analytics or abilities.
 
@@ -142,6 +144,8 @@ Open **MainWP > Add-ons > Matomo > Settings** and check any migration notices. L
 If you use the [Team Control Add-on](/add-ons/agency/team-control-extension), users need access to the Matomo Add-on to view or change **Matomo account property** when editing a site. Users without that permission cannot manage the mapping.
 
 To grant access, enable the Matomo extension permission when editing the role in **MainWP > Add-ons > Agency > Team Control**. Matomo abilities also enforce the Add-on permission and the selected site's access and edit permissions.
+
+In Matomo Integration 5.2.2 and later, Matomo widgets show cached analytics only for sites the user has permission to view.
 
 Client Reports and Pro Reports have a separate read path. Report requests can read the six summary values below without the Matomo extension capability. Site access, Team Control restrictions, edit rights, a connected MainWP site, and a current Matomo assignment still apply. This access does not grant permission to change the connection or site mappings.
 
@@ -172,13 +176,13 @@ Use the dedicated [Matomo Abilities reference](/api-reference/abilities-api/mato
 
 ## Site Deletion and Add-on Removal
 
-Removing a managed site from MainWP also removes its local Matomo mappings, cached analytics, and related management records. This does not delete the property or tracking data from the Matomo server.
+Removing a managed site from your Dashboard also removes its local Matomo mappings, cached analytics, and related management records. This does not delete the property or tracking data from the Matomo server.
 
 Deleting the Matomo Add-on removes its saved connection and protected token, its own database tables and options, and its scheduled tasks. Deactivating the Add-on does not perform that uninstall cleanup. Save any information you need before deleting it; reconnect and reassign properties if you install it again.
 
 ## Unique Visitors for Custom Date Ranges
 
-MainWP requests Matomo analytics for custom date ranges, such as the last 7 or 30 days. Unique visitors may be unavailable for those ranges depending on the Matomo service and configuration.
+The Dashboard requests Matomo analytics for custom date ranges, such as the last 7 or 30 days. Unique visitors may be unavailable for those ranges depending on the Matomo service and configuration.
 
 For Matomo On-Premise, follow [Matomo's guide to enabling Unique Visitors for custom date ranges](https://matomo.org/faq/faq_113/). Matomo Cloud does not support enabling this metric for custom date ranges. Do not add daily unique visitor counts together to estimate the unique visitors for the whole period; repeat visitors would be counted more than once.
 

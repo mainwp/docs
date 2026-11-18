@@ -5,11 +5,7 @@ description: >-
   List and read post and page drafts saved with MainWP Post Plus, with accessible target sites and a masked plain-text excerpt.
 ---
 
-<Note>
-These abilities require a Post Plus release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
-</Note>
-
-The Abilities-enabled Post Plus release registers two read-only abilities in the `mainwp-post-plus` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+Post Plus 5.1 and later register two read-only abilities in the `mainwp-post-plus` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
 
 Use them to review drafts saved with the **Save as Draft** button before you publish them, for example from an AI assistant or a script. They do not create, edit, publish, or delete drafts.
 
@@ -21,9 +17,9 @@ Use them to review drafts saved with the **Save as Draft** button before you pub
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
-- A Post Plus build that registers these abilities, active on MainWP Dashboard
+- Post Plus 5.1 or later, active on MainWP Dashboard
 - An authenticated user with `manage_options` and access to the Post Plus Add-on
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.

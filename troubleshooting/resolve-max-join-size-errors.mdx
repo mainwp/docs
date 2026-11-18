@@ -45,7 +45,7 @@ An error recorded during another operation, such as an uptime check, shows that 
 
 `MAX_JOIN_SIZE` limits how many rows a database query is estimated to examine. It is a query-processing limit, rather than a limit on the number of Child Sites you can manage. See the [MariaDB query limits documentation](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/query-optimizations/query-limits-and-timeouts).
 
-MainWP Dashboard uses queries that combine multiple tables to retrieve site details. A simpler site-count query may still succeed while a site-list query fails. Your system report can therefore show the expected site count while Manage Sites remains empty.
+Your MainWP Dashboard uses queries that combine multiple tables to retrieve site details. A simpler site-count query may still succeed while a site-list query fails. Your system report can therefore show the expected site count while Manage Sites remains empty.
 
 This discrepancy does not, by itself, mean that your site records have been deleted or that your database needs repair.
 

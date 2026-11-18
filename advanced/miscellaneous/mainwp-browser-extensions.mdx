@@ -189,7 +189,7 @@ Cost Tracker requires the [Cost Tracker](/clients/cost-tracker) feature to be av
 
 Open Settings from the gear icon in the popup. Settings are grouped into five sections.
 
-**Connection** stores the MainWP Dashboard URL and credentials, the **I have saved the API Key in my Dashboard** confirmation checkbox, and **Disconnect Dashboard**.
+**Connection** stores your MainWP Dashboard URL and credentials, the **I have saved the API Key in my Dashboard** confirmation checkbox, and **Disconnect Dashboard**.
 
 **Appearance** lets you choose **Light**, **Dark**, or **System (Auto)**.
 
@@ -256,7 +256,7 @@ Only use these paths if you are specifically troubleshooting the deprecated Fire
 
 ### HTTP Basic Auth conflict
 
-The browser extension is not compatible with HTTP Basic Auth on the MainWP Dashboard site. Use the [Dashboard Lock extension](/add-ons/security/dashboard-lock-extension) instead. It provides equivalent protection without blocking REST API requests.
+The browser extension is not compatible with HTTP Basic Auth on your MainWP Dashboard site. Use the [Dashboard Lock extension](/add-ons/security/dashboard-lock-extension) instead. It provides equivalent protection without blocking REST API requests.
 
 ### Inspect the service worker
 
@@ -272,7 +272,7 @@ The Chrome extension requests three core permissions:
 - `storage` for settings, cached counts, timer state, and Cost Tracker cache
 - `notifications` for desktop alerts
 
-Host permissions are requested at runtime for the MainWP Dashboard URL you enter. The extension does not get access to every website at install time.
+Host permissions are requested at runtime for the URL you enter for your MainWP Dashboard. The extension does not get access to every website at install time.
 
 API traffic goes from your browser to your MainWP Dashboard over HTTPS. Credentials are stored in `chrome.storage.local` and are not synced through Chrome Sync. Non-sensitive preferences and cached update counts may use `chrome.storage.sync`; if Chrome Sync is enabled, Chrome may sync those values through Google's standard Chrome Sync infrastructure.
 

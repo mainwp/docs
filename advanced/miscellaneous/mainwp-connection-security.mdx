@@ -2,16 +2,16 @@
 title: MainWP connection security
 sidebarTitle: "Connection Security"
 description: >-
-  How MainWP secures communication between Dashboard and Child Sites using
+  How your MainWP Dashboard secures communication between Dashboard and Child Sites using
   password authentication, digital signatures, and HTTPS.
 ---
 
-MainWP authenticates site connections and signs subsequent requests from MainWP Dashboard. Use HTTPS URLs for your child sites to encrypt requests and responses in transit.
+The Dashboard authenticates site connections and signs subsequent requests from MainWP Dashboard. Use HTTPS URLs for your child sites to encrypt requests and responses in transit.
 
 ## What You'll Learn
 
-- How MainWP secures the initial site connection
-- How MainWP requires at least one initial connection authentication method
+- How your Dashboard secures the initial site connection
+- How your Dashboard requires at least one initial connection authentication method
 - How HTTPS encrypts Dashboard-to-Child traffic
 - How request authentication prevents unauthorized access
 
@@ -27,7 +27,7 @@ MainWP Child requires at least one initial connection authentication method: Pas
 
 ### Password Authentication
 
-MainWP uses the WordPress administrator's password for verification during initial setup. This feature is enabled by default and ensures only verified administrators can authorize connections. It can be disabled only when Unique Security ID remains enabled.
+The Dashboard uses the WordPress administrator's password for verification during initial setup. This feature is enabled by default and ensures only verified administrators can authorize connections. It can be disabled only when Unique Security ID remains enabled.
 
 | Aspect | Detail |
 |--------|--------|
@@ -109,7 +109,7 @@ SSL certificate verification is enabled by default. You can configure it globall
 
 ## HTTPS Request Structure
 
-MainWP Dashboard sends requests to each child site's configured URL using cURL. The following example uses HTTPS. Requests include:
+Your MainWP Dashboard sends requests to each child site's configured URL using cURL. The following example uses HTTPS. Requests include:
 
 | Parameter | Purpose |
 |-----------|---------|

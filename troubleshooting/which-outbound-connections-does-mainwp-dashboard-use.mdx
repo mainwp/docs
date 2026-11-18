@@ -7,7 +7,7 @@ description: >-
   API Backups provider APIs.
 ---
 
-MainWP Dashboard is primarily self-hosted. Most day-to-day management traffic goes directly between your Dashboard and your child sites, not through MainWP-operated services.
+Your MainWP Dashboard is primarily self-hosted. Most day-to-day management traffic goes directly between your Dashboard and your child sites, not through MainWP-operated services.
 
 This page covers Dashboard-initiated outbound connections to external hosts. It does not include child site connections or self-calls on the same server.
 
@@ -66,7 +66,7 @@ In MainWP Dashboard 6.4.2 and later, you can turn off screenshot previews across
 add_filter( 'mainwp_site_preview_enabled', '__return_false' );
 ```
 
-When the filter returns `false`, MainWP suppresses mShots previews and their controls in the following places.
+When the filter returns `false`, your Dashboard suppresses mShots previews and their controls in the following places.
 
 - The site preview image in the sidebar of an individual site's overview page
 - The camera button in the **Sites > Manage Sites** table. The column stays, and you can hide it in **Page Settings**
