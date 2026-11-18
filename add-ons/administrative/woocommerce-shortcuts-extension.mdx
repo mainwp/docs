@@ -37,7 +37,7 @@ thirdPartyPlugin: WooCommerce
 **Integration Add-on** - This add-on extends MainWP to work with WooCommerce. Requires WooCommerce to be installed on your child sites.
 </Info>
 
-The [MainWP WooCommerce Shortcuts Extension](https://mainwp.com/add-on/woocommerce-shortcuts/) adds a widget to individual child site Overview pages, providing direct links to WooCommerce admin pages through MainWP's Jump to WP Admin flow.
+The [MainWP WooCommerce Shortcuts Extension](https://mainwp.com/add-on/woocommerce-shortcuts/) adds a widget to individual child site Overview pages, providing direct links to WooCommerce admin pages through your Dashboard's Jump to WP Admin flow.
 
 ## Where to Find the Widget
 
@@ -47,7 +47,7 @@ After installing the add-on, the WooCommerce Shortcuts widget appears on individ
 2. Click on any child site name to open its Overview page
 3. Look for the **WooCommerce Shortcuts** widget
 
-Shortcut menus are available when MainWP's validated cached plugin inventory shows WooCommerce as active. If WooCommerce is inactive or the cached status cannot be trusted, the widget shows a notice instead of the menus.
+Shortcut menus are available when your Dashboard's validated cached plugin inventory shows WooCommerce as active. If WooCommerce is inactive or the cached status cannot be trusted, the widget shows a notice instead of the menus.
 
 If you open **MainWP > Add-ons > WooCommerce Shortcuts**, the page only shows a notice. The add-on does not provide separate settings there and works through the individual site Overview widget.
 
@@ -99,20 +99,20 @@ The widget is organized into four accordion sections:
 | **Overview** | Marketing overview (`admin.php?page=wc-admin&path=/marketing`) |
 | **Coupons** | Coupon list (`edit.php?post_type=shop_coupon`) |
 
-Each link opens the child site's WooCommerce screen in a new window via MainWP's Jump to WP Admin functionality.
+Each link opens the child site's WooCommerce screen in a new window via your Dashboard's Jump to WP Admin functionality.
 
 ## Permissions
 
 WooCommerce Shortcuts 5.1 checks access to the Add-on, the selected site, and the **Jump to WP Admin** operation before showing the widget's contents. If you use [Team Control](/add-ons/agency/team-control-extension), grant the user the WooCommerce Shortcuts extension permission, access to that site, and permission to access Child site WordPress admin areas.
 
-Shortcuts use a fixed set of WooCommerce destinations through MainWP's authorized Jump to WP Admin flow. The Add-on does not grant additional permissions inside the Child site's WordPress admin area.
+Shortcuts use a fixed set of WooCommerce destinations through your Dashboard's authorized Jump to WP Admin flow. The Add-on does not grant additional permissions inside the Child site's WordPress admin area.
 
 ## Requirements
 
 - MainWP Dashboard with WooCommerce Shortcuts Extension installed
 - WooCommerce plugin installed and activated on the child site
 - MainWP Child plugin connected
-- Child site synced after WooCommerce is activated so MainWP can detect it
+- Child site synced after WooCommerce is activated so your MainWP Dashboard can detect it
 - User access to WooCommerce Shortcuts, the selected site, and Jump to WP Admin
 
 ## Cached Status and Synchronization

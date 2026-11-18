@@ -5,7 +5,7 @@ description: >-
   30 abilities for managing MainWP child sites including listing, syncing, adding, updating, and managing plugins and themes.
 ---
 
-MainWP registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
+Your MainWP Dashboard registers 30 site management abilities into the WordPress Abilities API framework. These enable programmatic control over your WordPress network through standardized schemas.
 
 <Note>
 Site abilities can access only sites owned by the calling WordPress user when per-user mode is enabled (`mainwp_is_single_user` is `false`). This also applies to administrators, site deletion, and plugin lists. Lists omit other users' sites; direct requests return the same missing-site error as an unknown site, with the ability's usual response format. Team Control permissions can limit access further, but cannot grant access to another user's sites. Default single-user installations are unchanged.
@@ -528,7 +528,7 @@ curl -X POST -u 'admin:xxxx' \
 }
 ```
 
-`active` is the last synced state. `active` and `will_change` are `null` when MainWP has no synced state for the plugin. `count` includes plugins already in the requested state.
+`active` is the last synced state. `active` and `will_change` are `null` when your Dashboard has no synced state for the plugin. `count` includes plugins already in the requested state.
 
 **Response:**
 
@@ -595,7 +595,7 @@ curl -X POST -u 'admin:xxxx' \
 }
 ```
 
-`active` is the last synced state. `active` and `will_change` are `null` when MainWP has no synced state for the plugin. `count` includes plugins already in the requested state.
+`active` is the last synced state. `active` and `will_change` are `null` when your Dashboard has no synced state for the plugin. `count` includes plugins already in the requested state.
 
 **Response:**
 

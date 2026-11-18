@@ -20,7 +20,7 @@ The Abilities-enabled Advanced Uptime Monitor release registers seven abilities 
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples
 - An active Advanced Uptime Monitor build that registers these abilities
 - A configured uptime provider for operations that contact the provider
@@ -57,7 +57,7 @@ The three GET abilities are read-only and idempotent. Setting a monitor's state 
 
 ## Identify the Site, Provider, and Monitor
 
-Use a positive JSON integer for `site_id`, identifying the MainWP Dashboard site. Use `local_monitor_id` from a monitor-list response for monitor-specific operations. It identifies a Dashboard mapping, not the provider's monitor ID.
+Use a positive JSON integer for `site_id`, identifying your MainWP Dashboard site. Use `local_monitor_id` from a monitor-list response for monitor-specific operations. It identifies a Dashboard mapping, not the provider's monitor ID.
 
 | Provider | `service` value |
 |----------|-----------------|

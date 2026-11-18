@@ -2,7 +2,7 @@
 title: Check for Abandoned Plugins and Themes
 sidebarTitle: "Abandoned Plugins & Themes"
 description: >-
-  MainWP checks for abandoned plugins and themes in the background when their
+  Your MainWP Dashboard checks for abandoned plugins and themes in the background when their
   sync data is enabled. Manually trigger checks from Manage Sites or the
   dedicated Abandoned Plugins and Abandoned Themes pages.
 ---
@@ -16,7 +16,7 @@ description: >-
   allowFullScreen
 ></iframe>
 
-MainWP identifies plugins and themes that may be abandoned based on how long since their last update. Abandoned items can pose security risks and compatibility issues since they no longer receive patches or improvements.
+The Dashboard identifies plugins and themes that may be abandoned based on how long since their last update. Abandoned items can pose security risks and compatibility issues since they no longer receive patches or improvements.
 
 ## What You'll Accomplish
 
@@ -35,10 +35,10 @@ MainWP identifies plugins and themes that may be abandoned based on how long sin
 
 ## What Does "Abandoned" Mean?
 
-MainWP marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
+The Dashboard marks a plugin or theme as "possibly abandoned" when WordPress.org reports no update within the configured tolerance period. The default threshold is 365 days.
 
 <Note>
-By default, MainWP uses WordPress.org metadata. Dashboard 6.3 adds an optional local-file-date fallback for items without a usable WordPress.org last-updated date, including premium, private, or delisted items. This requires MainWP Child 6.3 or later.
+By default, your Dashboard uses WordPress.org metadata. Dashboard 6.3 adds an optional local-file-date fallback for items without a usable WordPress.org last-updated date, including premium, private, or delisted items. This requires MainWP Child 6.3 or later.
 </Note>
 
 ### Check Items Without a WordPress.org Date
@@ -67,7 +67,7 @@ A local file date is a signal to investigate. Copying or restoring files can cha
 When abandoned plugin and theme data is enabled for sync, MainWP Child schedules daily background checks and processes installed items in batches. Dashboard syncs collect the cached results and can queue a check when the cache is missing or incomplete. These background tasks rely on WordPress cron.
 
 <Note>
-These checks depend on the sync-data settings in **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`). In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, MainWP does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
+These checks depend on the sync-data settings in **MainWP menu (three lines, top right) > MainWP Settings > Advanced Settings** (`/wp-admin/admin.php?page=SettingsAdvanced`). In the **Select data to sync** section, keep **Abandoned plugins information** and **Abandoned themes information** enabled. If either checkbox is cleared, your Dashboard does not refresh that abandoned-data set during regular automated syncs or manual site syncs.
 </Note>
 
 ---
@@ -103,7 +103,7 @@ In the **Bulk Actions** menu, select **Check Abandoned Plugins** or **Check Aban
 <Step title="Apply">
 Click **Apply**.
 
-MainWP starts the abandoned-item check on the selected sites.
+The Dashboard starts the abandoned-item check on the selected sites.
 </Step>
 </Steps>
 

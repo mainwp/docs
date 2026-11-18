@@ -18,7 +18,7 @@ thirdPartyPlugin: Fathom Analytics
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.1"
+  data-version="5.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-fathom-extension/"
   data-integrates-with="Fathom Analytics"
@@ -131,7 +131,7 @@ Fathom data is cached in your MainWP Dashboard so that pages load quickly and so
 
 ### Data refresh frequency
 
-Set how often MainWP fetches fresh stats from your Fathom account:
+Set how often your Dashboard fetches fresh stats from your Fathom account:
 
 <Steps>
 <Step title="Go to Add-ons > Analytics > Fathom > Settings">
@@ -168,7 +168,7 @@ When you remove a connected Fathom account from MainWP, the add-on automatically
 
 Removing an account only removes its connection from MainWP. It doesn't delete anything in your Fathom account or remove any child site.
 
-If removal can't finish, MainWP shows **Account removal could not be completed. Click Remove Account to retry.** The account row stays on the page. Click **Remove Account** again to finish the cleanup.
+If removal can't finish, your Dashboard shows **Account removal could not be completed. Click Remove Account to retry.** The account row stays on the page. Click **Remove Account** again to finish the cleanup.
 
 ## Widgets
 
@@ -189,7 +189,7 @@ For more information about Pro Reports and the use of tokens please refer to thi
 
 ## Team Control permissions
 
-If you use the [Team Control Add-on](/add-ons/agency/team-control-extension), connecting accounts, removing accounts, and changing **Settings** are limited to administrators. MainWP hides these controls from staff users, and requests to them from staff users have no effect.
+If you use the [Team Control Add-on](/add-ons/agency/team-control-extension), connecting accounts, removing accounts, and changing **Settings** are limited to administrators. The Dashboard hides these controls from staff users, and requests to them from staff users have no effect.
 
 Staff users who have the Fathom extension permission can still:
 
@@ -197,11 +197,17 @@ Staff users who have the Fathom extension permission can still:
 - View Fathom stats on the **Visitor Data** page and in widgets for those sites
 - Refresh data for a selected site they can access
 
-The **Visitor Data** page only shows sites the staff user can access. Requests for other sites are denied before MainWP reads cached stats or contacts Fathom.
+The **Visitor Data** page only shows sites the staff user can access. Requests for other sites are denied before your Dashboard reads cached stats or contacts Fathom.
 
 <Warning>
 Team Control staff who could connect accounts, remove accounts, or change Settings in earlier versions lose those controls after the update. An administrator must perform those tasks. There is no separate permission that restores them for staff.
 </Warning>
+
+## Database Health Check
+
+Fathom Integration 5.2 and later report their tables and their expected columns to your Dashboard's database schema checks. These tables store connected Fathom accounts, Child Site to Fathom site assignments, and cached visitor stats. With MainWP Dashboard 6.2 or later and the Extension active, open **MainWP > Info > Server** and review the **Database** section. Search for `mainwp_fathom` to find the Fathom tables and check for missing tables, missing columns, or incorrect column definitions.
+
+Run this check when connected accounts, site assignments, or visitor data fail to save or load, or when MainWP Support asks for a system report. See [Database Health Check](/dashboard/overview/mainwp-database-health-check) for how to read the results and prepare a support report. These checks only report the Dashboard database structure. They do not repair tables, restore Fathom data, or check Child Site databases.
 
 ## MainWP Abilities
 

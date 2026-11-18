@@ -18,7 +18,7 @@ Use them to check which supported plugins on a child site have a pending databas
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - Database Updater 5.2.0 or later, active on MainWP Dashboard
 - An authenticated user permitted by the Dashboard Abilities API, with access to the Database Updater extension, the `update_plugins` Dashboard right, and access to the target site
@@ -171,7 +171,7 @@ Database updates change the site's database and cannot be undone through MainWP.
 | `expected_observation_revision` | string | Yes | The observation revision used for the preview |
 | `plan_revision` | string | Yes | `plan_revision` from the preview |
 | `backup_decision` | string | Yes | `caller_verified_backup` or `proceed_without_extension_verified_backup`. Records your decision only |
-| `request_ref` | string | Yes | A UUID you generate. MainWP echoes it as `request_id` for correlation |
+| `request_ref` | string | Yes | A UUID you generate. The Dashboard echoes it as `request_id` for correlation |
 | `dry_run` | boolean | Yes | `true` revalidates and previews. `false` sends the update |
 | `confirm` | boolean | No | Omit or set to `false` when `dry_run` is `true`. Must be `true` when `dry_run` is `false` |
 
@@ -248,14 +248,14 @@ Each entry in `items` has an `outcome` of `would_dispatch`, `accepted`, `not_acc
 
 ### Repeated requests
 
-MainWP Dashboard records one dispatch receipt for each site, plugin, and target database version. The receipt is shared by Abilities API calls and by **Update** buttons in the Dashboard.
+Your MainWP Dashboard records one dispatch receipt for each site, plugin, and target database version. The receipt is shared by Abilities API calls and by **Update** buttons in the Dashboard.
 
 - While its receipt is retained, if an earlier request for the same target was accepted or not accepted, a repeat returns that recorded result. MainWP Child is not contacted again.
-- If an earlier request is still in progress or its result is unknown, a repeat returns `status: "outcome_unknown"`. MainWP does not resend the update, because the site may already have applied or queued it.
+- If an earlier request is still in progress or its result is unknown, a repeat returns `status: "outcome_unknown"`. The Dashboard does not resend the update, because the site may already have applied or queued it.
 - `request_ref` is for correlation only. A new `request_ref` does not allow a resend.
 - When a plugin reports a newer target database version, you can dispatch it independently.
 
-A daily scheduled task removes settled receipts after 30 days. Unconfirmed receipts do not expire automatically. After an `outcome_unknown` result, sync the site and check the plugin on the Child site before taking further action. If it is safe to retry, use [Clear Stuck Request](/add-ons/updates/mainwp-database-updater-extension#clear-a-stuck-update-request) before sending another dispatch. Changing `request_ref` alone does not clear the receipt.
+A daily scheduled task removes settled receipts after 30 days. Unconfirmed receipts do not expire automatically. After an `outcome_unknown` result, sync the site and check the plugin on the Child site before taking further action. If it is safe to retry, use [Clear Stuck Request](/add-ons/updates/mainwp-database-updater-extension#clear-a-stuck-update-request) before sending another dispatch. Clear Stuck Request becomes available only after the request's timeout and a one-minute safety margin have passed, about 20 hours by default. Changing `request_ref` alone does not clear the receipt.
 
 ---
 

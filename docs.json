@@ -204,6 +204,16 @@
               "dashboard/overview/overview-of-mainwp-dashboard-icons",
               "dashboard/overview/mainwp-command-palette",
               "dashboard/overview/mainwp-ai",
+              {
+                "group": "MainWP Assistant",
+                "pages": [
+                  "dashboard/mainwp-assistant/overview",
+                  "dashboard/mainwp-assistant/asking-questions",
+                  "dashboard/mainwp-assistant/contact-support",
+                  "dashboard/mainwp-assistant/settings-and-privacy",
+                  "dashboard/mainwp-assistant/troubleshooting"
+                ]
+              },
               "dashboard/overview/mainwp-knowledge",
               "dashboard/overview/mainwp-database-health-check",
               "dashboard/overview/manage-extensions",
@@ -305,6 +315,29 @@
               "mcp-server/safety",
               "mcp-server/prompt-cookbook",
               {
+                "group": "Remote AI Connections",
+                "pages": [
+                  "mcp-server/remote/overview",
+                  "mcp-server/remote/connect-apps",
+                  "mcp-server/remote/connection-tokens",
+                  "mcp-server/remote/approval-policies",
+                  "mcp-server/remote/revoke-and-kill-switch",
+                  "mcp-server/remote/extension-developers",
+                  "mcp-server/remote/troubleshooting",
+                  {
+                    "group": "Host Guides",
+                    "pages": [
+                      "mcp-server/remote/troubleshooting/wp-engine",
+                      "mcp-server/remote/troubleshooting/kinsta",
+                      "mcp-server/remote/troubleshooting/cloudflare",
+                      "mcp-server/remote/troubleshooting/wordfence",
+                      "mcp-server/remote/troubleshooting/sucuri",
+                      "mcp-server/remote/troubleshooting/solid-security"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Guides",
                 "pages": [
                   "mcp-server/guides/restrict-tools",
@@ -366,8 +399,10 @@
                 "pages": [
                   "api-reference/abilities-api/advanced-uptime-monitor",
                   "api-reference/abilities-api/article-uploader",
+                  "api-reference/abilities-api/boilerplate",
                   "api-reference/abilities-api/cache-control",
                   "api-reference/abilities-api/clone",
+                  "api-reference/abilities-api/comments",
                   "api-reference/abilities-api/cost-tracker-assistant",
                   "api-reference/abilities-api/custom-dashboard",
                   "api-reference/abilities-api/dashboard-lock",
@@ -383,13 +418,19 @@
                   "api-reference/abilities-api/maintenance",
                   "api-reference/abilities-api/matomo",
                   "api-reference/abilities-api/patchstack",
+                  "api-reference/abilities-api/post-plus",
+                  "api-reference/abilities-api/pressable",
+                  "api-reference/abilities-api/pro-reports",
                   "api-reference/abilities-api/ssl-monitor",
                   "api-reference/abilities-api/staging",
                   "api-reference/abilities-api/time-tracker",
                   "api-reference/abilities-api/url-extractor",
                   "api-reference/abilities-api/virusdie",
+                  "api-reference/abilities-api/vulnerability-checker",
+                  "api-reference/abilities-api/white-label",
                   "api-reference/abilities-api/woocommerce-shortcuts",
                   "api-reference/abilities-api/woocommerce-status",
+                  "api-reference/abilities-api/wordfence",
                   "api-reference/abilities-api/wordpress-seo",
                   "api-reference/abilities-api/wp-rocket"
                 ]

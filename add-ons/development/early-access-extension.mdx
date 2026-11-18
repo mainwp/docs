@@ -2,7 +2,7 @@
 title: Early Access
 sidebarTitle: "Early Access"
 description: >-
-  Use Early Access to test upcoming MainWP Dashboard and MainWP Child updates, plus MainWP Lab features.
+  Use Early Access to test upcoming MainWP Dashboard, MainWP Child, and supported Add-on updates, plus MainWP Lab features.
 addonType: extension
 ---
 
@@ -10,6 +10,7 @@ addonType: extension
 
 - Installing and configuring the Early Access Extension
 - Enabling Early Access updates for MainWP Dashboard and MainWP Child
+- Receiving nightly Add-on updates and reviewing their changelogs
 - Using the MainWP Lab cards for early feature previews
 - Best practices for testing Early Access features
 - Checking the Extension's Dashboard database table
@@ -41,9 +42,10 @@ The MainWP Early Access Extension lets you opt in to Early Access updates for Ma
 
 - Opt in to nightly MainWP Dashboard and MainWP Child builds from mainwp.com
 - Enable nightly MainWP Child updates globally or per site
-- Review what changed in recent nightly builds on the **Nightly Changes** tab
-- Roll MainWP Dashboard or MainWP Child back to the latest stable WordPress.org release, or roll add-ons back to their latest stable release
-- Preview MainWP Lab features such as Telemetry, MainWP Bridge, MCP with Abilities API, Patchstack Integration, and the new Help Documentation
+- Roll MainWP Dashboard or MainWP Child back to the latest stable WordPress.org release
+- Receive nightly updates for supported, license-activated Add-ons after nightly consent, and roll them back to their latest stable release
+- Review Dashboard, Child, and Add-on build notes on the **Nightly Changes** tab
+- Preview MainWP Lab features such as Telemetry, MainWP Bridge, Patchstack Integration, and the new Help Documentation
 - Provide early feedback to shape development
 - Prepare your workflow for upcoming changes
 
@@ -58,10 +60,10 @@ The MainWP Early Access Extension needs to be installed only on your MainWP Dash
 Navigate to **MainWP > Add-ons > Manage Add-ons** and install the Early Access Extension.
 </Step>
 <Step title="Open the Lab page">
-Go to **MainWP > Lab** and use the **Early Access Settings** card to open the Early Access settings page.
+Go to **MainWP > Lab** and click **Settings** on the Early Access card to open the Early Access settings page. Click **Nightly Changes** on the same card to review recent builds.
 </Step>
 <Step title="Configure update access">
-Select **I agree to receive nightly builds** to give nightly consent, and choose whether to **Let WordPress automatic updates install nightly builds**. Then use **Enable Early Access for MainWP Dashboard** and **Enable Early Access for MainWP Child Plugin** to control nightly update checks.
+In **General Settings**, turn on **Receive nightly builds** to give nightly consent, and choose whether **Automatic installation** lets WordPress install nightly builds. Then use **Enable Early Access for MainWP Dashboard** and **Enable Early Access for MainWP Child Plugin** to control nightly update checks. If you used Early Access before version 6.0, opt in again after updating.
 </Step>
 <Step title="Manage MainWP Child access per site">
 Open a child site's Early Access settings to use **MainWP Child Early Access** with **Use global setting**, **Enable**, or **Disable**.
@@ -74,6 +76,14 @@ Use the **Lab** tab to review available feature cards and enable supported optio
 <Warning>
 Early Access features may be unstable or incomplete. Use them in testing environments before deploying to production sites.
 </Warning>
+
+---
+
+## Nightly Add-on Updates
+
+With MainWP Dashboard 6.5 or later and Early Access Extension 6.0 or later, you can opt into nightly updates for supported Add-ons with activated licenses. Open **Early Access Settings**, give nightly consent on the **Early Access** tab, and review Add-on changelogs on **Nightly Changes** before installing an update.
+
+See [Nightly Add-on Updates and Changelogs](/advanced/miscellaneous/early-access-updater#nightly-add-on-updates-and-changelogs) for consent, installation, changelog columns, and returning to stable releases. Nightly builds do not require a GitHub Personal Access Token.
 
 ---
 

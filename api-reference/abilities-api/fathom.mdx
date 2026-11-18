@@ -18,7 +18,7 @@ The MainWP Fathom Integration registers thirteen abilities in the `mainwp-fathom
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard 6 or later with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
 - The Fathom Integration with Abilities support, active in MainWP Dashboard
 - An authenticated user with access to the Fathom Add-on
@@ -39,7 +39,7 @@ All abilities require access to the Fathom Add-on. Team Control restrictions app
 | Fathom Add-on access plus access to the selected site | List sites, get report, refresh analytics, get current visitors, get site mapping, replace site mapping |
 | Administrator (`manage_options`) | List accounts, connect account, refresh account catalog, get settings, replace settings, preview delete, delete account |
 
-`mainwp/list-fathom-sites-v1` returns only the mapped sites the current user can access. A site-scoped call for a site outside the user's access returns `mainwp_fathom_access_denied` before MainWP reads cached data or contacts Fathom.
+`mainwp/list-fathom-sites-v1` returns only the mapped sites the current user can access. A site-scoped call for a site outside the user's access returns `mainwp_fathom_access_denied` before your Dashboard reads cached data or contacts Fathom.
 
 ## Available Abilities
 
@@ -120,7 +120,7 @@ This ability requests data from Fathom on every call. It doesn't read or update 
 **Ability:** `mainwp/refresh-fathom-analytics-v1`<br />
 **Method:** POST
 
-Required input is `site_id_or_domain`. MainWP fetches fresh data from Fathom for the configured display interval. It replaces the site's cached widget data only after it receives a complete response.
+Required input is `site_id_or_domain`. The Dashboard fetches fresh data from Fathom for the configured display interval. It replaces the site's cached widget data only after it receives a complete response.
 
 ```bash
 curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
@@ -129,7 +129,7 @@ curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/refresh-fathom-analytics-v1/run'
 ```
 
-If the refresh fails, MainWP keeps the previous cache and returns `mainwp_fathom_refresh_failed` with `previous_cache_preserved: true`.
+If the refresh fails, your Dashboard keeps the previous cache and returns `mainwp_fathom_refresh_failed` with `previous_cache_preserved: true`.
 
 The response contains `site`, `refreshed`, `cached_at`, `interval` (`week` or `month`), and `section_counts`. `section_counts` reports the number of cached `pages`, `countries`, `devices`, `browsers`, `referrers`, and `graph_points`.
 
@@ -146,7 +146,7 @@ curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-fathom-current-visitors-v1/run'
 ```
 
-The response contains `site`, `visitors` (an integer), `source`, and `cached_until`. MainWP caches the count for one minute. `source` is `provider` when MainWP fetched the count from Fathom, and `cache` when it reused the cached count.
+The response contains `site`, `visitors` (an integer), `source`, and `cached_until`. The Dashboard caches the count for one minute. `source` is `provider` when your Dashboard fetched the count from Fathom, and `cache` when it reused the cached count.
 
 ## Manage Accounts
 
@@ -186,7 +186,7 @@ curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/connect-fathom-account-v1/run'
 ```
 
-MainWP validates the token with Fathom and discovers the account's sites before it saves anything. An invalid or revoked token fails without changing an existing account, its discovered sites, or its cached data.
+The Dashboard validates the token with Fathom and discovers the account's sites before it saves anything. An invalid or revoked token fails without changing an existing account, its discovered sites, or its cached data.
 
 The response contains `account` (`id`, `name`, `connected`), `available_site_count`, and `credential_stored`. The token is never returned.
 
@@ -204,7 +204,7 @@ curl -X POST -u 'USERNAME:APPLICATION_PASSWORD' \
   'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/refresh-fathom-account-catalog-v1/run'
 ```
 
-MainWP revalidates the account and replaces only that account's discovered sites, and only after Fathom returns a complete list. Other accounts' catalogs stay unchanged. Each account can hold up to 10,000 discovered sites.
+The Dashboard revalidates the account and replaces only that account's discovered sites, and only after Fathom returns a complete list. Other accounts' catalogs stay unchanged. Each account can hold up to 10,000 discovered sites.
 
 The response contains `account_id`, `connected`, `site_count`, `catalog_replaced`, and `refreshed_at`.
 
@@ -243,7 +243,7 @@ curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
 
 The account must be connected, and `provider_site_id` must be in that account's discovered sites. Otherwise the request returns `mainwp_fathom_conflict`. Refresh the account catalog if a new Fathom site is missing.
 
-The response contains `site_id`, `mapping`, the new `revision`, and `cache_invalidated`. When the mapping changes, MainWP invalidates the site's cached analytics. Run [Refresh Cached Analytics](#refresh-cached-analytics) to load data for the new Fathom site.
+The response contains `site_id`, `mapping`, the new `revision`, and `cache_invalidated`. When the mapping changes, your Dashboard invalidates the site's cached analytics. Run [Refresh Cached Analytics](#refresh-cached-analytics) to load data for the new Fathom site.
 
 ## Read and Replace Settings
 
@@ -321,7 +321,7 @@ The token is bound to the account's state at preview time. An expired or altered
 
 A successful response contains `account_id`, `status` (`deleted`), `deleted_mappings`, `deleted_cache_rows`, `deleted_catalog_sites`, `credential_record_deleted`, `key_file_deleted`, and `completed_at`. Repeating the same request within 24 hours returns the same result.
 
-If MainWP removes the account but can't delete the key file, the call returns `mainwp_fathom_delete_partial` with `retryable: true`. Repeat the same request to finish the key cleanup.
+If your Dashboard removes the account but can't delete the key file, the call returns `mainwp_fathom_delete_partial` with `retryable: true`. Repeat the same request to finish the key cleanup.
 
 ## Handle Errors
 
