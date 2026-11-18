@@ -19,7 +19,7 @@ MainWP Dashboard sites are often private and receive little traffic. Since WP Cr
 
 [WP Cron](https://developer.wordpress.org/plugins/cron/) runs when requests hit the site. On low-traffic Dashboard sites, scheduled hooks may run late or not run at all.
 
-MainWP includes minute-level, hourly, and daily schedules. If cron is not triggered often enough, update checks, sync-related processing, uptime checks, and scheduled emails can be delayed.
+Your MainWP Dashboard includes minute-level, hourly, and daily schedules. If cron is not triggered often enough, update checks, sync-related processing, uptime checks, and scheduled emails can be delayed.
 
 ---
 
@@ -33,7 +33,7 @@ An overdue warning can appear when the scheduled monitoring check has not run fo
 | --- | --- |
 | **Scheduled tasks have not run recently.** | The Dashboard's scheduled monitoring check is overdue. The notice appears above the widgets on **Operations**. |
 | **Child site scheduled tasks have not run recently.** | A child site reported an overdue check. The notice appears above the widgets on that site's **Overview** and is updated when you sync the site. |
-| **The "Use WP-Cron" setting is disabled.** | MainWP's **Use WP Cron** setting is off. This is a reminder on **Operations** to configure external jobs, not evidence that those jobs have failed. |
+| **The "Use WP-Cron" setting is disabled.** | Your Dashboard's **Use WP Cron** setting is off. This is a reminder on **Operations** to configure external jobs, not evidence that those jobs have failed. |
 
 This example shows a warning about a child site:
 
@@ -59,9 +59,9 @@ This example shows a warning about a child site:
 
 ### Dismissal and the Disabled-Cron Reminder
 
-You can dismiss a Dashboard notice with its close icon. This hides the current incident for your user account; it does not fix scheduling. After MainWP detects recovery, a later occurrence can show a new notice. Child-site warnings have no dismiss control and clear from the Dashboard when a subsequent sync reports recovery.
+You can dismiss a Dashboard notice with its close icon. This hides the current incident for your user account; it does not fix scheduling. After your Dashboard detects recovery, a later occurrence can show a new notice. Child-site warnings have no dismiss control and clear from the Dashboard when a subsequent sync reports recovery.
 
-If **Use WP Cron** is intentionally disabled for [direct-worker mode](/customization/disable-wp-cron), verify that all required server jobs are configured. MainWP skips the Dashboard's overdue WP-Cron check in this mode and shows the disabled-setting reminder instead. The reminder does not verify the individual external jobs. For the recommended setup below, keep **Use WP Cron** enabled.
+If **Use WP Cron** is intentionally disabled for [direct-worker mode](/customization/disable-wp-cron), verify that all required server jobs are configured. The Dashboard skips its overdue WP-Cron check in this mode and shows the disabled-setting reminder instead. The reminder does not verify the individual external jobs. For the recommended setup below, keep **Use WP Cron** enabled.
 
 ---
 
@@ -73,7 +73,7 @@ This is the default approach for most users and the main setup this article reco
 
 - Keep **Use WP Cron** enabled at **MainWP \> Settings \> Advanced Settings**
 - For this option, "uptime monitoring" means **external third-party services** sending requests to your Dashboard URL
-- Do not rely on MainWP's own uptime monitoring features to trigger WP Cron on the Dashboard site itself
+- Do not rely on your Dashboard's own uptime monitoring features to trigger WP Cron on the Dashboard site itself
 - WordPress's `DISABLE_WP_CRON` setting controls automatic spawning from normal page requests; it does not remove registered events or block direct requests to `wp-cron.php`
 
 <Note>
@@ -161,7 +161,7 @@ This prevents ordinary page visits from also spawning WP-Cron. Do not enable it 
 
 Set the trigger to **every minute** for both Method A and Method B.
 
-MainWP registers minute-level cron hooks. Slower intervals introduce avoidable delays for scheduled actions.
+The Dashboard registers minute-level cron hooks. Slower intervals introduce avoidable delays for scheduled actions.
 
 ---
 

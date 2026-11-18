@@ -5,7 +5,7 @@ description: >-
   Read snippet metadata, validate PHP without running it, and preview or confirm PHP, CSS, and JavaScript changes with the MainWP Custom Dashboard Abilities API.
 ---
 
-MainWP Custom Dashboard 5.2 registers four abilities in the `mainwp-custom-dashboard` category. All use the `mainwp/` namespace and manage snippets on the MainWP Dashboard site, not Child sites.
+MainWP Custom Dashboard 5.2 registers four abilities in the `mainwp-custom-dashboard` category. All use the `mainwp/` namespace and manage snippets on your MainWP Dashboard site, not Child sites.
 
 ## What You'll Learn
 
@@ -16,7 +16,7 @@ MainWP Custom Dashboard 5.2 registers four abilities in the `mainwp-custom-dashb
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` and DELETE request examples below
 - Custom Dashboard 5.2 or later, active and enabled in MainWP Dashboard
 - An authenticated WordPress user with `manage_options` and access to the Custom Dashboard Add-on
@@ -49,7 +49,7 @@ Code must be a valid UTF-8 string without null bytes. The input limit is 100,000
 
 | Type | Metadata `execution_scope` | Scope after saving |
 |------|----------------------------|--------------------|
-| `php` | `all_wordpress_requests` | Runs during WordPress initialization on the MainWP Dashboard site, including requests outside MainWP admin pages |
+| `php` | `all_wordpress_requests` | Runs during WordPress initialization on your MainWP Dashboard site, including requests outside MainWP admin pages |
 | `css`, `js` | `mainwp_admin_except_child_tabs` | Added inline on MainWP admin pages except Child site tabs |
 
 Validation and previews do not execute the submitted code. After a confirmed write, saved code participates in the normal runtime described above. Syntax acceptance does not prove that PHP is safe or that its runtime behavior is correct. CSS and JavaScript previews check input bounds and revisions, but do not lint the code or test its behavior in a browser.

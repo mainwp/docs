@@ -49,7 +49,7 @@ To create backups with MainWP and choose your own storage destinations, see [Mai
 
 Open **MainWP menu (three lines, top right) > MainWP Settings > API Backups Settings** (`/wp-admin/admin.php?page=SettingsApiBackups`) and enter the credentials required by your provider. For Cloudways, use an **Access Token**; existing connections can continue using the legacy **Account Email** and **API Key** fields.
 
-If MainWP reports that replacement credentials could not be saved, the previous values remain in use. Correct the save error and retry before assuming the provider connection has changed. This applies to global API Backups settings and per-site provider credentials.
+If your MainWP Dashboard reports that replacement credentials could not be saved, the previous values remain in use. Correct the save error and retry before assuming the provider connection has changed. This applies to global API Backups settings and per-site provider credentials.
 
 ![Animation showing API Backups settings with API key entry fields for cloud providers](/images/dashboard/sites-backups-273419.gif)
 
@@ -200,9 +200,9 @@ After configuration, the API Backups tab displays Kinsta restore points such as 
 ![Kinsta API Backups tab](/images/dashboard/sites-backups-9b1a66.png)
 
 <Info>
-A Kinsta downloadable backup is a separate ZIP export containing the site's files and database. MainWP cannot create this export. To create one, go to **MyKinsta > Sites > your site > Backups > Download** and click **Create backup now**.
+A Kinsta downloadable backup is a separate ZIP export containing the site's files and database. The Dashboard cannot create this export. To create one, go to **MyKinsta > Sites > your site > Backups > Download** and click **Create backup now**.
 
-When Kinsta finishes creating the archive, return to MainWP and click **Refresh Available Backups**. MainWP retrieves existing downloadable backups separately and displays any active download link returned by Kinsta under **Downloadable Backups**.
+When Kinsta finishes creating the archive, return to your Dashboard and click **Refresh Available Backups**. The Dashboard retrieves existing downloadable backups separately and displays any active download link returned by Kinsta under **Downloadable Backups**.
 
 See [Kinsta's downloadable backup documentation](https://kinsta.com/docs/wordpress-hosting/wordpress-backups/#downloadable-backups) for current creation limits and availability periods.
 </Info>

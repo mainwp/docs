@@ -7,7 +7,7 @@ description: >-
   with VERSION changing per release.
 ---
 
-MainWP Dashboard communicates with child sites using standard web ports and a specific User-Agent string. This information is essential when configuring firewalls, security plugins, or troubleshooting blocked connections.
+Your MainWP Dashboard communicates with child sites using standard web ports and a specific User-Agent string. This information is essential when configuring firewalls, security plugins, or troubleshooting blocked connections.
 
 ## What You'll Learn
 
@@ -19,20 +19,20 @@ MainWP Dashboard communicates with child sites using standard web ports and a sp
 
 ## Network Ports
 
-MainWP uses standard HTTP/HTTPS ports for all communication:
+The Dashboard uses standard HTTP/HTTPS ports for all communication:
 
 | Protocol | Port | Usage |
 |----------|------|-------|
 | HTTP | 80 | Unencrypted connections (not recommended) |
 | HTTPS | 443 | Encrypted connections (recommended) |
 
-MainWP does not use custom ports. If your child site is accessible via a web browser, MainWP can communicate with it using the same ports.
+The Dashboard does not use custom ports. If your child site is accessible via a web browser, your Dashboard can communicate with it using the same ports.
 
 ---
 
 ## User-Agent String
 
-MainWP identifies itself with this User-Agent when connecting to child sites:
+The Dashboard identifies itself with this User-Agent when connecting to child sites:
 
 ```
 Mozilla/5.0 (compatible; MainWP/5.4.0.16; +http://mainwp.com)
@@ -59,7 +59,7 @@ If your hosting provider or server firewall blocks unknown traffic, whitelist:
 
 ### Security Plugin Rules
 
-Some security plugins (Wordfence, Sucuri, iThemes Security) may block requests from unfamiliar User-Agents. Add MainWP's User-Agent to your allowlist if connections fail.
+Some security plugins (Wordfence, Sucuri, iThemes Security) may block requests from unfamiliar User-Agents. Add your Dashboard's User-Agent to your allowlist if connections fail.
 
 ### Troubleshooting Blocked Connections
 

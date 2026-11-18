@@ -106,7 +106,7 @@ If the issue persists, contact your host support for log review.
 
 Imunify360 is a security suite for Linux web servers that can block MainWP Dashboard connections.
 
-**Indicators:** Connection Test shows **HTTP status code 415 Unsupported Media Type**, or MainWP displays:
+**Indicators:** Connection Test shows **HTTP status code 415 Unsupported Media Type**, or your Dashboard displays:
 
 > Error detected: Connection Failed. We suspect that Imunify360, a security layer added by your host, is causing this problem.
 
@@ -188,7 +188,7 @@ If IP whitelisting doesn't work, create a rule using the Referrer field:
 ![Cloudflare firewall rule using Referrer field with Contains operator](/images/troubleshooting/potential-issues-1.png)
 
 <Note>
-If neither approach works, disable **Bot Fight Mode** at **Cloudflare Dashboard > Security > Bots**. This feature sometimes blocks legitimate MainWP requests.
+If neither approach works, disable **Bot Fight Mode** at **Cloudflare Dashboard > Security > Bots**. This feature sometimes blocks legitimate requests from your Dashboard.
 </Note>
 
 ---
@@ -220,7 +220,7 @@ If warnings or errors appear, contact your host to resolve SSL configuration iss
 </Step>
 </Steps>
 
-**Quick fix:** If your SSL is valid but MainWP still fails to connect, try disabling SSL verification for that specific site in **MainWP > Sites > Edit Site > Verify SSL Certificate**.
+**Quick fix:** If your SSL is valid but your Dashboard still fails to connect, try disabling SSL verification for that specific site in **MainWP > Sites > Edit Site > Verify SSL Certificate**.
 
 ---
 

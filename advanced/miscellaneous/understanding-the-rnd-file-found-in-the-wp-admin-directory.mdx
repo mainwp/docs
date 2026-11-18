@@ -26,7 +26,7 @@ OpenSSL uses `.rnd` to store random seed data, which helps enhance the security 
 
 ## Is the .rnd File Related to MainWP?
 
-Yes. The timing of the `.rnd` file creation often aligns with activating encryption features in MainWP Dashboard. MainWP uses phpseclib for encryption operations, which internally relies on OpenSSL for generating keys.
+Yes. The timing of the `.rnd` file creation often aligns with activating encryption features in MainWP Dashboard. Your MainWP Dashboard uses phpseclib for encryption operations, which internally relies on OpenSSL for generating keys.
 
 ---
 
@@ -75,7 +75,7 @@ If you have access to your server's OpenSSL configuration, set the `RANDFILE` va
 
 ### Option 3: Ignore and Delete Periodically
 
-For most users, the simplest approach is to delete the file when it appears. It causes no harm and MainWP doesn't require it after the initial key generation completes.
+For most users, the simplest approach is to delete the file when it appears. It causes no harm and your Dashboard doesn't require it after the initial key generation completes.
 
 ---
 

@@ -42,7 +42,7 @@ After a complete migration, check Add-on license activation at the new address. 
 
 ## Understanding the Risk
 
-MainWP stores child site addresses in `wp_mainwp_wp`. Search-replace changes a child site URL only when the searched text occurs in that URL.
+The Dashboard stores child site addresses in `wp_mainwp_wp`. Search-replace changes a child site URL only when the searched text occurs in that URL.
 
 For example, replacing `example.com` with `example.net` throughout the database also changes `https://client.example.com` to `https://client.example.net`. If the child site still lives at its original address, the Dashboard will try to connect to the wrong URL. Unrelated child site domains that do not contain the searched text are not changed by that replacement.
 

@@ -5,7 +5,7 @@ description: >-
   digital signatures, and HTTPS for transport encryption.
 ---
 
-MainWP Dashboard communicates with child sites using [cURL](https://www.php.net/manual/en/intro.curl.php). Use HTTPS URLs to encrypt traffic in transit. Each sync request includes the following parameters:
+Your MainWP Dashboard communicates with child sites using [cURL](https://www.php.net/manual/en/intro.curl.php). Use HTTPS URLs to encrypt traffic in transit. Each sync request includes the following parameters:
 
 | Parameter | Purpose |
 |-----------|---------|
@@ -27,7 +27,7 @@ Some MainWP settings require syncing after changes because the sync request sets
 
 ## Add-on Data in Sync Requests
 
-MainWP provides the `mainwp-sync-others-data` hook for add-ons to include data in sync requests. The `othersData` parameter contains encoded data for plugins like BackWPup, BackupWordPress, BackupBuddy, Client Reports, WP Staging, WP Time Capsule, UpdraftPlus, Page Speed, and WP Rocket.
+Your MainWP Dashboard provides the `mainwp-sync-others-data` hook for add-ons to include data in sync requests. The `othersData` parameter contains encoded data for plugins like BackWPup, BackupWordPress, BackupBuddy, Client Reports, WP Staging, WP Time Capsule, UpdraftPlus, Page Speed, and WP Rocket.
 
 ## What the Sync Process Retrieves
 
@@ -61,6 +61,6 @@ MainWP Dashboard signs each request with the site's private key. MainWP Child ve
 
 ## How Asymmetric Cryptography Works
 
-Asymmetric cryptography uses a related private key and public key. MainWP uses this key pair for digital signatures: MainWP Dashboard holds the private key used to sign requests, and MainWP Child holds the public key used to verify them.
+Asymmetric cryptography uses a related private key and public key. Your Dashboard and Child Sites use this key pair for digital signatures: the Dashboard holds the private key used to sign requests, and MainWP Child holds the public key used to verify them.
 
 A signature authenticates a request but does not hide its contents. HTTPS encrypts the requests and responses in transit. SSL certificate verification is enabled by default and can be configured globally or per site.
