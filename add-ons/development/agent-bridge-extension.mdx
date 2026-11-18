@@ -1,0 +1,46 @@
+---
+title: Agent Bridge
+sidebarTitle: "Agent Bridge"
+description: >-
+  Let AI clients connected through the MainWP MCP server run approved PHP, WP-CLI, and file operations on your child sites, with per-site access control and approvals.
+---
+
+## What You'll Learn
+
+- What the Agent Bridge add-on does
+- Setting Agent access for each child site
+- Approving or denying agent requests
+- Blocking tools with rules
+
+---
+
+The Agent Bridge add-on lets an AI client, such as Claude or Codex, connected through the [MainWP MCP server](/mcp-server/overview), read and change your child sites through MainWP. You choose what the AI can do on each site, and you can require an administrator to approve requests before they run.
+
+## Agent access per site
+
+Agent access is set per site. In your MainWP Dashboard, go to **Sites**, edit a site, and find the **Agent access** setting. Only administrators can change it.
+
+| Level | What the AI can do |
+|---|---|
+| **Off** | Check the site's status only. This is the default. |
+| **Site abilities** | Use the site's abilities. |
+| **Site abilities and code** | Use the site's abilities plus the PHP, WP-CLI, and file tools. |
+
+## Approvals
+
+Requests that need approval appear on the **Agent approvals** page in the MainWP menu. Administrators approve or deny requests from staff members. Staff members cannot approve their own requests. While a request waits, the staff member sees "Waiting for an administrator to approve this in MainWP". After an administrator approves it, the change runs when the AI continues.
+
+By default, an administrator's own requests do not wait on the **Agent approvals** page. The administrator's confirmation in the AI client counts as approval. This is the **Never ask** mode. To send administrators' requests to the **Agent approvals** page as well, change **Mode** to **Ask** on the **Rules** tab.
+
+To stop an approved request before it runs, turn Agent access off for that site or add a Block rule.
+
+## Block rules
+
+On the **Rules** tab, an administrator can add a **Block** rule for a tool on one site or on all sites. The AI's requests to use a blocked tool are refused.
+
+---
+
+## Related Resources
+
+- [Development Add-ons](/add-ons/development) - Browse all development tools
+- [MainWP MCP Server](/mcp-server/overview) - Connect an AI client to your MainWP Dashboard
