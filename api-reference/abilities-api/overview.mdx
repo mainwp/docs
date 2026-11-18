@@ -82,13 +82,13 @@ Dashboard 6.3 also provides inline credential creation under **MainWP > AI > Mai
 
 ### Site Access and Operation Permissions
 
-### Declare Team Control Support
-
-In MainWP Dashboard 6.5 and later, Add-on developers can set `meta.mainwp_team_control` to the boolean `true` on a `mainwp/` ability. This lets a logged-in user with **Use MainWP abilities and MCP** pass the Dashboard's base permission check without `manage_options`. The ability still needs its own checks for Add-on access, operation rights, and each target site. Opt in only after those checks apply to both permission and execution callbacks. Abilities without the flag keep the administrator requirement for Application Password and session access.
-
 Authentication does not override the user's site access or Team Control permissions. Dashboard 6.3 checks the requested sites and the operation's required rights. For example, plugin updates need **Update Plugins**, site deletion needs **Delete Sites**, client changes need **Manage Clients**, and tag changes need **Manage Groups**. Multi-type update calls need the rights for each selected update type.
 
 Background jobs recheck their owner's permissions and site access when they execute. A queued job is not a guarantee that its originally selected sites or actions will still be permitted. Add-on abilities can require their own extension and operation permissions; see each Add-on's reference.
+
+### Declare Team Control Support
+
+In MainWP Dashboard 6.5 and later, Add-on developers can set `meta.mainwp_team_control` to the boolean `true` on a `mainwp/` ability. This lets a logged-in user with **Use MainWP abilities and MCP** pass the Dashboard's base permission check without `manage_options`. The ability still needs its own checks for Add-on access, operation rights, and each target site. Opt in only after those checks apply to both permission and execution callbacks. Abilities without the flag keep the administrator requirement for Application Password and session access.
 
 ---
 
@@ -198,7 +198,7 @@ MainWP Add-ons can register additional abilities alongside the 102 Dashboard abi
 | Post Plus 5.1 or later | `mainwp-post-plus` | 2 | [Post Plus Abilities](/api-reference/abilities-api/post-plus) |
 | SSL Monitor with Abilities support | `mainwp-ssl-monitor` | 3 | [SSL Monitor Abilities](/api-reference/abilities-api/ssl-monitor) |
 | Staging 5.2 or later | `mainwp-staging` | 2 | [Staging Abilities](/api-reference/abilities-api/staging) |
-| Team Control 5.2 or later | See add-on reference | 12 | [Team Control](/add-ons/agency/team-control-extension) |
+| Team Control 5.2 or later | `mainwp-team-control` | 12 or 13 | [Team Control](/add-ons/agency/team-control-extension) |
 | Time Tracker 5.2 or later | `mainwp-time-tracker` | 12 | [Time Tracker Abilities](/api-reference/abilities-api/time-tracker) |
 | Virusdie with Abilities support | `mainwp-virusdie` | 4 | [Virusdie Abilities](/api-reference/abilities-api/virusdie) |
 | Vulnerability Checker 5.1 or later | `mainwp-vulnerability-checker` | 1 | [Vulnerability Checker Policy Ability](/api-reference/abilities-api/vulnerability-checker) |
