@@ -88,7 +88,7 @@ The **Backup** column shows what happens before the site is updated:
 | **Will update without a recent backup** | You ticked the override below. |
 | **Not required by settings** | Your settings do not require a backup for this site. |
 
-When a selected site has no recent backup, the preview shows **Update sites that have no recent backup without waiting for one**. Ticking it applies to every site in the run.
+When a selected site has no recent backup, or its offsite copy is not verified yet, the preview shows **Update sites that have no recent backup without waiting for one**. Ticking it applies to every site in the run.
 
 Sites marked **Suspended, will be skipped** or **Already in a run, will be skipped** are left out. A site can be in only one Safe Updates run at a time. If some sites were already in another run, the run starts without them and the preview shows a message listing them with an **Open run** link to the new run. If every selected site is already in a run, no run starts.
 
@@ -244,7 +244,7 @@ Row actions appear when a site's row has finished.
 
 | Action | What it does | When it appears |
 |--------|--------------|-----------------|
-| **Retest** | Runs the HTTP, uptime monitor, and MainWP Child checks again without updating anything. A Regression test result is re-scored from the scan already taken; no new scan runs. The site becomes **OK** (or **Partly updated**) or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
+| **Retest** | Runs the run's selected HTTP, uptime monitor, and MainWP Child checks again without updating anything. A Regression test result is re-scored from the existing scan when one is available; no new scan runs. The site becomes **OK** (or **Partly updated**) or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
 | **Mark as expected** | Keeps the result but takes the site off the **Needs attention** list. Nothing is updated or rolled back. | On a **Needs attention** row that is not yet rolled back or marked as expected |
 | **Roll back** | Returns one plugin or theme to its previous version | On each updated plugin or theme that can be rolled back |
 | **Roll back all updates from this run** | Returns every plugin and theme this run updated on the site to its previous version | When the row has two or more updated plugins or themes and you can roll back each of them |
@@ -316,7 +316,11 @@ When **Roll back all updates from this run** makes the failing HTTP, uptime moni
 2. After each one, the checks run again.
 3. An update that passes stays updated. An update that fails is rolled back again and held.
 
-When it finishes, the row names the updates that caused the failure, for example "Sample Plugin caused the failed check and stays rolled back." If no single update fails, the row says "No single update failed the check. All updates were re-applied." A Regression test failure can still show after **Find the cause**, because it does not decide which updates stay rolled back.
+When it finishes, the row names the updates that caused the failure, for example "Sample Plugin caused the failed check and stays rolled back." If no single update fails, the row says "No single update failed the check. All updates were re-applied."
+
+If an update is no longer offered or cannot be re-applied, the process stops and the row says why. Updates after that point stay rolled back without being tested, so an update that is still rolled back is not always the cause.
+
+A Regression test failure can still show after **Find the cause**, because it does not decide which updates stay rolled back.
 
 If **Roll back all updates from this run** does not fix the checks, **Find the cause** is not offered. Review the site, or restore a backup.
 
@@ -326,16 +330,16 @@ If **Roll back all updates from this run** does not fix the checks, **Find the c
 
 Two settings in **MainWP Settings > General Settings > Updates Settings** apply Safe Updates to [automatic updates](/sites/updates/manage-updates):
 
-- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass creates one Safe Updates run for the sites it updates, with the source **Automatic updates** and **Schedule** as the starter. A change applies from the next pass. When this is off, automatic updates and their email work as they did before.
+- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass creates one Safe Updates run for the sites it updates, with the source **Automatic updates** and **Schedule** as the starter. A change applies from the next pass. When this is off, automatic updates run without site checks and send the older **Auto Updates Email**. Held plugin and theme versions are still skipped.
 - **Safe Updates: roll back automatically when a check fails** (Default: off). Rolls back plugin and theme updates on a site when a check fails after an automatic update. The setting is read when a site's checks finish.
 
-Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and Regression test when available. Your automatic update schedule, delay, and backup rules stay the same. A site that is already in another Safe Updates run is skipped by that automatic pass; if every site is, the pass creates no run and sends no summary. If the pass ends before a site is updated, the site is skipped with the reason.
+Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and Regression test when available. Your automatic update schedule, delay, and backup rules stay the same. A site that is already in another Safe Updates run is skipped by that automatic pass; if every site is, the pass creates no run and sends no summary. If the pass ends before a site in the run is updated, that site is skipped with the reason. Sites the pass did not reach are not part of the run or its summary.
 
 ### Automatic Rollback
 
 With automatic rollback on, a rollback starts only when an HTTP, Uptime monitor, or MainWP Child check passed before the update and fails after it. A Regression test result never starts one.
 
-MainWP rolls back the plugin and theme updates on that site that can be rolled back, and checks the site again. If that fixes the site, it tries [Find the cause](#find-the-cause) to re-apply the updates that did not cause the failure. If an update is no longer offered or cannot be re-applied, it stops and the row says why, so an update that is still rolled back is not always the cause.
+MainWP rolls back the plugin and theme updates on that site that can be rolled back, and checks the site again. If that fixes the site, it runs [Find the cause](#find-the-cause) to re-apply the updates that did not cause the failure.
 
 ---
 

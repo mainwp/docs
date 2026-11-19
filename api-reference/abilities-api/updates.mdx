@@ -2,7 +2,7 @@
 title: Updates Abilities
 sidebarTitle: "Updates Abilities"
 description: >-
-  14 abilities for checking, previewing, and applying WordPress updates and managing site update holds.
+  Abilities for checking, previewing, and applying WordPress updates, managing site update holds, and running Safe Updates.
 ---
 
 MainWP Dashboard 6.3 registers 14 update management abilities into the WordPress Abilities API framework. These enable programmatic control over WordPress core, plugin, theme, and translation updates across your network.
@@ -718,7 +718,7 @@ MainWP Dashboard X adds eight abilities in the `mainwp-updates` category for [Sa
 | `mainwp/get-safe-update-run-v1` | `run_id` | `run`, the `rows` you can access, `stalled`, and `needs_tick` |
 | `mainwp/continue-safe-update-run-v1` | `run_id` | Preview, or the run after the Safe Updates worker runs once |
 | `mainwp/cancel-safe-update-run-v1` | `run_id` | Preview, or the result after requesting cancellation |
-| `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the HTTP, uptime monitor, and MainWP Child checks run again (a Regression test result is re-scored without a new scan) |
+| `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the run's selected HTTP, uptime monitor, and MainWP Child checks run again. A Regression test result is re-scored from the existing scan when one is available. |
 | `mainwp/resolve-safe-update-site-v1` | `row_id`, `revision` | Preview, or the result after marking the result as expected |
 | `mainwp/rollback-safe-update-v1` | `row_id`, `revision`, optional `item_index` or `find_cause` | Preview, or the result after the rollback starts |
 
@@ -728,7 +728,7 @@ A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-b
 
 ### Start a Run
 
-Selection inputs work as in `run-updates-v1`. An empty `site_ids_or_domains` selects every live site you can access; name a staging site to include it.
+Selection inputs work as in `run-updates-v1`. An empty `site_ids_or_domains` selects the connected live sites you can access that have matching updates. Disconnected sites are left out, so check them separately. Name a staging site to include it.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
@@ -753,7 +753,7 @@ For `rollback-safe-update-v1`:
 
 - Pass `item_index` (`rows[].items[].index` of an item with `can_rollback: true`) to roll back one item.
 - Omit `item_index` to roll back every updated plugin and theme on the row. The request is refused if any of them has no usable kept copy or you lack the right to update it.
-- When the row's `actions.find_cause` is true (`rows[].actions.find_cause` from `get-safe-update-run-v1`), pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
+- When the row's `actions.find_cause` is true (`rows[].actions.find_cause` from `get-safe-update-run-v1`), pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep the failing ones rolled back. If an update is no longer offered or cannot be re-applied, the process stops and the row result says why; updates after that point stay rolled back without being tested.
 
 Rollback does not undo database changes. Restore a backup instead when you need that.
 
