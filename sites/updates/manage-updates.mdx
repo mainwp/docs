@@ -610,7 +610,7 @@ After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates
 
 What the email contains depends on **Safe Updates: check sites before and after automatic updates** in **MainWP Settings > General Settings > Updates Settings**:
 
-- **On** (the default in MainWP Dashboard X): each automatic update pass with updates to apply becomes a Safe Updates run, and the email uses the Safe Updates summary. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
+- **On** (the default in MainWP Dashboard X): each automatic update pass records a Safe Updates run for the sites it updates, and the email for that run uses the Safe Updates summary. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
 - **Off**: the email summarizes successful updates only, grouped by child site. It is not a complete report of failed or skipped updates, and no summary is sent when the run has no successful updates to report.
 
 Auto Updates Email is separate from Daily Digest and does not wait for the next digest.
@@ -635,20 +635,20 @@ Click **Safe Update** on an update tab of the Updates page, or use **Safe Update
 
 MainWP has two kinds of rollback:
 
-- **When an update fails to install**, WordPress puts the previous version back. This works on child sites running WordPress 6.3 or later, on every Dashboard page where you can start updates, for both single and bulk updates.
+- **When a plugin or theme update fails to install**, WordPress puts the previous version back. This works on child sites running WordPress 6.3 or later, on every Dashboard page where you can start updates, for both single and bulk updates.
 - **When an update installs but breaks a check**, use **Roll back** on the Safe Updates run page. This needs MainWP Child X and WordPress 6.3 or later on the child site. See [Roll Back an Update](/sites/updates/does-mainwp-have-safe-updates#roll-back-an-update).
 
 ![Shows the rollback feature in action after a failed plugin update.](/images/dashboard/sites-updates-7155cb.png)
 
 ### Rollback Notices
 
-When a rollback occurs, an orange icon with a tooltip appears beside the rolled-back version. This notice persists on relevant Dashboard pages until the plugin or theme is successfully updated.
+When a rollback occurs, an orange icon with a tooltip appears beside the version that was rolled back whenever that version is offered as an update. The notice stops showing once a newer version is offered.
 
 ![Rollback icon signifying a rollback persisting throughout the Dashboard.](/images/dashboard/sites-updates-7814c6.png)
 
 ### Manual Rollback
 
-For an item Safe Updates cannot roll back, you can install an earlier version yourself. Download the version from the plugin's page on wordpress.org (**Advanced** in the sidebar), then install it with [Install by Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload). For premium plugins and themes, keep earlier versions in the [Favorites Extension](https://mainwp.com/extension/favorites/).
+For an item Safe Updates cannot roll back, you can install an earlier version yourself. Download the version from the plugin's page on wordpress.org (**Advanced View** in the sidebar), then install it with [Install by Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload). For premium plugins and themes, keep earlier versions in the [Favorites Extension](https://mainwp.com/extension/favorites/).
 
 ---
 

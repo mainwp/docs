@@ -716,13 +716,13 @@ MainWP Dashboard X adds eight abilities in the `mainwp-updates` category for [Sa
 | `mainwp/run-safe-update-v1` | `site_ids_or_domains`, `types`, `specific_items`, `checks`, `ignore_backup_gate` | Preview, or `run_id`, `url`, and `conflicts` |
 | `mainwp/list-safe-update-runs-v1` | `page`, `per_page` (1-100, default 25), `source` (`manual`, `auto`, or empty for both) | `items`, `total`, and pagination. Each run has `stalled`. |
 | `mainwp/get-safe-update-run-v1` | `run_id` | `run`, the `rows` you can access, `stalled`, and `needs_tick` |
-| `mainwp/continue-safe-update-run-v1` | `run_id` | Preview, or the result after one step |
+| `mainwp/continue-safe-update-run-v1` | `run_id` | Preview, or the run after the Safe Updates worker runs once |
 | `mainwp/cancel-safe-update-run-v1` | `run_id` | Preview, or the result after requesting cancellation |
 | `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the checks run again |
 | `mainwp/resolve-safe-update-site-v1` | `row_id`, `revision` | Preview, or the result after marking the result as expected |
 | `mainwp/rollback-safe-update-v1` | `row_id`, `revision`, optional `item_index` or `find_cause` | Preview, or the result after the rollback starts |
 
-`list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. A confirmed start returns `dry_run: false` with `run_id`, `url`, and `conflicts` at the top level. Confirmed actions on an existing run or row return `dry_run: false` and `result`.
+`list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. A successful confirmed start returns `dry_run: false` with `run_id`, `url`, and `conflicts` at the top level. If every selected site is already in a run, it returns an error and no run starts. Confirmed actions on an existing run or row return `dry_run: false` and `result`.
 
 A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. When a run shows `stalled: true` or `needs_tick: true`, calling `continue-safe-update-run-v1` runs the Safe Updates worker, which moves due work forward. WP-Cron, server cron, and an open run page also move runs.
 
@@ -736,7 +736,7 @@ Selection inputs work as in `run-updates-v1`. An empty `site_ids_or_domains` sel
 | `ignore_backup_gate` | boolean | false | Same as **Update sites that have no recent backup without waiting for one** in the Safe Update preview |
 
 ```bash
-# Preview a Safe Update of one plugin on one site with the HTTP check only
+# Preview a Safe Update of one plugin on one site with the HTTP check selected
 curl -X POST -u 'admin:xxxx' \
   -H 'Content-Type: application/json' \
   -d '{"input":{"site_ids_or_domains":[5],"types":["plugins"],"specific_items":["sample/plugin.php"],"checks":"http","dry_run":true}}' \
@@ -753,7 +753,7 @@ For `rollback-safe-update-v1`:
 
 - Pass `item_index` (`rows[].items[].index` of an item with `can_rollback: true`) to roll back one item.
 - Omit `item_index` to roll back every updated plugin and theme on the row. The request is refused if any of them has no usable kept copy or you lack the right to update it.
-- After a full rollback fixed the checks, pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
+- When every updated plugin and theme on the row is rolled back (at least two) and the checks that passed before the update pass again, pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
 
 Rollback does not undo database changes. Restore a backup instead when you need that.
 

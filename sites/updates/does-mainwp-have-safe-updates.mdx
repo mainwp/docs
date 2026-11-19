@@ -48,7 +48,7 @@ Click **Safe Update** (green, with a shield icon) beside the update buttons. The
 Choose the checks under **Checks to run before and after updating**, then review each site's updates, backup status, and checks.
 </Step>
 <Step title="Start the run">
-Click **Start Safe Update**. The run page opens. You can close it; the run keeps going.
+Click **Start Safe Update**. The run page opens. If some sites were already in another run, the preview lists them instead; click **Open run** to go to the new run. You can close the run page; the run keeps going.
 </Step>
 </Steps>
 
@@ -108,11 +108,11 @@ Each site goes through these steps in order. The site's row on the run page show
 4. **Waiting before checks**: the run waits 60 seconds after the site's last update.
 5. **Checking after update**: the same checks run again. An HTTP, uptime monitor, or MainWP Child check that fails or times out is retried once, 3 minutes later. The row shows **Retrying in 3 minutes**.
 
-If the run cannot tell whether an update finished (for example, the request timed out), it syncs the site and compares what is installed instead of sending the update again. If it still cannot confirm the result, within at most 5 minutes the item fails with **No result from the site**. The run never sends the same update twice.
+If the run cannot tell whether an update finished (for example, the request timed out), it syncs the site and checks what is installed, or for translations whether the update is still pending, before deciding whether the item succeeded. It does not send the update again from the run. If it still cannot confirm the result, the item fails with **No result from the site**.
 
 A site that is deleted or suspended during the run is skipped.
 
-Updates started elsewhere on the same site, such as from the plain update buttons or automatic updates, are not blocked. While a site is in a run, those updates skip the **Check site HTTP response after update** check so the site is not checked twice.
+Updates started elsewhere on the same site, such as from the plain update buttons, are not blocked. Until the site's row in the run finishes, those updates skip the **Check site HTTP response after update** check so the site is not checked twice.
 
 ---
 
@@ -120,7 +120,7 @@ Updates started elsewhere on the same site, such as from the plain update button
 
 | Check | What it does |
 |-------|--------------|
-| **HTTP check** | Requests the site's URL with a 10 second limit and judges the status code with the same "up" codes as [Uptime Monitoring](/sites/management/uptime-monitoring): the site's own monitor settings if it has a primary monitor, otherwise the global list. The result shows the status code and time, for example `200 in 0.8 s`. |
+| **HTTP check** | Requests the site's URL with a 10 second limit and judges the status code with the same "up" codes as [Uptime Monitoring](/sites/management/uptime-monitoring): the site's primary monitor settings if it has one (which can use the global list), otherwise the global list. By default it does not follow redirects, while **Uptime monitor** checks do, so a redirecting site can pass one and fail the other. The result shows the status code and time, for example `200 in 0.8 s`. |
 | **Uptime monitor** | Runs one check for each monitor set up for the site. A disabled monitor is shown as not run. Keyword monitors also look for the keyword and report **keyword found** or **keyword not found**. These checks do not record heartbeats, create incidents, or send monitor alerts. |
 | **MainWP Child** | Asks MainWP Child on the site to answer a sync request within 10 seconds. Nothing from the answer is saved. |
 | **Regression test** | Runs after updating only. It reads the post-update scan from the Regression Testing add-on and compares it with the site's saved baseline. A change above the site's threshold fails the check. |
@@ -159,7 +159,7 @@ When the requirement applies, the run checks for a backup within **Days without 
 - **Waiting for the offsite copy**: a recent local backup exists, but its offsite copy is not verified yet. The run waits and does not start another backup.
 - **No recent backup**: in a run you start, MainWP starts one full backup and waits for it. Automatic update runs keep the existing backup rules for automatic updates.
 
-The run waits up to 30 minutes from the start of the backup step. If the backup fails or does not finish in time, the site is skipped with the reason, for example **Backup did not finish**, and nothing is updated on it. If the requirement stops being met after some updates were sent, those updates are still checked and the rest are not sent. Other sites in the run continue.
+In a run you start, MainWP waits up to 30 minutes from the start of the backup step. If the backup fails or does not finish in time, the site is skipped with the reason, for example **Backup did not finish**, and nothing is updated on it. If the requirement stops being met after some updates were sent, the site goes back to **Backing up**. When the backup is ready, the rest are sent; if that wait fails or runs out, the rest are not sent, and the updates already sent are still checked. Other sites in the run continue.
 
 When the backup requirement applies to a selected site, you need the **Execute Backups** right to preview and start the run. The override is for sites with no recent backup or a pending offsite copy. Those sites are updated without waiting, and their **Backup** column shows **Updated without a recent backup**.
 
@@ -192,7 +192,7 @@ Screenshot to add: Safe Updates run list with one manual run and one automatic u
 
 ### Run Page
 
-The run page shows who started the run and when, a progress bar (**N of M sites finished**), and site counts: **OK**, **Needs attention**, **Resolved**, **Failed**, **Skipped**, and **In progress**. **Resolved** counts sites that needed attention and were then rolled back or marked as expected.
+The run page shows who started the run and when, a progress bar (**N of M sites finished**), and site counts: **OK**, **Needs attention**, **Resolved**, **Failed**, **Skipped**, and **In progress**. **Resolved** counts sites that needed attention, were then rolled back or marked as expected, and need nothing more.
 
 The site table has the columns **Site**, **Result**, **Updates**, **Backup**, and **Checks**, plus row actions. Use **All sites** and **Needs attention** to filter the table, and **All runs** to go back to the list.
 
@@ -244,11 +244,11 @@ Row actions appear when a site's row has finished.
 
 | Action | What it does | When it appears |
 |--------|--------------|-----------------|
-| **Retest** | Runs the checks again without updating anything. The site becomes **OK** or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
+| **Retest** | Runs the checks again without updating anything. The site becomes **OK** (or **Partly updated**) or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
 | **Mark as expected** | Keeps the result but takes the site off the **Needs attention** list. Nothing is updated or rolled back. | On a **Needs attention** row that is not yet rolled back or marked as expected |
 | **Roll back** | Returns one plugin or theme to its previous version | On each updated plugin or theme that can be rolled back |
 | **Roll back all updates from this run** | Returns every plugin and theme this run updated on the site to its previous version | When the row has two or more updated plugins or themes and you can roll back each of them |
-| **Find the cause** | Re-applies the rolled-back updates one at a time with a check after each. Updates that fail the check stay rolled back. | After **Roll back all updates from this run** made the failing checks pass, with at least two items rolled back |
+| **Find the cause** | Re-applies the rolled-back updates one at a time with a check after each. Updates that fail the check stay rolled back. | When every plugin and theme the run updated on the site is rolled back (at least two), the HTTP, uptime monitor, and MainWP Child checks that passed before the update pass again, and you can update each item |
 | **Open site** | Opens the site in a new tab | On finished rows for sites that still exist |
 | **Restore backup** | Opens **Snapshots & Restore** for the site | When Built-In Backups is on and you have the **Execute Backups** and **Restore Backups** rights |
 
@@ -287,7 +287,7 @@ Screenshot to add: the same site row after rollback, showing **Rolled back**, th
 
 ### What Rollback Can Undo
 
-MainWP Child keeps the previous version of each plugin or theme it updates, one version per item, for 14 days. The copy is kept in a protected folder on the child site. Rollback swaps that copy back in, keeps the item's activation state, and puts the new version back if the swap fails.
+When MainWP Child updates a plugin or theme, it can keep the previous version for up to 14 days, in a protected folder on the child site. It keeps one version per item, so a later update replaces the copy, and it skips the copy when disk space is low. Rollback swaps that copy back in and keeps the item's activation state. If the swap fails, MainWP Child tries to put the newer version back. If that also fails, the row shows **The item is missing. Restore backup.**; restore a backup of the site.
 
 Rollback is available for plugins and themes when the child site still has a usable copy of the previous version. For WordPress core and translations, use **Restore backup**.
 
@@ -306,7 +306,7 @@ You need the same right to roll back an item as to update it (**Update Plugins**
 
 ### Held Versions
 
-After a rollback, the rolled-back version is held on that site. Safe Updates syncs the site after the rollback, so the Updates page shows the rollback icon beside the held version without a manual sync. The tooltip reads "This version failed a previous update and was rolled back. Proceed with caution." If that sync fails, the icon appears after the site's next sync. Automatic updates skip the held version and older ones on that site until a newer version is offered.
+After a rollback, the newer version that was removed is held on that site. Safe Updates syncs the site after the rollback, so when the Updates page offers that version again, it shows the rollback icon beside it without a manual sync. The tooltip reads "This version failed a previous update and was rolled back. Proceed with caution." If that sync fails, the icon appears after the site's next sync. Automatic updates skip the held version and older ones on that site until a newer version is offered.
 
 ### Find the Cause
 
@@ -326,10 +326,10 @@ If **Roll back all updates from this run** does not fix the checks, **Find the c
 
 Two settings in **MainWP Settings > General Settings > Updates Settings** apply Safe Updates to [automatic updates](/sites/updates/manage-updates):
 
-- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass with updates to apply creates one Safe Updates run, with the source **Automatic updates** and **Schedule** as the starter. A change applies from the next pass. When this is off, automatic updates and their email work as they did before.
+- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass creates one Safe Updates run for the sites it updates, with the source **Automatic updates** and **Schedule** as the starter. A change applies from the next pass. When this is off, automatic updates and their email work as they did before.
 - **Safe Updates: roll back automatically when a check fails** (Default: off). Rolls back plugin and theme updates on a site when a check fails after an automatic update. The setting is read when a site's checks finish.
 
-Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and Regression test when available. Your automatic update schedule, delay, and backup rules stay the same. A site that is already in another Safe Updates run is skipped by that automatic pass. If the pass ends before a site is updated, the site is skipped with the reason.
+Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and Regression test when available. Your automatic update schedule, delay, and backup rules stay the same. A site that is already in another Safe Updates run is skipped by that automatic pass; if every site is, the pass creates no run and sends no summary. If the pass ends before a site is updated, the site is skipped with the reason.
 
 ### Automatic Rollback
 
@@ -341,7 +341,7 @@ MainWP rolls back the plugin and theme updates on that site that can be rolled b
 
 ## Summary Email
 
-MainWP sends one summary email when a run finishes, if the email that applies is turned on. Unlike the older automatic updates email, it includes failed and skipped sites.
+MainWP sends one summary email when a recorded run finishes, if the email that applies is turned on. Unlike the older automatic updates email, it includes failed and skipped sites.
 
 - **Manual runs** use **Safe Updates Email** in **MainWP Settings > Email Settings**. It is on by default, with the subject "Safe Updates summary".
 - **Automatic runs** use the **Auto Updates Email** on/off switch and recipients, with the Safe Updates content. You get one email per automatic update pass.
@@ -376,7 +376,7 @@ Screenshot to add (optional): run page for a stalled run, showing the yellow mes
 - A slow or interrupted request loses only the step in progress. The next pass picks up from the last saved step, and finished checks are kept.
 - A site that stops responding three times in the same step fails with **Stopped responding while** and the step name. The run continues with the other sites.
 - A check that times out shows as slow, not failed.
-- A backup that does not finish within 30 minutes skips only that site.
+- In a run you start, a backup that does not finish within 30 minutes skips only that site.
 - A child site with less than 100 MB free still updates, but rollback is not available for that update.
 
 ---

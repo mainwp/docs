@@ -62,7 +62,7 @@ In the **Site Health Monitoring** section, configure health monitoring behavior.
 | Check site HTTP response method | HEAD | Method for post-update check: `HEAD (default)` or `GET` |
 | Up HTTP Codes for HTTP Response and Uptime Monitoring | `200,201,202,203,204,205,206` | Status codes treated as UP for both features |
 
-While a site is in a [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) run, updates started elsewhere on that site skip **Check site HTTP response after update** until the run finishes. The run's own **HTTP check** uses the same up codes.
+While a site is in a [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) run, updates started elsewhere on that site skip **Check site HTTP response after update** until the site's row in the run finishes. The run's own **HTTP check** uses the same up codes.
 
 ### Uptime Monitoring Settings
 
