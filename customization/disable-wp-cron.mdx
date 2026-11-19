@@ -438,31 +438,11 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
   </Tab>
 
   <Tab title="Regression Testing">
-    #### Start Regression Testing
+    Regression Testing 5.3.0 and later has no server cron entry. Its direct `cron/*.php` files no longer run scans.
 
-    **Frequency:** *every day (crontab schedule: 0 0 * * *)*
+    Queued, scheduled, and post-update scans run from a WordPress cron event that fires every minute. Keep WordPress cron running on your Dashboard, for example by triggering `wp-cron.php` externally every minute. If you turned off **Use WP Cron**, load any admin page once after updating the add-on so the event is scheduled.
 
-    ```bash
-    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp-regression-testing-extension/cron/html-regression-cron-start.php > /dev/null 2>&1
-    ```
-
-    Sets the scheduled-run state and timestamp. It does not perform site or page scans.
-
-    #### Continue Regression Testing
-
-    **Frequency:** *every 5 minutes (crontab schedule: */5 * * * *)*
-
-    ```bash
-    /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp-regression-testing-extension/cron/html-regression-cron-continue-run.php > /dev/null 2>&1
-    ```
-
-    Selects eligible work and queues one-time WordPress cron events for page processing. It does not itself execute the page scans or later processing stages.
-
-    <Warning>
-    These two direct files are not a complete server-cron replacement for Regression Testing. Actual page processing, subsequent batches, CSS/JavaScript tracking, and notifications rely on one-time WordPress cron events. Daily snapshot optimization also has no direct PHP entry file.
-
-    For complete automatic Regression Testing behavior, keep **Use WP Cron** enabled and trigger `wp-cron.php` externally every minute. Requesting `wp-cron.php` while **Use WP Cron** remains disabled does not restore the recurring snapshot-optimization hook.
-    </Warning>
+    See [How scans run](/add-ons/security/regression-testing-extension#how-scans-run).
   </Tab>
 
   <Tab title="Sucuri">
