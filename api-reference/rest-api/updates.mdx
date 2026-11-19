@@ -35,7 +35,7 @@ The REST v1 `/mainwp/v1/site/site-update-translations` route keeps its existing 
 
 | Method | Path | Purpose | Key Params |
 |---|---|---|---|
-| GET | `/updates` | List available updates across sites | `type` (`all`, `wp`, `plugins`, `themes`, `translations`), `search`, `include`, `exclude` |
+| GET | `/updates` | List available updates across sites | `type` (`all`, `wp`, `plugins`, `themes`, `translations`), `search`, `include`, `exclude`, `connected` |
 | GET | `/updates/{id_or_domain}` | List available updates for one site | `type`, `search` |
 | GET | `/updates/ignored` | List globally ignored plugin/theme updates | `type` (`plugins`, `themes`, `all`), `search` |
 | GET | `/updates/{id_or_domain}/ignored` | List ignored updates for one site | `type`, `search` |

@@ -10042,6 +10042,14 @@ paths:
           required: false
           schema:
             type: string
+        - name: connected
+          in: query
+          description: Return only sites with no stored sync errors, the same sites the Updates Overview widget uses.
+            When omitted or `false`, all sites are included.
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Success.
