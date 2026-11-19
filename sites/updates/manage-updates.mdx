@@ -610,7 +610,7 @@ After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates
 
 What the email contains depends on **Safe Updates: check sites before and after automatic updates** in **MainWP Settings > General Settings > Updates Settings**:
 
-- **On** (the default in MainWP Dashboard X): each automatic update pass records a Safe Updates run for the sites it updates, and the email for that run uses the Safe Updates summary. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
+- **On** (the default in MainWP Dashboard X): each automatic update pass records at most one Safe Updates run for the sites it updates, and the email for that run uses the Safe Updates summary. A pass with nothing eligible to update creates no run and sends no email. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
 - **Off**: the email summarizes successful updates only, grouped by child site. It is not a complete report of failed or skipped updates, and no summary is sent when the run has no successful updates to report.
 
 Auto Updates Email is separate from Daily Digest and does not wait for the next digest.

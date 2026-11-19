@@ -728,7 +728,7 @@ A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-b
 
 ### Start a Run
 
-Selection inputs work as in `run-updates-v1`. An empty `site_ids_or_domains` selects the connected live sites you can access that have matching updates. Disconnected sites are left out, so check them separately. Name a staging site to include it.
+The selection inputs are the same fields as in `run-updates-v1`. Unlike `run-updates-v1`, if any site you name in `site_ids_or_domains` does not exist or you cannot access it, the whole preview or start request is refused. An empty `site_ids_or_domains` selects the connected live sites you can access that have matching updates. Disconnected sites are left out, so check them separately. Name a staging site to include it.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
@@ -759,7 +759,7 @@ Rollback does not undo database changes. Restore a backup instead when you need 
 
 ### Permissions
 
-These abilities use the same checks as the Safe Updates pages, including a WordPress administrator account on the Dashboard. Starting a run and rolling back need the update right for each item type. When the backup requirement applies to a selected site, starting a run also needs **Execute Backups**, unless `ignore_backup_gate` is true. The other abilities need any update right. All of them are limited to the sites you can access. You can cancel a manual run only if you started it or manage every site in it. Automatic update runs cannot be cancelled.
+These abilities use the same checks as the Safe Updates pages: the caller must be a Dashboard administrator or a Team Control user, authenticated as described in the [Abilities API overview](/api-reference/abilities-api/overview). Starting a run and rolling back need the update right for each item type. When the backup requirement applies to a selected site, starting a run also needs **Execute Backups**, unless `ignore_backup_gate` is true. The other abilities need any update right. All of them are limited to the sites you can access. You can cancel a manual run only if you started it or manage every site in it. Automatic update runs cannot be cancelled.
 
 ---
 

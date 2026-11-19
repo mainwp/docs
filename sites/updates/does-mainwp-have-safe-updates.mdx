@@ -21,7 +21,7 @@ Safe Updates is part of MainWP Dashboard and needs no add-on. The plain update b
 ## Prerequisites
 
 - MainWP Dashboard X or later
-- A WordPress administrator account on the Dashboard, with an update right for the item types you want to update (**Update Plugins**, **Update Themes**, **Update Translations**, or **Update WordPress**)
+- A Dashboard administrator account, or a Team Control user, with an update right for the item types you want to update (**Update Plugins**, **Update Themes**, **Update Translations**, or **Update WordPress**)
 - For rollback: child sites running WordPress 6.3 or later and MainWP Child X or later
 - For a backup before updating: [Built-In Backups](/sites/backups/manage-backups) with **Require a backup before an update** turned on
 - For the Regression test check: the [Regression Testing](/add-ons/security/regression-testing-extension) add-on, version X or later, on a Dashboard running WordPress 6.9 or later
@@ -330,7 +330,7 @@ If **Roll back all updates from this run** does not fix the checks, **Find the c
 
 Two settings in **MainWP Settings > General Settings > Updates Settings** apply Safe Updates to [automatic updates](/sites/updates/manage-updates):
 
-- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass creates one Safe Updates run for the sites it updates, with the source **Automatic updates** and **Schedule** as the starter. A change applies from the next pass. When this is off, automatic updates run without site checks and send the older **Auto Updates Email**. Held plugin and theme versions are still skipped.
+- **Safe Updates: check sites before and after automatic updates** (Default: on). Each automatic update pass creates at most one Safe Updates run for the sites it updates, with the source **Automatic updates** and **Schedule** as the starter. A pass with nothing eligible to update creates no run and sends no email. A change applies from the next pass. When this is off, automatic updates run without the Safe Updates checks and send the older **Auto Updates Email**. **Check site HTTP response after update** still runs if you turned it on, and held plugin and theme versions are still skipped.
 - **Safe Updates: roll back automatically when a check fails** (Default: off). Rolls back plugin and theme updates on a site when a check fails after an automatic update. The setting is read when a site's checks finish.
 
 Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and Regression test when available. Your automatic update schedule, delay, and backup rules stay the same. A site that is already in another Safe Updates run is skipped by that automatic pass; if every site is, the pass creates no run and sends no summary. If the pass ends before a site in the run is updated, that site is skipped with the reason. Sites the pass did not reach are not part of the run or its summary.
@@ -348,7 +348,7 @@ MainWP rolls back the plugin and theme updates on that site that can be rolled b
 MainWP sends one summary email when a recorded run finishes, if the email that applies is turned on. Unlike the older automatic updates email, it includes failed and skipped sites.
 
 - **Manual runs** use **Safe Updates Email** in **MainWP Settings > Email Settings**. It is on by default, with the subject "Safe Updates summary".
-- **Automatic runs** use the **Auto Updates Email** on/off switch and recipients, with the Safe Updates content. You get one email per automatic update pass.
+- **Automatic runs** use the **Auto Updates Email** on/off switch and recipients, with the Safe Updates content. You get at most one email per automatic update pass, and none when the pass had nothing to update.
 - With **Safe Updates: check sites before and after automatic updates** off, automatic updates send the older **Auto Updates Email**, which lists successful updates only.
 
 The email shows result counts, lists each site that needs a person with its result and reason, links to the run with **View run**, and then lists each site's items with their old version, new version, and status, plus the Regression test result where there is one. Open the run for the full check results.
@@ -387,7 +387,7 @@ Screenshot to add (optional): run page for a stalled run, showing the yellow mes
 
 ## Who Can Run Safe Updates
 
-Safe Updates actions need a WordPress administrator account on the Dashboard. Safe Updates adds no new Team Control rights and uses the existing ones:
+Dashboard administrators and Team Control users can use Safe Updates with the rights below. Safe Updates adds no new Team Control rights and uses the existing ones:
 
 | Right | Allows |
 |-------|--------|
