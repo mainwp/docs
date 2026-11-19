@@ -722,9 +722,9 @@ MainWP Dashboard X adds eight abilities in the `mainwp-updates` category for [Sa
 | `mainwp/resolve-safe-update-site-v1` | `row_id`, `revision` | Preview, or the result after marking the result as expected |
 | `mainwp/rollback-safe-update-v1` | `row_id`, `revision`, optional `item_index` or `find_cause` | Preview, or the result after the rollback starts |
 
-`list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. Confirmed run and row actions return `dry_run: false` and `result`.
+`list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. A confirmed start returns `dry_run: false` with `run_id`, `url`, and `conflicts` at the top level. Confirmed actions on an existing run or row return `dry_run: false` and `result`.
 
-A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. A run with `stalled: true` or `needs_tick: true` is waiting for `continue-safe-update-run-v1`.
+A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. When a run shows `stalled: true` or `needs_tick: true`, calling `continue-safe-update-run-v1` runs the Safe Updates worker, which moves due work forward. WP-Cron, server cron, and an open run page also move runs.
 
 ### Start a Run
 
@@ -732,7 +732,7 @@ Selection inputs work as in `run-updates-v1`. An empty `site_ids_or_domains` sel
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `checks` | string | `all` | `all`, `none`, or a comma-separated list of `http` (loads the site), `monitor` (reads its uptime monitors), and `child` (asks MainWP Child) |
+| `checks` | string | `all` | One of `all`, `none`, `http`, `monitor`, `child`, `http,monitor`, `http,child`, `monitor,child`, or `http,monitor,child`. `http` loads the site, `monitor` reads its uptime monitors, and `child` asks MainWP Child. `none` turns off these three; the Regression test check still runs when available. |
 | `ignore_backup_gate` | boolean | false | Same as **Update sites that have no recent backup without waiting for one** in the Safe Update preview |
 
 ```bash
@@ -752,14 +752,14 @@ Row actions take `row_id` (`rows[].id` from `get-safe-update-run-v1`). Mark as e
 For `rollback-safe-update-v1`:
 
 - Pass `item_index` (`rows[].items[].index` of an item with `can_rollback: true`) to roll back one item.
-- Omit `item_index` to roll back every updated plugin and theme on the row.
-- After a full rollback fixed the checks, pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing one rolled back.
+- Omit `item_index` to roll back every updated plugin and theme on the row. The request is refused if any of them has no usable kept copy or you lack the right to update it.
+- After a full rollback fixed the checks, pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
 
 Rollback does not undo database changes. Restore a backup instead when you need that.
 
 ### Permissions
 
-These abilities use the same rights as the Safe Updates pages. Starting a run and rolling back need the update right for each item type. When the backup requirement applies to a selected site, starting a run also needs **Execute Backups**, unless `ignore_backup_gate` is true. The other abilities need any update right. All of them are limited to the sites you can access. You can cancel a manual run only if you started it or manage every site in it. Automatic update runs cannot be cancelled.
+These abilities use the same checks as the Safe Updates pages, including a WordPress administrator account on the Dashboard. Starting a run and rolling back need the update right for each item type. When the backup requirement applies to a selected site, starting a run also needs **Execute Backups**, unless `ignore_backup_gate` is true. The other abilities need any update right. All of them are limited to the sites you can access. You can cancel a manual run only if you started it or manage every site in it. Automatic update runs cannot be cancelled.
 
 ---
 

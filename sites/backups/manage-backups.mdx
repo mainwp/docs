@@ -629,7 +629,7 @@ Built-in backups accept completed full, database-only, or incremental backups wi
 
 Enable **Require an offsite-verified backup** to also require verified copies on remote storage. Local Path destinations do not count as offsite storage. Wait for remote uploads to finish before retrying the update.
 
-[Safe Updates](/sites/updates/does-mainwp-have-safe-updates#backups-before-updating) runs use the same check. Instead of skipping a site without a recent backup, a run starts a full backup and waits for it, or waits for a pending offsite copy, before updating. The preview offers **Update sites that have no recent backup without waiting for one** to skip that wait.
+[Safe Updates](/sites/updates/does-mainwp-have-safe-updates#backups-before-updating) runs use the same check. Instead of skipping a site without a recent backup, a run you start creates a full backup and waits for it, or waits for an offsite copy to be verified, before updating. The preview offers **Update sites that have no recent backup without waiting for one** to skip that wait.
 
 For recovery after a failed update, see [Safe Updates & Rollback](/sites/updates/does-mainwp-have-safe-updates).
 

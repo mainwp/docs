@@ -610,7 +610,7 @@ After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates
 
 What the email contains depends on **Safe Updates: check sites before and after automatic updates** in **MainWP Settings > General Settings > Updates Settings**:
 
-- **On** (the default in MainWP Dashboard X): each automatic update pass that updates something becomes a Safe Updates run, and the email uses the Safe Updates summary. It includes failed and skipped sites, the results of the site checks, and a link to the run. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
+- **On** (the default in MainWP Dashboard X): each automatic update pass with updates to apply becomes a Safe Updates run, and the email uses the Safe Updates summary. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
 - **Off**: the email summarizes successful updates only, grouped by child site. It is not a complete report of failed or skipped updates, and no summary is sent when the run has no successful updates to report.
 
 Auto Updates Email is separate from Daily Digest and does not wait for the next digest.
@@ -629,11 +629,11 @@ See [Email Settings](/sites/management/mainwp-dashboard-settings#manage-email-no
 
 ## Safe Updates / Rollback
 
-Click **Safe Update** on any tab of the Updates page, or use **Safe Update Everything** in Manage Sites, to update with checks. MainWP checks each site, backs it up first when your settings require it, applies the updates, and checks the site again. When a check fails after the update, you can roll a plugin or theme back to its previous version from the run page, or let MainWP find which update caused the failure. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) for the full guide.
+Click **Safe Update** on an update tab of the Updates page, or use **Safe Update Everything** in Manage Sites, to update with checks. MainWP checks each site, backs it up first when your settings require it, applies the updates, and checks the site again. When a check fails after the update, you can roll a plugin or theme back to its previous version from the run page, or let MainWP find which update caused the failure. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) for the full guide.
 
 ### How Rollback Works
 
-Two kinds of rollback protect your sites:
+MainWP has two kinds of rollback:
 
 - **When an update fails to install**, WordPress puts the previous version back. This works on child sites running WordPress 6.3 or later, on every Dashboard page where you can start updates, for both single and bulk updates.
 - **When an update installs but breaks a check**, use **Roll back** on the Safe Updates run page. This needs MainWP Child X and WordPress 6.3 or later on the child site. See [Roll Back an Update](/sites/updates/does-mainwp-have-safe-updates#roll-back-an-update).
@@ -660,7 +660,7 @@ For an item Safe Updates cannot roll back, you can install an earlier version yo
 - [ ] Auto updates are configured for trusted items
 - [ ] Ignored updates no longer appear in update lists
 - [ ] **Safe Update** starts a run and the run page lists each site with a result
-- [ ] **Roll back** is available for updated plugins and themes on sites with MainWP Child X and WordPress 6.3 or later
+- [ ] **Roll back** is offered for updated plugins and themes that have a kept copy, on sites with MainWP Child X and WordPress 6.3 or later
 
 ---
 

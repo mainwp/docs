@@ -69,7 +69,7 @@ Open the three-line **MainWP menu** in the top-right corner of MainWP Dashboard 
     - **Translation advanced automatic updates** (Default: Disabled): Enables automatic updates for translation packages.
     - **WP Core advanced automatic updates** (Default: Disabled): Enables automatic WordPress core updates.
     - **Safe Updates: check sites before and after automatic updates** (Default: Enabled; MainWP Dashboard X): Checks each site before and after its automatic updates and reports the results on the Safe Updates page. See [Check Automatic Updates](/sites/updates/does-mainwp-have-safe-updates#check-automatic-updates).
-    - **Safe Updates: roll back automatically when a check fails** (Default: Disabled; MainWP Dashboard X): Returns a plugin or theme to its previous version when a check fails after an automatic update. The held version is marked on the Updates page.
+    - **Safe Updates: roll back automatically when a check fails** (Default: Disabled; MainWP Dashboard X): Returns plugins and themes that can be rolled back to their previous versions when an HTTP, uptime monitor, or MainWP Child check passed before an automatic update and fails after it. The held version is marked on the Updates page.
     - **Frequency of automatic updates** (Default: Daily): Sets whether automatic update runs execute daily, weekly, or monthly.
     - **Select day** (shown for `Weekly` or `Monthly`): Chooses the weekday or month day used by the automatic update schedule.
     - **Select time** (Default: `00:00`): Sets the time of day when automatic update runs begin.
@@ -233,9 +233,9 @@ Open the three-line **MainWP menu** in the top-right corner of MainWP Dashboard 
 
     Per-site overrides are available in child site edit screens under **Email Settings**, so site-specific recipients and behavior can differ from global defaults.
 
-    **Auto Updates Email** reports on automatic updates. With **Safe Updates: check sites before and after automatic updates** on, it uses the Safe Updates summary, including failed and skipped sites; with it off, it summarizes successful automatic updates, grouped by child site. See [Automatic Update Summary Emails](/sites/updates/manage-updates#automatic-update-summary-emails) for timing and report contents.
+    **Auto Updates Email** reports on automatic updates. With **Safe Updates: check sites before and after automatic updates** on, it uses the Safe Updates summary, which includes failed and skipped sites; with it off, it summarizes successful automatic updates, grouped by child site. See [Automatic Update Summary Emails](/sites/updates/manage-updates#automatic-update-summary-emails) for timing and report contents.
 
-    **Safe Updates Email** (MainWP Dashboard X; enabled by default) sends the results and site checks of each manual Safe Updates run. See [Summary Email](/sites/updates/does-mainwp-have-safe-updates#summary-email).
+    **Safe Updates Email** (MainWP Dashboard X; enabled by default) sends the results of each manual Safe Updates run, with a link to the run's full check results. See [Summary Email](/sites/updates/does-mainwp-have-safe-updates#summary-email).
   </Accordion>
 
   <Accordion title="Premium Updates" icon="arrows-rotate">

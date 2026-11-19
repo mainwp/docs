@@ -170,7 +170,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/updatescheck.php > /dev/null 2>&1
     ```
 
-    Runs your Dashboard's incremental update-check and automatic-update workflow, including continuation and related notification handling. In MainWP Dashboard X and later, it also moves [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) runs forward by one step before its usual work.
+    Runs your Dashboard's incremental update-check and automatic-update workflow, including continuation and related notification handling. In MainWP Dashboard X and later, it also runs the [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) worker before its usual work.
 
     #### Run Safe Updates
 
@@ -180,7 +180,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
     /usr/bin/php /path/to/public_html/wp-content/plugins/mainwp/cron/safeupdates.php > /dev/null 2>&1
     ```
 
-    Moves Safe Updates runs forward (MainWP Dashboard X and later). The update-check worker above also moves them, so this line is optional when `updatescheck.php` already runs every minute.
+    Runs the Safe Updates worker, which moves Safe Updates runs forward (MainWP Dashboard X and later). The update-check worker above also runs it, so this line is optional when `updatescheck.php` already runs every minute.
 
     #### Ping Child Sites
 
