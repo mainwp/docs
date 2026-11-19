@@ -34,7 +34,7 @@ By default, administrators' requests do not wait on the **Agent approvals** page
 
 To stop an approved request before it runs, turn Agent access off for that site or add a Block rule.
 
-A request waits for 15 minutes. If nobody approves it in that time, it expires and the AI has to ask again. Before a change runs, MainWP makes a safety backup of the site when a backup system is available. When none is available, the approval card says so and you can approve the change without a backup.
+A request waits for 15 minutes. If nobody approves it in that time, it expires and the AI has to ask again. Before a change runs, MainWP makes a safety backup of the site when the site has a backup system. If that backup fails, the change doesn't run. For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**.
 
 ## Block rules
 
