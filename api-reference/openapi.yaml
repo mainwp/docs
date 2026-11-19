@@ -10045,7 +10045,7 @@ paths:
         - name: connected
           in: query
           description: Return only sites with no stored sync errors, the same sites the Updates Overview widget uses.
-            When omitted or `false`, all sites are included.
+            When omitted or `false`, sites are not filtered by sync status.
           required: false
           schema:
             type: boolean
