@@ -16,6 +16,7 @@ Dashboard Insights uses this same data source to provide analytics summaries, wh
 - Where to access Network Activity and its shared settings page
 - Where the Network Activity widget appears
 - How to filter activity by source, site, event, date, and user context
+- How to tell whether a person or an AI made a change, and which app and key it used
 - How to dismiss events with required confirmation
 - How to configure logging, auto-archiving, and retention
 - How to view only Non-MainWP Changes
@@ -95,7 +96,9 @@ Use filters on the Network Activity page to narrow results by:
 - Clients
 - Users
 - Source (`Dashboard` or `WP Admin`)
-- Agent (`All Agents` or `MainWP MCP`)
+- Agent (`All Agents`, `Human`, `All AI`, `Claude`, `ChatGPT`, `Gemini`, `Other AI`, or `MainWP MCP`)
+- AI tool
+- Key
 - Sites
 - Events
 
@@ -104,6 +107,73 @@ Filter selections are saved for your user account until you reset them.
 </Note>
 
 In MainWP Dashboard 6.5 and later, select **MainWP MCP** in the **Agent** filter to review actions recorded with that label. It identifies Application Password-authenticated requests to abilities in the `mainwp/` namespace, so direct API clients can also appear. Requests to abilities in other namespaces fall outside this classification. The **User** column shows the authenticated Dashboard user alongside **via MainWP MCP**. Combine this filter with a date range, site, or user, and save the selection as a segment to use it again. Choose **All Agents** to include activity from every agent.
+
+The **Human**, **All AI**, and provider choices, and the **AI tool** and **Key** filters, are described in [Agent activity](#agent-activity).
+
+## Agent activity
+
+When an AI makes a change through MainWP, Network Activity records who it acted for, which AI and app made the change, and which key it used. This covers the MainWP MCP server, remote AI connections, and the MainWP AI Assistant, including work done through the [Agent Bridge](/add-ons/development/agent-bridge-extension) add-on.
+
+### Columns
+
+| Column | What it shows |
+|---|---|
+| **User** | The Dashboard user who owns the login or key, with how the change was made, such as **via MainWP MCP**, **via Remote MCP**, or **via AI Assistant**. A second line gives the details described below. |
+| **Actor** | **Human** for a person, or **AI · Claude**, **AI · ChatGPT**, **AI · Gemini**, or **AI · Other AI**. The model appears in brackets only when it is known, such as **AI · Claude (claude-opus-5-5)**. |
+| **AI tool** | The app that made the change, such as **Claude Code**, **Claude Desktop**, **Codex**, **Cursor**, or **MainWP AI Assistant**. The version appears in the details line. |
+
+For an Application Password, the details line under the user's name reads like this:
+
+`Claude Code on office laptop (app password …2cc9, created Nov 19, 2026) for Dana, from 203.0.113.7, via Claude Code 2.1.319`
+
+That is the Application Password's name, the last four characters of its ID (never part of the password), when it was created, its owner, the IP address the request came from, and the app with its version. A remote AI connection shows who connected it and when. The AI Assistant shows the user and the conversation number.
+
+Every change without an AI agent is **Human**. That includes Dashboard actions, changes made in a child site's WP Admin, and rows recorded during WP-Cron or WP-CLI.
+
+Only the MainWP AI Assistant knows its model, because your Dashboard calls the model for it. MCP clients don't send one, so their rows show the provider only. The model appears as the model ID the Assistant used.
+
+Cursor can run models from several providers, so its rows show **AI · Other AI**. Rows recorded before the app name was sent show **AI · Other AI** with **MCP client** as the AI tool, or **Remote MCP client** for a remote connection.
+
+### Filters for agent activity
+
+- **Agent**: **Human**, **All AI**, one provider (**Claude**, **ChatGPT**, **Gemini**, or **Other AI**), or **MainWP MCP** for every action recorded with that label.
+- **AI tool**: one app. The list shows up to 50 apps seen in the last 90 days on sites you can see.
+- **Key**: one Application Password, remote connection, or AI Assistant, listed by name, last four characters, and owner. The list shows up to 50 keys seen in the last 90 days on sites you can see. Pick a key to see everything it did before you revoke it.
+
+These filters combine with each other and with **Users**, **Sites**, dates, and the other filters. They are saved with your filter selections and segments.
+
+The line under the filters reads "The app reports the AI and tool names. The user and key are verified." The AI app sends its own name, and MainWP can't check it. The user and key come from the login MainWP authenticated.
+
+### What an agent's action looks like
+
+The **Object** column describes the action in one sentence:
+
+| Action | Example |
+|---|---|
+| WP-CLI command from the list below | `Claude Code on office laptop (Dana) ran "wp plugin activate hello" on Shop: success` |
+| Any other WP-CLI command | `Claude Code on office laptop (Dana) ran "wp option update …" on Shop: success` |
+| Site ability | `Claude Code on office laptop (Dana) ran the read-only site ability woocommerce/products-query on Shop: success` |
+| PHP | `Claude Code on office laptop (Dana) ran PHP code (3 lines) on Shop: success` |
+
+WP-CLI arguments appear only for commands whose arguments are names rather than code or credentials: `wp plugin` and `wp theme` with `activate`, `deactivate`, `install`, `update`, `delete`, `enable`, `disable`, `status`, `list`, `is-active`, or `get`, plus `wp core update`, `wp cache flush`, `wp rewrite flush`, `wp cron event run`, and `wp option get`. On these commands, an argument shows only when it is a plain name, version, or ID, and a URL shows as its scheme and host. Other arguments, and the arguments of every other command, show as "…". Each line is capped at about 200 characters.
+
+PHP rows don't show the code. The row links to the **Activity** tab of the Agent Bridge **Agent approvals** page, filtered to that site, user, and tool, where administrators can read the code. The full WP-CLI command is there too.
+
+### Agent fields in query-activity-v1
+
+The `mainwp/query-activity-v1` ability returns these fields for each event, alongside the existing ones:
+
+| Field | Value |
+|---|---|
+| `agent_label` | How the change was made, such as "via MainWP MCP". Empty when no agent was involved. |
+| `client_label` | The MCP client that sent the request, such as "via claude-code 2.1.0". Null when not recorded. |
+| `credential` | The Application Password, remote connection, or AI Assistant used, with `name`, `last4`, `created` (ISO 8601), and `ip`. Null when not recorded. |
+| `actor` | `human` or `ai`. Cron and WP-CLI rows are `human`. |
+| `provider` | Claude, ChatGPT, Gemini, or Other AI. Null for human changes. The app reports it, so it isn't verified. |
+| `model` | The model, when known. Only the AI Assistant records one. |
+| `tool` | The app without its version, such as Claude Code. Null for human changes. |
+| `tool_version` | The version the app reported, when it sent one. |
+| `key` | The credential used, by name and last four characters. Null when not recorded. |
 
 ---
 
