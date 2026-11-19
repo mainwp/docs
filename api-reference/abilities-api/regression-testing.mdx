@@ -1,0 +1,389 @@
+---
+title: Regression Testing Abilities
+sidebarTitle: "Regression Testing Abilities"
+description: >-
+  Read Regression Testing results, manage per-site settings, baselines and schedules, and start or track scans with the MainWP Regression Testing Abilities API.
+---
+
+Regression Testing 5.3 registers twelve abilities in the `mainwp-regression-testing` category. They use the `mainwp/` namespace on your MainWP Dashboard.
+
+Use these abilities to automate the work you do on the [Regression Testing](/add-ons/security/regression-testing-extension) pages: read each site's latest change scores, change a site's target pages and schedule, start a scan and wait for its result, or pick the snapshot that later scans compare against.
+
+## What You'll Learn
+
+- Read site statuses, page observations, and diff summaries
+- Replace a site's configuration, baseline, and schedule
+- Start a scan and track it to completion
+- Find the scan that covers a site update
+
+## Prerequisites
+
+- WordPress 6.9 or later on your MainWP Dashboard site
+- MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
+- [Regression Testing](/add-ons/security/regression-testing-extension) 5.3 or later, active in your Dashboard
+- An authenticated user with access to the Regression Testing Add-on
+- Access to each site you read or change
+
+Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
+
+### Permissions
+
+Read abilities require access to the Regression Testing Add-on and to the requested site. The five abilities that change data (replace configuration, run scan, replace baseline, replace schedule, and manage operation) also require the WordPress `manage_options` capability or the **Regression Testing Management** permission. With [Team Control](/add-ons/agency/team-control-extension), assign **Regression Testing Management** to a custom role to let its users make these changes without full administrator rights.
+
+The same rule applies on the Regression Testing pages: saving settings, changing **Overwrite General Settings**, and running scans require `manage_options` or **Regression Testing Management**.
+
+## Available Abilities
+
+| Ability | Method | Purpose |
+|---------|--------|---------|
+| `mainwp/list-regression-testing-site-statuses-v1` | GET | List configured sites with their latest change score and schedule state |
+| `mainwp/get-regression-testing-site-config-v1` | GET | Read one site's configuration, target pages, and revision |
+| `mainwp/replace-regression-testing-site-config-v1` | DELETE | Preview or replace one site's complete configuration |
+| `mainwp/list-regression-testing-page-observations-v1` | GET | List stored snapshots for a site or one page, without page content |
+| `mainwp/get-regression-testing-diff-summary-v1` | GET | Compare two stored snapshots of the same page |
+| `mainwp/run-regression-testing-scan-v1` | DELETE | Preview or start a scan of one site |
+| `mainwp/replace-regression-testing-baseline-v1` | DELETE | Preview or set the baseline snapshot for one page |
+| `mainwp/replace-regression-testing-schedule-v1` | DELETE | Preview or replace one site's recurring and post-update schedule |
+| `mainwp/get-regression-testing-operation-v1` | GET | Read a scan's status and page counts |
+| `mainwp/list-regression-testing-operation-pages-v1` | GET | List each page's outcome in a scan |
+| `mainwp/manage-regression-testing-operation-v1` | DELETE | Preview and cancel a scan, or queue a failed scan again |
+| `mainwp/get-regression-testing-update-operation-v1` | GET | Find the scan that covers a site's latest update |
+
+Discover the abilities and their full input and output schemas:
+
+```bash
+curl -u 'USERNAME:APPLICATION_PASSWORD' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities?category=mainwp-regression-testing'
+```
+
+All twelve abilities are marked idempotent. The five that change data are marked destructive, so WordPress runs them with **DELETE**, including for previews. You can also send them as a **POST** request with a JSON body that contains `input`; your Dashboard handles it as the matching DELETE request.
+
+Each input schema rejects extra properties. Every listed property is required unless the ability says otherwise. Send `null` for optional values you do not use.
+
+<Note>
+The abilities never return page HTML, CSS or JavaScript contents, or recipient email addresses. They return content hashes, counts, and opaque references instead. List reads never load stored page content.
+</Note>
+
+## Baselines and scores
+
+The abilities score each page against a fixed **baseline** snapshot. The baseline moves only when you call `replace-regression-testing-baseline-v1`. A page whose content changed keeps reporting that change on every scan until you accept the new content as its baseline.
+
+The Regression Testing pages, the change notification email, and the **Scan Site** result score each page against its previous snapshot instead, as in earlier releases. An intended change shows on one scan there, and the next unchanged scan reads 0%.
+
+When you update to 5.3, each existing page uses its newest stored snapshot as its baseline.
+
+## Change a site with preview and confirm
+
+The five abilities that change data use a two-step preview and confirm flow:
+
+1. Send the request with `dry_run: true`, `confirm: false`, and `preview_token: null`. Include a new UUID as `request_ref`. Set `if_match` to the current `revision` you read.
+2. Review the response, then send the same request with `dry_run: false`, `confirm: true`, and the returned `preview_token`.
+
+If the site changes between the two steps, the confirm request fails with `stale_revision` or `preview_mismatch`. Read the site again and repeat the preview.
+
+Reuse the same `request_ref` to retry a confirm request safely. Your Dashboard replays the stored result instead of applying the change twice. Use a new UUID for each new change.
+
+## Read site statuses
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"limit":50}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-regression-testing-site-statuses-v1/run'
+```
+
+`limit` accepts 1 to 100. `after_site_id` is optional. When `truncated` is `true`, pass `next_after_site_id` as `after_site_id` to read the next page.
+
+**Example response:**
+
+```json
+{
+  "sites": [
+    {
+      "site_id": 7,
+      "enabled": true,
+      "page_count": 2,
+      "schedule_state": "active",
+      "last_run_state": "succeeded",
+      "largest_change_percent": 3.2,
+      "observed_at": "2026-11-19T08:00:12Z",
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "next_after_site_id": null,
+  "truncated": false
+}
+```
+
+`last_run_state` is `succeeded`, `partial`, `failed`, `unknown`, `cancelled`, or `null` when the site has not been scanned.
+
+## Read and replace a site configuration
+
+Read the configuration first. Its `revision` is the `if_match` value for scans, schedule changes, and configuration changes. Each page's `revision` is the `if_match` value for a baseline change.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":7}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-regression-testing-site-config-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 7,
+  "enabled": true,
+  "pages": [
+    {
+      "page_ref": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "relative_path": "/",
+      "active": true,
+      "revision": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "change_threshold_percent": 10,
+  "track_assets": false,
+  "retention_days": 30,
+  "notification_enabled": true,
+  "notification_recipient_source": "inherit",
+  "notification_recipient_count": 0,
+  "post_update_delay_minutes": 5,
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+```
+
+`replace-regression-testing-site-config-v1` replaces the whole configuration. Send every field:
+
+| Field | Rules |
+|-------|-------|
+| `site_id` | MainWP site ID |
+| `enabled` | `false` turns off all scans for the site, including scans from the Regression Testing pages |
+| `relative_paths` | 1 to 100 unique target paths, each starting with `/` and up to 255 characters |
+| `change_threshold_percent` | 0 to 100 |
+| `track_assets` | Track the site's own CSS and JavaScript files |
+| `retention_days` | `0` (keep snapshots without a limit), `1`, `7`, `14`, `30`, `60`, `90`, `180`, or `365` |
+| `notification_enabled` | Send change notification emails |
+| `notification_recipient_source` | `inherit` uses the MainWP notification recipients; `explicit` uses `notification_recipients` |
+| `notification_recipients` | Up to 20 email addresses; must be empty when the source is `inherit` |
+| `post_update_delay_minutes` | 0 to 1440 |
+| `if_match` | The current configuration `revision`, or `null` for a site that has no configuration yet |
+
+Target paths follow the same rules as **Additional target pages** on the [settings page](/add-ons/security/regression-testing-extension#general-settings).
+
+This ability does not change the settings it does not manage, such as highlight colors, excluded HTML elements, and CSS/JS exclusions.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":7,"enabled":true,"relative_paths":["/","/pricing/"],"change_threshold_percent":10,"track_assets":false,"retention_days":30,"notification_enabled":true,"notification_recipient_source":"inherit","notification_recipients":[],"post_update_delay_minutes":5,"if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","request_ref":"123e4567-e89b-42d3-a456-426614174000","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-regression-testing-site-config-v1/run'
+```
+
+The response contains `mode` (`dry_run` or `completed`), `page_count`, `recipient_count`, the new `revision`, and the `preview_token` to confirm with.
+
+## Read snapshots and diffs
+
+List stored snapshots for a site, or pass a `page_ref` for one page:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":7,"page_ref":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","limit":20}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/list-regression-testing-page-observations-v1/run'
+```
+
+`page_ref` and `after_snapshot_ref` are optional. Each observation includes `page_ref`, `relative_path`, `snapshot_ref`, `status`, `change_percent` against the baseline, `content_hash`, `asset_count`, and `observed_at`. When `truncated` is `true`, pass `next_after_snapshot_ref` as `after_snapshot_ref`.
+
+Compare two stored snapshots of the same page:
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":7,"page_ref":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","from_snapshot_ref":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","to_snapshot_ref":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-regression-testing-diff-summary-v1/run'
+```
+
+The diff summary returns `change_percent`, `added_units`, `removed_units`, `changed_asset_count`, and `summary_state`. A `summary_state` of `too_large` or `truncated` means the pages were too large to compare in full. Use the **Raw HTML Diff** in your Dashboard to see the actual changes.
+
+## Set a baseline
+
+Accept a stored snapshot as the page's new baseline. Pass the page `revision` from `get-regression-testing-site-config-v1` as `if_match`.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":7,"page_ref":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","snapshot_ref":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","if_match":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","request_ref":"123e4567-e89b-42d3-a456-426614174001","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-regression-testing-baseline-v1/run'
+```
+
+The snapshot must be a complete snapshot of the same page.
+
+## Replace a schedule
+
+| Field | Rules |
+|-------|-------|
+| `desired_state` | `disabled`, `active`, or `paused` |
+| `cadence` | `daily`, `weekly`, `twice_monthly`, `monthly`, or `null`; required when the state is `active` |
+| `weekday` | 1 (Monday) to 7 (Sunday); required for `weekly` |
+| `month_day` | 1 to 31; required for `monthly`. `twice_monthly` also runs 15 days from this day |
+| `local_time` | `HH:MM` in 24-hour time; required when the state is `active` |
+| `timezone` | A timezone name such as `Europe/Berlin` or `UTC` |
+| `post_update_enabled` | Scan the site after updates |
+| `post_update_delay_minutes` | 0 to 1440 |
+| `if_match` | The current configuration `revision` |
+
+A `month_day` past the end of a short month runs on the month's last day.
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":7,"desired_state":"active","cadence":"weekly","weekday":1,"month_day":null,"local_time":"03:30","timezone":"Europe/Berlin","post_update_enabled":true,"post_update_delay_minutes":10,"if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","request_ref":"123e4567-e89b-42d3-a456-426614174002","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/replace-regression-testing-schedule-v1/run'
+```
+
+The response includes the schedule `state` and its `next_run_at` time.
+
+## Run a scan and track it
+
+<Steps>
+<Step title="Preview the scan">
+Call `run-regression-testing-scan-v1` with `dry_run: true`. Pass the configuration `revision` as `if_match`.
+</Step>
+<Step title="Confirm the scan">
+Send the same request with `dry_run: false`, `confirm: true`, and the returned `preview_token`. Save the returned `operation_id`.
+</Step>
+<Step title="Wait for the result">
+Call `get-regression-testing-operation-v1` with the `operation_id` as `operation_ref` until `status` is `succeeded`, `partial`, `failed`, `unknown`, or `cancelled`.
+</Step>
+<Step title="Read the page outcomes">
+Call `list-regression-testing-operation-pages-v1` to see each page's status and change score.
+</Step>
+</Steps>
+
+```bash
+curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_id":7,"page_refs":[],"if_match":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","trigger":"manual","update_generation":null,"request_ref":"123e4567-e89b-42d3-a456-426614174003","dry_run":true,"confirm":false,"preview_token":null}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-regression-testing-scan-v1/run'
+```
+
+Leave `page_refs` empty to scan every active page of the site. Use `trigger: "manual"` with `update_generation: null`. A site whose configuration has `enabled: false` cannot be scanned and returns `stale_revision`. A site runs one scan at a time. Starting a manual scan while another scan of the site is queued or running returns `lock_busy`.
+
+A confirmed scan returns `mode: "accepted"` and `status: "queued"`. A background worker on your Dashboard runs it within about a minute, as described in [How scans run](/add-ons/security/regression-testing-extension#how-scans-run).
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"operation_ref":"123e4567-e89b-42d3-a456-426614174999"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-regression-testing-operation-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "operation_id": "123e4567-e89b-42d3-a456-426614174999",
+  "site_id": 7,
+  "kind": "manual_scan",
+  "status": "succeeded",
+  "counts": {
+    "total": 2,
+    "changed": 1,
+    "unchanged": 1,
+    "failed": 0,
+    "unknown": 0,
+    "cancelled": 0
+  },
+  "retryable": false,
+  "error_code": null,
+  "accepted_at": "2026-11-19T08:00:00Z",
+  "finished_at": "2026-11-19T08:00:41Z"
+}
+```
+
+`kind` is `manual_scan`, `scheduled_scan`, `post_update_scan`, or `reconcile`. You can read only scans you started.
+
+`list-regression-testing-operation-pages-v1` takes `operation_ref`, `limit` (1 to 100), and an optional `after_page_ref`. Each page has a `status`, `change_percent`, `snapshot_ref`, `error_code`, and `finished_at`. For a scan of several pages, finished pages appear only after the whole scan ends.
+
+### Cancel a scan
+
+Call `manage-regression-testing-operation-v1` with `action: "cancel"` for a scan that is `queued` or `running`. A queued scan is cancelled at once and returns `mode: "completed"`. A running scan moves to `cancelling` and returns `mode: "accepted"`.
+
+Use `action: "reconcile"` to queue a scan that ended as `failed`, `partial`, or `unknown` again. Its `kind` becomes `reconcile`. Other states return `state_conflict`.
+
+## Find the scan that covers an update
+
+`get-regression-testing-update-operation-v1` answers "did a post-update scan check this update, and what did it find?" The Safe Updates check in your MainWP Dashboard reads it after updating a site.
+
+```bash
+curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
+  --data-urlencode 'input_json={"site_id":7,"updated_after":"2026-11-19T08:00:00Z"}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/get-regression-testing-update-operation-v1/run'
+```
+
+**Example response:**
+
+```json
+{
+  "site_id": 7,
+  "enabled": true,
+  "post_update_enabled": true,
+  "change_threshold_percent": 10,
+  "post_update_delay_minutes": 5,
+  "update_event": {
+    "recorded_at": "2026-11-19T08:02:10Z",
+    "attachment": "joined_scan",
+    "reason": null
+  },
+  "operation": {
+    "operation_id": "123e4567-e89b-42d3-a456-426614174998",
+    "kind": "post_update_scan",
+    "status": "succeeded",
+    "counts": {
+      "total": 2,
+      "changed": 0,
+      "unchanged": 2,
+      "failed": 0,
+      "unknown": 0,
+      "cancelled": 0
+    },
+    "retryable": false,
+    "error_code": null,
+    "accepted_at": "2026-11-19T08:01:30Z",
+    "finished_at": "2026-11-19T08:07:44Z",
+    "scheduled_at": "2026-11-19T08:07:10Z",
+    "change_percent": 0.4,
+    "pages_without_baseline": 0
+  }
+}
+```
+
+The response describes the newest update recorded for the site at or after `updated_after`:
+
+- `update_event` is `null` when no update was recorded since that time.
+- `attachment` is `new_scan` when the update started a post-update scan, `joined_scan` when it joined one that was already queued, or `not_attached` when no scan covers it.
+- `reason` explains a `not_attached` update: `post_update_disabled`, `scans_disabled`, `site_not_configured`, `retry_pending`, `retry_exhausted`, `storage_unavailable`, or `enqueue_failed`.
+- `operation` is the scan the update was attached to, or `null`. Its `change_percent` is the highest change against the baseline among the scan's pages. `pages_without_baseline` counts pages that had no baseline yet.
+
+An update can join a scan that was queued before it, so the covering scan's `accepted_at` can be earlier than the update.
+
+## Updating to 5.3
+
+When you update to Regression Testing 5.3, your Dashboard copies your existing configurations, pages, and snapshots to new storage in batches. The copy runs on admin page loads and from the background worker. The Regression Testing pages keep working while it runs. Until it finishes, every ability returns `storage_unavailable` with HTTP 503.
+
+## Handle errors
+
+| Error code | HTTP status | Next step |
+|------------|-------------|-----------|
+| `invalid_input` | 400 | Check the input against the ability's schema and field rules |
+| `access_denied` | 401 or 403 | Check authentication, Add-on access, and `manage_options` or **Regression Testing Management** for changes |
+| `site_not_found`, `config_not_found`, `page_not_found`, `snapshot_not_found`, `operation_not_found` | 404 | Verify the ID or reference and that you can access the site |
+| `confirmation_required` | 409 | Send `confirm: true` with the `preview_token` from the preview |
+| `preview_mismatch`, `stale_revision` | 409 | Read the site again and repeat the preview with the current `revision`. For a scan, also check that the site has `enabled: true` |
+| `lock_busy` | 409 | Another scan or change is in progress; retry later |
+| `page_limit`, `request_conflict`, `state_conflict` | 409 | Check the request against the current site and scan state, or use a new `request_ref` |
+| `storage_unavailable` | 503 | Wait for the update copy to finish, or check the Add-on and database |
+
+Over REST, some errors found while checking permissions, such as `site_not_found`, return HTTP 403 instead of the status listed. Read the error code, not only the HTTP status. A site you cannot access answers like a site that does not exist.
+
+## Related Resources
+
+- [Regression Testing](/add-ons/security/regression-testing-extension) - Configure scans and review results in your Dashboard
+- [Abilities API Overview](/api-reference/abilities-api/overview) - Authentication and request formats
+- [Team Control](/add-ons/agency/team-control-extension) - Assign Add-on permissions to custom roles

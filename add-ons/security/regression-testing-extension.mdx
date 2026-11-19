@@ -14,7 +14,7 @@ addonType: "extension"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Regression Testing" data-purchase-url="https://mainwp.com/extension/regression-testing/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.2.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-regression-testing-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Regression Testing" data-purchase-url="https://mainwp.com/extension/regression-testing/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="extension" data-version="5.3" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-regression-testing-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <Info>
   **Extension Add-on** - This add-on provides standalone functionality within MainWP Dashboard. No third-party plugins required.
@@ -66,11 +66,18 @@ To customize how scans are performed, navigate to **MainWP \> Add-ons \> Monitor
 
 • **Additional target pages** – By default, the add-on scans the site's homepage on the `/` slug. If you want to scan another page, enter its slug, such as `/contact-us`. This is useful if a particular page, such as a pricing or checkout page, is more critical to monitor.
 
+Target pages follow these rules. Your Dashboard refuses to save settings that break them.
+
+- A site can have up to 100 target pages.
+- Slugs can use WordPress routing and pagination queries, such as `/?p=123`, `/?page_id=2`, or `/?post_type=product`. Other query keys, such as `/shop/?orderby=popularity` or `/?currency=EUR`, are not accepted.
+- Slugs can contain `@` and non-ASCII characters.
+- Two slugs that differ only in letter case, such as `/About` and `/about`, count as the same page and are refused.
+
 • **Highlight color for additions** and **Highlight color for deletions** – Set custom colors to highlight added and removed content in difference views.
 
 • **Exclude HTML elements** – Specify elements to ignore, such as `head`, `#header`, or `.wrapper`.
 
-• **Track enqueued CSS & JS files** – If enabled, the add-on will also track changes to JavaScript and CSS files. However, **this can significantly increase scan time**.
+• **Track enqueued CSS & JS files** – If enabled, the add-on will also track changes to JavaScript and CSS files. However, **this can significantly increase scan time**. Only files served from the site's own address are tracked. Files from another host, such as a CDN, and font files are skipped. The first 50 files on a page are tracked. A file that fails to load is recorded for that file without failing the page.
 
 • **Exclude CSS files from specific directories** and **Exclude JS files from specific directories** – Prevent selected CSS or JS files from being included in the scan by specifying directories, such as `/wp-admin/*`.
 
@@ -90,6 +97,8 @@ To customize how scans are performed, navigate to **MainWP \> Add-ons \> Monitor
 
 When enabled, set the **Delay duration (minutes)** to any value between **1 and 60 minutes**. The post-update regression scan will be queued and begin once the delay has elapsed. If Post-update automatic scans are disabled, the delay setting is hidden and ignored.
 
+The delay counts from the last update of a run. When you update several items on a site, for example with **Update Everything**, each update joins the scan that is already queued, so the site is scanned once after the last update.
+
 Use this when:
 
 - Your sites use full-page caching, object caching, or a CDN that needs time to refresh after updates.
@@ -103,6 +112,8 @@ Use this when:
 • **Enable notification emails** – Get an email alert if a site's changes exceed a specified threshold.
 
 • **Change score threshold** – Set the percentage difference that triggers a notification.
+
+Your Dashboard sends the notification when a page crosses the threshold. Later scans that still find the page above the threshold do not send it again. Notifications use the MainWP notification email template and settings.
 
 <Note>
   If a child site has its own notification email recipients configured (see [Per-site Settings](#per-site-settings)), those recipients are used for that site's alerts and override the general notification email settings. If no site-specific recipients are set, the general settings apply.
@@ -157,7 +168,7 @@ Displays changes in CSS and JavaScript files if tracking is enabled in the setti
 
 **Running a Manual Scan**
 
-If you need to check a site immediately, you can manually trigger a scan from the **Regression Testing Dashboard** by clicking the ellipsis menu and selecting **Scan Site**.
+If you need to check a site immediately, you can manually trigger a scan from the **Regression Testing Dashboard** by clicking the ellipsis menu and selecting **Scan Site**. The scan is queued and runs within about a minute. The page shows the result when the scan finishes.
 
 You can also initiate a scan from an individual **Child Site Overview Page** under the Regression Testing tab. Manual scans are useful when performing maintenance or troubleshooting specific issues.
 
@@ -177,23 +188,63 @@ The chart also includes timestamps on the x-axis and reflects the history of Cha
 
 ![Child Site Overview widget with change percentage chart and scan history](/images/add-ons/regression-site-chart-widget.png)
 
-## Scheduled Bulk Scanning Behavior
+## How scans run
 
-When Regression Testing is scheduled to run automatically (e.g., daily or weekly), the system does **not** attempt to scan all sites or all pages at once.
+Scans started with **Scan Site**, after updates, or on a schedule are queued. A background worker on your Dashboard runs every minute through WordPress cron and processes the queue. Each site runs one scan at a time.
 
-Instead, it follows a phased approach:
+- **Scheduled scans** start at their scheduled local time. Your Dashboard checks for due schedules every minute. A suspended site, or a site whose last sync failed, skips that run. When your Dashboard was offline at the scheduled time, the schedule runs once to catch up.
+- **Post-update scans** start after the configured delay, as described in [Automated Scan Settings](#automated-scan-settings).
+- A scan that saved results for most pages and failed on a few shows as finished.
 
-• At the scheduled start time, the system selects the **first three websites** to begin scanning.\
-• Target pages on each site are scanned in batches of **up to three pages**, with a **5-second interval** before the next page batch.\
-• After **5 minutes**, it proceeds to the **next batch of three websites**, repeating the same behavior.\
-• This cycle continues until all selected websites have been processed.
+<Warning>
+WordPress cron must run on your Dashboard for queued scans to start. The direct `cron/*.php` files in the add-on no longer run scans. If you turned off **Use WP Cron** in MainWP, load any admin page once after updating the add-on, and keep WordPress cron running from then on. See [Disable WP Cron](/customization/disable-wp-cron).
+</Warning>
 
-This method ensures the scanning load is spread out and doesn't overwhelm your server or the connected sites.
+## Failed pages
+
+When a page cannot be scanned, its tooltip in the Regression Testing table names the reason when you can act on it:
+
+| Reason | What to do |
+|--------|------------|
+| The site asks for its HTTP authentication login over `http://` | Change the site URL in MainWP to `https://`. Your Dashboard sends the saved HTTP authentication login only over HTTPS. |
+| The site refused the request (HTTP 401 or 403) | Check the saved HTTP authentication login, or allow the request in the site's firewall or security plugin. |
+| The page redirects to a different site | Scan a page that does not redirect away. Redirects between `example.com` and `www.example.com`, and from `http://` to `https://`, are followed. |
+| The site address points to a private or reserved network address | See [Scan sites on a private network](#scan-sites-on-a-private-network). |
+| The page did not return HTML | Scan a page that returns an HTML page with HTTP status 200. A 404 or 500 error page fails the scan instead of becoming a snapshot. |
+| The page is larger than 2 MB | Scan a smaller page. |
+| A scan of this site is already running | Try again when the current scan finishes. |
+| Scans are turned off for this site through the Abilities API | Turn scans back on with the [Regression Testing Abilities](/api-reference/abilities-api/regression-testing#read-and-replace-a-site-configuration). |
+
+Other failures show **Please check your connection.**
+
+Sites with an IP address as their URL are scanned at that address. Sites with a Unicode host name, such as `https://müller.de`, are requested in their punycode form. Sites installed in a subdirectory are scanned at their own path.
+
+### Scan sites on a private network
+
+Your Dashboard refuses to scan sites whose address resolves to a private network address, such as `10.0.0.5` or `192.168.1.20`. To allow specific private sites, add the `mainwp_html_regression_private_origin_allowed` filter to your Dashboard site, for example in a code snippet:
+
+```php
+add_filter(
+    'mainwp_html_regression_private_origin_allowed',
+    function ( $allowed, $host, $address ) {
+        return 'staging.example.local' === $host ? true : $allowed;
+    },
+    10,
+    3
+);
+```
+
+The filter receives the host name and the resolved address. It can allow addresses in the `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, and `fc00::/7` ranges. Loopback addresses, such as `127.0.0.1`, are always refused.
+
+## Permissions
+
+Viewing Regression Testing results requires access to the add-on. Saving general or per-site settings, changing **Overwrite General Settings**, and running scans also require the WordPress `manage_options` capability or the **Regression Testing Management** permission. With [Team Control](/add-ons/agency/team-control-extension), assign **Regression Testing Management** to a custom role to let its users make these changes.
 
 ---
 
 ## Related Resources
 
 - [Monitoring Add-ons](/add-ons/monitoring) - Browse all monitoring tools
+- [Regression Testing Abilities](/api-reference/abilities-api/regression-testing) - Automate scans and settings through the Abilities API
 - [Manage Updates](/sites/updates/manage-updates) - Update management guide
 - [Dashboard Insights](/dashboard/overview/dashboard-insights) - Analytics for your Dashboard
