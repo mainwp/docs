@@ -2,7 +2,7 @@
 title: Updates Abilities
 sidebarTitle: "Updates Abilities"
 description: >-
-  14 abilities for checking, previewing, and applying WordPress updates and managing site update holds.
+  Abilities for checking, previewing, and applying WordPress updates, managing site update holds, and running Safe Updates.
 ---
 
 MainWP Dashboard 6.3 registers 14 update management abilities into the WordPress Abilities API framework. These enable programmatic control over WordPress core, plugin, theme, and translation updates across your network.
@@ -13,6 +13,7 @@ MainWP Dashboard 6.3 registers 14 update management abilities into the WordPress
 - Applying WordPress core, plugin, theme, and translation updates
 - Managing ignored updates
 - Batch update operations
+- Safe Updates runs with site checks and rollback
 
 ---
 
@@ -703,6 +704,62 @@ Run a preview first with `dry_run: true`. The commands above show confirmed exec
 <Warning>
 This ability applies all available updates including WordPress core. Test on staging sites before running against production environments.
 </Warning>
+
+---
+
+## Safe Updates Abilities
+
+MainWP Dashboard X adds eight abilities in the `mainwp-updates` category for [Safe Updates](/sites/updates/does-mainwp-have-safe-updates): runs that check each site before and after updating, back it up first when your settings require it, and can roll back plugin and theme updates. The descriptions of `run-updates-v1` and `update-all-v1` point to `run-safe-update-v1` when you want those checks. Their inputs and results are unchanged.
+
+| Ability | Inputs beyond `dry_run` and `confirm` | Result |
+|---------|---------------------------------------|--------|
+| `mainwp/run-safe-update-v1` | `site_ids_or_domains`, `types`, `specific_items`, `checks`, `ignore_backup_gate` | Preview, or `run_id`, `url`, and `conflicts` |
+| `mainwp/list-safe-update-runs-v1` | `page`, `per_page` (1-100, default 25), `source` (`manual`, `auto`, or empty for both) | `items`, `total`, and pagination. Each run has `stalled`. |
+| `mainwp/get-safe-update-run-v1` | `run_id` | `run`, the `rows` you can access, `stalled`, and `needs_tick` |
+| `mainwp/continue-safe-update-run-v1` | `run_id` | Preview, or the run after the Safe Updates worker runs once |
+| `mainwp/cancel-safe-update-run-v1` | `run_id` | Preview, or the result after requesting cancellation |
+| `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the run's selected HTTP, uptime monitor, and MainWP Child checks run again. A Regression test result is re-scored from the existing scan when one is available. |
+| `mainwp/resolve-safe-update-site-v1` | `row_id`, `revision` | Preview, or the result after marking the result as expected |
+| `mainwp/rollback-safe-update-v1` | `row_id`, `revision`, optional `item_index` or `find_cause` | Preview, or the result after the rollback starts |
+
+`list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. A successful confirmed start returns `dry_run: false` with `run_id`, `url`, and `conflicts` at the top level. If every selected site is already in a run, it returns an error and no run starts. Confirmed actions on an existing run or row return `dry_run: false` and `result`.
+
+A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. When a run shows `stalled: true` or `needs_tick: true`, calling `continue-safe-update-run-v1` runs the Safe Updates worker, which moves due work forward. The worker can also move other runs; `run_id` decides access and which run the result shows. WP-Cron, server cron, and an open run page also move runs.
+
+### Start a Run
+
+The selection inputs are the same fields as in `run-updates-v1`. Unlike `run-updates-v1`, if any site you name in `site_ids_or_domains` does not exist or you cannot access it, the whole preview or start request is refused. An empty `site_ids_or_domains` selects the connected live sites you can access that have matching updates. Disconnected sites are left out, so check them separately. Name a staging site to include it.
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `checks` | string | `all` | One of `all`, `none`, `http`, `monitor`, `child`, `http,monitor`, `http,child`, `monitor,child`, or `http,monitor,child`. `http` loads the site, `monitor` reads its uptime monitors, and `child` asks MainWP Child. `none` turns off these three; the Regression test check still runs when available. |
+| `ignore_backup_gate` | boolean | false | Same as **Update sites that have no recent backup without waiting for one** in the Safe Update preview |
+
+```bash
+# Preview a Safe Update of one plugin on one site with the HTTP check selected
+curl -X POST -u 'admin:xxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{"input":{"site_ids_or_domains":[5],"types":["plugins"],"specific_items":["sample/plugin.php"],"checks":"http","dry_run":true}}' \
+  'https://your-dashboard.com/wp-json/wp-abilities/v1/abilities/mainwp/run-safe-update-v1/run'
+```
+
+The preview's `would_affect.sites` lists each site's items, backup status, available checks, and skip reasons. Send the same selection with `confirm: true` to start the run. The response has the `run_id`, the run page `url`, and `conflicts`: the IDs of sites left out because another run holds them. Suspended sites appear in the preview and are left out when the run starts.
+
+### Act on a Site Row
+
+Row actions take `row_id` (`rows[].id` from `get-safe-update-run-v1`). Mark as expected and rollback also need the row's current `revision` (`rows[].revision`); the call is refused if the row changed since you read it. Read the run again after each action to get the new revision and the actions now available.
+
+For `rollback-safe-update-v1`:
+
+- Pass `item_index` (`rows[].items[].index` of an item with `can_rollback: true`) to roll back one item.
+- Omit `item_index` to roll back every updated plugin and theme on the row. The request is refused if any of them has no usable kept copy or you lack the right to update it.
+- When the row's `actions.find_cause` is true (`rows[].actions.find_cause` from `get-safe-update-run-v1`), pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep the failing ones rolled back. If an update is no longer offered or cannot be re-applied, the process stops and the row result says why; updates after that point stay rolled back without being tested.
+
+Rollback does not undo database changes. Restore a backup instead when you need that.
+
+### Permissions
+
+These abilities use the same checks as the Safe Updates pages: the caller must be a Dashboard administrator or a Team Control user, authenticated as described in the [Abilities API overview](/api-reference/abilities-api/overview). Starting a run and rolling back need the update right for each item type. When the backup requirement applies to a selected site, starting a run also needs **Execute Backups**, unless `ignore_backup_gate` is true. The other abilities need any update right. All of them are limited to the sites you can access. You can cancel a manual run only if you started it or manage every site in it. Automatic update runs cannot be cancelled.
 
 ---
 

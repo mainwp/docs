@@ -3,17 +3,17 @@ title: Manage Updates
 description: >-
   Remotely update WordPress Core, plugins, themes, and translations on all
   Child Sites. Enable auto-updates for trusted items, ignore specific updates,
-  and use the built-in rollback feature for failed updates.
+  and use Safe Updates to check sites and roll back updates that break them.
 ---
 
-The Manage Updates feature lets you run WordPress core, plugin, theme, and translation updates across all your child sites from your Dashboard. Configure automatic updates for trusted items, ignore updates you want to skip, and take advantage of the built-in rollback feature to recover from failed updates.
+The Manage Updates feature lets you run WordPress core, plugin, theme, and translation updates across all your child sites from your Dashboard. Configure automatic updates for trusted items, ignore updates you want to skip, and use Safe Updates to check sites before and after updating and roll back an update that breaks a site.
 
 ## What You'll Accomplish
 
 - Update WordPress core, plugins, themes, and translations individually or in bulk
 - Configure automatic updates for trusted plugins, themes, and translations
 - Ignore specific updates globally or per site, including WordPress core and translation updates
-- Use the rollback feature to recover from failed updates
+- Run checked updates with Safe Updates and roll back an update that breaks a site
 
 ## Prerequisites
 
@@ -606,10 +606,12 @@ The hold also applies to updates requested through the Abilities API, MCP, and R
 
 ## Automatic Update Summary Emails
 
-After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates Email** summarizing successful updates, grouped by child site. The email is processed in the background, so it may arrive after the updates finish.
+After an automatic update run finishes, MainWP Dashboard sends an **Auto Updates Email**. The email is processed in the background, so it may arrive after the updates finish.
 
-- The summary includes successful updates only. It is not a complete report of failed or skipped updates.
-- No summary is sent when the run has no successful updates to report.
+What the email contains depends on **Safe Updates: check sites before and after automatic updates** in **MainWP Settings > General Settings > Updates Settings**:
+
+- **On** (the default in MainWP Dashboard X): each automatic update pass records at most one Safe Updates run for the sites it updates, and the email for that run uses the Safe Updates summary. A pass with nothing eligible to update creates no run and sends no email. It includes failed and skipped sites with their reasons, each site's items, and a link to the run with the full check results. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates#summary-email).
+- **Off**: the email summarizes successful updates only, grouped by child site. It is not a complete report of failed or skipped updates, and no summary is sent when the run has no successful updates to report.
 
 Auto Updates Email is separate from Daily Digest and does not wait for the next digest.
 
@@ -627,57 +629,26 @@ See [Email Settings](/sites/management/mainwp-dashboard-settings#manage-email-no
 
 ## Safe Updates / Rollback
 
-MainWP 5.1 introduced a rollback feature that integrates with the WordPress core rollback feature from WordPress 6.3.
-
-<iframe
-  className="w-full aspect-video rounded-xl"
-  src="https://www.youtube.com/embed/LBP0A6_cbnU"
-  title="Safe Updates / Rollback - Video Tutorial"
-  frameBorder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowFullScreen
-></iframe>
-
-<Warning>
-Child sites must run WordPress 6.3 or above for the rollback feature to work.
-</Warning>
+Click **Safe Update** on an update tab of the Updates page, or use **Safe Update Everything** in Manage Sites, to update with checks. MainWP checks each site, backs it up first when your settings require it, applies the updates, and checks the site again. When a check fails after the update, you can roll a plugin or theme back to its previous version from the run page, or let MainWP find which update caused the failure. See [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) for the full guide.
 
 ### How Rollback Works
 
-The rollback feature is active on all MainWP Dashboard pages where updates can be triggered, including the Updates page, Manage Plugins, Manage Themes, and add-on pages. It works for both individual and bulk updates.
+MainWP has two kinds of rollback:
+
+- **When a plugin or theme update fails to install**, WordPress puts the previous version back. This works on child sites running WordPress 6.3 or later, on every Dashboard page where you can start updates, for both single and bulk updates.
+- **When an update installs but breaks a check**, use **Roll back** on the Safe Updates run page. This needs MainWP Child X and WordPress 6.3 or later on the child site. See [Roll Back an Update](/sites/updates/does-mainwp-have-safe-updates#roll-back-an-update).
 
 ![Shows the rollback feature in action after a failed plugin update.](/images/dashboard/sites-updates-7155cb.png)
 
 ### Rollback Notices
 
-When a rollback occurs, an orange icon with a tooltip appears. This notice persists on relevant Dashboard pages until the plugin or theme is successfully updated.
+When a rollback occurs, an orange icon with a tooltip appears beside the version that was rolled back whenever that version is offered as an update. The notice stops showing once a newer version is offered.
 
 ![Rollback icon signifying a rollback persisting throughout the Dashboard.](/images/dashboard/sites-updates-7814c6.png)
 
 ### Manual Rollback
 
-During updates, WordPress stores the current version temporarily. If the update fails, that version is restored. There is no permanent storage for manual rollback to previous versions.
-
-To install a previous version of a WordPress.org plugin:
-
-<Steps>
-<Step title="Visit plugin page">
-Navigate to the plugin page on wordpress.org (e.g., https://wordpress.org/plugins/mainwp/).
-</Step>
-<Step title="Open Advanced">
-Click **Advanced** in the sidebar.
-</Step>
-<Step title="Download version">
-Select the desired version from the dropdown and click **Download**.
-
-![Downloading older versions of plugins from wordpress.org](/images/dashboard/sites-updates-9fbf05.png)
-</Step>
-<Step title="Install">
-Upload and install the plugin via [Install by Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload).
-</Step>
-</Steps>
-
-For premium plugins and themes not on wordpress.org, use the [Favorites Extension](https://mainwp.com/extension/favorites/) to store versions for rollback.
+For an item Safe Updates cannot roll back, you can install an earlier version yourself. Download the version from the plugin's page on wordpress.org (**Advanced View** in the sidebar), then install it with [Install by Upload](/sites/plugins/managing-plugins-with-mainwp#install-by-upload). For premium plugins and themes, keep earlier versions in the [Favorites Extension](https://mainwp.com/extension/favorites/).
 
 ---
 
@@ -688,13 +659,14 @@ For premium plugins and themes not on wordpress.org, use the [Favorites Extensio
 - [ ] Theme updates work for individual and bulk operations
 - [ ] Auto updates are configured for trusted items
 - [ ] Ignored updates no longer appear in update lists
-- [ ] Rollback feature functions on WordPress 6.3+ sites
+- [ ] **Safe Update** starts a run and the run page lists each site with a result
+- [ ] **Roll back** is offered for updated plugins and themes that have a kept copy, on sites with MainWP Child X and WordPress 6.3 or later
 
 ---
 
 ## Related Resources
 
-- [Does MainWP Have Safe Updates](/sites/updates/does-mainwp-have-safe-updates) - Learn about update safety features
+- [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) - Checked update runs, rollback, and finding the update that broke a site
 - [Change Update Frequency](/sites/updates/how-to-change-daily-update-and-sync-frequency) - Adjust sync and update timing
 - [Manage Plugins](/sites/plugins/managing-plugins-with-mainwp) - Full plugin management
 - [Manage Themes](/sites/themes/managing-themes-with-mainwp) - Full theme management
