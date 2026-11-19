@@ -438,7 +438,7 @@ Direct worker files cover only the callbacks documented below. MainWP Dashboard,
   </Tab>
 
   <Tab title="Regression Testing">
-    Regression Testing 5.3.0 and later has no server cron entry. Its direct `cron/*.php` files no longer run scans.
+    Regression Testing 5.3 and later has no server cron entry. Its direct `cron/*.php` files no longer run scans.
 
     Queued, scheduled, and post-update scans run from a WordPress cron event that fires every minute. Keep WordPress cron running on your Dashboard, for example by triggering `wp-cron.php` externally every minute. If you turned off **Use WP Cron**, load any admin page once after updating the add-on so the event is scheduled.
 

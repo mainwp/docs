@@ -5,7 +5,7 @@ description: >-
   Read Regression Testing results, manage per-site settings, baselines and schedules, and start or track scans with the MainWP Regression Testing Abilities API.
 ---
 
-Regression Testing 5.3.0 registers twelve abilities in the `mainwp-regression-testing` category. They use the `mainwp/` namespace on your MainWP Dashboard.
+Regression Testing 5.3 registers twelve abilities in the `mainwp-regression-testing` category. They use the `mainwp/` namespace on your MainWP Dashboard.
 
 Use these abilities to automate the work you do on the [Regression Testing](/add-ons/security/regression-testing-extension) pages: read each site's latest change scores, change a site's target pages and schedule, start a scan and wait for its result, or pick the snapshot that later scans compare against.
 
@@ -20,7 +20,7 @@ Use these abilities to automate the work you do on the [Regression Testing](/add
 
 - WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
-- [Regression Testing](/add-ons/security/regression-testing-extension) 5.3.0 or later, active in your Dashboard
+- [Regression Testing](/add-ons/security/regression-testing-extension) 5.3 or later, active in your Dashboard
 - An authenticated user with access to the Regression Testing Add-on
 - Access to each site you read or change
 
@@ -70,7 +70,7 @@ The abilities score each page against a fixed **baseline** snapshot. The baselin
 
 The Regression Testing pages, the change notification email, and the **Scan Site** result score each page against its previous snapshot instead, as in earlier releases. An intended change shows on one scan there, and the next unchanged scan reads 0%.
 
-When you update to 5.3.0, each existing page uses its newest stored snapshot as its baseline.
+When you update to 5.3, each existing page uses its newest stored snapshot as its baseline.
 
 ## Change a site with preview and confirm
 
@@ -363,9 +363,9 @@ The response describes the newest update recorded for the site at or after `upda
 
 An update can join a scan that was queued before it, so the covering scan's `accepted_at` can be earlier than the update.
 
-## Updating to 5.3.0
+## Updating to 5.3
 
-When you update to Regression Testing 5.3.0, your Dashboard copies your existing configurations, pages, and snapshots to new storage in batches. The copy runs on admin page loads and from the background worker. The Regression Testing pages keep working while it runs. Until it finishes, every ability returns `storage_unavailable` with HTTP 503.
+When you update to Regression Testing 5.3, your Dashboard copies your existing configurations, pages, and snapshots to new storage in batches. The copy runs on admin page loads and from the background worker. The Regression Testing pages keep working while it runs. Until it finishes, every ability returns `storage_unavailable` with HTTP 503.
 
 ## Handle errors
 
