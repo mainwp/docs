@@ -103,7 +103,7 @@ Active task approvals are listed under **Active task approvals** on the **Waitin
 
 Before a change runs, MainWP makes a safety backup of the site when the site has a backup system. If that backup fails, the change doesn't run. The **Recently decided** tab shows the request as **Backup failed**, and the AI has to ask again.
 
-For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when a site has no backup system.
+For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when a site has no backup system. You can't skip the safety backup for a single request: a site with a backup system always backs up first.
 
 ## Staff members and Team Control
 
@@ -131,6 +131,10 @@ Agent Bridge works with any AI app connected through the MainWP MCP server. To c
 - [Install in Claude Desktop](/mcp-server/claude-desktop-bundle), or the manual Claude Desktop configuration in [Connect Your AI Client](/mcp-server/clients)
 - [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI Client](/mcp-server/clients)
 
+<Warning>
+**Mode** stays **Never ask** by default, so for administrators the prompt in the AI app is the only check before a change runs. When the app asks to use the PHP, WP-CLI, or file tools, don't choose its "Always allow" option. Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
+</Warning>
+
 Give each person their own Application Password and name it after the app and computer it's used on, such as "Claude Code on office laptop". The name appears in Network Activity and in the **Key** filter, so you can see everything one key did before you revoke it.
 
 The MainWP MCP server sends the name of the AI app to your Dashboard. In Network Activity, Claude Code shows as **Claude Code**, and Claude Desktop shows as **Claude Desktop** in both chat and agent mode. Both show **AI · Claude** in the **Actor** column.
@@ -147,6 +151,10 @@ The **Agent** column shows the app and key used, in the same words as the detail
 
 - **Dashboard login**: someone signed in to the Dashboard did it, such as changing the rules or a site's Agent access.
 - **No agent recorded**: the row has no agent details, for example a row saved before agent details were recorded.
+
+## Uninstalling the add-on
+
+Uninstalling Agent Bridge deletes its own activity table and settings, including Mode, rules, and the **Activity** tab's history. The Network Activity rows in your Dashboard stay.
 
 ---
 
