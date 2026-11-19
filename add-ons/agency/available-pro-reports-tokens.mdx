@@ -691,6 +691,21 @@ addonType: extension
     | `[uptime.visits.chart]` | Displays a chart of visits and response times during the selected date range |
     | `[uptime.status]` | Shows the current monitor status |
   </Accordion>
+
+  <Accordion title="Safe Updates Tokens" icon="shield-check">
+    Available in MainWP Dashboard X and later. Each token counts the site's [Safe Updates](/sites/updates/does-mainwp-have-safe-updates) runs that started during the report period, including runs that are still in progress.
+
+    | Token | Description |
+    |-------|-------------|
+    | `[safeupdates.runs]` | Displays the number of Safe Updates runs that included the site |
+    | `[safeupdates.items.updated]` | Displays the number of items updated |
+    | `[safeupdates.checks.run]` | Displays the number of checks that ran (passed, failed, or slow) |
+    | `[safeupdates.checks.passed]` | Displays the number of checks that passed |
+    | `[safeupdates.issues.found]` | Displays the number of site results that needed attention or failed |
+    | `[safeupdates.issues.resolved]` | Displays the number of results that needed attention and were marked as expected, restored, or rolled back. A failed update is never counted as resolved. A site that passes **Retest** no longer needs attention, so it is not counted here. |
+    | `[safeupdates.rollbacks]` | Displays the number of site results that needed attention and were rolled back with Safe Updates. WordPress restoring a failed install is not counted. |
+    | `[safeupdates.sites.not.checked]` | Displays the number of finished results where no check ran |
+  </Accordion>
 </AccordionGroup>
 
 ## Add-on-Specific Tokens
