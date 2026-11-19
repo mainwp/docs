@@ -180,6 +180,7 @@ Open the three-line **MainWP menu** in the top-right corner of MainWP Dashboard 
     - **Encrypt backup archives**: Encrypts new backup archives before upload. Turn it on to show the recovery passphrase fields, set a passphrase, and save.
     - **Backup recovery passphrase**: Lets you recover the backup encryption key. Use at least 12 characters; 20 or more is recommended. Initial setup asks for your WordPress password; changes require the current passphrase. Store it separately from the Dashboard.
     - **Backup run diagnostics**: Records detailed backup and restore progress locally. After enabling it and saving, use **Export diagnostics data** to download a report. See [Export Diagnostics](/sites/backups/manage-backups#export-diagnostics).
+    - **Test Restore database** (Default: empty): Leave it empty unless your host only allows database names that start with your account prefix, as cPanel does. When it is empty, Test Restore creates and drops its own temporary `mainwp_tr_` databases. To use a database you created in cPanel, see [Use Your Own Test Restore Database](/sites/backups/manage-backups#use-your-own-test-restore-database).
     - **Archive format** (Default: Tar GZip): Sets the global archive format; individual sites or tasks can override it.
     - **Auto detect maximum file descriptors on child sites** (Zip only): Automatically detects how many files your Dashboard can open at once when creating a ZIP backup.
     - **Maximum file descriptors fallback value** (Zip only): Provides a manual limit when automatic detection is unavailable.
