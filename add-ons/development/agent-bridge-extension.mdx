@@ -12,6 +12,8 @@ description: >-
 - Who approves agent requests, and when a request waits
 - Always allow rules, Block rules, and task approvals
 - Giving staff members access with Team Control
+- Connecting Claude Desktop or Claude Code
+- Where agent work is recorded
 
 ---
 
@@ -122,9 +124,34 @@ Staff members can use the Agent Bridge tools only through the MainWP MCP server 
 
 MainWP checks the requester's access again when an approved request runs. If the requester lost the right, or lost access to the site, after the request was approved, it doesn't run and the AI gets a 403 error. Their task approvals for that site end too.
 
+## Use Agent Bridge from Claude Desktop or Claude Code
+
+Agent Bridge works with any AI app connected through the MainWP MCP server. To connect Claude Desktop or Claude Code with an [Application Password](/mcp-server/quickstart#before-you-start), follow the setup guide for your app:
+
+- [Install in Claude Desktop](/mcp-server/claude-desktop-bundle), or the manual Claude Desktop configuration in [Connect Your AI Client](/mcp-server/clients)
+- [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI Client](/mcp-server/clients)
+
+Give each person their own Application Password and name it after the app and computer it's used on, such as "Claude Code on office laptop". The name appears in Network Activity and in the **Key** filter, so you can see everything one key did before you revoke it.
+
+The MainWP MCP server sends the name of the AI app to your Dashboard. In Network Activity, Claude Code shows as **Claude Code**, and Claude Desktop shows as **Claude Desktop** in both chat and agent mode. Both show **AI · Claude** in the **Actor** column.
+
+## Activity
+
+Agent work is recorded in two places.
+
+**Network Activity** lists each agent action with who it acted for, which AI and app made it, and which key it used. See [Agent activity](/sites/network-activity#agent-activity).
+
+The **Activity** tab on the **Agent approvals** page is for administrators. It lists agent requests, approval decisions, and settings changes, with the full command or code under **Show technical details**. Use the **Date**, **Site**, **User**, **Agent**, and **Tool** dropdowns to narrow the list.
+
+The **Agent** column shows the app and key used, in the same words as the details line in Network Activity. For an Application Password, the owner's name links to the Application Passwords section of their profile. Two other values can appear:
+
+- **Dashboard login**: someone signed in to the Dashboard did it, such as changing the rules or a site's Agent access.
+- **No agent recorded**: the row has no agent details, for example a row saved before agent details were recorded.
+
 ---
 
 ## Related Resources
 
 - [Development Add-ons](/add-ons/development) - Browse all development tools
 - [MainWP MCP Server](/mcp-server/overview) - Connect an AI client to your MainWP Dashboard
+- [Network Activity](/sites/network-activity) - Review agent and human changes across your sites
