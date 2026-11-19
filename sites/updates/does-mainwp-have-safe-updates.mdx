@@ -244,11 +244,11 @@ Row actions appear when a site's row has finished.
 
 | Action | What it does | When it appears |
 |--------|--------------|-----------------|
-| **Retest** | Runs the checks again without updating anything. The site becomes **OK** (or **Partly updated**) or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
+| **Retest** | Runs the HTTP, uptime monitor, and MainWP Child checks again without updating anything. A Regression test result is re-scored from the scan already taken; no new scan runs. The site becomes **OK** (or **Partly updated**) or stays **Needs attention**. | On a **Needs attention** row, including one marked as expected, unless it was rolled back |
 | **Mark as expected** | Keeps the result but takes the site off the **Needs attention** list. Nothing is updated or rolled back. | On a **Needs attention** row that is not yet rolled back or marked as expected |
 | **Roll back** | Returns one plugin or theme to its previous version | On each updated plugin or theme that can be rolled back |
 | **Roll back all updates from this run** | Returns every plugin and theme this run updated on the site to its previous version | When the row has two or more updated plugins or themes and you can roll back each of them |
-| **Find the cause** | Re-applies the rolled-back updates one at a time with a check after each. Updates that fail the check stay rolled back. | When every plugin and theme the run updated on the site is rolled back (at least two), the HTTP, uptime monitor, and MainWP Child checks that passed before the update pass again, and you can update each item |
+| **Find the cause** | Re-applies the rolled-back updates one at a time with a check after each. Updates that fail the check stay rolled back. | When every plugin and theme the run updated on the site is rolled back (at least two), at least one HTTP, uptime monitor, or MainWP Child check passed before the update, none of those checks newly fails after the rollback, and you can update each item |
 | **Open site** | Opens the site in a new tab | On finished rows for sites that still exist |
 | **Restore backup** | Opens **Snapshots & Restore** for the site | When Built-In Backups is on and you have the **Execute Backups** and **Restore Backups** rights |
 
@@ -335,7 +335,7 @@ Automatic runs always use every check: HTTP, uptime monitors, MainWP Child, and 
 
 With automatic rollback on, a rollback starts only when an HTTP, Uptime monitor, or MainWP Child check passed before the update and fails after it. A Regression test result never starts one.
 
-MainWP rolls back the plugin and theme updates on that site that can be rolled back, and checks the site again. If that fixes the site, it runs [Find the cause](#find-the-cause) so only the responsible updates stay rolled back and held.
+MainWP rolls back the plugin and theme updates on that site that can be rolled back, and checks the site again. If that fixes the site, it tries [Find the cause](#find-the-cause) to re-apply the updates that did not cause the failure. If an update is no longer offered or cannot be re-applied, it stops and the row says why, so an update that is still rolled back is not always the cause.
 
 ---
 

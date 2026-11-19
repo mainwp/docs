@@ -718,13 +718,13 @@ MainWP Dashboard X adds eight abilities in the `mainwp-updates` category for [Sa
 | `mainwp/get-safe-update-run-v1` | `run_id` | `run`, the `rows` you can access, `stalled`, and `needs_tick` |
 | `mainwp/continue-safe-update-run-v1` | `run_id` | Preview, or the run after the Safe Updates worker runs once |
 | `mainwp/cancel-safe-update-run-v1` | `run_id` | Preview, or the result after requesting cancellation |
-| `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the checks run again |
+| `mainwp/retest-safe-update-site-v1` | `row_id` | Preview, or the result after the HTTP, uptime monitor, and MainWP Child checks run again (a Regression test result is re-scored without a new scan) |
 | `mainwp/resolve-safe-update-site-v1` | `row_id`, `revision` | Preview, or the result after marking the result as expected |
 | `mainwp/rollback-safe-update-v1` | `row_id`, `revision`, optional `item_index` or `find_cause` | Preview, or the result after the rollback starts |
 
 `list-safe-update-runs-v1` and `get-safe-update-run-v1` are read-only and do not move runs forward. Every other Safe Updates ability needs `dry_run: true` to preview or `confirm: true` to act. Sending both is refused. A preview returns `dry_run: true` and `would_affect`. A successful confirmed start returns `dry_run: false` with `run_id`, `url`, and `conflicts` at the top level. If every selected site is already in a run, it returns an error and no run starts. Confirmed actions on an existing run or row return `dry_run: false` and `result`.
 
-A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. When a run shows `stalled: true` or `needs_tick: true`, calling `continue-safe-update-run-v1` runs the Safe Updates worker, which moves due work forward. WP-Cron, server cron, and an open run page also move runs.
+A Safe Updates run is not a batch job. Poll `get-safe-update-run-v1`, not `get-batch-job-status-v1`. When a run shows `stalled: true` or `needs_tick: true`, calling `continue-safe-update-run-v1` runs the Safe Updates worker, which moves due work forward. The worker can also move other runs; `run_id` decides access and which run the result shows. WP-Cron, server cron, and an open run page also move runs.
 
 ### Start a Run
 
@@ -753,7 +753,7 @@ For `rollback-safe-update-v1`:
 
 - Pass `item_index` (`rows[].items[].index` of an item with `can_rollback: true`) to roll back one item.
 - Omit `item_index` to roll back every updated plugin and theme on the row. The request is refused if any of them has no usable kept copy or you lack the right to update it.
-- When every updated plugin and theme on the row is rolled back (at least two) and the checks that passed before the update pass again, pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
+- When the row's `actions.find_cause` is true (`rows[].actions.find_cause` from `get-safe-update-run-v1`), pass `find_cause: true` without `item_index` to re-apply the updates one at a time and keep only the failing ones rolled back.
 
 Rollback does not undo database changes. Restore a backup instead when you need that.
 
