@@ -58,9 +58,9 @@ To proceed, back up the site or wait for its offsite backup upload to finish, th
 
 ### Skip the Check with `ignore_backup_gate`
 
-All six abilities accept an optional `ignore_backup_gate` boolean. The default, `false`, keeps the backup check in place. With `true`, the ability updates sites that fail the check, the same as **Continue update anyway** on the **Updates** page. Set it only when the user explicitly asks to skip the backup check. Don't use it as a routine fix for a blocked update. A queued job keeps the value it was started with.
+All six abilities accept an optional `ignore_backup_gate` boolean. The default, `false`, keeps the backup check in place. With `true`, the ability updates sites that fail the check, the same as **Continue update anyway** on the **Updates** page. Set it only when the person requesting the update explicitly asks to skip the backup check. Don't use it as a routine fix for a blocked update. A queued job keeps the value it was started with. The Dashboard records each override in the site's backup run history.
 
-AI apps connected through [remote AI connections](/mcp-server/remote/overview) can't send `ignore_backup_gate`, because the Dashboard leaves it out of their tools. With the local [MainWP MCP Server](/mcp-server/overview) and its [confirmation flow](/mcp-server/safety), include it in the call that returns the preview. The confirmation token covers the previewed arguments, so adding the override only at the confirmation step returns `PREVIEW_REQUIRED` and nothing runs. The server reports a 409 refusal with `mainwp_backup_gate_blocked` in `error.data.upstream_code`.
+AI apps connected through [remote AI connections](/mcp-server/remote/overview) can't use `ignore_backup_gate`: the Dashboard leaves it out of their tools and drops it if an app sends it anyway. With the local [MainWP MCP Server](/mcp-server/overview) and its [confirmation flow](/mcp-server/safety), include it in the preview request. The confirmation token covers the previewed arguments, so adding the override only at the confirmation step returns `PREVIEW_REQUIRED` and nothing runs. The MCP server reports a 409 refusal with `mainwp_backup_gate_blocked` in `error.data.upstream_code`.
 
 ---
 
@@ -144,7 +144,7 @@ curl -X POST -u 'admin:xxxx' \
 | `specific_items` | array | No | [] | Specific slugs to update |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
@@ -249,7 +249,7 @@ curl -X POST -u 'admin:xxxx' \
 | `site_id_or_domain` | integer\|string | Yes | — | Site ID or domain |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
@@ -305,7 +305,7 @@ curl -X POST -u 'admin:xxxx' \
 | `slugs` | array | No | [] | Specific plugins to update. Empty = all |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
@@ -366,7 +366,7 @@ curl -X POST -u 'admin:xxxx' \
 | `slugs` | array | No | [] | Specific themes to update. Empty = all |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
@@ -420,7 +420,7 @@ curl -X POST -u 'admin:xxxx' \
 | `slugs` | array | No | [] | Specific translation slugs to update. Empty = all available |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
@@ -706,7 +706,7 @@ curl -X POST -u 'admin:xxxx' \
 | `site_ids_or_domains` | array | No | [] | Sites to update. Empty = all sites |
 | `dry_run` | boolean | For preview | false | Set true to preview; do not combine with confirm |
 | `confirm` | boolean | For execution | false | Set true to execute after reviewing a preview |
-| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the user asks to skip the check |
+| `ignore_backup_gate` | boolean | No | false | Set true to update sites that fail the [pre-update backup check](#pre-update-backup-check). Use only when the person requesting the update asks to skip the check |
 
 Run a preview first with `dry_run: true`. The commands above show confirmed execution unless labeled as a preview.
 
