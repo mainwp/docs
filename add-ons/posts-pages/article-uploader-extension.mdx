@@ -253,6 +253,8 @@ SITES: http://childsite1.com, http://childsite2.com, http://childsite3.com, http
 
 For TXT uploads, the extension uses the first line of the file as the article title and the remaining content as the article body. The Article Uploader Extension allows you to use HTML markup in a CSV file to format the body of your articles to include images, videos, or any other HTML tags to enhance your blog readers' experience.
 
+Article Uploader only reads files from its own staging folder on your MainWP Dashboard. File names can contain spaces and percent signs. If a file name contains a backslash (`\`), Article Uploader rejects it and shows the **File could not be opened.** error. Rename the file without backslashes and upload it again.
+
 ---
 
 ## MainWP Abilities
