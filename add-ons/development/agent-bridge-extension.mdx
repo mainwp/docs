@@ -19,6 +19,8 @@ description: >-
 
 The Agent Bridge add-on lets an AI client, such as Claude or Codex, connected through the [MainWP MCP server](/mcp-server/overview), read and change your child sites through MainWP. You choose what the AI can do on each site, and you can require an administrator to approve requests before they run.
 
+Agent Bridge is built for live sites. By default, each change waits for an administrator's approval, and on sites with a backup system it checks for a recent backup first.
+
 ## Requirements
 
 - WordPress 6.9 or later on the Dashboard site. On an older version, the add-on loads nothing and shows "Agent Bridge needs WordPress 6.9 or later" in the WordPress admin.
@@ -65,8 +67,8 @@ The **Mode** setting on the **Rules** tab decides when a change waits for an adm
 
 | Mode | What happens |
 |---|---|
-| **Never ask** (the default) | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page. Staff named under **Staff who also skip approval** or **Roles that also skip approval** work the same way. Other staff wait for an administrator. |
-| **Ask** | Every change waits on the **Agent approvals** page unless an Allow rule covers it. |
+| **Never ask** | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page. Staff named under **Staff who also skip approval** or **Roles that also skip approval** work the same way. Other staff wait for an administrator. |
+| **Ask** (the default) | Every change waits on the **Agent approvals** page unless an Allow rule covers it. |
 
 Requests that only read never wait.
 
@@ -137,7 +139,7 @@ Agent Bridge works with any AI app connected through the MainWP MCP server. To c
 - [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI Client](/mcp-server/clients)
 
 <Warning>
-**Mode** stays **Never ask** by default, so for administrators the prompt in the AI app is the only check before a change runs. When the app asks to use the PHP, WP-CLI, or file tools, don't choose its "Always allow" option. Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
+If you set **Mode** to **Never ask**, the prompt in the AI app is the only check before an administrator's change runs. When the app asks to use the PHP, WP-CLI, or file tools, don't choose its "Always allow" option. Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
 </Warning>
 
 Give each person their own Application Password and name it after the app and computer it's used on, such as "Claude Code on office laptop". The name appears in Network Activity and in the **Key** filter, so you can see everything one key did before you revoke it.
@@ -156,6 +158,16 @@ The **Agent** column shows the app and key used, in the same words as the detail
 
 - **Dashboard login**: someone signed in to the Dashboard did it, such as changing the rules or a site's Agent access.
 - **No agent recorded**: the row has no agent details, for example a row saved before agent details were recorded.
+
+## Frequently asked questions
+
+### Do I need one MCP server, or a separate one for every plugin?
+
+One connection to your MainWP Dashboard covers all your connected sites and the plugins on them. Plugins that register WordPress Abilities show up on their own, subject to each site's Agent access setting and your permissions.
+
+### Why use this instead of SSH and WP-CLI?
+
+Each person uses their own rights, and by default an administrator approves changes before they run. On sites with a backup system, MainWP checks for a recent backup and makes a safety backup if needed. Network Activity records who made the change, which AI and tool they used, and which key. You can work across 50 sites without SSH access to each one.
 
 ## Uninstalling the add-on
 
