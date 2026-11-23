@@ -6,10 +6,10 @@ description: >-
 ---
 
 <Note>
-These abilities require an Article Uploader release that includes Abilities API support. Earlier builds do not register them. Check ability discovery on your Dashboard before using these examples.
+These abilities require Article Uploader 5.1 or later. Earlier versions do not register them.
 </Note>
 
-The Abilities-enabled Article Uploader release registers two read-only abilities in the `mainwp-article-uploader` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
+Article Uploader 5.1 registers two read-only abilities in the `mainwp-article-uploader` category. Both use the `mainwp/` namespace on your MainWP Dashboard.
 
 Use them to review articles that are waiting in the **Upload Articles** or **Import Articles** tables before you publish them. They do not upload, import, edit, publish, drip, or delete articles.
 
@@ -23,7 +23,7 @@ Use them to review articles that are waiting in the **Upload Articles** or **Imp
 
 - WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
-- An Article Uploader build that registers these abilities, active on MainWP Dashboard
+- Article Uploader 5.1 or later, active on your MainWP Dashboard
 - An authenticated user with `manage_options` and access to the Article Uploader Add-on
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
