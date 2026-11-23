@@ -18,12 +18,20 @@ The WP Rocket Integration registers two read-only abilities in the `mainwp-wp-ro
 - WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - A WP Rocket Integration release with Abilities support, active on MainWP Dashboard
-- An authenticated WordPress user with `manage_options` and access to the WP Rocket Integration
+- An authenticated WordPress user with `manage_options`, or a Team Control role with **Use MainWP abilities and MCP**, plus access to the WP Rocket Integration
 - Access to each site you want to read
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
-Team Control restrictions also apply. Both abilities check the user's access to the WP Rocket Integration. The list returns only sites the user can access, and the settings read checks access to the requested site. Users without `manage_options` are denied even if Team Control grants them the Add-on.
+Team Control restrictions also apply. Both abilities check the user's access to the WP Rocket Integration. The list returns only sites the user can access, and the settings read checks access to the requested site.
+
+Team Control staff without `manage_options` can also run both abilities. This needs MainWP Dashboard 6.5 or later and a WP Rocket Integration build that supports Team Control. The staff role needs **Use MainWP abilities and MCP**, the WP Rocket Integration permission, and access to the site. Your Dashboard checks each site before it reads any stored WP Rocket data:
+
+- A list without `site_id` returns only the role's sites.
+- A `site_id` outside the role's sites is refused, usually with 404 `mainwp_site_not_found`, otherwise with 403 `mainwp_permission_denied`.
+- Without the WP Rocket Integration permission, both abilities return 403 `mainwp_permission_denied`.
+
+On older Dashboards, users without `manage_options` are denied even if Team Control grants them the Add-on. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
 
 ## Available Abilities
 
@@ -187,7 +195,7 @@ Standard authentication, schema, and method errors follow the [Abilities API err
 | Code | HTTP | Meaning |
 |------|------|---------|
 | `mainwp_rocket_invalid_input` | 400 | Missing or invalid `site_id`, `page`, or `per_page` |
-| `mainwp_permission_denied` | 403 | The user lacks `manage_options`, WP Rocket Integration access, or access to the site |
+| `mainwp_permission_denied` | 403 | The user lacks `manage_options` or **Use MainWP abilities and MCP**, WP Rocket Integration access, or access to the site |
 | `mainwp_site_not_found` | 404 | The requested site does not exist or is not accessible |
 | `mainwp_rocket_storage_error` | 500 | Stored WP Rocket data could not be read |
 
