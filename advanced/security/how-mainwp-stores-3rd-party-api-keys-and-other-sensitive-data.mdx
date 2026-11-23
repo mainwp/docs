@@ -2,7 +2,7 @@
 title: How MainWP stores 3rd-party API Keys and other sensitive data
 sidebarTitle: "API Key Storage"
 description: >-
-  MainWP uses AES GCM encryption via PHPSecLib to securely store third-party
+  Your MainWP Dashboard uses AES GCM encryption via PHPSecLib to securely store third-party
   API keys and login credentials in the Dashboard database.
 ---
 
@@ -10,7 +10,7 @@ MainWP version 4.5 introduced an enhanced encryption system for storing third-pa
 
 ## What You'll Learn
 
-- How MainWP encrypts API keys and credentials
+- How your Dashboard encrypts API keys and credentials
 - What the encryption process involves
 - What data is and isn't covered by this encryption
 
@@ -18,7 +18,7 @@ MainWP version 4.5 introduced an enhanced encryption system for storing third-pa
 
 ## Scope of Encryption
 
-MainWP encrypts sensitive data stored in the Dashboard:
+Your Dashboard encrypts the following sensitive data:
 
 | Protected | Examples |
 |-----------|----------|
@@ -27,7 +27,7 @@ MainWP encrypts sensitive data stored in the Dashboard:
 | Dashboard secrets | Internal authentication tokens |
 
 <Note>
-This encryption applies to data stored in the MainWP Dashboard. It does not cover data created by third-party plugins on child sites. For example, MainWP encrypts the API key used by a backup add-on, but does not encrypt the backup files created on child sites.
+This encryption applies to data stored in your MainWP Dashboard. It does not cover data created by third-party plugins on child sites. For example, your Dashboard encrypts the API key used by a backup add-on, but does not encrypt the backup files created on child sites.
 </Note>
 
 ---
@@ -55,7 +55,7 @@ AES GCM (Galois Counter Mode) is a stream cipher mode for AES encryption. Key ch
 - **Authenticated encryption (AEAD)**: Verifies data hasn't been tampered with
 - **Authentication tag**: Each encryption produces a MAC (Message Authentication Code)
 
-With AES-GCM, MainWP uses an encryption key and message to generate cipher text, a random nonce, and an authentication tag.
+With AES-GCM, your Dashboard uses an encryption key and message to generate cipher text, a random nonce, and an authentication tag.
 
 ---
 

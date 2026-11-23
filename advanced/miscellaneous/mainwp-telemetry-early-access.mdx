@@ -12,7 +12,7 @@ This page explains what telemetry is used for, when it is active, what data is c
 
 ## What You'll Learn
 
-- When telemetry is active (Early Access only)
+- When the Early Access Extension can send telemetry
 - What data is collected and how it's used
 - What data is never collected
 - How to disable telemetry
@@ -21,14 +21,7 @@ This page explains what telemetry is used for, when it is active, what data is c
 
 ## When Telemetry Is Active
 
-Telemetry is only active in the following cases:
-
-- MainWP v6 Early Access builds
-- The Early Access Extension
-
-<Note>
-Telemetry is not used in stable releases. If you are not running an Early Access build, no telemetry data is sent.
-</Note>
+The Early Access Extension can send telemetry while its telemetry setting is enabled on MainWP Dashboard 6.0 or later. This includes installations running a stable Dashboard release with the Extension active. Consent to receive nightly updates is a separate setting.
 
 ---
 
@@ -56,6 +49,8 @@ All telemetry is sent server-side from your MainWP Dashboard. If PostHog is unav
 ## Disabling Telemetry
 
 Telemetry is designed to be easy to disable.
+
+Changing the telemetry setting requires permission to manage Dashboard settings.
 
 When telemetry is disabled:
 
@@ -93,6 +88,7 @@ Telemetry focuses on aggregated statistics, configuration snapshots, and sanitiz
 | Feature configuration | High-level settings, whether features are enabled or disabled |
 | Action outcomes | Attempts to add a child site, sync a site, or run updates, along with success or failure status |
 | Error categories | Timeouts, authentication failures, SSL issues, HTTP errors |
+| Nightly builds | Nightly consent, installation, rollout, and rollback events. Rollout events group site counts into ranges. |
 | PHP error summaries | Daily summaries of notices, warnings, and fatal errors caused by MainWP (without full logs) |
 
 All collected values are counts, booleans, enums, or short sanitized strings.
@@ -151,7 +147,7 @@ Telemetry requests are lightweight and non-blocking.
 
 ## Self-Check Checklist
 
-- [ ] Understand telemetry is Early Access only
+- [ ] Check the Early Access Extension's telemetry setting
 - [ ] Know what data is and is not collected
 - [ ] Telemetry disabled if desired
 

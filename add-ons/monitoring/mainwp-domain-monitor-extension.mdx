@@ -18,7 +18,7 @@ addonType: "integration"
 
 ---
 
-<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.5" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
+<div id="addon-data" style={{display: 'none'}} data-title="Domain Monitor" data-purchase-url="https://mainwp.com/extension/domain-monitor/" data-pricing-tier="pro" data-bundle="MainWP Pro" data-addon-type="integration" data-version="5.5.1" data-developer="MainWP" data-changelog-url="https://mainwp.com/changelog/mainwp-domain-monitor-extension/" data-owned-by="Jestart LLC" data-privacy-url="https://mainwp.com/mainwp-plugin-privacy-policy/" />
 
 <iframe className="w-full aspect-video rounded-xl" src="https://www.youtube.com/embed/QMziJ1BxEcE" title="Domain Monitor - Video Tutorial" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
 
@@ -88,7 +88,7 @@ To retrieve domain information immediately, use one of the manual check actions 
 
 Alternatively, you can use the **Bulk actions** menu to check selected sites, or use the **Check Domain** action from the site **Actions** menu to audit just one site.
 
-When a **Check Domain** lookup succeeds, the row shows **domain lookup completed successfully** and the page reloads after 3 seconds. When the lookup fails, the page does not reload. Domain Monitor restores the row with its **Actions** menu and shows the error message in red under the site name, or in the first visible column if the Site column is hidden. If the lookup returns no error details, the message reads **Domain lookup failed. Please try again.** The message stays in the row when you move between table pages, so you can review it and run **Check Domain** again.
+When a **Check Domain** lookup succeeds, the row shows **domain lookup completed successfully** and the page reloads after 3 seconds. In Domain Monitor 5.5.1 and later, when the lookup fails, the page does not reload. Domain Monitor restores the row with its **Actions** menu and shows the error message in red under the site name, or in the first visible column if the Site column is hidden. If the lookup returns no error details, the message reads **Domain lookup failed. Please try again.** The message stays in the row when you move between table pages, so you can review it and run **Check Domain** again.
 
 ### Monitor Domains Not Connected to a Child Site
 
@@ -263,7 +263,7 @@ MainWP REST API calls, including Domain Monitor endpoints, full documentation, a
 
 The Abilities-enabled Domain Monitor release registers nine MainWP abilities in the `mainwp-domain-monitor` category. Use them to read stored domain expiry summaries and profiles, read or replace global and per-site monitoring settings, replace manually entered domain information, check a site's domain, and request background domain checks or expiry-alert evaluations for selected sites.
 
-The abilities require WordPress 6.9 or later on the MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Domain Monitor release with Abilities support. The user needs permission to use MainWP abilities, access to the Domain Monitor Add-on, and access to each site. Changing the global settings requires access to all sites. Write abilities use revisions, and checks, manual profile changes, and batch requests require a preview or explicit confirmation.
+The abilities require WordPress 6.9 or later on your MainWP Dashboard site, MainWP Dashboard with Abilities API support, and a Domain Monitor release with Abilities support. The user needs permission to use MainWP abilities, access to the Domain Monitor Add-on, and access to each site. Changing the global settings requires access to all sites. Write abilities use revisions, and checks, manual profile changes, and batch requests require a preview or explicit confirmation.
 
 See [Domain Monitor Abilities](/api-reference/abilities-api/domain-monitor) for request examples, response fields, and error handling.
 

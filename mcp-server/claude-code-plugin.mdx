@@ -11,7 +11,7 @@ Connect Claude to your MainWP Dashboard to inspect your child sites and carry ou
 
 Use these steps in the **Claude Desktop chat app**. The MainWP extension connects Desktop chats to your MainWP Dashboard. The [Claude Code CLI instructions](#install-in-claude-code-cli) follow below.
 
-You need Claude Desktop for macOS or Windows, an HTTPS MainWP Dashboard, and a WordPress Application Password for a Dashboard user with the `manage_options` capability. See the [Dashboard requirements](/mcp-server/quickstart#before-you-start) and [Application Password instructions](/api-reference/rest-api/application-passwords).
+You need Claude Desktop for macOS or Windows, an HTTPS MainWP Dashboard, and a WordPress Application Password for a Dashboard user with the `manage_options` capability. A Team Control role with **Use MainWP abilities and MCP** also works, for the [abilities that support Team Control](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions). See the [Dashboard requirements](/mcp-server/quickstart#before-you-start) and [Application Password instructions](/api-reference/rest-api/application-passwords).
 
 <Steps>
   <Step title="Download the MainWP extension">
@@ -65,16 +65,16 @@ Claude Desktop can make WordPress site changes through MainWP when the required 
    Replace “Example Test Site” with your child site's name.
 
 4. Review the requested tool and its inputs. Click **Allow once** to permit that call. This allows one call; **Always allow** changes the tool's permission for future calls.
-5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If MainWP returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and MainWP's server confirmation are separate steps.
+5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If your MCP server returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and your MCP server's confirmation are separate steps.
 6. Ask Claude to check the result, then verify it on the child site.
 
 | Desktop tool permission | What happens |
 | --- | --- |
 | **Needs approval** | Claude asks before using that tool. **Allow once** permits the pending call. |
 | **Blocked** | Claude cannot call the tool. Change the permission before asking it to apply that operation. |
-| **Always allow** | Claude can call that tool without asking for Desktop approval each time. MainWP's server policies still apply. |
+| **Always allow** | Claude can call that tool without asking for Desktop approval each time. Your MCP server's policies still apply. |
 
-Desktop approval does not override MainWP's server settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep MainWP's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
+Desktop approval does not override your MCP server's settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep your MCP server's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
 
 For the Desktop bundle, put `safeMode`, `allowedTools`, `blockedTools`, and `requireUserConfirmation` in `~/.config/mainwp-mcp/settings.json`. The bundle's **Configure** form has only the three connection fields. Turn the extension off and on after changing the file; see the [configuration file instructions](/mcp-server/reference/configuration#configuration-file).
 
@@ -86,7 +86,7 @@ The Claude Code plugin includes the MCP server, the `mainwp-dashboard` agent ski
 
 ## Before you start with Claude Code CLI
 
-You need Claude Code CLI installed and signed in, Node.js 20.19 or later with `npx`, and an HTTPS connection to your MainWP Dashboard. Create a WordPress Application Password for a Dashboard user with the `manage_options` capability, which WordPress administrators have; see [Application Passwords](/api-reference/rest-api/application-passwords).
+You need Claude Code CLI installed and signed in, Node.js 20.19 or later with `npx`, and an HTTPS connection to your MainWP Dashboard. Create a WordPress Application Password for a Dashboard user with the `manage_options` capability, which WordPress administrators have; see [Application Passwords](/api-reference/rest-api/application-passwords). A Team Control role with **Use MainWP abilities and MCP** also works, for the [abilities that support Team Control](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
 
 ## Install in Claude Code CLI
 

@@ -78,7 +78,7 @@ In the **Installation Options** box, make sure that the **Activate after install
 </Steps>
 
 
-For additional help with installing WordPress plugins from the MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
+For additional help with installing WordPress plugins from your MainWP Dashboard, please review this [help document](/sites/plugins/managing-plugins-with-mainwp).
 
 ### Install directly on Child Site
 
@@ -140,7 +140,7 @@ If you use the Premium version of the UpdraftPlus Plugin, make sure the Use Prem
 
 ### SFTP Host Key Fingerprints
 
-With MainWP Child 6.4.2 or later, MainWP can save an SFTP server fingerprint when the UpdraftPlus settings include a new value. If no replacement is sent, MainWP preserves the fingerprint already configured on the child site. Verify a new fingerprint with the SFTP server administrator before saving it.
+MainWP Child 6.4.2 and later can save an SFTP server fingerprint when the UpdraftPlus settings include a new value. If no replacement is sent, the Child plugin preserves the fingerprint already configured on the child site. Verify a new fingerprint with the SFTP server administrator before saving it.
 
 ### pCloud Remote Storage
 
@@ -150,11 +150,11 @@ pCloud is an [UpdraftPlus Premium storage option](https://teamupdraft.com/docume
 2. Set the destination folder in the pCloud settings and save the changes. Use a separate folder for each site so its backups are easy to identify.
 3. Run a test backup with remote storage enabled, then confirm that the backup files appear in the intended pCloud folder.
 
-After setup, use [Backup Now options](#backup-now-options) to send an UpdraftPlus backup to the configured remote destination. For backups created by MainWP itself, see [Connect pCloud to Built-In Backups](/sites/backups/connect-pcloud). If the site has multiple destinations, select pCloud for that backup.
+After setup, use [Backup Now options](#backup-now-options) to send an UpdraftPlus backup to the configured remote destination. For backups created through your Dashboard, see [Connect pCloud to Built-In Backups](/sites/backups/connect-pcloud). If the site has multiple destinations, select pCloud for that backup.
 
 ### Connect UpdraftPlus Premium
 
-When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Premium state instead of treating an account connection alone as a completed activation. Depending on the TeamUpdraft account and child site, you may see one of these outcomes:
+When you use Bulk Connect for UpdraftPlus Premium, your Dashboard verifies the final Premium state instead of treating an account connection alone as a completed activation. Depending on the TeamUpdraft account and child site, you may see one of these outcomes:
 
 - The account is connected and Premium is fully active.
 - The account is connected, but a Premium purchase must be claimed or assigned to the site.
@@ -162,9 +162,9 @@ When you use Bulk Connect for UpdraftPlus Premium, MainWP verifies the final Pre
 - No active Premium purchase is available for the site.
 - UpdraftPlus could not verify the TeamUpdraft account connection.
 
-When MainWP reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
+When your Dashboard reports that action is required, open UpdraftPlus on the child site and follow its claim, assignment, update, or activation prompt. MainWP Child also prevents the WordPress.org UpdraftPlus package from replacing an installation where Premium add-ons are detected.
 
-If a connection request fails, MainWP shows **Unable to connect.** for that site. Bulk connection continues with the remaining sites.
+If a connection request fails, your Dashboard shows **Unable to connect.** for that site. Bulk connection continues with the remaining sites.
 
 #### Save Account Credentials
 
@@ -174,7 +174,7 @@ Starting with version 5.2, the **Connect with UpdraftPlus account** form leaves 
 - To replace the password, enter the new password before connecting.
 - To use a different account, enter both its email address and password. A saved password is not reused for a different email address.
 
-Newly saved account passwords are encrypted. A password saved as plain text by an older version is migrated to encrypted storage when you save that account again. If encryption or saving fails, MainWP reports **Could not save UpdraftPlus account credentials.** Resolve the save error before connecting again. The previously stored password remains readable if a replacement cannot be saved.
+Newly saved account passwords are encrypted. A password saved as plain text by an older version is migrated to encrypted storage when you save that account again. If encryption or saving fails, your Dashboard reports **Could not save UpdraftPlus account credentials.** Resolve the save error before connecting again. The previously stored password remains readable if a replacement cannot be saved.
 
 ### UpdraftPlus Settings per Child Site
 

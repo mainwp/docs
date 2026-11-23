@@ -14,7 +14,7 @@ Claude Desktop installs the MainWP MCP server from a single `mainwp-mcp.mcpb` ex
 You need:
 
 - A MainWP Dashboard reachable over HTTPS from the computer that runs Claude Desktop. The server refuses `http://` Dashboard URLs, and the bundle has no setting to allow them. The Dashboard version requirements are the same as for any other setup; see the [Quickstart](/mcp-server/quickstart#before-you-start).
-- An Application Password for the WordPress user the server should act as. That user needs the `manage_options` capability, which administrators have. Create the password on your Dashboard under **API Access > Application Passwords** with **Add Application Password**, or in the WordPress profile of that user under **Users → Profile**. WordPress shows the password once, so copy it before you close the dialog. [Application Passwords](/api-reference/rest-api/application-passwords) has the full steps.
+- An Application Password for the WordPress user the server should act as. That user needs the `manage_options` capability, which administrators have, or a Team Control role with **Use MainWP abilities and MCP**; see [What each field means](#what-each-field-means). Create the password on your Dashboard under **API Access > Application Passwords** with **Add Application Password**, or in the WordPress profile of that user under **Users → Profile**. WordPress shows the password once, so copy it before you close the dialog. [Application Passwords](/api-reference/rest-api/application-passwords) has the full steps.
 - [Claude Desktop](https://claude.ai/download) for macOS or Windows.
 
 The bundle declares Node.js 20.19 or later. By default the extension runs on Claude Desktop's built-in Node.js, and Claude Desktop reports **All requirements met** for it, so you don't need to install Node.js separately.
@@ -73,16 +73,16 @@ Claude Desktop can make WordPress site changes through MainWP when the required 
    Replace “Example Test Site” with your child site's name.
 
 4. Review the requested tool and its inputs. Click **Allow once** to permit that call. This allows one call; **Always allow** changes the tool's permission for future calls.
-5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If MainWP returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and MainWP's server confirmation are separate steps.
+5. Hello Dolly activation is classified as non-destructive, so this example has no separate MainWP confirmation. If your MCP server returns a confirmation for a destructive operation, review it and explicitly approve the stated change in the chat. Desktop's tool approval and your MCP server's confirmation are separate steps.
 6. Ask Claude to check the result, then verify it on the child site.
 
 | Desktop tool permission | What happens |
 | --- | --- |
 | **Needs approval** | Claude asks before using that tool. **Allow once** permits the pending call. |
 | **Blocked** | Claude cannot call the tool. Change the permission before asking it to apply that operation. |
-| **Always allow** | Claude can call that tool without asking for Desktop approval each time. MainWP's server policies still apply. |
+| **Always allow** | Claude can call that tool without asking for Desktop approval each time. Your MCP server's policies still apply. |
 
-Desktop approval does not override MainWP's server settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep MainWP's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
+Desktop approval does not override your MCP server's settings. A read-only tool allowlist removes write tools; safe mode blocks operations classified as destructive. Safe mode alone is not read-only because some permitted operations still change sites. Keep your MCP server's `requireUserConfirmation` enabled. See [Safety & Permissions](/mcp-server/safety) and [Restrict Tools](/mcp-server/guides/restrict-tools).
 
 For the Desktop bundle, put `safeMode`, `allowedTools`, `blockedTools`, and `requireUserConfirmation` in `~/.config/mainwp-mcp/settings.json`. The bundle's **Configure** form has only the three connection fields. Turn the extension off and on after changing the file; see the [configuration file instructions](/mcp-server/reference/configuration#configuration-file).
 
@@ -155,7 +155,7 @@ The command fails if the file was changed after the build or was not built in th
 | **WordPress username** | The login name or email address of the WordPress user that owns the Application Password. The display name does not work. |
 | **WordPress Application Password** | The Application Password you created for this connection, not the user's login password. Spaces between the groups are fine. Claude Desktop marks this field as sensitive and stores it in the operating system's secure storage: Keychain on macOS, Credential Manager on Windows. |
 
-The server acts with that user's WordPress permissions. MainWP tools require the `manage_options` capability, which WordPress administrators have, so a user without it gets a permission error on every MainWP tool call. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
+The server acts with that user's WordPress permissions. A WordPress administrator with the `manage_options` capability can call every MainWP tool. A [Team Control](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions) custom-role user whose role has **Use MainWP abilities and MCP** can call the abilities that support Team Control, within the role's permissions and site access. Any other user gets a permission error on every MainWP tool call. A dedicated WordPress user for AI access keeps the Dashboard's audit trail clear and is easy to revoke; see the [Security Model](/mcp-server/reference/security).
 
 The bundle passes these values to the server as `MAINWP_URL`, `MAINWP_USER`, and `MAINWP_APP_PASSWORD`. The bundle has no fields for other options. To turn on safe mode or filter tools, put those settings in `~/.config/mainwp-mcp/settings.json`; the connection values from the bundle take precedence over any connection values in that file. See the [Configuration Reference](/mcp-server/reference/configuration#configuration-file).
 

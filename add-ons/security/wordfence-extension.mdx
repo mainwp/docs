@@ -5,7 +5,7 @@ description: >-
   The Wordfence Integration combines the power of your MainWP Dashboard with the
   Wordfence Security plugin. It allows you to scan child sites for security
   issues, monitor live traffic, and manage Wordfence settings across your
-  network from the MainWP Dashboard.
+  network from your MainWP Dashboard.
 addonType: integration
 thirdPartyPlugin: Wordfence
 ---
@@ -64,7 +64,7 @@ The Wordfence Integration is a WordPress plugin. Follow these steps on your Main
 </Step>
 </Steps>
 
-The add-on is now ready for use. Alternatively, upload the extracted `mainwp-wordfence-extension` directory to `wp-content/plugins` on the MainWP Dashboard site, then activate and enable it.
+The add-on is now ready for use. Alternatively, upload the extracted `mainwp-wordfence-extension` directory to `wp-content/plugins` on your MainWP Dashboard site, then activate and enable it.
 
 ### 2\. Installing Wordfence Security
 
@@ -191,8 +191,15 @@ Open the **Live Traffic** tab on the Wordfence page to view traffic from active 
 
 ---
 
+## Read Stored Data Through MainWP Abilities
+
+The Wordfence Integration provides three read-only abilities for a site's stored scan status, issue summary, and selected non-secret settings. They do not start a scan, contact the Child Site, or change settings. Stored data can be older than the site's current state, and `unknown` scan status does not establish a clean scan.
+
+See [Wordfence Abilities](/api-reference/abilities-api/wordfence) for discovery, access requirements, request examples, and response limits.
+
 ## Related Resources
 
 - [Security Add-ons](/add-ons/security) - Browse all security tools
 - [Vulnerability Checker Extension](/add-ons/security/vulnerability-checker-extension) - Scan for known vulnerabilities
 - [Sucuri Extension](/add-ons/security/sucuri-extension) - Alternative security integration
+

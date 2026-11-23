@@ -27,7 +27,7 @@ addonType: "integration"
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="integration"
-  data-version="5.3"
+  data-version="5.3.2"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-cache-control-extension/"
   data-integrates-with="Cloudflare and supported cache plugins"
@@ -53,7 +53,13 @@ MainWP Cache Control can automatically purge cache after MainWP Dashboard update
 
 Cache Control supports Cloudflare and the following cache plugins or cache services:
 
-AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCache (MainWP Child 6.4.2 or later), RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
+AccelerateWP, Autoptimize, Breeze, Cache Enabler, Comet Cache, FastPixel Cache, FlyingPress, Hummingbird Performance, LiteSpeed Cache, Nginx Helper, Nitropack, Pressable Cache Management, Rocket.net CDN Cache Plugin, RunCache, RunCloud Hub, Seraphinite Accelerator, SiteGround Optimizer, Swift Performance, Swift Performance Lite, Swis Performance, W3 Total Cache, WP Fastest Cache, WP Optimize, WP Rocket, WP Super Cache.
+
+RunCache requires MainWP Child 6.4.2 or later. After updating MainWP Child, sync the site to show **RunCache** as its cache solution.
+
+Your MainWP Dashboard reports that the RunCache purge was sent, but it does not receive confirmation that every cache layer cleared. This includes Redis and edge caches used by the site. Review the per-site result for failures; a recent Last Purged time alone does not confirm every cache layer cleared.
+
+Hummingbird support is limited to the free **Hummingbird Performance** plugin. **Hummingbird Pro** is currently unsupported.
 
 If a MainWP Child site has both Cloudflare and a supported cache plugin enabled, Cache Control can purge both during the same operation. When the Rocket.net CDN Cache Plugin is detected, Cloudflare purging is skipped to avoid double-purging the same Cloudflare-backed cache layer.
 
@@ -163,7 +169,9 @@ Sites with warnings or failures remain available for retry. Sync the affected si
 
 With MainWP Child 6.3, a Pressable Cache Management purge reports success only when object cache and any applicable Batcache or Edge cache purges succeed. If a layer fails, check the reported failure before retrying.
 
-With MainWP Child 6.4.2 or later, the `Cache purge dispatched` message means MainWP sent the purge request to RunCache. Check the site if stale content remains.
+Starting with Cache Control 5.3.2, a purge result that reads **Purge sent; the cache did not confirm it.** means MainWP sent the purge request, but the cache did not confirm that it cleared. This applies to single-site and bulk purges, including the **Clear Cache** queue in the **Updates Overview** widget. With MainWP Child 6.4.2 or later, RunCache purges report this result, and the site's log shows `Cache purge dispatched`. Check the site if stale content remains.
+
+When a purge fails, the result shows the failure reason returned by the MainWP Child site when one is available. Otherwise, MainWP Dashboard shows **Cache purge failed. Please check the log page for details.**
 
 A recent **Last Purged** time alone does not prove every cache layer succeeded. For example, Cloudflare can succeed while the site's cache plugin fails. Review the per-site result and logs together.
 

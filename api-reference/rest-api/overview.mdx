@@ -184,7 +184,7 @@ Use this URL to import the API into Postman, generate client code, or feed your 
 
 ## Legacy v1 Compatibility
 
-MainWP still supports legacy v1 endpoints (`/wp-json/mainwp/v1/`) for backward compatibility.
+The Dashboard still supports legacy v1 endpoints (`/wp-json/mainwp/v1/`) for backward compatibility.
 
 In the UI flow (**MainWP Dashboard > API Access > API Keys > Add API Keys**), you can enable **MainWP REST API v1 Compatibility** to generate legacy Consumer Key and Consumer Secret along with the v2 Bearer token.
 
@@ -217,9 +217,9 @@ Batch update endpoints can queue work, return completed results, or report an ex
 
 Check the response before deciding what to do next:
 
-- If MainWP reports a new background run, wait for it to finish, then sync your Dashboard or recheck the update endpoints. A queued response can include `job_id` and `queued_count`.
-- If MainWP reports completion and includes a `summary`, read the result there.
-- If MainWP reports that a batch is already running, check that run before sending another start request.
+- If your Dashboard reports a new background run, wait for it to finish, then sync your Dashboard or recheck the update endpoints. A queued response can include `job_id` and `queued_count`.
+- If your Dashboard reports completion and includes a `summary`, read the result there.
+- If your Dashboard reports that a batch is already running, check that run before sending another start request.
 
 In MainWP Dashboard 6.4.2 and later, when the Abilities API is unavailable, a batch start can return `failed_site_ids` for sites it could not queue. Other sites in that response can continue processing. If every queue attempt fails, the endpoint returns HTTP 500 with code `mainwp_rest_updates_queue_error`. Check the result before retrying.
 

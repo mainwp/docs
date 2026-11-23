@@ -14,6 +14,7 @@ addonType: extension
 - Using bulk actions for comment moderation
 - Approving, unapproving, spam marking, and deleting comments
 - Customizing comment display settings
+- Managing comments through the REST API and MainWP Abilities
 
 ---
 
@@ -83,7 +84,7 @@ Use the sidebar filters to narrow your results:
 </Steps>
 
 
-![MainWP Comments Add-on 2025](/images/add-ons/comments-manage-list.jpg) By default, the MainWP Dashboard plugin is set to return (show) a maximum of 50 comments from one Child Site.
+![MainWP Comments Add-on 2025](/images/add-ons/comments-manage-list.jpg) By default, your MainWP Dashboard plugin is set to return (show) a maximum of 50 comments from one Child Site.
 
 ### Review Bulk Moderation Results
 
@@ -202,7 +203,14 @@ Once the list of found comments appears
 
 In the comments list, the **Delete Permanently** action is available for comments that are already in **Trash** or marked as **Spam**.
 
-The comments table also includes **Restore** and **Not Spam** bulk actions. When a comment is in **Trash**, its row actions include **Restore** and **Not Spam**.
+The comments table also includes **Restore** and **Not Spam** bulk actions. The actions menu on each row depends on the comment's status:
+
+| Comment status | Row actions |
+|---|---|
+| Approved | **Unapprove**, **Edit**, **Spam**, **Trash** |
+| Pending | **Approve**, **Edit**, **Spam**, **Trash** |
+| Spam | **Not Spam**, **Delete permanently** |
+| Trash | **Restore**, **Spam**, **Delete permanently** |
 
 ## Set Custom Comment Display Length
 
@@ -237,7 +245,17 @@ curl -X PUT \
   "https://your-dashboard.com/wp-json/mainwp/v2/comments/12/482/action"
 ```
 
-See [Add-on Endpoints](/api-reference/rest-api/extensions#comments) for the full parameter reference and additional examples.
+From Comments 6.1.0, the REST routes require an API key whose user has the `manage_options` capability, or a Team Control user with assigned sites and access to the Comments extension. Other keys receive a 403. The `maximum` parameter accepts up to 100 comments per site, the all-sites list queries up to 100 sites per call, and invalid filter values return a 400.
+
+See [Add-on Endpoints](/api-reference/rest-api/extensions#comments) for the full parameter reference, paging headers, and additional examples.
+
+## Manage Comments via MainWP Abilities
+
+Comments 6.1.0 registers five MainWP abilities in the `mainwp-comments` category. Use them from scripts, AI assistants, or the [MainWP MCP server](/mcp-server/overview) to list comments from your child sites, read one comment, read the recent comments saved at the last sync, moderate comments, and permanently delete trashed comments.
+
+Moderation and deletion work on one site at a time. Each comment in the request names the status you expect it to have, and the child site skips any comment whose status has changed. Permanent deletion only applies to comments in Trash and requires a preview or an explicit confirmation.
+
+The abilities require WordPress 6.9 or later on your MainWP Dashboard site and access to the Comments Add-on. Reading one comment, moderation, and deletion also require MainWP Child 6.2 or later on the target site. See [Comments Abilities](/api-reference/abilities-api/comments) for request examples, response fields, and error handling.
 
 ---
 
@@ -246,4 +264,5 @@ See [Add-on Endpoints](/api-reference/rest-api/extensions#comments) for the full
 - [Administrative Add-ons](/add-ons/administrative) - Browse administrative add-ons
 - [Add-ons Overview](/add-ons/overview) - All add-on categories
 - [Add-on Endpoints](/api-reference/rest-api/extensions#comments) - Comments REST API reference
+- [Comments Abilities](/api-reference/abilities-api/comments) - List, moderate, and delete comments through MainWP Abilities
 - [Network Activity](/sites/network-activity) - Review and configure activity logging

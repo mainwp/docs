@@ -18,7 +18,7 @@ Use them to check Lighthouse configuration and audit freshness, or to pull store
 
 ## Prerequisites
 
-- WordPress 6.9 or later on the MainWP Dashboard site
+- WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - A Lighthouse Add-on release with Abilities support, active in MainWP Dashboard
 - An authenticated user with `manage_options` and access to the Lighthouse Add-on
@@ -171,7 +171,7 @@ The response does not include site URLs, API keys, notification emails, or raw a
 | `mainwp_site_not_found` | 404 | Verify the `site_id` exists in MainWP Dashboard |
 | `mainwp_lighthouse_invalid_input` | 400 | Use positive integer `page`, `per_page` (up to 100), and `site_id` values, with no other properties |
 
-MainWP Dashboard returns HTTP 401 for unauthenticated requests. WordPress can also reject invalid input against the public schema before the Add-on callback runs.
+Your MainWP Dashboard returns HTTP 401 for unauthenticated requests. WordPress can also reject invalid input against the public schema before the Add-on callback runs.
 
 ## Related Resources
 
