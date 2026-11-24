@@ -266,7 +266,7 @@ curl -X DELETE -u 'USERNAME:APPLICATION_PASSWORD' \
 
 Leave `page_refs` empty to scan every active page of the site. Use `trigger: "manual"` with `update_generation: null`. A site whose configuration has `enabled: false` cannot be scanned and returns `stale_revision`. A site runs one scan at a time. Starting a manual scan while another scan of the site is queued or running returns `lock_busy`.
 
-A confirmed scan returns `mode: "accepted"` and `status: "queued"`. A background worker on your Dashboard runs it within about a minute, as described in [How scans run](/add-ons/security/regression-testing-extension#how-scans-run).
+A confirmed scan returns `mode: "accepted"` and `status: "queued"`. A background worker on your Dashboard checks the queue every minute. For details, see [How scans run](/add-ons/security/regression-testing-extension#how-scans-run).
 
 ```bash
 curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
@@ -309,7 +309,7 @@ Use `action: "reconcile"` to queue a scan that ended as `failed`, `partial`, or 
 
 ## Find the scan that covers an update
 
-`get-regression-testing-update-operation-v1` answers "did a post-update scan check this update, and what did it find?" The Safe Updates check in your MainWP Dashboard reads it after updating a site.
+`get-regression-testing-update-operation-v1` answers "did a post-update scan check this update, and what did it find?"
 
 ```bash
 curl -G -u 'USERNAME:APPLICATION_PASSWORD' \
