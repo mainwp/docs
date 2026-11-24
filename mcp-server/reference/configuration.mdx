@@ -16,7 +16,7 @@ The server accepts configuration through environment variables and a `settings.j
 | `MAINWP_TOKEN` | No | | MainWP REST API bearer token. **Not accepted by the Abilities API; see the note below** |
 | `MAINWP_SKIP_SSL_VERIFY` | No | `false` | Skip SSL certificate verification (development only) |
 | `MAINWP_ALLOW_HTTP` | No | `false` | Allow HTTP URLs (credentials sent in plain text) |
-| `MAINWP_SAFE_MODE` | No | `false` | Block all destructive operations |
+| `MAINWP_SAFE_MODE` | No | `false` | Block destructive operations. MainWP MCP Server 1.6.0 and later can still preview updates |
 | `MAINWP_REQUIRE_USER_CONFIRMATION` | No | `true` | Require two-step confirmation for destructive operations |
 | `MAINWP_ALLOWED_TOOLS` | No | | Comma-separated whitelist of tools |
 | `MAINWP_BLOCKED_TOOLS` | No | | Comma-separated blacklist of tools |
@@ -169,7 +169,8 @@ If you rotate the Application Password in WordPress, or the stored one is wrong 
 
 ## Behavior settings
 
-- **`safeMode`** blocks every destructive operation at the server. Explained on [Safety & Permissions](/mcp-server/safety#safe-mode-block-deletions-entirely).
+- **`safeMode`** blocks every destructive operation at the server. In MainWP MCP Server 1.6.0 and later, supported update tools (`run_updates`, `update_all`, and `update_site_*`) can still return a plan without applying updates. Set the boolean `dry_run` to `true` and omit `user_confirmed`. Explained on [Safety & Permissions](/mcp-server/safety#safe-mode-block-deletions-entirely).
+- **Batch size** is set by the Dashboard. With the default threshold, a confirmed `run_updates` or `update_all` call queues a background job and returns a `job_id` when more than 200 sites remain after access checks and duplicate removal. A dry run returns a plan without queuing a job. Site owners change that limit with the Dashboard's `mainwp_abilities_batch_threshold` filter. See [Batch Operations](/api-reference/abilities-api/batch-operations#batch-threshold).
 - **`requireUserConfirmation`** controls the two-step preview/confirm flow for destructive operations (default on). Also on [Safety & Permissions](/mcp-server/safety#deletions-require-your-approval).
 - **`allowedTools` / `blockedTools`** filter the tool catalog. See [Restrict Available Tools](/mcp-server/guides/restrict-tools).
 - **`schemaVerbosity`** trades tool-description detail for context tokens. See [Optimize Token Usage](/mcp-server/guides/token-usage).
