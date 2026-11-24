@@ -399,9 +399,34 @@ If a snapshot shows **files not backed up**, click the warning to inspect the li
 
 The **Test Restore** column shows the results of automatic checks on selected backups. The Dashboard tests them in a temporary environment on the Dashboard. Hover over the result for details, including the reason a test failed or could not run.
 
-If **Couldn't test here** mentions database permissions, ask your hosting provider to let the Dashboard database account create and drop its own temporary `mainwp_tr_` databases and import and read the tables in them. Permissions on the Dashboard's existing database alone are insufficient. The same status can indicate an unsupported backup format or a missing server extension. Check the tooltip to distinguish these cases.
+If **Couldn't test here** mentions database permissions, ask your hosting provider to let the Dashboard database account create and drop its own temporary `mainwp_tr_` databases and import and read the tables in them. Permissions on the Dashboard's existing database alone are insufficient. On cPanel hosting, you can create one database for Test Restore yourself instead. See [Use Your Own Test Restore Database](#use-your-own-test-restore-database). The same status can indicate an unsupported backup format or a missing server extension. Check the tooltip to distinguish these cases.
 
 Test a full restore on a staging site before relying on a backup for recovery.
+
+### Use Your Own Test Restore Database
+
+By default, Test Restore creates a temporary `mainwp_tr_` database for each test and drops it afterwards. This needs the Dashboard database user to have permission to create databases. Shared cPanel hosting usually does not give that permission. On cPanel, you create databases in the control panel and give a user rights on each one by name.
+
+On these hosts, create one empty database for Test Restore and enter its name in the **Test Restore database** setting:
+
+1. In cPanel, open **Manage My Databases** (or **MySQL Database Wizard**) and create a new empty database. cPanel adds your account prefix, for example `account_testrestore`.
+2. Under **Add User To Database**, add the database user your Dashboard uses (`DB_USER` in the Dashboard's `wp-config.php`) and grant **All Privileges**.
+3. In the Dashboard, open **Backup Settings** (see [Find the Backup Screens](#find-the-backup-screens)). Enter the full database name, including the prefix, in **Test Restore database** and save.
+
+Saving makes Test Restore check the database again on its next run. Leave the field empty to keep the default temporary databases.
+
+How Test Restore uses this database:
+
+- The name may use only letters, numbers, and underscores, up to 64 characters. The Dashboard's own database is refused, and Test Restore never runs inside the Dashboard database.
+- Keep the database for Test Restore only. Each run loads a backup into it and deletes the tables it created afterwards. Test Restore never deletes the database itself.
+- Test Restore refuses to start if the database already has tables.
+- Only one Test Restore uses the database at a time. Others wait for a later run.
+- Test Restore connects with the Dashboard's existing database user. No extra password is stored.
+
+| Message | What to do |
+| --- | --- |
+| The Test Restore database "NAME" already has tables. ... | Create a new, dedicated empty database and enter its full name in **Test Restore database**. |
+| The database user "USER" cannot open the Test Restore database "NAME". In cPanel, go to Manage My Databases, check that the database exists, and add this user to it with All Privileges. | In cPanel, check that the database exists and that the user named in the message has **All Privileges** on it. |
 
 ### Read Backup Errors
 
