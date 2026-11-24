@@ -26,7 +26,7 @@ addonType: extension
   data-pricing-tier="pro"
   data-bundle="MainWP Pro"
   data-addon-type="extension"
-  data-version="5.0.5"
+  data-version="5.1"
   data-developer="MainWP"
   data-changelog-url="https://mainwp.com/changelog/mainwp-article-uploader-extension/"
   data-owned-by="Jestart LLC"
@@ -253,11 +253,13 @@ SITES: http://childsite1.com, http://childsite2.com, http://childsite3.com, http
 
 For TXT uploads, the extension uses the first line of the file as the article title and the remaining content as the article body. The Article Uploader Extension allows you to use HTML markup in a CSV file to format the body of your articles to include images, videos, or any other HTML tags to enhance your blog readers' experience.
 
+Article Uploader only reads files from its own staging folder on your MainWP Dashboard. File names can contain spaces, quotes, and percent signs. If a file name contains a slash or backslash, or the file cannot be read, Article Uploader shows the **File could not be opened.** error. Rename the file and upload it again.
+
 ---
 
 ## MainWP Abilities
 
-The Abilities-enabled Article Uploader release adds two read-only abilities for staged articles:
+Article Uploader 5.1 and later adds two read-only abilities for staged articles:
 
 - `mainwp/list-article-uploader-articles-v1` lists uploaded and imported articles that are waiting to be published
 - `mainwp/get-article-uploader-article-v1` reads one staged article with a masked plain-text excerpt of up to 300 characters
