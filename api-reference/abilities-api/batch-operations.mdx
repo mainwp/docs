@@ -18,7 +18,7 @@ Operations affecting more than 200 sites are automatically queued for background
 
 ## Batch Threshold
 
-The default threshold is 200 sites. Operations at or below this threshold execute synchronously and return results immediately. For `run-updates-v1` and `update-all-v1`, the count is taken after access checks and duplicate removal: 200 sites run in the request, and 201 or more are queued.
+The default threshold is 200 sites. Operations at or below this threshold execute synchronously and return results immediately. For confirmed `run-updates-v1` and `update-all-v1` calls, your Dashboard counts sites after access checks and duplicate removal. With the default threshold, up to 200 sites run in the request, and 201 or more are queued. A dry run returns a plan without queuing a job.
 
 ```php
 // Default: 200 sites
