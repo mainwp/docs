@@ -19,6 +19,14 @@ You need WordPress 6.9 or later, MainWP Dashboard with Abilities API support, an
 
 Use an authenticated Dashboard account with access to Pro Reports and the report's sites. Creating, changing, generating, sending, trashing, or managing a run also requires **Pro Reports Management** permission. Team Control site restrictions still apply. Owning a report does not grant access to sites outside your permissions.
 
+Team Control staff without `manage_options` can run every Pro Reports ability except `mainwp/list-pro-report-catalog-v1`. This needs MainWP Dashboard 6.5 or later and a Pro Reports build that supports Team Control. The staff role needs **Use MainWP abilities and MCP**, the Pro Reports permission, and access to every site the report targets:
+
+- The definitions list returns only reports whose sites the role can access.
+- A request that includes any site outside the role's sites is refused, with 403 `mainwp_pro_reports_access_denied` or 404 `mainwp_pro_reports_report_not_found`. Selecting a mix of allowed and other sites is refused as a whole.
+- `mainwp/list-pro-report-catalog-v1` requires `manage_options` and access to all sites. Other users receive 403 `mainwp_pro_reports_access_denied`.
+
+Before a queued run executes, Pro Reports rechecks its owner's current rights and site access. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
+
 An ability-created definition belongs to its creator. Reports shared with administrators through the existing editor retain that access. Other administrators can inspect a shared report's runs when their site permissions allow it. Only the user who requested a run can cancel or reconcile it.
 
 Authenticate with a WordPress [Application Password](/api-reference/rest-api/application-passwords). See the [Abilities API authentication guide](/api-reference/abilities-api/overview#authentication) for other supported methods.
