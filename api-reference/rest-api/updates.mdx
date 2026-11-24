@@ -40,6 +40,8 @@ The REST v1 `/mainwp/v1/site/site-update-translations` route keeps its existing 
 | GET | `/updates/ignored` | List globally ignored plugin/theme updates | `type` (`plugins`, `themes`, `all`), `search` |
 | GET | `/updates/{id_or_domain}/ignored` | List ignored updates for one site | `type`, `search` |
 
+The optional `connected` parameter is available in MainWP Dashboard 6.6-rc.1 and later. Set it to `true` to include only sites without stored sync errors. Omit the parameter or set it to `false` to leave sync status unfiltered. See [MainWP Early Access](https://mainwp.com/mainwp-early-access/) for release candidate availability.
+
 ### Run Updates
 
 | Method | Path | Purpose | Key Params |

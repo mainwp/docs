@@ -10044,8 +10044,8 @@ paths:
             type: string
         - name: connected
           in: query
-          description: Return only sites with no stored sync errors, the same sites the Updates Overview widget uses.
-            When omitted or `false`, sites are not filtered by sync status.
+          description: Available in MainWP Dashboard 6.6-rc.1 and later. Set to true to include only sites without stored sync errors, matching the Updates Overview widget.
+            Omit the parameter or set it to false to leave sync status unfiltered.
           required: false
           schema:
             type: boolean

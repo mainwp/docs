@@ -49,9 +49,9 @@ curl -u 'admin:xxxx' \
 |------|------|----------|---------|-------------|
 | `site_ids_or_domains` | array | No | [] | Filter to specific sites |
 | `types` | array | No | [] | Filter: `core`, `plugins`, `themes`, `translations` |
-| `connected` | boolean | No | false | Only include sites without stored sync errors |
+| `connected` | boolean | No | false | Only include sites without stored sync errors. Available in Dashboard 6.6-rc.1 and later |
 | `page` | integer | No | 1 | Page number |
-| `per_page` | integer | No | 50 | Items per page (max 1000) |
+| `per_page` | integer | No | 50 | Items per page. Maximum 200 before Dashboard 6.6-rc.1 and 1000 from 6.6-rc.1 onward |
 
 **Response:**
 
