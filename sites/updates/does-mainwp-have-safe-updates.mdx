@@ -52,19 +52,11 @@ Click **Start Safe Update**. The run page opens. If some sites were already in a
 </Step>
 </Steps>
 
-<Note>
-Screenshot to add: Updates page, **Plugin Updates** tab, with the **Safe Update** button beside the update buttons. Dark theme.
-</Note>
-
 The selection follows the Updates page view, so it includes live sites or staging sites depending on which view is open.
 
 ### From Manage Sites
 
 Go to **Sites > Manage Sites**, tick the sites, choose **Safe Update Everything** from the bulk actions, and click **Apply**. The run includes the pending updates on the selected sites for every item type you have the right to update. The same preview opens before anything starts.
-
-<Note>
-Screenshot to add (optional): Manage Sites bulk actions menu showing **Safe Update Everything** below **Update Everything**. Dark theme.
-</Note>
 
 ### The Preview
 
@@ -91,10 +83,6 @@ The **Backup** column shows what happens before the site is updated:
 When a selected site has no recent backup, or its offsite copy is not verified yet, the preview shows **Update sites that have no recent backup without waiting for one**. Ticking it applies to every site in the run.
 
 Sites marked **Suspended, will be skipped** or **Already in a run, will be skipped** are left out. A site can be in only one Safe Updates run at a time. If some sites were already in another run, the run starts without them and the preview shows a message listing them with an **Open run** link to the new run. If every selected site is already in a run, no run starts.
-
-<Note>
-Screenshot to add: **Safe Update** preview with the three checks ticked, one site showing **Will back up first**, and one site showing **Already in a run, will be skipped**. Dark theme.
-</Note>
 
 ---
 
@@ -186,10 +174,6 @@ The status label is blue while a run is running, stalled, or cancelling, and gre
 
 Runs older than 12 months are deleted automatically.
 
-<Note>
-Screenshot to add: Safe Updates run list with one manual run and one automatic updates run. Dark theme.
-</Note>
-
 ### Run Page
 
 The run page shows who started the run and when, a progress bar (**N of M sites finished**), and site counts: **OK**, **Needs attention**, **Resolved**, **Failed**, **Skipped**, and **In progress**. **Resolved** counts sites that needed attention, were then rolled back or marked as expected, and need nothing more.
@@ -197,10 +181,6 @@ The run page shows who started the run and when, a progress bar (**N of M sites 
 The site table has the columns **Site**, **Result**, **Updates**, **Backup**, and **Checks**, plus row actions. Use **All sites** and **Needs attention** to filter the table, and **All runs** to go back to the list.
 
 While the run is in progress, the open page refreshes about every 5 seconds.
-
-<Note>
-Screenshot to add: run page while a run is in progress, with rows showing step labels such as **Checking before update** and **Updating**, and the progress bar. Dark theme.
-</Note>
 
 ### Site Results
 
@@ -254,10 +234,6 @@ Row actions appear when a site's row has finished.
 
 A site with items that were not updated stays in the **Needs attention** filter after you mark it as expected.
 
-<Note>
-Screenshot to add: run page with one **Needs attention** row showing a failed **HTTP check** with **Before:** and **After:** evidence, and the **Roll back**, **Retest**, and **Mark as expected** actions. Dark theme.
-</Note>
-
 ---
 
 ## Roll Back an Update
@@ -280,10 +256,6 @@ Read the confirmation and confirm. When **Restore backup** is available, the con
 The checks run again after the rollback. The row shows **Rolled back and checked**, or **Rollback did not fix the check. Review the site or restore backup.** If the rollback itself fails, the row shows why, for example **Rollback failed. The installed version is still in place.**
 </Step>
 </Steps>
-
-<Note>
-Screenshot to add: the same site row after rollback, showing **Rolled back**, the message **Rolled back and checked**, and passing checks. Dark theme.
-</Note>
 
 ### What Rollback Can Undo
 
@@ -370,10 +342,6 @@ If you run MainWP from server cron, the existing `updatescheck.php` job also run
 A run that makes no progress for 10 minutes is marked **Stalled**. This usually means WP-Cron is not running on your Dashboard. Other MainWP pages show the notice **A Safe Update run has stalled** with an **Open run** link.
 
 Open the run. It keeps moving while the run page is open, and **Continue** runs the Safe Updates worker once.
-
-<Note>
-Screenshot to add (optional): run page for a stalled run, showing the yellow message and the **Continue** button. Dark theme.
-</Note>
 
 ### What Happens on Slow Hosting
 
