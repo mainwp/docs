@@ -168,7 +168,7 @@ Displays changes in CSS and JavaScript files if tracking is enabled in the setti
 
 **Running a Manual Scan**
 
-If you need to check a site immediately, you can manually trigger a scan from the **Regression Testing Dashboard** by clicking the ellipsis menu and selecting **Scan Site**. The scan is queued and runs within about a minute. The page shows the result when the scan finishes.
+To request a manual scan, open the ellipsis menu on the **Regression Testing Dashboard** and select **Scan Site**. The scan joins the queue, and the page shows the result when it finishes.
 
 You can also initiate a scan from an individual **Child Site Overview Page** under the Regression Testing tab. Manual scans are useful when performing maintenance or troubleshooting specific issues.
 
@@ -190,7 +190,7 @@ The chart also includes timestamps on the x-axis and reflects the history of Cha
 
 ## How scans run
 
-Scans started with **Scan Site**, after updates, or on a schedule are queued. A background worker on your Dashboard runs every minute through WordPress cron and processes the queue. Each site runs one scan at a time.
+Scans started with **Scan Site**, after updates, or on a schedule are queued. With WordPress cron running, a background worker on your Dashboard checks the queue every minute. Each site runs one scan at a time. Start and completion times depend on work already in the queue and the time each page takes to scan.
 
 - **Scheduled scans** start at their scheduled local time. Your Dashboard checks for due schedules every minute. A suspended site, or a site whose last sync failed, skips that run. When your Dashboard was offline at the scheduled time, the schedule runs once to catch up.
 - **Post-update scans** start after the configured delay, as described in [Automated Scan Settings](#automated-scan-settings).
