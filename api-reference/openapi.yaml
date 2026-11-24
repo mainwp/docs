@@ -10042,6 +10042,14 @@ paths:
           required: false
           schema:
             type: string
+        - name: connected
+          in: query
+          description: Available in MainWP Dashboard 6.6-rc.1 and later. Set to true to include only sites without stored sync errors, matching the Updates Overview widget.
+            Omit the parameter or set it to false to leave sync status unfiltered.
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Success.
