@@ -23,9 +23,15 @@ Filtering removes a blocked tool everywhere it could be seen or used: tool listi
 MAINWP_ALLOWED_TOOLS="list_sites_v1,get_site_v1,list_updates_v1"
 ```
 
+## Set up read-only access
+
+On MCP Server builds that support the read-only setting, set `readOnly` to `true` in `settings.json` or set `MAINWP_READ_ONLY=true` in your AI client's MCP configuration. This setting is unavailable in MainWP MCP Server 1.6.0. For that release and earlier, use the read-only tool list below.
+
+With `readOnly` on, a client can list and run only abilities that declare both `readonly: true` and `destructive: false`. Update tools are hidden even if they support previews. `allowedTools` and `blockedTools` still apply, and the setup tools remain available subject to tool filtering.
+
 ## Ready-made configurations
 
-**Read-only monitoring** (17 tools). For dashboards, reporting, and any setup where the AI should observe but never modify. This is the configuration to reach for when [safe mode](/mcp-server/safety#safe-mode-block-deletions-entirely) is not strict enough, since safe mode still allows activations, and updates on Dashboards before 6.3.
+**Read-only monitoring** (17 tools). Use this list for dashboards, reporting, and other monitoring tasks. It also works on MCP Server versions that do not support `readOnly`.
 
 ```json
 {

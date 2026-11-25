@@ -80,6 +80,12 @@ Start here if the server won't connect or a tool call fails. Each entry names th
   </Accordion>
 </AccordionGroup>
 
+## Timeouts after a site change
+
+In MainWP MCP Server 1.6.0 and later, an Agent Bridge site write can report that the change may still be running after a local timeout or an HTTP `504` or `524` response. A regular update execution can return an error with the same warning. A timed-out update preview only failed to return the plan.
+
+Check the current operation or the affected site's state in your Dashboard before retrying. If you have an operation ID for an Agent Bridge request, keep it so you can identify the original operation. Wait if the operation is still running and submit a new request only after you establish that the original did not apply the change.
+
 ## Confirmation flow
 
 <AccordionGroup>

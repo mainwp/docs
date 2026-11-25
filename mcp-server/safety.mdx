@@ -12,7 +12,7 @@ The AI operates with the permissions of the WordPress user whose Application Pas
 
 With default configuration it **can**: read site, plugin, theme, update, client, and tag data; run updates, which on Dashboard 6.3 and later need your confirmation; activate and deactivate plugins and switch themes, with confirmation on Dashboard 6.4.1 and later; sync and reconnect sites; and delete sites, clients, tags, plugins, or themes, but only after you confirm.
 
-It **cannot**: log into WordPress admin, bypass WordPress permissions, run arbitrary code on your sites, or touch anything your Dashboard does not expose.
+It **cannot** sign in to WordPress admin or bypass WordPress permissions. A compatible Dashboard with Agent Bridge can expose additional site tools. These use the Dashboard approval rules below.
 
 ## Deletions require your approval
 
@@ -44,13 +44,27 @@ sequenceDiagram
 
 <img src="/images/mcp-server/mainwp-mcp-guard-rails.png" alt="Terminal conversation: a request to delete inactive plugins pauses with Confirmation required and a preview of 2 plugins, then completes after the user confirms" />
 
-The gate is strict. A destructive call with no confirmation parameters is rejected outright; the server never executes a bare destructive request. Operations that cannot produce a preview still go through the same token gate, and the AI must describe what will happen and get your explicit approval first.
+For tools that use local confirmation, the server rejects a destructive call without confirmation parameters. Operations that cannot produce a preview still use the same token gate, and the AI must describe what will happen and get your explicit approval first.
 
-This applies to every tool the server classifies as destructive, including `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. On Dashboard 6.3 and later it also covers the update tools and `unignore_site_updates_v1`. See [Updates Abilities](/api-reference/abilities-api/updates#confirmation-and-update-holds-in-6-3) for the Dashboard's preview and confirmation requirements. An ability that does not explicitly declare itself non-destructive is treated as destructive and gated the same way.
+This includes `delete_site_v1`, `delete_client_v1`, `delete_tag_v1`, `delete_site_plugins_v1`, and `delete_site_themes_v1`. On Dashboard 6.3 and later it also covers the update tools and `unignore_site_updates_v1`. See [Updates Abilities](/api-reference/abilities-api/updates#confirmation-and-update-holds-in-6-3) for the Dashboard's preview and confirmation requirements. The server treats abilities without an explicit non-destructive annotation as destructive. Agent Bridge site writes that use Dashboard approval follow a separate flow.
 
 When one request needs several previews, for example update calls for different items on different sites, previews shown together can be approved in one explicit reply. Each still runs with its own token, and approval never covers anything you were not shown.
 
 For unattended automation, set `MAINWP_REQUIRE_USER_CONFIRMATION=false` together with an allow list (`MAINWP_ALLOWED_TOOLS`). An allow list filters by tool name and does not see site arguments, so leave `update_all_v1` off the list and have the automation name its sites on every call. With confirmation off, the caller must send `confirm: true` itself: Dashboard 6.3 rejects an update call with neither `confirm` nor `dry_run`, and the server reports that as `mainwp_confirmation_required` in `error.data.upstream_code`. See [Configuration Reference](/mcp-server/reference/configuration).
+
+## Approve Agent Bridge site writes in your Dashboard
+
+MainWP MCP Server 1.6.0 supports Dashboard approval for Agent Bridge tools that run PHP or WP-CLI, write site files, or run a site's write or destructive abilities. The tools appear only when your Dashboard exposes them and your server settings allow them. File restore uses this flow on MCP Server builds that include Dashboard approval for file restore.
+
+Your Dashboard decides whether the action needs approval. If it does, the tool reports `approval_required` with an `approval_url` and `operation_id`. Open the link yourself and review the action in your Dashboard. After you approve it there, the client resumes the same tool with only the `operation_id`. If the Dashboard returns `agent_backup_running`, follow its polling instructions with the same operation ID.
+
+Agent Bridge site writes use the Dashboard's approval rules even when you change the local `requireUserConfirmation` setting. A Dashboard-issued task grant can cover later writes. When the response supplies a `grant_id`, the client can pass it as `task_grant` for covered writes until it expires. The Dashboard checks the grant and site on each request.
+
+## Preview and track Safe Updates
+
+With MainWP MCP Server 1.6.0 or later, the update workflow prefers Safe Updates when `run_safe_update_v1` is available in its tool catalog. If your Dashboard does not expose it, the workflow uses the regular update tools.
+
+The Safe Updates preview can return `plan_summary` lines showing the items to update, backup status, site checks, and sites left out of the run. Review those lines before confirming. Follow the run after confirmation and check which sites need attention. Supported regular update tools also include `plan_summary` in plain `dry_run: true` results when the Dashboard returns a plan the server can summarize, including holds for missing or pending offsite backups.
 
 ## Safe mode: block deletions entirely
 
@@ -65,7 +79,7 @@ If you want destructive operations off the table completely, enable safe mode:
 Destructive calls then fail with `SAFE_MODE_BLOCKED` without ever reaching your Dashboard. We recommend running your first sessions in safe mode: you can verify the connection and learn how the AI behaves while the dangerous tool classes stay blocked.
 
 <Warning>
-Safe mode still allows site syncing. On Dashboards before 6.4.1, plugin activation, plugin deactivation, and theme activation also work. On Dashboards before 6.3, updates do too, and a bad update can break a site. For genuinely read-only access, expose only read tools with `allowedTools`. The [Restrict Available Tools](/mcp-server/guides/restrict-tools) guide has a ready-made read-only configuration.
+Safe mode still allows site syncing. On Dashboards before 6.4.1, plugin activation, plugin deactivation, and theme activation also work. On Dashboards before 6.3, updates do too, and a bad update can break a site. To limit the client to read tools, see [Set up read-only access](/mcp-server/guides/restrict-tools#set-up-read-only-access).
 </Warning>
 
 | | Safe mode | Confirmation flow |
@@ -104,7 +118,7 @@ The server-side gates above cannot be talked around: a deletion without a valid 
 
 ## Guidance the server gives the AI
 
-When a client connects, the server sends it a short set of instructions. They tell the AI to present a plan and get your approval before any call that changes sites, to show a tool's preview as that plan, and never to remove an update from the ignore list to force it through unless you ask. On Dashboards before 6.3, updates are not classified as destructive, so the confirmation flow above does not stop them and your approval of the plan is the only check.
+When a client connects, the server sends it a short set of instructions. For site changes outside Agent Bridge, they tell the AI to present a plan, show the tool's preview if available, and get your approval before executing. They also tell it to respect the update ignore list unless you ask to change it. On Dashboards before 6.3, updates are not classified as destructive, so the confirmation flow above does not stop them and your approval of the plan is the only check.
 
 The same instructions cover knowledge records on Dashboard 6.3 and later. The Dashboard, not the record's text, decides whether a record is verified. The AI follows a verified skill whose description fits the task and respects verified context. It treats an unverified record as information only: if one contains instructions addressed to an AI, it does not follow them and tells you which record it is so a person can review it. Memories are history, and no record authorizes a change to a site. The AI opens any record it has seen only by title before describing or following it.
 
