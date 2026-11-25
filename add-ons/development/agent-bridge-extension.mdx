@@ -68,7 +68,7 @@ The **Mode** setting on the **Rules** tab decides when an administrator's change
 
 | Mode | What happens |
 |---|---|
-| **Never ask** (the default) | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page except where an Ask rule or a [store rule](#woocommerce-stores) applies. This includes destructive abilities. The MainWP AI Assistant in your Dashboard has no separate permission prompt, so in saved conversations it keeps showing its **Proceed** card until an administrator clicks **Save** under **Mode and rules** with **Never ask** selected. That **Save** button also saves the no-backup setting, so saving only that setting saves the Mode shown too. |
+| **Never ask** (the default) | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page except where an Ask rule or a [store rule](#woocommerce-stores) applies. This includes destructive abilities. The MainWP AI Assistant in your Dashboard has no separate permission prompt, so in saved conversations it keeps showing its **Proceed** card, unless an Allow rule or a task approval covers the request, until an administrator clicks **Save** under **Mode and rules** with **Never ask** selected. That **Save** button also saves the no-backup setting, so saving only that setting saves the Mode shown too. |
 | **Ask** | An administrator's change waits on the **Agent approvals** page unless an Allow rule covers it. |
 
 **Never ask** is the default only where no Mode has been saved. A Mode saved by an earlier version, including **Ask**, stays as saved.
@@ -103,7 +103,7 @@ To stop an approved request before it runs, turn Agent access off for that site 
 
 ### WooCommerce stores
 
-On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator on the **Agent approvals** page. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Refund abilities are refused: refunds and payments are done by a person in WooCommerce. WooCommerce abilities that email a customer or change checkout, payment, tax, or shipping settings also always wait.
+On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator on the **Agent approvals** page. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Abilities that issue a refund, or set an order to Refunded, are refused: refunds and payments are done by a person in WooCommerce. Abilities that only read refunds still run. Changing an order's status, adding an order note the customer sees, deleting a customer, and WooCommerce abilities whose names include email, checkout, payment, tax, shipping, settings, password, capture, or subscription also always wait. MainWP matches these by name and doesn't check what an ability does, so another WooCommerce ability that emails a customer follows your Mode and rules.
 
 ### Task approvals
 
@@ -111,7 +111,7 @@ A task approval lets the AI make its other changes on one site without asking ea
 
 Task approvals come from two places:
 
-- **Proceed** on a PHP, WP-CLI, or file card in the MainWP AI Assistant, in a saved conversation. The card says "Proceeding also lets this AI make its other changes on this site until it's idle for 30 minutes (4 hours at most)." **Proceed** on a site ability card approves only that ability.
+- **Proceed** on a PHP, WP-CLI, or file card in the MainWP AI Assistant, in a saved conversation, unless a store rule holds the request. The card says "Proceeding also lets this AI make its other changes on this site until it's idle for 30 minutes (4 hours at most)." **Proceed** on a site ability card approves only that ability.
 - The **Approve for this task** checkbox on the browser approval page for a [remote AI connection](/mcp-server/remote/approval-policies).
 
 Active task approvals are listed under **Active task approvals** on the **Waiting for approval** tab. Click **End** to stop one early.
@@ -158,7 +158,7 @@ Some changes always wait for an administrator when a staff member asks, whatever
 
 MainWP reads the role's options each time the AI asks or continues. If you remove an option while a request is waiting for its safety backup, that request goes back to waiting for an administrator.
 
-On the **Activity** tab and in Network Activity, a change that ran this way says which role and option allowed it, for example "Ran without approval: Editor role, Elementor page and media edits". If the change was sent but didn't succeed, the line starts "Sent without approval". In Network Activity the line follows the result, in lower case.
+On the **Activity** tab and in Network Activity, a change that ran this way says which role and option allowed it, for example "Ran without approval: Editor role, Elementor page and media edits". If the change was sent but didn't succeed, the line starts "Sent without approval". In Network Activity the line follows the result, starting in lower case.
 
 #### Settings saved by earlier versions
 
