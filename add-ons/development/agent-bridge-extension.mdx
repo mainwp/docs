@@ -103,7 +103,7 @@ To stop an approved request before it runs, turn Agent access off for that site 
 
 ### WooCommerce stores
 
-On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator on the **Agent approvals** page. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Abilities that issue a refund, or set an order to Refunded, are refused: refunds and payments are done by a person in WooCommerce. Abilities that only read refunds still run. Changing an order's status, adding an order note the customer sees, deleting a customer, and WooCommerce abilities whose names include email, checkout, payment, tax, shipping, settings, password, capture, or subscription also always wait. MainWP matches these by name and doesn't check what an ability does, so another WooCommerce ability that emails a customer follows your Mode and rules.
+On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator's approval. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Abilities with refund in their name, and WooCommerce's order status abilities when they set an order to Refunded, are refused: refunds and payments are done by a person in WooCommerce. Changing an order's status, adding an order note the customer sees, deleting a customer, and WooCommerce abilities whose names include the word email, checkout, payment, tax, shipping, settings, password, capture, or subscription also always wait. These ability rules apply to changes only, so abilities that only read still run. MainWP matches all of them by name and doesn't check what an ability does, so a refund ability with another name, or another WooCommerce ability that emails a customer, follows your Mode and rules.
 
 ### Task approvals
 
@@ -118,7 +118,9 @@ Active task approvals are listed under **Active task approvals** on the **Waitin
 
 ### Safety backups
 
-Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again. A request an administrator approved shows as **Backup failed** on the **Recently decided** tab.
+Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. A request an administrator approved shows as **Backup failed** on the **Recently decided** tab.
+
+MainWP counts a site as having a backup system when MainWP's own backups are turned on, or when a backup was recorded for the site in the last 24 hours. MainWP can't start a backup in another backup plugin, so a site that relies on one, with no backup in the last 24 hours, counts as having no backup system.
 
 For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when a site has no backup system. You can't skip the safety backup for a single request: a site with a backup system always has a recent backup first.
 
@@ -131,7 +133,7 @@ Staff members need [Team Control](/add-ons/agency/team-control-extension) permis
 | **Run site abilities (read)** | Listing, looking up, and running site abilities that only read |
 | **Run site abilities (write)** | Running site abilities that change data |
 | **Run site abilities (destructive)** | Running site abilities that can delete data or are hard to undo |
-| **Run code on child sites (PHP, WP-CLI, files)** | The PHP, WP-CLI, and file tools, including the read-only ones |
+| **Run code on child sites (PHP, WP-CLI, files)** | The PHP, WP-CLI, and file tools, including the read-only ones, and the site status tool |
 
 A staff member also needs the **Access WP Admin** permission and access to the site through their Team Control role. Without the matching right or **Access WP Admin**, the request is refused with "Your role does not allow code tools on child sites." A site outside the role's access is refused as not found.
 
