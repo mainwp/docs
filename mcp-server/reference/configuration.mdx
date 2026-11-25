@@ -18,6 +18,7 @@ The server accepts configuration through environment variables and a `settings.j
 | `MAINWP_ALLOW_HTTP` | No | `false` | Allow HTTP URLs (credentials sent in plain text) |
 | `MAINWP_SAFE_MODE` | No | `false` | Block destructive operations. MainWP MCP Server 1.6.0 and later can still preview updates |
 | `MAINWP_REQUIRE_USER_CONFIRMATION` | No | `true` | Require two-step confirmation for destructive operations |
+| `MAINWP_READ_ONLY` | No | `false` | Limit the AI to tools the Dashboard marks as read-only and non-destructive (1.7.0 and later) |
 | `MAINWP_ALLOWED_TOOLS` | No | | Comma-separated whitelist of tools |
 | `MAINWP_BLOCKED_TOOLS` | No | | Comma-separated blacklist of tools |
 | `MAINWP_SCHEMA_VERBOSITY` | No | `standard` | Schema detail level: `standard` or `compact` |
@@ -79,6 +80,7 @@ A JSON schema ships with the package as `settings.schema.json` for IDE autocompl
 | `allowHttp` | `MAINWP_ALLOW_HTTP` | boolean |
 | `safeMode` | `MAINWP_SAFE_MODE` | boolean |
 | `requireUserConfirmation` | `MAINWP_REQUIRE_USER_CONFIRMATION` | boolean |
+| `readOnly` | `MAINWP_READ_ONLY` | boolean |
 | `allowedTools` | `MAINWP_ALLOWED_TOOLS` | string[] |
 | `blockedTools` | `MAINWP_BLOCKED_TOOLS` | string[] |
 | `schemaVerbosity` | `MAINWP_SCHEMA_VERBOSITY` | string |
@@ -173,6 +175,7 @@ If you rotate the Application Password in WordPress, or the stored one is wrong 
 - **Batch size** is set by the Dashboard. With the default threshold, a confirmed `run_updates` or `update_all` call queues a background job and returns a `job_id` when more than 200 sites remain after access checks and duplicate removal. A dry run returns a plan without queuing a job. Site owners change that limit with the Dashboard's `mainwp_abilities_batch_threshold` filter. See [Batch Operations](/api-reference/abilities-api/batch-operations#batch-threshold).
 - **`requireUserConfirmation`** controls the two-step preview/confirm flow for destructive operations (default on). Also on [Safety & Permissions](/mcp-server/safety#deletions-require-your-approval).
 - **`allowedTools` / `blockedTools`** filter the tool catalog. See [Restrict Available Tools](/mcp-server/guides/restrict-tools).
+- **`readOnly`** (default off, `@mainwp/mcp` 1.7.0 and later; earlier versions ignore both the setting and `MAINWP_READ_ONLY`) limits the tools an AI client can list and run to abilities marked `readonly: true` and `destructive: false`. Update previews are hidden. Allow and block lists still apply. Setup tools remain available, and category lists and the status count describe the full catalog. Set `MAINWP_READ_ONLY=true` in your AI app's MCP configuration to apply the setting even when the project has its own `settings.json`.
 - **`schemaVerbosity`** trades tool-description detail for context tokens. See [Optimize Token Usage](/mcp-server/guides/token-usage).
 - **`abilityNamespaces`** controls which plugins' abilities are exposed. See [Use Abilities from Other Plugins](/mcp-server/guides/other-plugin-abilities).
 - **`responseFormat`** switches tool response JSON between `compact` (default) and `pretty`.
