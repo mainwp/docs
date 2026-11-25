@@ -84,7 +84,11 @@ Start here if the server won't connect or a tool call fails. Each entry names th
 
 <AccordionGroup>
   <Accordion title="PREVIEW_REQUIRED">
-    The AI tried to execute a destructive operation without a valid preview: no preview requested, a token that was already used (tokens are single-use), or a token bound to different arguments. Usually an AI behavior slip. Rephrase: "Show me what will be deleted first, then I'll confirm."
+    The AI tried to execute a destructive operation without a valid preview: no preview requested, a token that was already used (tokens are single-use), a token for a different tool, or an expired preview the server has already cleared. Before MCP Server 1.6.0, a token bound to different arguments also returned this error. Usually an AI behavior slip. Rephrase: "Show me what will be deleted first, then I'll confirm."
+  </Accordion>
+
+  <Accordion title="PREVIEW_ARGS_MISMATCH">
+    In MCP Server 1.6.0 and later, the confirmation's arguments differed from the preview you approved. The server discards that preview and its token, so resending the same confirmation fails too. The AI has to preview again with the arguments it intends to run, get your approval for the new preview, then repeat that exact call to confirm. If the AI keeps changing the request between steps, ask it to show the preview again and confirm exactly what it showed.
   </Accordion>
 
   <Accordion title="CONFIRMATION_REQUIRED with preview: null">
@@ -92,7 +96,7 @@ Start here if the server won't connect or a tool call fails. Each entry names th
   </Accordion>
 
   <Accordion title="PREVIEW_EXPIRED">
-    More than 5 minutes passed between the preview and your confirmation. Say "yes, proceed" again and the AI will fetch a fresh preview.
+    More than 5 minutes passed between the preview and your confirmation. Your earlier approval doesn't carry over. Ask the AI for a fresh preview, then approve that one.
   </Accordion>
 
   <Accordion title="CONFLICTING_PARAMETERS">
