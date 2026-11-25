@@ -21,7 +21,7 @@ Choose the installation guide for the application you use:
 The manual configurations below run `npx -y @mainwp/mcp` with your Dashboard URL, WordPress username, and [Application Password](/mcp-server/quickstart#before-you-start). Use them for another AI client or when you prefer a manual server connection.
 
 <Warning>
-If your Dashboard runs the [Agent Bridge](/add-ons/development/agent-bridge-extension) add-on, don't choose your AI app's "Always allow" option for its PHP, WP-CLI, or file tools. Agent Bridge's default **Mode** is **Never ask**, so the app's prompt is the only check before an administrator's change runs, and content on a child site can try to steer the AI.
+If your Dashboard runs the [Agent Bridge](/add-ons/development/agent-bridge-extension) add-on, don't choose your AI app's "Always allow" option for its PHP, WP-CLI, or file tools. Agent Bridge's default **Mode** is **Never ask**, so the app's prompt is the only check before an administrator's change runs (code on WooCommerce stores still waits for approval), and content on a child site can try to steer the AI.
 </Warning>
 
 If you keep credentials in a central `~/.config/mainwp-mcp/settings.json` instead (see [Configuration Reference](/mcp-server/reference/configuration#configuration-file)), omit the `env` block in any of these examples.
