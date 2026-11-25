@@ -18,7 +18,7 @@ The server accepts configuration through environment variables and a `settings.j
 | `MAINWP_ALLOW_HTTP` | No | `false` | Allow HTTP URLs (credentials sent in plain text) |
 | `MAINWP_SAFE_MODE` | No | `false` | Block all destructive operations |
 | `MAINWP_REQUIRE_USER_CONFIRMATION` | No | `true` | Require two-step confirmation for destructive operations |
-| `MAINWP_READ_ONLY` | No | `false` | Limit the AI to tools the Dashboard marks as read-only and non-destructive |
+| `MAINWP_READ_ONLY` | No | `false` | Limit the AI to tools the Dashboard marks as read-only and non-destructive (1.7.0 and later) |
 | `MAINWP_ALLOWED_TOOLS` | No | | Comma-separated whitelist of tools |
 | `MAINWP_BLOCKED_TOOLS` | No | | Comma-separated blacklist of tools |
 | `MAINWP_SCHEMA_VERBOSITY` | No | `standard` | Schema detail level: `standard` or `compact` |
@@ -174,7 +174,7 @@ If you rotate the Application Password in WordPress, or the stored one is wrong 
 - **`safeMode`** blocks every destructive operation at the server. Explained on [Safety & Permissions](/mcp-server/safety#safe-mode-block-deletions-entirely).
 - **`requireUserConfirmation`** controls the two-step preview/confirm flow for destructive operations (default on). Also on [Safety & Permissions](/mcp-server/safety#deletions-require-your-approval).
 - **`allowedTools` / `blockedTools`** filter the tool catalog. See [Restrict Available Tools](/mcp-server/guides/restrict-tools).
-- **`readOnly`** (default off) limits the tools an AI client can list and run to abilities marked `readonly: true` and `destructive: false`. Update previews are hidden. Allow and block lists still apply. Setup tools remain available, and category lists and the status count describe the full catalog. Set `MAINWP_READ_ONLY=true` in your AI app's MCP configuration to apply the setting even when the project has its own `settings.json`.
+- **`readOnly`** (default off, `@mainwp/mcp` 1.7.0 and later; earlier versions ignore both the setting and `MAINWP_READ_ONLY`) limits the tools an AI client can list and run to abilities marked `readonly: true` and `destructive: false`. Update previews are hidden. Allow and block lists still apply. Setup tools remain available, and category lists and the status count describe the full catalog. Set `MAINWP_READ_ONLY=true` in your AI app's MCP configuration to apply the setting even when the project has its own `settings.json`.
 - **`schemaVerbosity`** trades tool-description detail for context tokens. See [Optimize Token Usage](/mcp-server/guides/token-usage).
 - **`abilityNamespaces`** controls which plugins' abilities are exposed. See [Use Abilities from Other Plugins](/mcp-server/guides/other-plugin-abilities).
 - **`responseFormat`** switches tool response JSON between `compact` (default) and `pretty`.
