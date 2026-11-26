@@ -265,6 +265,12 @@ Ensure these show **Pass**:
 </Step>
 </Steps>
 
+### HTTP 503 during a site sync
+
+If your MainWP Dashboard shows **Process timed out. Please try again.**, open the **Network** tab in your browser's developer tools and retry syncing one site. If the request to `/wp-admin/admin-ajax.php` on your Dashboard's domain returns **503 Service Unavailable**, note the time and time zone and check the Dashboard server's web server and PHP error logs for that attempt. Check the logs even if Server Information shows **Pass**.
+
+On LiteSpeed, if the web server log shows `Connection reset by peer` from the local PHP handler, check the matching entries in `stderr.log`. If you see `curl.so` with an `undefined symbol` error, ask your hosting provider to verify that the PHP runtime and its cURL extension are built to work together. Retry syncing one site after the server issue is resolved. See [LiteSpeed's guide to diagnosing 503 errors](https://docs.litespeedtech.com/lsws/extapp/php/troubleshooting/503/#log-files).
+
 ### OpenSSL Library Error (Invalid Request)
 
 If you receive an "Invalid request" error, check **MainWP > Server Information** for the SSL Warning row. These errors indicate OpenSSL misconfiguration:
