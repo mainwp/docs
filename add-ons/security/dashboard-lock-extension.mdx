@@ -107,6 +107,14 @@ Do not add a full-page URL in the box. It's enough to add just a page slug. For 
 
 The Frontend Redirect Rules automatically skip requests containing `cron` and `/wp-json`. Use the Exclude slugs from redirection option for any additional pages or slugs that must stay accessible. ![Redirect front traffic options](/images/add-ons/dashboard-lock-redirect-rules.png)
 
+### Back up the Dashboard with a frontend redirect
+
+If your MainWP Dashboard is connected to itself as a Child Site, its backup task can reach **Transferring Backup** and then fail. This happens when Dashboard Lock redirects the archive download to another hostname.
+
+To keep the frontend redirect enabled, add `&fdl=` on its own line under **Frontend Redirect Rules > Exclude slugs from redirection**. Click **Save Settings** and run the backup task again.
+
+Dashboard Lock skips the frontend redirect for any URL containing `&fdl=`. MainWP Child still verifies the download request before it serves the archive.
+
 ## Dashboard Lock
 
 <Warning>
