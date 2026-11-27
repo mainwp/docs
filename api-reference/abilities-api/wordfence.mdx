@@ -5,7 +5,7 @@ description: >-
   Read stored Wordfence scan status, issue and blocked-attack summaries, and selected settings for one site through MainWP Abilities.
 ---
 
-The MainWP Wordfence Add-on registers three read-only abilities in the `mainwp-wordfence` category. All three use the `mainwp/` namespace on your MainWP Dashboard.
+The MainWP Wordfence Add-on 5.3 and later registers three read-only abilities in the `mainwp-wordfence` category. All three use the `mainwp/` namespace on your MainWP Dashboard.
 
 Use them to check a site's Wordfence status from a script, a report, or an AI tool. They return what the Dashboard stored at the last sync. They do not start a scan, contact the Child site, or change settings.
 
@@ -20,7 +20,7 @@ Use them to check a site's Wordfence status from a script, a report, or an AI to
 
 - WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
-- A Wordfence Add-on release with Abilities support, active in MainWP Dashboard
+- Wordfence Add-on 5.3 or later, active on your MainWP Dashboard
 - An authenticated user with `manage_options` and access to the Wordfence Add-on
 - Dashboard access to the site you want to read
 - Wordfence active on the managed site. Run Sync Data, then open that site's Wordfence page in MainWP Dashboard to load its stored data
