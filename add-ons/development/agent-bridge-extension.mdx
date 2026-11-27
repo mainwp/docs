@@ -23,10 +23,10 @@ Agent Bridge is built for live sites. By default, an administrator approves thei
 
 ## Requirements
 
-- WordPress 6.9 or later on the Dashboard site. On an older version, the add-on loads nothing and shows "Agent Bridge needs WordPress 6.9 or later" in the WordPress admin.
+- MainWP Dashboard 6.6 or later.
+- WordPress 6.9 or later on the Dashboard site.
 - PHP 8.3 or later.
-- A MainWP Dashboard version that supports Agent Bridge. On an older Dashboard, the add-on shows "This version of MainWP Dashboard doesn't support Agent Bridge. Update MainWP Dashboard to use it."
-- WordPress 6.9 or later on each child site where the AI uses site abilities. On an older child site, those requests return "Site abilities require WordPress 6.9 or later on the child site."
+- WordPress 6.9 or later on each child site where the AI uses site abilities.
 
 ## Agent access per site
 
@@ -34,7 +34,7 @@ Agent access is set per site. In your MainWP Dashboard, go to **Sites**, edit a 
 
 | Level | What the AI can do |
 |---|---|
-| **Off** | Check the site's status only. This is the default. |
+| **Off** | Check the site's Agent access setting only. This is the default. Approved requests that have not started are cancelled. |
 | **Read only** | Read site abilities, run allowlisted read-only WP-CLI commands, and read files. It can't make changes or read `wp-config.php`. |
 | **Abilities** | Everything in **Read only**, plus site abilities that make changes. |
 | **Abilities and code** | Everything in **Abilities**, plus PHP, WP-CLI commands, and file changes. |
@@ -58,9 +58,11 @@ Only administrators approve or deny agent requests. An administrator is a user w
 
 Requests that need approval appear on the **Agent approvals** page in the MainWP menu, on the **Waiting for approval** tab. Each card shows who asked, the site, when the request expires, the exact code or operation, and what happens with the safety backup. Staff members see their own requests with "Waiting for an administrator to approve this in MainWP". They can't approve them, even their own.
 
-After an administrator approves a request, the change runs when the AI continues. Tell the AI to continue once you've approved.
+After an administrator approves a request, the change runs when the AI continues. Tell the AI to continue once you've approved. If you approved for a staff member, let them know so they can continue in their AI app.
 
 An administrator can approve several requests at once with **Approve selected**. Requests that use the destructive tool have to be approved one at a time on their own cards.
+
+When a staff member's request needs approval, MainWP emails the configured recipients who are eligible administrators on this Dashboard. Configure **Staff request waiting** in **Email Settings**. Disabled notifications and recipients who cannot approve the request receive no email.
 
 A request waits for 15 minutes. If nobody approves it in that time, it expires and the AI has to ask again. The **Recently decided** tab lists approvals and denials from the last 7 days.
 
@@ -94,18 +96,22 @@ A staff member's request has no **Always allow** button. When one of the role's 
 
 ### Block rules and other rules
 
-On the **Rules** tab, under **Add a rule**, an administrator can add a rule for one tool. Pick the scope (all sites, one site, a client, or a tag) and the setting (**Ask**, **Allow**, or **Block**). A Block rule can also name staff users or roles. You can narrow a WP-CLI rule to a command pattern, such as `plugin update *`, and a site ability rule to an ability name or namespace, such as `woocommerce/*`.
+On the **Rules** tab, under **Add a rule**, an administrator can add a rule for one tool. Pick the scope (all sites, one site, a client, or a tag) and the **Rule type** (**Ask**, **Allow**, or **Block**). A Block rule can also name staff users or roles. You can narrow a WP-CLI rule to a command pattern, such as `plugin update *`, and a site ability rule to an ability name or namespace, such as `woocommerce/*`.
 
-- **Block** always applies, in both modes. The AI's requests to use a blocked tool are refused.
+- **Block** always applies, in both modes. A matching request shows as **Blocked**.
 - **Ask** and **Allow** apply to changes. Reads don't wait.
 - Allow and Ask rules cover administrators. A Block rule that names staff users or roles covers only those staff, and one that names no one covers administrators. To block something for your own AI, save the rule without naming anyone.
 - When several rules match, a Block rule wins. Otherwise the most specific rule wins: a site rule over a client rule, a client rule over a tag rule, and a tag rule over an all-sites rule.
+
+The **Saved rules** table shows each rule's tool, sites, and people. Client and tag rules use the sites saved with the rule; use **Refresh from client** or **Refresh from tag** to update that list.
 
 To stop an approved request before it runs, turn Agent access off for that site or add a Block rule.
 
 ### WooCommerce stores
 
-On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator's approval. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Abilities with the word refund in their name, and WooCommerce's order status abilities when they set an order to Refunded, are refused: refunds and payments are done by a person in WooCommerce. Changing an order's status, adding an order note the customer sees, deleting a customer, and WooCommerce abilities whose names include the word email, checkout, payment, tax, shipping, settings, password, capture, or subscription also always wait. These ability rules apply to changes only, so abilities that only read still run. MainWP matches all of them by name and doesn't check what an ability does, so a refund ability with another name, or another WooCommerce ability that emails a customer, follows your Mode and rules.
+On a site where WooCommerce is active, or whose plugin list MainWP can't read, PHP, WP-CLI, and file changes or restores always wait for an administrator's approval. Mode, Allow rules, and task approvals don't change this, and these cards have no **Always allow** button. Abilities with the word refund in their name, and WooCommerce's order status abilities when they set an order to Refunded, are blocked: refunds and payments are done by a person in WooCommerce. Changing an order's status, adding an order note the customer sees, deleting a customer, and WooCommerce abilities whose names include the word email, checkout, payment, tax, shipping, settings, password, capture, or subscription also always wait. These ability rules apply to changes only, so abilities that only read still run. MainWP matches all of them by name and doesn't check what an ability does, so a refund ability with another name, or another WooCommerce ability that emails a customer, follows your Mode and rules.
+
+The approval card explains why a store change waits. For an order status change, it says whether the change emails a customer or may email one when MainWP cannot confirm. The remote connection's approval page and the Dashboard Assistant's preview also show the store approval reason.
 
 ### Task approvals
 
@@ -118,13 +124,15 @@ Task approvals come from two places:
 
 Active task approvals are listed under **Active task approvals** on the **Waiting for approval** tab. Click **End** to stop one early.
 
+When an AI app receives an approval link, open it and approve in MainWP. A chat reply does not approve the Dashboard request. After approval, the AI resumes the same request using its operation ID.
+
 ### Safety backups
 
 Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again after you fix backups for that site in **Settings > Backup Settings**. If MainWP says the private backup directory isn't confirmed, confirm it there first. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. The **Recently decided** tab shows **Backup failed** for an approved request whose backup failed, and for a change that needed no approval but whose backup failed. Nothing changed in either case.
 
 MainWP counts a site as having a backup system when MainWP's own backups are turned on, or when a backup was recorded for the site in the last 24 hours. MainWP can't start a backup in another backup plugin, so a site that relies on one, with no backup in the last 24 hours, counts as having no backup system.
 
-For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when a site has no backup system. You can't skip the safety backup for a single request: a site with a backup system always has a recent backup first.
+For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when no backup is available: **No backup available. Approving runs it without one.** You can't skip the safety backup for a single request: a site with a backup system always has a recent backup first.
 
 ## Staff members and Team Control
 
@@ -195,7 +203,7 @@ The **Activity** tab on the **Agent approvals** page is for administrators. It l
 
 Results use **Denied** when an administrator denies a request, **Refused** for role or access restrictions, and **Blocked** for Block rules or store restrictions. **Ran** means the action succeeded. A failed run has a failure result, such as **Run failed**; an uncertain result says **Result unknown**. A saved copy is a copy of one file for restoring that file. A safety backup covers the site before a change.
 
-The **Agent** column shows the app and key used, in the same words as the details line in Network Activity. For an Application Password, the owner's name links to the Application Passwords section of their profile. Two other values can appear:
+The **Agent** column shows the AI app and the owner's name. Network Activity records the key and connection details. Two other values can appear:
 
 - **Dashboard login**: someone signed in to the Dashboard did it, such as changing the rules or a site's Agent access.
 - **No agent recorded**: the row has no agent details, for example a row saved before agent details were recorded.
