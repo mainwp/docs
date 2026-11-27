@@ -137,6 +137,12 @@ function mycustom_mainwp_download_url( $url, $query ) {
 
 Retry the installation from MainWP and check the result for each child site.
 
+#### WP Ghost on the Dashboard
+
+If you enable **Hide "wp-admin"** in WP Ghost on your MainWP Dashboard, ZIP installations can fail when **Custom Admin Path** is still set to `wp-admin`.
+
+To keep the default path hidden, go to **WP Ghost > Change Paths > Admin Security** on your Dashboard. Set **Custom Admin Path** to a path other than `wp-admin` and turn off **Hide the New Admin Path** so child sites can reach the signed ZIP download. Retry the installation on one child site.
+
 ---
 
 ## Localhost Limitations
