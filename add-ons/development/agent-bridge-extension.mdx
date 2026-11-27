@@ -174,8 +174,8 @@ MainWP checks the requester's access again when an approved request runs. If the
 
 Agent Bridge works with any AI app connected through the MainWP MCP server. To connect Claude Desktop or Claude Code with an [Application Password](/mcp-server/quickstart#before-you-start), follow the setup guide for your app:
 
-- [Install in Claude Desktop](/mcp-server/claude-desktop-bundle), or the manual Claude Desktop configuration in [Connect Your AI Client](/mcp-server/clients)
-- [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI Client](/mcp-server/clients)
+- [Install in Claude Desktop](/mcp-server/claude-desktop-bundle), or the manual Claude Desktop configuration in [Connect Your AI App](/mcp-server/clients)
+- [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI App](/mcp-server/clients)
 
 <Warning>
 With **Mode** on **Never ask**, the default, the prompt in the AI app is the only check before an administrator's change runs, apart from the [store rules](#woocommerce-stores). When the app asks to use the PHP, WP-CLI, or file tools, don't choose its option to stop asking (in Claude Code: "Yes, and don't ask again"). Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
