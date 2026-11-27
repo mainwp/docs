@@ -2,7 +2,7 @@
 title: Agent Bridge
 sidebarTitle: "Agent Bridge"
 description: >-
-  Let AI clients connected through the MainWP MCP server run approved PHP, WP-CLI, and file operations on your child sites, with per-site access control and approvals.
+  Let AI apps connected through the MainWP MCP server run approved PHP, WP-CLI, and file operations on your child sites, with per-site access control and approvals.
 ---
 
 ## What You'll Learn
@@ -10,14 +10,14 @@ description: >-
 - What the Agent Bridge add-on does
 - Setting Agent access for each child site
 - Who approves agent requests, and when a request waits
-- Always allow rules, Block rules, and task approvals
+- Allow rules, Block rules, and task approvals
 - Giving staff members access with Team Control, and letting them run some changes without approval
 - Connecting Claude Desktop or Claude Code
 - Where agent work is recorded
 
 ---
 
-The Agent Bridge add-on lets an AI client, such as Claude or Codex, connected through the [MainWP MCP server](/mcp-server/overview), read and change your child sites through MainWP. You choose what the AI can do on each site, and you can require an administrator to approve requests before they run.
+The Agent Bridge add-on lets an AI app, such as Claude or Codex, connected through the [MainWP MCP server](/mcp-server/overview), read and change your child sites through MainWP. You choose what the AI can do on each site, and you can require an administrator to approve requests before they run.
 
 Agent Bridge is built for live sites. By default, an administrator approves their own changes in their AI app, and a staff member's change waits for an administrator unless their Team Control role lets it run without approval. On sites with a backup system, Agent Bridge checks for a recent backup first.
 
@@ -64,26 +64,26 @@ An administrator can approve several requests at once with **Approve selected**.
 
 A request waits for 15 minutes. If nobody approves it in that time, it expires and the AI has to ask again. The **Recently decided** tab lists approvals and denials from the last 7 days.
 
-### Mode: Never ask or Ask
+### Approval Mode: Never ask or Ask
 
-The **Mode** setting on the **Rules** tab decides when an administrator's change waits for approval. Mode applies to administrators only.
+The approval **Mode** setting on the **Rules** tab decides when an administrator's change waits for approval. Mode applies to administrators only.
 
 | Mode | What happens |
 |---|---|
-| **Never ask** (the default) | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page except where an Ask rule or a [store rule](#woocommerce-stores) applies. This includes destructive abilities. The MainWP AI Assistant in your Dashboard has no separate permission prompt, so in saved conversations it keeps showing its **Proceed** card, unless an Allow rule or a task approval covers the request, until an administrator clicks **Save** under **Mode and rules** with **Never ask** selected. That **Save** button also saves the no-backup setting, so saving only that setting saves the Mode shown too. |
+| **Never ask** (the default) | Administrators approve changes in their AI app. Their confirmation there counts as approval, and nothing waits on the **Agent approvals** page except where an Ask rule or a [store rule](#woocommerce-stores) applies. This includes destructive abilities. The MainWP AI Assistant in your Dashboard has no separate permission prompt, so in saved conversations it keeps showing its **Proceed** card, unless an Allow rule or a task approval covers the request, until an administrator clicks **Save Mode and backup setting** under **Mode and rules** with **Never ask** selected. That button also saves the no-backup setting, so saving only that setting saves the Mode shown too. |
 | **Ask** | An administrator's change waits on the **Agent approvals** page unless an Allow rule covers it. |
 
-**Never ask** is the default only where no Mode has been saved. A Mode saved by an earlier version, including **Ask**, stays as saved.
+**Never ask** is the default until you save a Mode. The Rules tab shows **Never ask (default, not saved)** until then.
 
 A staff member's change waits for an administrator in both modes, unless their Team Control role lets them run it without approval. See [Run without approval](#run-without-approval).
 
 Requests that only read never wait.
 
 <Warning>
-In **Never ask** mode, the prompt in your AI app is the only check before a change runs, apart from the [store rules](#woocommerce-stores). Content on a child site, such as a post or a plugin's output, can contain text that tries to steer the AI. If you choose your AI app's own "Always allow" option for the PHP, WP-CLI, or file tools, that content can make the AI run code on your sites with no approval in MainWP. Keep the AI app asking for these tools, or set **Mode** to **Ask**.
+In **Never ask** mode, the prompt in your AI app is the only check before a change runs, apart from the [store rules](#woocommerce-stores). Content on a child site, such as a post or a plugin's output, can contain text that tries to steer the AI. If you choose your AI app's option to stop asking (in Claude Code: "Yes, and don't ask again") for the PHP, WP-CLI, or file tools, that content can make the AI run code on your sites with no approval in MainWP. Keep the AI app asking for these tools, or set **Mode** to **Ask**.
 </Warning>
 
-### Always allow rules
+### Allow rules
 
 An approval card for an administrator's request has an **Always allow** button next to **Approve** and **Deny**. It approves the request and saves an Allow rule for that site that covers all administrators, so the same kind of request doesn't wait again.
 
@@ -120,7 +120,7 @@ Active task approvals are listed under **Active task approvals** on the **Waitin
 
 ### Safety backups
 
-Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. A request an administrator approved shows as **Backup failed** on the **Recently decided** tab.
+Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again after you fix backups for that site in **Settings > Backup Settings**. If MainWP says the private backup directory isn't confirmed, confirm it there first. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. The **Recently decided** tab shows **Backup failed** for an approved request whose backup failed, and for a change that needed no approval but whose backup failed. Nothing changed in either case.
 
 MainWP counts a site as having a backup system when MainWP's own backups are turned on, or when a backup was recorded for the site in the last 24 hours. MainWP can't start a backup in another backup plugin, so a site that relies on one, with no backup in the last 24 hours, counts as having no backup system.
 
@@ -128,16 +128,18 @@ For sites with no backup system, the **When a site has no backup system** settin
 
 ## Staff members and Team Control
 
-Staff members need [Team Control](/add-ons/agency/team-control-extension) permissions to use the Agent Bridge tools. Team Control adds four rights under **Agent Bridge**:
+A staff member is anyone who isn't a WordPress administrator. Staff members need [Team Control](/add-ons/agency/team-control-extension) permissions to use the Agent Bridge tools. Team Control adds four rights under **Agent Bridge**:
 
 | Right | Tools it allows |
 |---|---|
 | **Run site abilities (read)** | Listing, looking up, and running site abilities that only read |
 | **Run site abilities (write)** | Running site abilities that change data |
 | **Run site abilities (destructive)** | Running site abilities that can delete data or are hard to undo |
-| **Run code on child sites (PHP, WP-CLI, files)** | The PHP, WP-CLI, and file tools, including the read-only ones, and the site status tool |
+| **Run code on child sites (PHP, WP-CLI, files)** | The PHP, WP-CLI, and file tools, including the read-only ones |
 
-A staff member also needs the **Access WP Admin** permission and access to the site through their Team Control role. Without the matching right or **Access WP Admin**, the request is refused with "Your role does not allow code tools on child sites." A site outside the role's access is refused as not found.
+The site status tool is available to a staff member with any one of these Agent Bridge rights. It also supplies the editing guides needed by site abilities.
+
+A staff member also needs the **Access WP Admin** permission and access to the site through their Team Control role. Without the matching right, the refusal names the right to ask an administrator for. If the right is present but other role access is missing, the request is refused with "Your role can't use agent tools on child sites. Ask an administrator to check your role in Team Control." A site outside the role's access is refused as not found.
 
 Staff members can use the Agent Bridge tools only through the MainWP MCP server with their own Application Password. The MainWP AI Assistant and remote AI connections are available to administrators only.
 
@@ -164,10 +166,6 @@ MainWP reads the role's options each time the AI asks or continues. If you remov
 
 On the **Activity** tab and in Network Activity, a change that ran this way says which role and option allowed it, for example "Ran without approval: Editor role, Elementor page and media edits". If the change was sent but didn't succeed, the line starts "Sent without approval". In Network Activity the line follows the result, starting in lower case.
 
-#### Settings saved by earlier versions
-
-Earlier versions let Allow rules, Ask rules, and **Never ask** name staff members. Those names no longer let staff skip approval. A saved **Never ask** that names staff still covers administrators. The **Rules** tab lists these entries in a notice with a link to Team Control until an administrator dismisses it. New Allow rules, Ask rules, and **Never ask** settings can't name staff.
-
 ### When rights change after approval
 
 MainWP checks the requester's access again when an approved request runs. If the requester lost the right, or lost access to the site, after the request was approved, it doesn't run and the AI gets a 403 error. Their task approvals for that site can't be used either.
@@ -180,7 +178,7 @@ Agent Bridge works with any AI app connected through the MainWP MCP server. To c
 - [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli), or the manual `claude mcp add` command in [Connect Your AI Client](/mcp-server/clients)
 
 <Warning>
-With **Mode** on **Never ask**, the default, the prompt in the AI app is the only check before an administrator's change runs, apart from the [store rules](#woocommerce-stores). When the app asks to use the PHP, WP-CLI, or file tools, don't choose its "Always allow" option. Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
+With **Mode** on **Never ask**, the default, the prompt in the AI app is the only check before an administrator's change runs, apart from the [store rules](#woocommerce-stores). When the app asks to use the PHP, WP-CLI, or file tools, don't choose its option to stop asking (in Claude Code: "Yes, and don't ask again"). Content on a child site can try to steer the AI into running code you didn't ask for. Approve each use in the app, or set **Mode** to **Ask** on the **Rules** tab.
 </Warning>
 
 Give each person their own Application Password and name it after the app and computer it's used on, such as "Claude Code on office laptop". The name appears in Network Activity and in the **Key** filter, so you can see everything one key did before you revoke it.
@@ -191,9 +189,11 @@ The MainWP MCP server sends the name of the AI app to your Dashboard. In Network
 
 Agent work is recorded in two places.
 
-**Network Activity** lists each agent action with who it acted for, which AI and app made it, and which key it used. See [Agent activity](/sites/network-activity#agent-activity).
+**Network Activity** lists each agent action with who it acted for, which AI app made it, and which key it used. See [Agent activity](/sites/network-activity#agent-activity).
 
 The **Activity** tab on the **Agent approvals** page is for administrators. It lists agent requests, approval decisions, and settings changes, with the full command or code under **Show technical details**. Use the **Date**, **Site**, **User**, **Agent**, and **Tool** dropdowns to narrow the list.
+
+Results use **Denied** when an administrator denies a request, **Refused** for role or access restrictions, and **Blocked** for Block rules or store restrictions. **Ran** means the action succeeded. A failed run has a failure result, such as **Run failed**; an uncertain result says **Result unknown**. A saved copy is a copy of one file for restoring that file. A safety backup covers the site before a change.
 
 The **Agent** column shows the app and key used, in the same words as the details line in Network Activity. For an Application Password, the owner's name links to the Application Passwords section of their profile. Two other values can appear:
 
@@ -219,5 +219,5 @@ Uninstalling Agent Bridge deletes its own activity table and settings, including
 ## Related Resources
 
 - [Development Add-ons](/add-ons/development) - Browse all development tools
-- [MainWP MCP Server](/mcp-server/overview) - Connect an AI client to your MainWP Dashboard
+- [MainWP MCP Server](/mcp-server/overview) - Connect an AI app to your MainWP Dashboard
 - [Network Activity](/sites/network-activity) - Review agent and human changes across your sites
