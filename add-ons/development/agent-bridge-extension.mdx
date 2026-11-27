@@ -132,7 +132,7 @@ Before a change runs on a site with a backup system, MainWP uses a backup from t
 
 MainWP counts a site as having a backup system when MainWP's own backups are turned on, or when a backup was recorded for the site in the last 24 hours. MainWP can't start a backup in another backup plugin, so a site that relies on one, with no backup in the last 24 hours, counts as having no backup system.
 
-For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when no backup is available: **No backup available. Approving runs it without one.** You can't skip the safety backup for a single request: a site with a backup system always has a recent backup first.
+For sites with no backup system, the **When a site has no backup system** setting on the **Rules** tab decides what happens: **Let the AI make changes** (the default) or **Block AI changes on that site**. The approval card says when a site has no backup system: **This site has no backup system, so no safety backup is made.** You can't skip the safety backup for a single request: a site with a backup system always has a recent backup first.
 
 ## Staff members and Team Control
 
