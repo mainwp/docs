@@ -21,13 +21,15 @@ Use them to check a site's Wordfence status from a script, a report, or an AI to
 - WordPress 6.9 or later on your MainWP Dashboard site
 - MainWP Dashboard with Abilities API support; use version 6.2 or later for the `input_json` examples below
 - A Wordfence Add-on release with Abilities support, active in MainWP Dashboard
-- An authenticated user with `manage_options` and access to the Wordfence Add-on
+- An authenticated user with `manage_options`, or a Team Control role with **Use MainWP abilities and MCP**, plus access to the Wordfence Add-on
 - Dashboard access to the site you want to read
 - Wordfence active on the managed site. Run Sync Data, then open that site's Wordfence page in MainWP Dashboard to load its stored data
 
 Use an [Application Password](/api-reference/rest-api/application-passwords) or the [authentication methods in the Abilities API overview](/api-reference/abilities-api/overview#authentication). The examples use an Application Password.
 
 Each ability checks permissions again when it runs. If you use Team Control, the user needs access to the Wordfence Add-on and to the requested site.
+
+Team Control staff without `manage_options` can also run all three abilities. This needs MainWP Dashboard 6.5 or later and a Wordfence Add-on build that supports Team Control. The staff role needs **Use MainWP abilities and MCP**, the Wordfence Add-on permission, and access to the requested site. Your Dashboard checks the site before it reads any stored data. A request for a site outside the role returns 403 `mainwp_permission_denied`. On older Dashboards, staff cannot use these abilities. See [Abilities and MCP Permissions](/add-ons/agency/team-control-extension#abilities-and-mcp-permissions).
 
 ## Available Abilities
 
@@ -197,7 +199,7 @@ The response never includes the API key, license details, email addresses, IP li
 
 | Error code | HTTP status | Next step |
 |------------|-------------|-----------|
-| `mainwp_permission_denied` | 403 | Check `manage_options`, Dashboard API permissions, and Wordfence Add-on access in Team Control |
+| `mainwp_permission_denied` | 403 | Check `manage_options` or **Use MainWP abilities and MCP**, Dashboard API permissions, Wordfence Add-on access in Team Control, and the role's access to the requested `site_id` |
 | `mainwp_access_denied` | 403 | Check that the user can access the requested `site_id` |
 | `mainwp_site_not_found` | 404 | Check that the `site_id` exists and that the user can access it. If it does, run Sync Data and open the site's Wordfence page to load its stored data |
 | `mainwp_wordfence_invalid_input` | 400 | Send only `site_id`, as a positive integer |
