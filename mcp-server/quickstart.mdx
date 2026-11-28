@@ -1,7 +1,7 @@
 ---
 title: Quickstart
 description: >-
-  Connect an AI client through guided MainWP MCP setup or manual Claude Desktop configuration, then run your first prompt.
+  Connect an AI app through guided MainWP MCP setup or manual Claude Desktop configuration, then run your first prompt.
 ---
 
 import ClaudeDesktopConfig from '/snippets/claude-desktop-config.mdx';
@@ -10,7 +10,7 @@ Choose the guide for your application:
 
 - **Claude Code CLI in your terminal:** [Install in Claude Code CLI](/mcp-server/claude-code-plugin#install-in-claude-code-cli).
 - **Claude Desktop chat app:** [Install in Claude Desktop with the MCP Bundle](/mcp-server/claude-desktop-bundle).
-- **Another AI client:** [Connect Your AI Client](/mcp-server/clients).
+- **Another AI app:** [Connect Your AI App](/mcp-server/clients).
 
 MainWP Dashboard 6.3 also provides the guided setup below. Manual config-file instructions for Claude Desktop follow it.
 
@@ -20,16 +20,14 @@ You need:
 
 - A MainWP Dashboard on version 6.0 or later, reachable over HTTPS, with WordPress 6.9 or later for the Abilities API. Abilities with a required input that may be null need Dashboard 6.2 or later. Knowledge tools, Dashboard-side update confirmation, and the guided AI setup pages require Dashboard 6.3.
 - Admin access to the WordPress site that runs your Dashboard
-- [Node.js](https://nodejs.org) 20.19 or later on the computer where your AI tool runs. Node.js is the free runtime the server runs on; if you don't have it, the standard installer from nodejs.org is all you need.
-- [Claude Desktop](https://claude.ai/download), or another AI tool that supports MCP
+- [Node.js](https://nodejs.org) 20.19 or later on the computer where your AI app runs. Node.js is the free runtime the server runs on; if you don't have it, the standard installer from nodejs.org is all you need.
+- [Claude Desktop](https://claude.ai/download), or another AI app that supports MCP
 
 ## Guided Setup in MainWP Dashboard
 
-Open **MainWP > AI > MainWP MCP**. If the page shows tabs, select **Run the local server**. The setup has four steps: **Credentials**, **Connect**, **Test**, and **Finish**. Access to this page requires a WordPress administrator account with `manage_options`. On MainWP Dashboard 6.4.1 and later, the setup page shows a requirement notice if your Dashboard site is running WordPress earlier than 6.9.
+Open **MainWP > AI > MainWP MCP**. If the page shows tabs, select **Local server**. The setup has four steps: **Credentials**, **Connect**, **Test**, and **Finish**. Access to this page requires a WordPress administrator account with `manage_options`. On MainWP Dashboard 6.4.1 and later, the setup page shows a requirement notice if your Dashboard site is running WordPress earlier than 6.9.
 
-If your Dashboard is reachable over public HTTPS, **Connect directly** on the same page connects Claude, ChatGPT and other known AI apps with nothing to install. See [Connect AI Apps to Your Dashboard](/mcp-server/remote/overview).
-
-![The Run the local server tab of the MainWP MCP page, with its Credentials, Connect, Test, and Finish steps](/images/mcp-server/mainwp-mcp-guided-setup.jpg)
+If your Dashboard is reachable over public HTTPS, **Connect an app** on the same page connects Claude, ChatGPT and other known AI apps with nothing to install. See [Connect AI Apps to Your Dashboard](/mcp-server/remote/overview).
 
 <Steps>
   <Step title="Create an Application Password on the page">
@@ -40,9 +38,9 @@ If your Dashboard is reachable over public HTTPS, **Connect directly** on the sa
   <Step title="Copy the configuration for your client">
     Select **Connect**. The editable configuration contains your Dashboard URL and current WordPress username. A password created on this page replaces `paste-application-password-here` while the page remains open. If you use an existing password or reload the page, replace that placeholder yourself.
 
-    Click **Copy to clipboard**, then use the [instructions for your AI client](/mcp-server/clients). The generic `mcpServers` JSON must be adapted for clients that use another format, such as VS Code or OpenAI Codex. The success dialog already provides the VS Code format.
+    Click **Copy to clipboard**, then use the [instructions for your AI app](/mcp-server/clients). The generic `mcpServers` JSON must be adapted for clients that use another format, such as VS Code or OpenAI Codex. The success dialog already provides the VS Code format.
   </Step>
-  <Step title="Test from your AI client">
+  <Step title="Test from your AI app">
     Select **Test** for the suggested prompt, **List all my sites**. Restart your client after configuring it and run that prompt there. The Dashboard page does not run the test or establish the connection itself.
   </Step>
   <Step title="Review the available tools and safeguards">
@@ -50,7 +48,7 @@ If your Dashboard is reachable over public HTTPS, **Connect directly** on the sa
   </Step>
 </Steps>
 
-Creating a password does not install the MCP server or your AI client. The server starts on your computer when the configured client launches it.
+Creating a password does not install the MCP server or your AI app. The server starts on your computer when the configured client launches it.
 
 ## Manual Setup for Claude Desktop
 
@@ -97,7 +95,7 @@ Consider creating a dedicated WordPress user for AI access instead of using your
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Connect other AI clients" icon="plug" href="/mcp-server/clients">
+  <Card title="Connect other AI apps" icon="plug" href="/mcp-server/clients">
     Claude Code, Cursor, VS Code Copilot, OpenAI Codex, ZenCoder, and more.
   </Card>
   <Card title="Understand the guardrails" icon="shield-check" href="/mcp-server/safety">

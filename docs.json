@@ -781,7 +781,8 @@
               "add-ons/development/mainwp-and-atarim-integration",
               "add-ons/development/pressable-extension",
               "add-ons/development/mainwp-post-smtp-extension",
-              "add-ons/development/early-access-extension"
+              "add-ons/development/early-access-extension",
+              "add-ons/development/agent-bridge-extension"
             ]
           },
           {

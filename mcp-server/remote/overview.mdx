@@ -21,11 +21,11 @@ The [MainWP MCP Server](/mcp-server/overview) runs on your own computer and sign
 | Hosted apps (claude.ai, ChatGPT) | Not supported | Supported |
 | Tool names | `list_sites_v1`, `run_updates_v1` and so on | The same names |
 
-Both can be used side by side. If your app can't connect remotely, the local server remains the fallback: see [Connect Your AI Client](/mcp-server/clients).
+Both can be used side by side. If your app can't connect remotely, the local server remains the fallback: see [Connect Your AI App](/mcp-server/clients).
 
 ## Requirements
 
-- **MainWP Dashboard 6.5 or later.** Earlier versions do not have the **Connect directly** view on the MainWP MCP page.
+- **MainWP Dashboard 6.5 or later.** Earlier versions do not have the **Connect an app** view on the MainWP MCP page.
 - **HTTPS site address.** The Dashboard's site address must start with `https://`. With an `http://` address the connector can't be turned on.
 - **PHP 8.3 or newer**, as required by MainWP Dashboard 6.5.
 - **WordPress 6.9 or newer.** The connector uses the WordPress Abilities API.
@@ -41,8 +41,8 @@ Port 443 is the safe choice. If your site address uses another port, the self-te
   <Step title="Turn on the activity log">
     Open **MainWP Settings > Network Activity Settings** from the top-right user menu and turn on **Enable Network Activity logging**. Save the settings.
   </Step>
-  <Step title="Open Connect directly">
-    In MainWP Dashboard, open **MainWP > AI > MainWP MCP > Connect directly** (`/wp-admin/admin.php?page=mainwp-mcp&tab=direct`). The **Remote AI connections** section shows whether the connector is on.
+  <Step title="Open Connect an app">
+    In MainWP Dashboard, open **MainWP > AI > MainWP MCP > Connect an app** (`/wp-admin/admin.php?page=mainwp-mcp&tab=direct`). The **Remote AI connections** section shows whether the connector is on.
   </Step>
   <Step title="Run the self-test">
     Click **Run the self-test**. Each line shows `pass`, `warn`, `fail` or `info`. Fix every `fail` line first. [Troubleshooting](/mcp-server/remote/troubleshooting) explains each line and its fix.
