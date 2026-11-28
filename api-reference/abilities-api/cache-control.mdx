@@ -231,8 +231,10 @@ Legacy credentials awaiting migration can return `malformed` here. Review and sa
 
 This requests a purge using the configuration already applied on MainWP Child. It does not first sync newly saved Dashboard settings.
 
+A purge removes cached copies that the site rebuilds on the next request, so the ability is not marked destructive. With `MAINWP_REQUIRE_USER_CONFIRMATION` on, the [MainWP MCP server](/mcp-server/reference/configuration) runs the purge instead of refusing it. With `MAINWP_READ_ONLY` on, the MCP server still blocks it.
+
 <Warning>
-This call starts a real cache purge immediately. It accepts only `site_id`; there is no `dry_run` or `confirm` parameter. Although marked destructive, it uses POST because it is not marked idempotent.
+This call starts a real cache purge immediately. It accepts only `site_id`; there is no `dry_run` or `confirm` parameter. The ability is marked `readonly: false`, `destructive: false`, and `idempotent: false`, so it uses POST.
 </Warning>
 
 ```bash
