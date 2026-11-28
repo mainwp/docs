@@ -28,6 +28,10 @@ Agent Bridge is built for live sites. By default, an administrator approves thei
 - PHP 8.3 or later.
 - WordPress 6.9 or later on each child site where the AI uses site abilities.
 
+## Set up private backup storage first
+
+Safety backups need a private backup directory on the Dashboard server, outside every website's public directories and writable by PHP. To set its location, define `MAINWP_BACKUP_PRIVATE_DIR` in the Dashboard's `wp-config.php` with an absolute private path, before the line that loads `wp-settings.php`. Follow [Set Up the Private Backup Directory](/sites/backups/manage-backups#set-up-the-private-backup-directory).
+
 ## Agent access per site
 
 Agent access is set per site. In your MainWP Dashboard, go to **Sites**, edit a site, and find the **Agent access** setting. Only administrators can change it.
@@ -127,8 +131,6 @@ Active task approvals are listed under **Active task approvals** on the **Waitin
 When an AI app receives an approval link, open it and approve in MainWP. A chat reply does not approve the Dashboard request. After approval, the AI resumes the same request using its operation ID.
 
 ### Safety backups
-
-Safety backups need a private backup directory on the Dashboard server, outside every website's public directories and writable by PHP. To set its location, define `MAINWP_BACKUP_PRIVATE_DIR` in the Dashboard's `wp-config.php` with an absolute private path, before the line that loads `wp-settings.php`. Follow [Set Up the Private Backup Directory](/sites/backups/manage-backups#set-up-the-private-backup-directory).
 
 Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again after you fix backups for that site in **Settings > Backup Settings**. If MainWP says the private backup directory isn't confirmed, confirm it there first. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. The **Recently decided** tab shows **Backup failed** for an approved request whose backup failed, and for a change that needed no approval but whose backup failed. Nothing changed in either case.
 
