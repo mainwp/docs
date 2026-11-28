@@ -128,6 +128,8 @@ When an AI app receives an approval link, open it and approve in MainWP. A chat 
 
 ### Safety backups
 
+Safety backups need a private backup directory on the Dashboard server, outside every website's public directories and writable by PHP. To set its location, define `MAINWP_BACKUP_PRIVATE_DIR` in the Dashboard's `wp-config.php` with an absolute private path, before the line that loads `wp-settings.php`. Follow [Set Up the Private Backup Directory](/sites/backups/manage-backups#set-up-the-private-backup-directory).
+
 Before a change runs on a site with a backup system, MainWP uses a backup from the last 24 hours or makes a new safety backup. If that backup fails, the change doesn't run and the AI has to ask again after you fix backups for that site in **Settings > Backup Settings**. If MainWP says the private backup directory isn't confirmed, confirm it there first. Under a task approval, asking again gets the same failed backup: an administrator approves the request again or ends the task approval. The **Recently decided** tab shows **Backup failed** for an approved request whose backup failed, and for a change that needed no approval but whose backup failed. Nothing changed in either case.
 
 MainWP counts a site as having a backup system when MainWP's own backups are turned on, or when a backup was recorded for the site in the last 24 hours. MainWP can't start a backup in another backup plugin, so a site that relies on one, with no backup in the last 24 hours, counts as having no backup system.
